@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Crowdin</string>
+
+    <string name="home">Home</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="slideshow">Slideshow</string>
+    <string name="tools">Tools</string>
+    <string name="header_title">Test header</string>
+    <string name="navigation_drawer_open">open</string>
+    <string name="navigation_drawer_close">close</string>
+    <string name="share">Share</string>
+    <string name="send">Send</string>
+    <string name="communicate">Communicate</string>
+    <string name="camera_fragment">Camera Fragment</string>
+    <string name="gallery_fragment">Gallery Fragment</string>
+    <string name="home_fragment">Home Fragment</string>
+    <string name="send_fragment">Send Fragment</string>
+    <string name="share_fragment">Share Fragment</string>
+    <string name="slideshow_fragment">Slideshow Fragment</string>
+    <string name="tools_fragment">Tools Fragment</string>
+    <string name="load_new_res">Load new resources</string>
+
+    <string-array name="string_array">
+        <item>one</item>
+        <item>two</item>
+        <item>three</item>
+        <item>four</item>
+        <item>five</item>
+        <item>six</item>
+        <item>seven</item>
+        <item>eight</item>
+        <item>nine</item>
+        <item>ten</item>
+    </string-array>
+
+</resources>
