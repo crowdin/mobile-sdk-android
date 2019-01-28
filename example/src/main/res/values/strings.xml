@@ -20,6 +20,20 @@
     <string name="slideshow_fragment">Slideshow Fragment</string>
     <string name="tools_fragment">Tools Fragment</string>
     <string name="load_new_res">Load new resources</string>
+    <!--Camera fragment-->
+    <string name="toggle_button">ToggleButton</string>
+    <string name="radio_button">RadioButton</string>
+    <string name="check_box">CheckBox</string>
+    <string name="image_button_text">Image button text</string>
+    <string name="switch_text">Switch</string>
+    <string name="image_view_text">ImageView text</string>
+    <string name="button">Button</string>
+    <string name="switch_on">Swith on</string>
+    <string name="switch_off">Switch off</string>
+    <string name="toggle_button_on">Toggle button on</string>
+    <string name="toggle_button_off">Toggle button off</string>
+    <string name="edittext_text">EditText text</string>
+    <string name="editext_hint">EditText hint</string>
 
     <string-array name="string_array">
         <item>one</item>

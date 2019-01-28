@@ -1,14 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/camera_fragment"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:orientation="vertical">
 
-</FrameLayout>
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="20dp"
+            android:ems="10"
+            android:hint="@string/editext_hint"
+            android:inputType="textPersonName"
+            android:text="@string/edittext_text" />
+
+        <ToggleButton
+            android:id="@+id/toggleButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/toggle_button"
+            android:textOff="@string/toggle_button_off"
+            android:textOn="@string/toggle_button_on" />
+
+        <RadioButton
+            android:id="@+id/radioButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/radio_button" />
+
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="20dp"
+            android:checked="true"
+            android:text="@string/check_box" />
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_launcher_foreground"
+            android:tooltipText="@string/image_button_text" />
+
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="20dp"
+            android:checked="true"
+            android:showText="true"
+            android:text="@string/switch_text"
+            android:textAlignment="center"
+            android:textOff="@string/switch_off"
+            android:textOn="@string/switch_on" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_launcher_foreground"
+            android:tooltipText="@string/image_view_text" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/button" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:text="@string/camera_fragment"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    </LinearLayout>
+</ScrollView>

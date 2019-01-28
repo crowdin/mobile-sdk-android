@@ -66,7 +66,20 @@
         "share_fragment": "Aktie Fragment vonRepo",
         "slideshow_fragment": "Diashow Fragment vonRepo",
         "tools_fragment": "Werkzeuge Fragment vonRepo",
-        "load_new_res": "Laden Sie neue Ressourcen"
+        "load_new_res": "Laden Sie neue Ressourcen",
+        "toggle_button": "Umschaltknopf",
+        "radio_button": "Radio knopf",
+        "check_box": "Kontrollkästchen",
+        "image_button_text": "Text der Bildschaltfläche",
+        "switch_text": "Schalter",
+        "image_view_text": "Bildansicht",
+        "button": "Taste",
+        "switch_on": "Einschalten",
+        "switch_off": "Ausschalten",
+        "toggle_button_on": "Schalter einschalten",
+        "toggle_button_off": "Schalter ausschalten",
+        "edittext_text": "EditText text GE",
+        "editext_hint": "EditText-Hinweis"
       },
       "arrays": [
         {
