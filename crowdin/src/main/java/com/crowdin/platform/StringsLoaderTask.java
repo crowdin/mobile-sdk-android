@@ -48,10 +48,7 @@ class StringsLoaderTask extends AsyncTask<Void, Void, Map<String, Map<String, St
 
         List<ResourcesResponse.LanguageData> languageDataList = data.getDataList();
         for (ResourcesResponse.LanguageData languageData : languageDataList) {
-            Map<String, String> keyValues = new HashMap<>();
-            for (ResourcesResponse.StringResource resource : languageData.getResources()) {
-                keyValues.put(resource.getKey(), resource.getValue());
-            }
+            Map<String, String> keyValues = new HashMap<>(languageData.getResources());
             for (ResourcesResponse.StringArray array : languageData.getArrays()) {
                 String value = array.getValues().toString()
                         .replace(",", "|")

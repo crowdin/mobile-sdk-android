@@ -1,90 +1,86 @@
-
 {
-    "data":[
-            {
-                "language": "en",
-                "version": 23,
-                "app_version":1,
-                "resources":[
-                    {
-                        "key":"home", 
-                        "value":"Home fromRepo"
-                    },
-                    {"key":"camera", "value":"Camera fromRepo"},
-                    {"key":"gallery", "value":"Gallery fromRepo"},
-                    {"key":"slideshow", "value":"Slideshow fromRepo"},
-                    {"key":"tools", "value":"Tools fromRepo"},
-                    {"key":"header_title", "value":"Test header fromRepo"},
-                    {"key":"navigation_drawer_open", "value":"open fromRepo"},
-                    {"key":"navigation_drawer_close", "value":"close fromRepo"},
-                    {"key":"share", "value":"Share fromRepo"},
-                    {"key":"send", "value":"Send fromRepo"},
-                    {"key":"communicate", "value":"Communicate fromRepo"},
-                    {"key":"gallery_fragment", "value":"Gallery Fragment fromRepo"},
-                    {"key":"home_fragment", "value":"Home Fragment fromRepo"},
-                    {"key":"camera_fragment", "value":"Camera Fragment fromRepo"},
-                    {"key":"send_fragment", "value":"Send Fragment fromRepo"},
-                    {"key":"share_fragment", "value":"Share Fragment fromRepo"},
-                    {"key":"slideshow_fragment", "value":"Slideshow Fragment fromRepo"},
-                    {"key":"tools_fragment", "value":"Tools Fragment fromRepo"},
-                    {"key":"load_new_res", "value":"Load new resources"}
-                ],
-                "arrays": [
-                    {
-                        "name":"string_array",
-                        "values": [
-                            "one",
-                            "two",
-                            "three",
-                            "four",
-                            "five",
-                            "six",
-                            "seven",
-                            "eight",
-                            "nine",
-                            "ten"
-                        ]
-                    }
-                ]
-            },
-            {
-                "language": "de",
-                "version": 3,
-                "app_version":1,
-                "resources":[
-                    {"key":"home", "value":"Zuhause vonRepo"},
-                    {"key":"camera", "value":"Kamera vonRepo"},
-                    {"key":"gallery", "value": "Galerie vonRepo"},
-                    {"key":"slideshow", "value":"Diashow vonRepo"},
-                    {"key":"tools", "value":"Werkzeuge vonRepo"},
-                    {"key":"header_title", "value":"Test header vonRepo"},
-                    {"key":"navigation_drawer_open", "value":"öffnen vonRepo"},
-                    {"key":"navigation_drawer_close", "value":"schließen vonRepo"},
-                    {"key":"share", "value":"Aktie vonRepo"},
-                    {"key":"send", "value":"Senden vonRepo"},
-                    {"key":"communicate", "value":"Kommunizieren vonRepo"},
-                    {"key":"home_fragment", "value":"Zuhause Fragment vonRepo"},
-                    {"key":"camera_fragment", "value":"Kamera Fragment vonRepo"},
-                    {"key":"gallery_fragment", "value":"Galerie Fragment vonRepo"},
-                    {"key":"send_fragment", "value":"Senden Fragment vonRepo"},
-                    {"key":"share_fragment", "value":"Aktie Fragment vonRepo"},
-                    {"key":"slideshow_fragment", "value":"Diashow Fragment vonRepo"},
-                    {"key":"tools_fragment", "value":"Werkzeuge Fragment vonRepo"},
-                    {"key":"load_new_res", "value":"Laden Sie neue Ressourcen"}
-                ],
-                "arrays": [
-                    {
-                        "name":"string_array",
-                        "values": [
-                            "ein",
-                            "zwei",
-                            "drei",
-                            "vier",
-                            "fünf",
-                            "sechs"
-                        ]
-                    }
-                ]
-            }
-        ]
+  "data": [
+    {
+      "language": "en",
+      "version": 23,
+      "app_version": 1,
+      "resources": {
+        "home": "Home fromRepo",
+        "camera": "Camera fromRepo",
+        "gallery": "Gallery fromRepo",
+        "slideshow": "Slideshow fromRepo",
+        "tools": "Tools fromRepo",
+        "header_title": "Test header fromRepo",
+        "navigation_drawer_open": "open fromRepo",
+        "navigation_drawer_close": "close fromRepo",
+        "share": "Share fromRepo",
+        "send": "Send fromRepo",
+        "communicate": "Communicate fromRepo",
+        "gallery_fragment": "Gallery Fragment fromRepo",
+        "home_fragment": "Home Fragment fromRepo",
+        "camera_fragment": "Camera Fragment fromRepo",
+        "send_fragment": "Send Fragment fromRepo",
+        "share_fragment": "Share Fragment fromRepo",
+        "slideshow_fragment": "Slideshow Fragment fromRepo",
+        "tools_fragment": "Tools Fragment fromRepo",
+        "load_new_res": "Load new resources"
+      },
+      "arrays": [
+        {
+          "name": "string_array",
+          "values": [
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "six",
+            "seven",
+            "eight",
+            "nine",
+            "ten"
+          ]
+        }
+      ]
+    },
+    {
+      "language": "de",
+      "version": 3,
+      "app_version": 1,
+      "resources": {
+        "home": "Zuhause vonRepo",
+        "camera": "Kamera vonRepo",
+        "gallery": "Galerie vonRepo",
+        "slideshow": "Diashow vonRepo",
+        "tools": "Werkzeuge vonRepo",
+        "header_title": "Test header vonRepo",
+        "navigation_drawer_open": "öffnen vonRepo",
+        "navigation_drawer_close": "schließen vonRepo",
+        "share": "Aktie vonRepo",
+        "send": "Senden vonRepo",
+        "communicate": "Kommunizieren vonRepo",
+        "gallery_fragment": "Galerie Fragment vonRepo",
+        "home_fragment": "Zuhause Fragment vonRepo",
+        "camera_fragment": "Kamera Fragment vonRepo",
+        "send_fragment": "Senden Fragment vonRepo",
+        "share_fragment": "Aktie Fragment vonRepo",
+        "slideshow_fragment": "Diashow Fragment vonRepo",
+        "tools_fragment": "Werkzeuge Fragment vonRepo",
+        "load_new_res": "Laden Sie neue Ressourcen"
+      },
+      "arrays": [
+        {
+          "name": "string_array",
+          "values": [
+            "ein",
+            "zwei",
+            "drei",
+            "vier",
+            "fünf",
+            "sechs"
+          ]
+        }
+      ]
+    }
+  ]
 }

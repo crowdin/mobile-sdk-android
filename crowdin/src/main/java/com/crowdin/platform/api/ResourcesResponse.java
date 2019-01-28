@@ -3,6 +3,7 @@ package com.crowdin.platform.api;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+import java.util.Map;
 
 public class ResourcesResponse {
 
@@ -19,7 +20,7 @@ public class ResourcesResponse {
         private int version;
         @SerializedName("app_version")
         private int appVersion;
-        private List<StringResource> resources;
+        private Map<String, String> resources;
         private List<StringArray> arrays;
 
         public String getLanguage() {
@@ -34,26 +35,12 @@ public class ResourcesResponse {
             return appVersion;
         }
 
-        public List<StringResource> getResources() {
+        public Map<String, String> getResources() {
             return resources;
         }
 
         public List<StringArray> getArrays() {
             return arrays;
-        }
-    }
-
-    public class StringResource {
-
-        private String key;
-        private String value;
-
-        public String getKey() {
-            return key;
-        }
-
-        public String getValue() {
-            return value;
         }
     }
 
