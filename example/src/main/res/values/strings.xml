@@ -34,6 +34,18 @@
     <string name="toggle_button_off">Toggle button off</string>
     <string name="edittext_text">EditText text</string>
     <string name="editext_hint">EditText hint</string>
+    <string name="multi_auto_complete_text">Multi auto-complete text</string>
+    <string name="multi_auto_complete_hint">Multi auto-complete hint</string>
+    <string name="checked_text_view">CheckedTextView</string>
+    <string name="checked_text_view_hint">CheckedTextHint</string>
+    <string name="text_input_layout_hint">TextInputEditText hint</string>
+    <string name="text_input_layout_text">TextInputEditText Text</string>
+    <string name="menu_slideshow">slideshow</string>
+    <string name="menu_settings">settings</string>
+    <string name="menu_call">call</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
 
     <string-array name="string_array">
         <item>one</item>
