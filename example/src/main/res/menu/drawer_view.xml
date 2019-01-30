@@ -23,7 +23,9 @@
             android:title="@string/tools" />
     </group>
 
-    <item android:title="@string/communicate">
+    <item
+        android:id="@+id/test"
+        android:title="@string/communicate">
         <menu>
             <group android:checkableBehavior="single">
                 <item

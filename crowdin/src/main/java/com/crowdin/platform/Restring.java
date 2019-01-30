@@ -7,6 +7,7 @@ import com.crowdin.platform.repository.MemoryStringRepository;
 import com.crowdin.platform.repository.SharedPrefStringRepository;
 import com.crowdin.platform.repository.StringRepository;
 import com.crowdin.platform.transformers.BottomNavigationViewTransformer;
+import com.crowdin.platform.transformers.NavigationViewTransformer;
 import com.crowdin.platform.transformers.SupportToolbarTransformer;
 import com.crowdin.platform.transformers.TextViewTransformer;
 import com.crowdin.platform.transformers.ToolbarTransformer;
@@ -108,6 +109,7 @@ public abstract class Restring {
         viewTransformerManager.registerTransformer(new ToolbarTransformer());
         viewTransformerManager.registerTransformer(new SupportToolbarTransformer());
         viewTransformerManager.registerTransformer(new BottomNavigationViewTransformer());
+        viewTransformerManager.registerTransformer(new NavigationViewTransformer());
     }
 
     /**
