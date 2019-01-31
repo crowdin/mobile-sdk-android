@@ -1,47 +1,47 @@
 package com.crowdin.platform;
 
 /**
- * Contains configuration properties for initializing Restring.
+ * Contains configuration properties for initializing Crowdin.
  */
-public class RestringConfig {
+public class CrowdinConfig {
 
     private boolean persist;
-    private Restring.StringsLoader stringsLoader;
+    private Crowdin.StringsLoader stringsLoader;
 
     public boolean isPersist() {
         return persist;
     }
 
-    public Restring.StringsLoader getStringsLoader() {
+    public Crowdin.StringsLoader getStringsLoader() {
         return stringsLoader;
     }
 
-    private RestringConfig() {
+    private CrowdinConfig() {
     }
 
     public static class Builder {
         private boolean persist;
-        private Restring.StringsLoader stringsLoader;
+        private Crowdin.StringsLoader stringsLoader;
 
         public Builder persist(boolean persist) {
             this.persist = persist;
             return this;
         }
 
-        public Builder stringsLoader(Restring.StringsLoader loader) {
+        public Builder stringsLoader(Crowdin.StringsLoader loader) {
             this.stringsLoader = loader;
             return this;
         }
 
-        public RestringConfig build() {
-            RestringConfig config = new RestringConfig();
+        public CrowdinConfig build() {
+            CrowdinConfig config = new CrowdinConfig();
             config.persist = persist;
             config.stringsLoader = stringsLoader;
             return config;
         }
     }
 
-    static RestringConfig getDefault() {
+    static CrowdinConfig getDefault() {
         return new Builder()
                 .persist(true)
                 .build();

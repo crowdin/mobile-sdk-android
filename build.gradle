@@ -33,7 +33,7 @@ ext {
     deps = [
             supportAppCompat: "com.android.support:appcompat-v7:$supportLibrariesVersion",
             supportDesign   : "com.android.support:design:$supportLibrariesVersion",
-            constraintLayout: "com.android.support.constraint:constraint-layout:1.0.2",
+            constraintLayout: "com.android.support.constraint:constraint-layout:1.1.2",
             kotlin          : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
             gson            : 'com.google.code.gson:gson:2.8.5',
             junit           : 'junit:junit:4.12',

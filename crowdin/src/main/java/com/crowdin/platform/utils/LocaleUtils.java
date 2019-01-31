@@ -2,9 +2,9 @@ package com.crowdin.platform.utils;
 
 import java.util.Locale;
 
-public class RestringUtils {
+public class LocaleUtils {
 
-    private RestringUtils() {
+    private LocaleUtils() {
     }
 
     public static String getCurrentLanguage() {

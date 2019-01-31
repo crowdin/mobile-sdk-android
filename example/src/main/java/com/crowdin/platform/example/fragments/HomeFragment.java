@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.crowdin.platform.Restring;
+import com.crowdin.platform.Crowdin;
 import com.crowdin.platform.example.R;
 
 public class HomeFragment extends Fragment {
@@ -25,6 +25,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         (view.findViewById(R.id.load_data_btn)).setOnClickListener(v ->
-                Restring.startLoading(getContext()));
+                Crowdin.startLoading(getContext()));
     }
 }

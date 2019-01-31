@@ -6,13 +6,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.crowdin.platform.R;
-import com.crowdin.platform.Restring;
+import com.crowdin.platform.Crowdin;
 
 public class TestActivity extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(Restring.wrapContext(newBase));
+        super.attachBaseContext(Crowdin.wrapContext(newBase));
     }
 
     @Override

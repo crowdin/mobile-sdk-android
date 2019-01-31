@@ -33,12 +33,12 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(shadows = {MyShadowAssetManager.class})
-public class RestringContextWrapperTest {
+public class CrowdinContextWrapperTest {
     private static final int STR_RES_ID = 0x7f0f0123;
     private static final String STR_KEY = "STR_KEY";
     private static final String STR_VALUE = "STR_VALUE";
 
-    private RestringContextWrapper restringContextWrapper;
+    private CrowdinContextWrapper crowdinContextWrapper;
     private Context context;
     private Resources originalResources;
     @Mock private StringRepository stringRepository;
@@ -51,7 +51,7 @@ public class RestringContextWrapperTest {
         originalResources = context.getResources();
 
         when(transformerManager.transform(any(), any())).thenAnswer(i -> i.getArgument(0));
-        restringContextWrapper = RestringContextWrapper.wrap(
+        crowdinContextWrapper = CrowdinContextWrapper.wrap(
                 context,
                 stringRepository,
                 transformerManager
@@ -65,15 +65,15 @@ public class RestringContextWrapperTest {
 
         doReturn(STR_VALUE).when(stringRepository).getString(getLanguage(), STR_KEY);
 
-        String real = restringContextWrapper.getResources().getString(STR_RES_ID);
+        String real = crowdinContextWrapper.getResources().getString(STR_RES_ID);
 
         assertEquals(STR_VALUE, real);
     }
 
     @Test
     public void shouldProvideCustomLayoutInflaterToApplyViewTransformation() {
-        LayoutInflater layoutInflater = (LayoutInflater) restringContextWrapper.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        assertTrue(layoutInflater instanceof RestringLayoutInflater);
+        LayoutInflater layoutInflater = (LayoutInflater) crowdinContextWrapper.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        assertTrue(layoutInflater instanceof CrowdinLayoutInflater);
 
         ViewGroup viewGroup = (ViewGroup) layoutInflater.inflate(R.layout.test_layout, null, false);
 

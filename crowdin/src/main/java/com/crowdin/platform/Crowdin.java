@@ -17,31 +17,31 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Entry point for Restring. it will be used for initializing Restring components, setting new strings,
+ * Entry point for Crowdin. it will be used for initializing Crowdin components, setting new strings,
  * wrapping activity context.
  */
-public abstract class Restring {
+public abstract class Crowdin {
 
     private static boolean isInitialized = false;
     private static StringRepository stringRepository;
     private static ViewTransformerManager viewTransformerManager;
 
     /**
-     * Initialize Restring with default configuration.
+     * Initialize Crowdin with default configuration.
      *
      * @param context of the application.
      */
     public static void init(Context context) {
-        init(context, RestringConfig.getDefault());
+        init(context, CrowdinConfig.getDefault());
     }
 
     /**
-     * Initialize Restring with the specified configuration.
+     * Initialize Crowdin with the specified configuration.
      *
      * @param context of the application.
-     * @param config  of the Restring.
+     * @param config  of the Crowdin.
      */
-    public static void init(Context context, RestringConfig config) {
+    public static void init(Context context, CrowdinConfig config) {
         if (isInitialized) {
             return;
         }
@@ -52,13 +52,13 @@ public abstract class Restring {
     }
 
     /**
-     * Wraps context of an activity to provide Restring features.
+     * Wraps context of an activity to provide Crowdin features.
      *
      * @param base context of an activity.
-     * @return the Restring wrapped context.
+     * @return the Crowdin wrapped context.
      */
     public static ContextWrapper wrapContext(Context base) {
-        return RestringContextWrapper.wrap(base, stringRepository, viewTransformerManager);
+        return CrowdinContextWrapper.wrap(base, stringRepository, viewTransformerManager);
     }
 
     /**
@@ -86,7 +86,7 @@ public abstract class Restring {
         return stringRepository;
     }
 
-    private static void initStringRepository(Context context, RestringConfig config) {
+    private static void initStringRepository(Context context, CrowdinConfig config) {
         if (config.isPersist()) {
             stringRepository = new SharedPrefStringRepository(context);
         } else {

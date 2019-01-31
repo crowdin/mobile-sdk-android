@@ -1,6 +1,6 @@
 package com.crowdin.platform.example;
 
-import com.crowdin.platform.Restring;
+import com.crowdin.platform.Crowdin;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ import java.util.Map;
  * All overridden methods will be called on background thread.
  */
 // TODO: remove if not reuse
-public class SampleStringsLoader implements Restring.StringsLoader {
+public class SampleStringsLoader implements Crowdin.StringsLoader {
 
     @Override
     public List<String> getLanguages() {

@@ -3,7 +3,7 @@ package com.crowdin.platform.example;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 
-import com.crowdin.platform.Restring;
+import com.crowdin.platform.Crowdin;
 
 /**
  * We should wrap the base context of our activities, which is better to put it
@@ -13,6 +13,6 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(Restring.wrapContext(newBase));
+        super.attachBaseContext(Crowdin.wrapContext(newBase));
     }
 }

@@ -1,13 +1,4 @@
-<a href='https://bintray.com/hamidfri/maven/restring/_latestVersion'><img src='https://api.bintray.com/packages/hamidfri/maven/restring/images/download.svg'></a>
-<a href="https://travis-ci.org/hamidness/restring"><img src="https://travis-ci.org/hamidness/restring.svg?branch=master"></a>
-<a href="https://codecov.io/gh/hamidness/restring">
-  <img src="https://codecov.io/gh/hamidness/restring/branch/master/graph/badge.svg" />
-</a>
-[![](https://img.shields.io/badge/AndroidWeekly-%23307-yellow.svg)](http://androidweekly.net/issues/issue-307)
-<a href="https://android-arsenal.com/details/1/6886"><img src="https://img.shields.io/badge/Android%20Arsenal-Restring-brightgreen.svg?style=flat" border="0" alt="Android Arsenal"></a>
-
-
-## Restring 1.0
+## Crowdin 1.0
 An easy way to replace bundled Strings dynamically, or provide new translations in Android
 
 ### 1. Add dependency
@@ -16,13 +7,13 @@ implementation 'com.ice.restring:restring:1.0.0'
 ```
 
 ### 2. Initialize
-Initialize Restring in your Application class:
+Initialize Crowdin in your Application class:
 ```java
-Restring.init(context);
+Crowdin.init(context);
 ```
 or if you want more configurations:
 ```java
-Restring.init(context,
+Crowdin.init(context,
               new RestringConfig.Builder()
                   .persist(true)
                   .stringsLoader(new SampleStringsLoader())
@@ -35,16 +26,16 @@ if you have a BaseActivity you can add this there, otherwise you have to add it 
 ```java
 @Override
 protected void attachBaseContext(Context newBase) {
-    super.attachBaseContext(Restring.wrapContext(newBase));
+    super.attachBaseContext(Crowdin.wrapContext(newBase));
 }
 ```
 
 ### 4. Provide new Strings
 There're two ways to provide new Strings. You can use either way or both.
 
-First way: You can implement Restring.StringsLoader like this:
+First way: You can implement Crowdin.StringsLoader like this:
 ```java
-public class MyStringsLoader implements Restring.StringsLoader {
+public class MyStringsLoader implements Crowdin.StringsLoader {
 
     //This will be called on background thread.
     @Override
@@ -61,9 +52,9 @@ public class MyStringsLoader implements Restring.StringsLoader {
     }
 }
 ```
-and initialize Restring like this:
+and initialize Crowdin like this:
 ```java
-Restring.init(context,
+Crowdin.init(context,
               new RestringConfig.Builder()
                   .persist(true)
                   .stringsLoader(new MyStringsLoader())
@@ -75,29 +66,29 @@ Second way:
 Load your Strings in any way / any time / any place and just call this:
 ```java
 // e.g. language="en" newStrings=map of (key-value)s
-Restring.setStrings(language, newStrings);
+Crowdin.setStrings(language, newStrings);
 ```
 
 ### 5. Done!
-Now all strings in your app will be overriden by new strings provided to Restring.
+Now all strings in your app will be overriden by new strings provided to Crowdin.
 
 ## Notes:
-1. Please note that Restring works with current locale, so if you change locale with
+1. Please note that Crowdin works with current locale, so if you change locale with
 ```java
 Locale.setDefault(newLocale);
 ```
-Restring will start using strings of the new locale.
+Crowdin will start using strings of the new locale.
 
-2. By default, Restring will use shared preferences to save all strings provided to. So if you set a StringsLoader or call .setString() to set the strings into Restring, the strings will be there on the next application launch. In case you don't want Restring saves strings into shared preferences, you can set it in initialization, like this:
+2. By default, Crowdin will use shared preferences to save all strings provided to. So if you set a StringsLoader or call .setString() to set the strings into Crowdin, the strings will be there on the next application launch. In case you don't want Crowdin saves strings into shared preferences, you can set it in initialization, like this:
 ```java
-Restring.init(context,
+Crowdin.init(context,
               new RestringConfig.Builder()
                   .persist(false) //Set this to false to prevent saving into shared preferences.
                   .build()
         );
 ```
 
-3. For displaying a string, Restring tries to find that in dynamic strings, and will use bundled version as fallback. In the other words, Only the new provided strings will be overriden and for the rest the bundled version will be used.
+3. For displaying a string, Crowdin tries to find that in dynamic strings, and will use bundled version as fallback. In the other words, Only the new provided strings will be overriden and for the rest the bundled version will be used.
 
 ## Limitations
 1. Plurals are not supported yet.

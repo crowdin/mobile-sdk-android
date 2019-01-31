@@ -18,13 +18,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
- * Restring custom layout inflater. it puts hook on view creation, and tries to apply some transformations
+ * Crowdin custom layout inflater. it puts hook on view creation, and tries to apply some transformations
  * to the newly created views.
  * <p>
  * Transformations can consist of transforming the texts applied on XML layout resources, so that it checks if
  * the string attribute set as a string resource it transforms the text and apply it to the view again.
  */
-class RestringLayoutInflater extends LayoutInflater {
+class CrowdinLayoutInflater extends LayoutInflater {
 
     private boolean privateFactorySet = false;
     private Field mConstructorArgs = null;
@@ -36,15 +36,15 @@ class RestringLayoutInflater extends LayoutInflater {
             "android.app."
     };
 
-    protected RestringLayoutInflater(Context context) {
+    protected CrowdinLayoutInflater(Context context) {
         super(context);
         initFactories();
     }
 
-    RestringLayoutInflater(LayoutInflater original,
-                           Context newContext,
-                           ViewTransformerManager viewTransformerManager,
-                           final boolean cloned) {
+    CrowdinLayoutInflater(LayoutInflater original,
+                          Context newContext,
+                          ViewTransformerManager viewTransformerManager,
+                          final boolean cloned) {
         super(original, newContext);
         this.viewTransformerManager = viewTransformerManager;
         if (!cloned) {
@@ -54,7 +54,7 @@ class RestringLayoutInflater extends LayoutInflater {
 
     @Override
     public LayoutInflater cloneInContext(Context newContext) {
-        return new RestringLayoutInflater(this, newContext, viewTransformerManager, true);
+        return new CrowdinLayoutInflater(this, newContext, viewTransformerManager, true);
     }
 
     private void initFactories() {

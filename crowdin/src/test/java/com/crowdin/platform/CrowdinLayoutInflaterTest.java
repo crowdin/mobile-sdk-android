@@ -24,10 +24,10 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = {16, 19, 21, 23, 24, 26})
-public class RestringLayoutInflaterTest {
+public class CrowdinLayoutInflaterTest {
 
     @Mock private ViewTransformerManager transformerManager;
-    private RestringLayoutInflater restringLayoutInflater;
+    private CrowdinLayoutInflater crowdinLayoutInflater;
 
     @Before
     public void setUp() {
@@ -36,7 +36,7 @@ public class RestringLayoutInflaterTest {
                 invocation.getArgument(0)
         );
         RuntimeEnvironment.application.setTheme(R.style.Theme_AppCompat);
-        restringLayoutInflater = new RestringLayoutInflater(
+        crowdinLayoutInflater = new CrowdinLayoutInflater(
                 LayoutInflater.from(RuntimeEnvironment.application),
                 RuntimeEnvironment.application,
                 transformerManager,
@@ -46,7 +46,7 @@ public class RestringLayoutInflaterTest {
 
     @Test
     public void shouldTransformViewsOnInflatingLayouts() {
-        ViewGroup viewGroup = (ViewGroup) restringLayoutInflater.inflate(R.layout.test_layout, null, false);
+        ViewGroup viewGroup = (ViewGroup) crowdinLayoutInflater.inflate(R.layout.test_layout, null, false);
 
         ArgumentCaptor<View> captor = ArgumentCaptor.forClass(View.class);
         verify(transformerManager, atLeastOnce()).transform(captor.capture(), any());

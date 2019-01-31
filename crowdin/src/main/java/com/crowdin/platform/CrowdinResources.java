@@ -7,19 +7,19 @@ import android.support.annotation.Nullable;
 import android.text.Html;
 
 import com.crowdin.platform.repository.StringRepository;
-import com.crowdin.platform.utils.RestringUtils;
+import com.crowdin.platform.utils.LocaleUtils;
 
 /**
- * This is the wrapped resources which will be provided by Restring.
+ * This is the wrapped resources which will be provided by Crowdin.
  * For getting strings and texts, it checks the strings repository first and if there's a new string
  * that will be returned, otherwise it will fallback to the original resource strings.
  */
-class RestringResources extends Resources {
+class CrowdinResources extends Resources {
 
     private final StringRepository stringRepository;
 
-    RestringResources(@NonNull final Resources res,
-                      @NonNull final StringRepository stringRepository) {
+    CrowdinResources(@NonNull final Resources res,
+                     @NonNull final StringRepository stringRepository) {
         super(res.getAssets(), res.getDisplayMetrics(), res.getConfiguration());
         this.stringRepository = stringRepository;
     }
@@ -78,7 +78,7 @@ class RestringResources extends Resources {
     private String getStringFromRepository(int id) {
         try {
             String stringKey = getResourceEntryName(id);
-            return stringRepository.getString(RestringUtils.getCurrentLanguage(), stringKey);
+            return stringRepository.getString(LocaleUtils.getCurrentLanguage(), stringKey);
         } catch (NotFoundException ex) {
             return null;
         }
@@ -88,7 +88,7 @@ class RestringResources extends Resources {
     private String[] getStringArrayFromRepository(int id) {
         try {
             String stringKey = getResourceEntryName(id);
-            String repositoryString = stringRepository.getString(RestringUtils.getCurrentLanguage(), stringKey);
+            String repositoryString = stringRepository.getString(LocaleUtils.getCurrentLanguage(), stringKey);
             return repositoryString.split("\\|");
 
         } catch (Exception ex) {

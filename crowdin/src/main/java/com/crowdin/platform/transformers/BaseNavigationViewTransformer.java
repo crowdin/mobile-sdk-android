@@ -3,7 +3,9 @@ package com.crowdin.platform.transformers;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
+import android.util.SparseArray;
 import android.util.Xml;
 import android.view.Menu;
 import android.view.View;
@@ -12,11 +14,10 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class BaseNavigationViewTransformer implements ViewTransformerManager.Transformer {
 
+    private static final String TAG = BaseNavigationViewTransformer.class.getSimpleName();
     private static final String ATTRIBUTE_MENU = "menu";
     private static final String ATTRIBUTE_APP_MENU = "app:menu";
     private static final String ATTRIBUTE_ID = "id";
@@ -58,38 +59,35 @@ public abstract class BaseNavigationViewTransformer implements ViewTransformerMa
         if (value == null || !value.startsWith("@")) return;
 
         int resId = attrs.getAttributeResourceValue(index, 0);
-        Map<Integer, MenuItemStrings> itemStrings = getMenuItemsStrings(resources, resId);
+        SparseArray<MenuItemStrings> itemStrings = getMenuItemsStrings(resources, resId);
 
         Menu menu = getMenu(view);
-        for (Map.Entry<Integer, MenuItemStrings> entry : itemStrings.entrySet()) {
-            if (entry.getValue().title != 0) {
-                menu.findItem(entry.getKey()).setTitle(
-                        resources.getString(entry.getValue().title)
-                );
+        for (int i = 0; i < itemStrings.size(); i++) {
+            int itemKey = itemStrings.keyAt(i);
+            MenuItemStrings itemValue = itemStrings.valueAt(i);
+
+            if (itemValue.title != 0) {
+                menu.findItem(itemKey).setTitle(resources.getString(itemValue.title));
             }
-            if (entry.getValue().titleCondensed != 0) {
-                menu.findItem(entry.getKey()).setTitleCondensed(
-                        resources.getString(entry.getValue().titleCondensed)
-                );
+            if (itemValue.titleCondensed != 0) {
+                menu.findItem(itemKey).setTitleCondensed(resources.getString(itemValue.titleCondensed));
             }
         }
     }
 
-    private Map<Integer, MenuItemStrings> getMenuItemsStrings(Resources resources, int resId) {
+    private SparseArray<MenuItemStrings> getMenuItemsStrings(Resources resources, int resId) {
         XmlResourceParser parser = resources.getLayout(resId);
         AttributeSet attrs = Xml.asAttributeSet(parser);
         try {
             return parseMenu(parser, attrs);
         } catch (XmlPullParserException | IOException e) {
-            e.printStackTrace();
-            return new HashMap<>();
+            Log.e(TAG, "getMenuItemsStrings: ", e.getCause());
+            return new SparseArray<>();
         }
     }
 
-    private Map<Integer, MenuItemStrings> parseMenu(XmlPullParser parser, AttributeSet attrs)
+    private SparseArray<MenuItemStrings> parseMenu(XmlPullParser parser, AttributeSet attrs)
             throws XmlPullParserException, IOException {
-
-        Map<Integer, MenuItemStrings> menuItems = new HashMap<>();
         int eventType = parser.getEventType();
         String tagName;
 
@@ -106,6 +104,8 @@ public abstract class BaseNavigationViewTransformer implements ViewTransformerMa
             }
             eventType = parser.next();
         } while (eventType != XmlPullParser.END_DOCUMENT);
+
+        SparseArray<MenuItemStrings> menuItems = new SparseArray<>();
 
         boolean reachedEndOfMenu = false;
         int menuLevel = 0;
@@ -135,6 +135,10 @@ public abstract class BaseNavigationViewTransformer implements ViewTransformerMa
 
                 case XmlPullParser.END_DOCUMENT:
                     reachedEndOfMenu = true;
+                    break;
+
+                default:
+                    break;
             }
 
             eventType = parser.next();
@@ -173,6 +177,8 @@ public abstract class BaseNavigationViewTransformer implements ViewTransformerMa
                     menuItemStrings.titleCondensed = attrs.getAttributeResourceValue(index, 0);
                     break;
                 }
+                default:
+                    break;
             }
         }
         return (menuId != 0 && menuItemStrings != null)
@@ -180,9 +186,9 @@ public abstract class BaseNavigationViewTransformer implements ViewTransformerMa
                 : null;
     }
 
-    static class MenuItemStrings {
+    private class MenuItemStrings {
 
-        public int title;
-        public int titleCondensed;
+        private int title;
+        private int titleCondensed;
     }
 }

@@ -44,7 +44,7 @@ public class StringsLoaderTaskTest {
         deStrings.put("string3", "value3");
         deStrings.put("string4", "value4");
 
-        Restring.StringsLoader loader = Mockito.mock(Restring.StringsLoader.class);
+        Crowdin.StringsLoader loader = Mockito.mock(Crowdin.StringsLoader.class);
         when(loader.getLanguages()).thenReturn(langs);
         when(loader.getStrings("en")).thenReturn(enStrings);
         when(loader.getStrings("fa")).thenReturn(deStrings);

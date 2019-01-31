@@ -25,7 +25,7 @@ import static org.mockito.Mockito.doReturn;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(shadows = {MyShadowAssetManager.class})
-public class RestringResourcesTest {
+public class CrowdinResourcesTest {
     private static final int STR_RES_ID = 0x7f0f0123;
     private static final String STR_KEY = "STR_KEY";
     private static final String STR_VALUE = "STR_VALUE";
@@ -34,22 +34,22 @@ public class RestringResourcesTest {
 
     @Mock private StringRepository repository;
     private Resources resources;
-    private RestringResources restringResources;
+    private CrowdinResources crowdinResources;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         resources = RuntimeEnvironment.application.getResources();
 
-        restringResources = Mockito.spy(new RestringResources(resources, repository));
-        doReturn(STR_KEY).when(restringResources).getResourceEntryName(STR_RES_ID);
+        crowdinResources = Mockito.spy(new CrowdinResources(resources, repository));
+        doReturn(STR_KEY).when(crowdinResources).getResourceEntryName(STR_RES_ID);
     }
 
     @Test
     public void shouldGetStringFromRepositoryIfExists() {
         doReturn(STR_VALUE).when(repository).getString(getLanguage(), STR_KEY);
 
-        String stringValue = restringResources.getString(STR_RES_ID);
+        String stringValue = crowdinResources.getString(STR_RES_ID);
 
         assertEquals(STR_VALUE, stringValue);
     }
@@ -58,7 +58,7 @@ public class RestringResourcesTest {
     public void shouldGetStringFromResourceIfNotExists() {
         doReturn(null).when(repository).getString(getLanguage(), STR_KEY);
 
-        String stringValue = restringResources.getString(STR_RES_ID);
+        String stringValue = crowdinResources.getString(STR_RES_ID);
 
         String expected = new MyShadowAssetManager().getResourceText(STR_RES_ID).toString();
         assertEquals(expected, stringValue);
@@ -69,7 +69,7 @@ public class RestringResourcesTest {
         final String param = "PARAM";
         doReturn(STR_VALUE_WITH_PARAM).when(repository).getString(getLanguage(), STR_KEY);
 
-        String stringValue = restringResources.getString(STR_RES_ID, param);
+        String stringValue = crowdinResources.getString(STR_RES_ID, param);
 
         assertEquals(String.format(STR_VALUE_WITH_PARAM, param), stringValue);
     }
@@ -79,7 +79,7 @@ public class RestringResourcesTest {
         final String param = "PARAM";
         doReturn(null).when(repository).getString(getLanguage(), STR_KEY);
 
-        String stringValue = restringResources.getString(STR_RES_ID, param);
+        String stringValue = crowdinResources.getString(STR_RES_ID, param);
 
         String expected = new MyShadowAssetManager().getResourceText(STR_RES_ID).toString();
         assertEquals(expected, stringValue);
@@ -89,7 +89,7 @@ public class RestringResourcesTest {
     public void shouldGetHtmlTextFromRepositoryIfExists() {
         doReturn(STR_VALUE_HTML).when(repository).getString(getLanguage(), STR_KEY);
 
-        CharSequence realValue = restringResources.getText(STR_RES_ID);
+        CharSequence realValue = crowdinResources.getText(STR_RES_ID);
 
         CharSequence expected = Html.fromHtml(STR_VALUE_HTML, Html.FROM_HTML_MODE_COMPACT);
         assertTrue(TextUtils.equals(expected, realValue));
@@ -99,7 +99,7 @@ public class RestringResourcesTest {
     public void shouldGetHtmlTextFromResourceIfNotExists() {
         doReturn(null).when(repository).getString(getLanguage(), STR_KEY);
 
-        CharSequence realValue = restringResources.getText(STR_RES_ID);
+        CharSequence realValue = crowdinResources.getText(STR_RES_ID);
 
         CharSequence expected = new MyShadowAssetManager().getResourceText(STR_RES_ID);
         assertTrue(TextUtils.equals(expected, realValue));
@@ -110,7 +110,7 @@ public class RestringResourcesTest {
         final CharSequence def = Html.fromHtml("<b>def</b>", Html.FROM_HTML_MODE_COMPACT);
         doReturn(null).when(repository).getString(getLanguage(), STR_KEY);
 
-        CharSequence realValue = restringResources.getText(0, def);
+        CharSequence realValue = crowdinResources.getText(0, def);
 
         assertTrue(TextUtils.equals(def, realValue));
     }

@@ -30,13 +30,13 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(shadows = {MyShadowAsyncTask.class})
-public class RestringTest {
+public class CrowdinTest {
 
     @Before
     public void setUp() {
-        Restring.init(
+        Crowdin.init(
                 RuntimeEnvironment.application,
-                new RestringConfig.Builder()
+                new CrowdinConfig.Builder()
                         .persist(false)
                         .stringsLoader(new MyStringLoader())
                         .build()
@@ -83,7 +83,7 @@ public class RestringTest {
         return Locale.getDefault().getLanguage();
     }
 
-    private class MyStringLoader implements Restring.StringsLoader {
+    private class MyStringLoader implements Crowdin.StringsLoader {
 
         @Override
         public List<String> getLanguages() {

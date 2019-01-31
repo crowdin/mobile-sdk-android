@@ -25,10 +25,10 @@ class StringsLoaderTask extends AsyncTask<Void, Void, Map<String, Map<String, St
 
     private WeakReference<Context> context;
 //    TODO: consider API loader
-//    private Restring.StringsLoader stringsLoader;
+//    private Crowdin.StringsLoader stringsLoader;
     private StringRepository stringRepository;
 
-    StringsLoaderTask(Context context, Restring.StringsLoader stringsLoader,
+    StringsLoaderTask(Context context, Crowdin.StringsLoader stringsLoader,
                       StringRepository stringRepository) {
         this.context = new WeakReference<>(context);
 //        this.stringsLoader = stringsLoader;
