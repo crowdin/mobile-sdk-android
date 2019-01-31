@@ -5,16 +5,13 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
+import com.crowdin.platform.utils.TextUtils;
+
 /**
  * A transformer which transforms TextView(or any view extends it like Button, EditText, ...):
  * it transforms "text" & "hint" attributes.
  */
 public class TextViewTransformer implements ViewTransformerManager.Transformer {
-
-    private static final String ATTRIBUTE_TEXT = "text";
-    private static final String ATTRIBUTE_ANDROID_TEXT = "android:text";
-    private static final String ATTRIBUTE_HINT = "hint";
-    private static final String ATTRIBUTE_ANDROID_HINT = "android:hint";
 
     @Override
     public Class<? extends View> getViewType() {
@@ -26,37 +23,31 @@ public class TextViewTransformer implements ViewTransformerManager.Transformer {
         if (view == null || !getViewType().isInstance(view)) {
             return view;
         }
-        Resources resources = view.getContext().getResources();
 
+        Resources resources = view.getContext().getResources();
         for (int index = 0; index < attrs.getAttributeCount(); index++) {
             String attributeName = attrs.getAttributeName(index);
             switch (attributeName) {
-                case ATTRIBUTE_ANDROID_TEXT:
-                case ATTRIBUTE_TEXT: {
-                    String value = attrs.getAttributeValue(index);
-                    if (value != null && value.startsWith("@")) {
-                        setTextForView(view, resources.getString(attrs.getAttributeResourceValue(index, 0)));
+                case Constants.ATTRIBUTE_ANDROID_TEXT:
+                case Constants.ATTRIBUTE_TEXT:
+                    String text = TextUtils.getTextForAttribute(attrs, index, view, resources);
+                    if (text != null) {
+                        ((TextView) view).setText(text);
                     }
                     break;
-                }
-                case ATTRIBUTE_ANDROID_HINT:
-                case ATTRIBUTE_HINT: {
-                    String value = attrs.getAttributeValue(index);
-                    if (value != null && value.startsWith("@")) {
-                        setHintForView(view, resources.getString(attrs.getAttributeResourceValue(index, 0)));
+
+                case Constants.ATTRIBUTE_ANDROID_HINT:
+                case Constants.ATTRIBUTE_HINT:
+                    String hint = TextUtils.getTextForAttribute(attrs, index, view, resources);
+                    if (hint != null) {
+                        ((TextView) view).setHint(hint);
                     }
                     break;
-                }
+
+                default:
+                    break;
             }
         }
         return view;
-    }
-
-    private void setTextForView(View view, String text) {
-        ((TextView) view).setText(text);
-    }
-
-    private void setHintForView(View view, String text) {
-        ((TextView) view).setHint(text);
     }
 }

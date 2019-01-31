@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 public class ToolbarTransformerTest {
+
     private static final int TITLE_ATTR_INDEX = 3;
     private static final int TITLE_RES_ID = 0x7f0f0123;
     private static final String TITLE_ATTR_KEY = "title";

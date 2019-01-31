@@ -18,16 +18,6 @@ import java.io.IOException;
 public abstract class BaseNavigationViewTransformer implements ViewTransformerManager.Transformer {
 
     private static final String TAG = BaseNavigationViewTransformer.class.getSimpleName();
-    private static final String ATTRIBUTE_MENU = "menu";
-    private static final String ATTRIBUTE_APP_MENU = "app:menu";
-    private static final String ATTRIBUTE_ID = "id";
-    private static final String ATTRIBUTE_ANDROID_ID = "android:id";
-    private static final String ATTRIBUTE_TITLE = "title";
-    private static final String ATTRIBUTE_ANDROID_TITLE = "android:title";
-    private static final String ATTRIBUTE_TITLE_CONDENSED = "titleCondensed";
-    private static final String ATTRIBUTE_ANDROID_TITLE_CONDENSED = "android:titleCondensed";
-    private static final String XML_MENU = "menu";
-    private static final String XML_ITEM = "item";
 
     protected abstract Menu getMenu(View view);
 
@@ -40,8 +30,8 @@ public abstract class BaseNavigationViewTransformer implements ViewTransformerMa
         for (int index = 0; index < attrs.getAttributeCount(); index++) {
             String attributeName = attrs.getAttributeName(index);
             switch (attributeName) {
-                case ATTRIBUTE_APP_MENU:
-                case ATTRIBUTE_MENU:
+                case Constants.ATTRIBUTE_APP_MENU:
+                case Constants.ATTRIBUTE_MENU:
                     updateText(view, attrs, index);
                     break;
 
@@ -95,7 +85,7 @@ public abstract class BaseNavigationViewTransformer implements ViewTransformerMa
         do {
             if (eventType == XmlPullParser.START_TAG) {
                 tagName = parser.getName();
-                if (tagName.equals(XML_MENU)) {
+                if (tagName.equals(Constants.XML_MENU)) {
                     eventType = parser.next();
                     break;
                 }
@@ -113,19 +103,19 @@ public abstract class BaseNavigationViewTransformer implements ViewTransformerMa
             switch (eventType) {
                 case XmlPullParser.START_TAG:
                     tagName = parser.getName();
-                    if (tagName.equals(XML_ITEM)) {
+                    if (tagName.equals(Constants.XML_ITEM)) {
                         Pair<Integer, MenuItemStrings> item = parseMenuItem(attrs);
                         if (item != null) {
                             menuItems.put(item.first, item.second);
                         }
-                    } else if (tagName.equals(XML_MENU)) {
+                    } else if (tagName.equals(Constants.XML_MENU)) {
                         menuLevel++;
                     }
                     break;
 
                 case XmlPullParser.END_TAG:
                     tagName = parser.getName();
-                    if (tagName.equals(XML_MENU)) {
+                    if (tagName.equals(Constants.XML_MENU)) {
                         menuLevel--;
                         if (menuLevel <= 0) {
                             reachedEndOfMenu = true;
@@ -152,13 +142,13 @@ public abstract class BaseNavigationViewTransformer implements ViewTransformerMa
         int attributeCount = attrs.getAttributeCount();
         for (int index = 0; index < attributeCount; index++) {
             switch (attrs.getAttributeName(index)) {
-                case ATTRIBUTE_ANDROID_ID:
-                case ATTRIBUTE_ID: {
+                case Constants.ATTRIBUTE_ANDROID_ID:
+                case Constants.ATTRIBUTE_ID: {
                     menuId = attrs.getAttributeResourceValue(index, 0);
                     break;
                 }
-                case ATTRIBUTE_ANDROID_TITLE:
-                case ATTRIBUTE_TITLE: {
+                case Constants.ATTRIBUTE_ANDROID_TITLE:
+                case Constants.ATTRIBUTE_TITLE: {
                     String value = attrs.getAttributeValue(index);
                     if (value == null || !value.startsWith("@")) break;
                     if (menuItemStrings == null) {
@@ -167,8 +157,8 @@ public abstract class BaseNavigationViewTransformer implements ViewTransformerMa
                     menuItemStrings.title = attrs.getAttributeResourceValue(index, 0);
                     break;
                 }
-                case ATTRIBUTE_ANDROID_TITLE_CONDENSED:
-                case ATTRIBUTE_TITLE_CONDENSED: {
+                case Constants.ATTRIBUTE_ANDROID_TITLE_CONDENSED:
+                case Constants.ATTRIBUTE_TITLE_CONDENSED: {
                     String value = attrs.getAttributeValue(index);
                     if (value == null || !value.startsWith("@")) break;
                     if (menuItemStrings == null) {

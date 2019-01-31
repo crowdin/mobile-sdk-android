@@ -7,6 +7,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Toolbar;
 
+import com.crowdin.platform.utils.TextUtils;
+
 /**
  * A transformer which transforms Toolbar: it transforms the text set as title.
  */
@@ -27,26 +29,23 @@ public class ToolbarTransformer implements ViewTransformerManager.Transformer {
         if (view == null || !getViewType().isInstance(view)) {
             return view;
         }
-        Resources resources = view.getContext().getResources();
 
+        Resources resources = view.getContext().getResources();
         for (int index = 0; index < attrs.getAttributeCount(); index++) {
             String attributeName = attrs.getAttributeName(index);
             switch (attributeName) {
                 case ATTRIBUTE_ANDROID_TITLE:
-                case ATTRIBUTE_TITLE: {
-                    String value = attrs.getAttributeValue(index);
-                    if (value != null && value.startsWith("@")) {
-                        setTitleForView(view, resources.getString(attrs.getAttributeResourceValue(index, 0)));
+                case ATTRIBUTE_TITLE:
+                    String title = TextUtils.getTextForAttribute(attrs, index, view, resources);
+                    if (title != null) {
+                        ((Toolbar) view).setTitle(title);
                     }
                     break;
-                }
+
+                default:
+                    break;
             }
         }
         return view;
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void setTitleForView(View view, String text) {
-        ((Toolbar) view).setTitle(text);
     }
 }

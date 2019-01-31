@@ -8,6 +8,7 @@ import com.crowdin.platform.repository.SharedPrefStringRepository;
 import com.crowdin.platform.repository.StringRepository;
 import com.crowdin.platform.transformers.BottomNavigationViewTransformer;
 import com.crowdin.platform.transformers.NavigationViewTransformer;
+import com.crowdin.platform.transformers.SpinnerTransformer;
 import com.crowdin.platform.transformers.SupportToolbarTransformer;
 import com.crowdin.platform.transformers.TextViewTransformer;
 import com.crowdin.platform.transformers.ToolbarTransformer;
@@ -110,6 +111,7 @@ public abstract class Crowdin {
         viewTransformerManager.registerTransformer(new SupportToolbarTransformer());
         viewTransformerManager.registerTransformer(new BottomNavigationViewTransformer());
         viewTransformerManager.registerTransformer(new NavigationViewTransformer());
+        viewTransformerManager.registerTransformer(new SpinnerTransformer());
     }
 
     /**
