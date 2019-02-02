@@ -33,7 +33,6 @@ dependencies {
     implementation deps.supportAppCompat
     implementation deps.supportDesign
     implementation deps.constraintLayout
-    implementation deps.kotlin
 }
 repositories {
     mavenCentral()

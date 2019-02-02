@@ -35,16 +35,19 @@ android {
     }
 }
 
+ext {
+    supportLibrariesVersion = '28.0.0'
+}
+
 dependencies {
     // Support libraries
-    implementation deps.supportAppCompat
-    implementation deps.supportDesign
-    implementation deps.gson
-    implementation deps.kotlin
+    implementation "com.android.support:appcompat-v7:$supportLibrariesVersion"
+    implementation "com.android.support:design:$supportLibrariesVersion"
+    implementation "com.google.code.gson:gson:2.8.5"
 
     // Test libraries
-    testImplementation deps.junit
-    testImplementation deps.hamcrest
-    testImplementation deps.mockito
-    testImplementation deps.robolectric
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.hamcrest:hamcrest-junit:2.0.0.0"
+    testImplementation "org.mockito:mockito-core:2.+"
+    testImplementation "org.robolectric:robolectric:3.7.1"
 }
