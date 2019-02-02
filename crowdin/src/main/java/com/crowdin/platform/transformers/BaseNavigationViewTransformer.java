@@ -15,6 +15,9 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
+/**
+ * A transformer which transforms navigation views: it transforms the texts coming from the menu.
+ */
 public abstract class BaseNavigationViewTransformer implements ViewTransformerManager.Transformer {
 
     private static final String TAG = BaseNavigationViewTransformer.class.getSimpleName();

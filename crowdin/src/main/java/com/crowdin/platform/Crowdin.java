@@ -11,6 +11,7 @@ import com.crowdin.platform.transformers.NavigationViewTransformer;
 import com.crowdin.platform.transformers.SpinnerTransformer;
 import com.crowdin.platform.transformers.SupportToolbarTransformer;
 import com.crowdin.platform.transformers.TextViewTransformer;
+import com.crowdin.platform.transformers.ToggleButtonTransformer;
 import com.crowdin.platform.transformers.ToolbarTransformer;
 import com.crowdin.platform.transformers.ViewTransformerManager;
 
@@ -112,6 +113,7 @@ public abstract class Crowdin {
         viewTransformerManager.registerTransformer(new BottomNavigationViewTransformer());
         viewTransformerManager.registerTransformer(new NavigationViewTransformer());
         viewTransformerManager.registerTransformer(new SpinnerTransformer());
+        viewTransformerManager.registerTransformer(new ToggleButtonTransformer());
     }
 
     /**

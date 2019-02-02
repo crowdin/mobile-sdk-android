@@ -6,6 +6,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+/**
+ * A transformer which transforms Spinner: it transforms the entries attribute
+ * and uses default android.layouts for displaying
+ */
 public class SpinnerTransformer implements ViewTransformerManager.Transformer {
 
     @Override
