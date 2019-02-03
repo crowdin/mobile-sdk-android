@@ -29,15 +29,13 @@ ext {
 
     //Library versions
     supportLibrariesVersion = '28.0.0'
-
-    deps = [
-            supportAppCompat: "com.android.support:appcompat-v7:$supportLibrariesVersion",
-            supportDesign   : "com.android.support:design:$supportLibrariesVersion",
-            constraintLayout: "com.android.support.constraint:constraint-layout:1.1.2",
-            gson            : 'com.google.code.gson:gson:2.8.5',
-            junit           : 'junit:junit:4.12',
-            hamcrest        : 'org.hamcrest:hamcrest-junit:2.0.0.0',
-            mockito         : 'org.mockito:mockito-core:2.+',
-            robolectric     : 'org.robolectric:robolectric:3.7.1'
-    ]
+    constraintVersion = '1.1.2'
+    retrofitVersion = '2.5.0'
+    okHttpVersion = '3.11.0'
+    retrofitSupportVersion = '2.5.0'
+    gson = '2.8.5'
+    junitVersion = '4.12'
+    hamcrestVersion = '2.0.0.0'
+    mockitoVersion = '2.+'
+    robolectric = '3.7.1'
 }

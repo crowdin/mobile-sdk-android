@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.crowdin.platform.api.ResourcesResponse;
-import com.crowdin.platform.repository.StringRepository;
+import com.crowdin.platform.repository.StringDataManager;
 import com.crowdin.platform.utils.FileUtils;
 
 import java.lang.ref.WeakReference;
@@ -24,15 +24,13 @@ import java.util.Map;
 class StringsLoaderTask extends AsyncTask<Void, Void, Map<String, Map<String, String>>> {
 
     private WeakReference<Context> context;
-//    TODO: consider API loader
-//    private Crowdin.StringsLoader stringsLoader;
-    private StringRepository stringRepository;
+    //    TODO: consider API loader
+    private StringDataManager stringDataManager;
 
     StringsLoaderTask(Context context, Crowdin.StringsLoader stringsLoader,
-                      StringRepository stringRepository) {
+                      StringDataManager stringDataManager) {
         this.context = new WeakReference<>(context);
-//        this.stringsLoader = stringsLoader;
-        this.stringRepository = stringRepository;
+        this.stringDataManager = stringDataManager;
     }
 
     void run() {
@@ -66,7 +64,7 @@ class StringsLoaderTask extends AsyncTask<Void, Void, Map<String, Map<String, St
     @Override
     protected void onPostExecute(Map<String, Map<String, String>> langStrings) {
         for (Map.Entry<String, Map<String, String>> langItem : langStrings.entrySet()) {
-            stringRepository.setStrings(langItem.getKey(), langItem.getValue());
+            stringDataManager.setStrings(langItem.getKey(), langItem.getValue());
         }
 
         Toast.makeText(context.get(), "Resources loaded", Toast.LENGTH_SHORT).show();

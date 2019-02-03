@@ -1,7 +1,7 @@
 package com.crowdin.platform;
 
-import com.crowdin.platform.repository.MemoryStringRepository;
-import com.crowdin.platform.repository.StringRepository;
+import com.crowdin.platform.repository.local.MemoryStringRepository;
+import com.crowdin.platform.repository.local.StringRepository;
 
 import org.junit.Before;
 import org.junit.Test;

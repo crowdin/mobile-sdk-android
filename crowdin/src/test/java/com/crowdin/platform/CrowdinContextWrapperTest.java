@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.crowdin.platform.repository.StringRepository;
+import com.crowdin.platform.repository.StringDataManager;
 import com.crowdin.platform.shadow.MyShadowAssetManager;
 import com.crowdin.platform.transformers.ViewTransformerManager;
 
@@ -41,7 +41,7 @@ public class CrowdinContextWrapperTest {
     private CrowdinContextWrapper crowdinContextWrapper;
     private Context context;
     private Resources originalResources;
-    @Mock private StringRepository stringRepository;
+    @Mock private StringDataManager stringDataManager;
     @Mock private ViewTransformerManager transformerManager;
 
     @Before
@@ -53,7 +53,7 @@ public class CrowdinContextWrapperTest {
         when(transformerManager.transform(any(), any())).thenAnswer(i -> i.getArgument(0));
         crowdinContextWrapper = CrowdinContextWrapper.wrap(
                 context,
-                stringRepository,
+                stringDataManager,
                 transformerManager
         );
     }
@@ -63,7 +63,7 @@ public class CrowdinContextWrapperTest {
         ((MyShadowAssetManager) Shadow.extract(originalResources.getAssets()))
                 .addResourceEntryNameForTesting(STR_RES_ID, STR_KEY);
 
-        doReturn(STR_VALUE).when(stringRepository).getString(getLanguage(), STR_KEY);
+        doReturn(STR_VALUE).when(stringDataManager).getString(getLanguage(), STR_KEY);
 
         String real = crowdinContextWrapper.getResources().getString(STR_RES_ID);
 

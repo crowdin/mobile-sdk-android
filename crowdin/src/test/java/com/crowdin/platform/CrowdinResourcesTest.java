@@ -4,7 +4,7 @@ import android.content.res.Resources;
 import android.text.Html;
 import android.text.TextUtils;
 
-import com.crowdin.platform.repository.StringRepository;
+import com.crowdin.platform.repository.StringDataManager;
 import com.crowdin.platform.shadow.MyShadowAssetManager;
 
 import org.junit.Before;
@@ -32,7 +32,7 @@ public class CrowdinResourcesTest {
     private static final String STR_VALUE_WITH_PARAM = "STR_VALUE %s";
     private static final String STR_VALUE_HTML = "STR_<b>value</b>";
 
-    @Mock private StringRepository repository;
+    @Mock private StringDataManager stringDataManager;
     private Resources resources;
     private CrowdinResources crowdinResources;
 
@@ -41,13 +41,13 @@ public class CrowdinResourcesTest {
         MockitoAnnotations.initMocks(this);
         resources = RuntimeEnvironment.application.getResources();
 
-        crowdinResources = Mockito.spy(new CrowdinResources(resources, repository));
+        crowdinResources = Mockito.spy(new CrowdinResources(resources, stringDataManager));
         doReturn(STR_KEY).when(crowdinResources).getResourceEntryName(STR_RES_ID);
     }
 
     @Test
     public void shouldGetStringFromRepositoryIfExists() {
-        doReturn(STR_VALUE).when(repository).getString(getLanguage(), STR_KEY);
+        doReturn(STR_VALUE).when(stringDataManager).getString(getLanguage(), STR_KEY);
 
         String stringValue = crowdinResources.getString(STR_RES_ID);
 
@@ -56,7 +56,7 @@ public class CrowdinResourcesTest {
 
     @Test
     public void shouldGetStringFromResourceIfNotExists() {
-        doReturn(null).when(repository).getString(getLanguage(), STR_KEY);
+        doReturn(null).when(stringDataManager).getString(getLanguage(), STR_KEY);
 
         String stringValue = crowdinResources.getString(STR_RES_ID);
 
@@ -67,7 +67,7 @@ public class CrowdinResourcesTest {
     @Test
     public void shouldGetStringWithParamsFromRepositoryIfExists() {
         final String param = "PARAM";
-        doReturn(STR_VALUE_WITH_PARAM).when(repository).getString(getLanguage(), STR_KEY);
+        doReturn(STR_VALUE_WITH_PARAM).when(stringDataManager).getString(getLanguage(), STR_KEY);
 
         String stringValue = crowdinResources.getString(STR_RES_ID, param);
 
@@ -77,7 +77,7 @@ public class CrowdinResourcesTest {
     @Test
     public void shouldGetStringWithParamsFromResourceIfNotExists() {
         final String param = "PARAM";
-        doReturn(null).when(repository).getString(getLanguage(), STR_KEY);
+        doReturn(null).when(stringDataManager).getString(getLanguage(), STR_KEY);
 
         String stringValue = crowdinResources.getString(STR_RES_ID, param);
 
@@ -87,7 +87,7 @@ public class CrowdinResourcesTest {
 
     @Test
     public void shouldGetHtmlTextFromRepositoryIfExists() {
-        doReturn(STR_VALUE_HTML).when(repository).getString(getLanguage(), STR_KEY);
+        doReturn(STR_VALUE_HTML).when(stringDataManager).getString(getLanguage(), STR_KEY);
 
         CharSequence realValue = crowdinResources.getText(STR_RES_ID);
 
@@ -97,7 +97,7 @@ public class CrowdinResourcesTest {
 
     @Test
     public void shouldGetHtmlTextFromResourceIfNotExists() {
-        doReturn(null).when(repository).getString(getLanguage(), STR_KEY);
+        doReturn(null).when(stringDataManager).getString(getLanguage(), STR_KEY);
 
         CharSequence realValue = crowdinResources.getText(STR_RES_ID);
 
@@ -108,7 +108,7 @@ public class CrowdinResourcesTest {
     @Test
     public void shouldReturnDefaultHtmlTextFromRepositoryIfResourceIdIsInvalid() {
         final CharSequence def = Html.fromHtml("<b>def</b>", Html.FROM_HTML_MODE_COMPACT);
-        doReturn(null).when(repository).getString(getLanguage(), STR_KEY);
+        doReturn(null).when(stringDataManager).getString(getLanguage(), STR_KEY);
 
         CharSequence realValue = crowdinResources.getText(0, def);
 

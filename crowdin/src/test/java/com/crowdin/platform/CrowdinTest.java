@@ -38,7 +38,6 @@ public class CrowdinTest {
                 RuntimeEnvironment.application,
                 new CrowdinConfig.Builder()
                         .persist(false)
-                        .stringsLoader(new MyStringLoader())
                         .build()
         );
         Robolectric.flushBackgroundThreadScheduler();

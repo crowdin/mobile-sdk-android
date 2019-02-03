@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.view.LayoutInflater;
 
-import com.crowdin.platform.repository.StringRepository;
+import com.crowdin.platform.repository.StringDataManager;
 import com.crowdin.platform.transformers.ViewTransformerManager;
 
 /**
@@ -16,15 +16,15 @@ class CrowdinContextWrapper extends ContextWrapper {
     private ViewTransformerManager viewTransformerManager;
 
     public static CrowdinContextWrapper wrap(Context context,
-                                             StringRepository stringRepository,
+                                             StringDataManager stringDataManager,
                                              ViewTransformerManager viewTransformerManager) {
-        return new CrowdinContextWrapper(context, stringRepository, viewTransformerManager);
+        return new CrowdinContextWrapper(context, stringDataManager, viewTransformerManager);
     }
 
     private CrowdinContextWrapper(Context base,
-                                  StringRepository stringRepository,
+                                  StringDataManager stringDataManager,
                                   ViewTransformerManager viewTransformerManager) {
-        super(new CustomResourcesContextWrapper(base, new CrowdinResources(base.getResources(), stringRepository)));
+        super(new CustomResourcesContextWrapper(base, new CrowdinResources(base.getResources(), stringDataManager)));
         this.viewTransformerManager = viewTransformerManager;
     }
 

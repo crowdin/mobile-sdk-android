@@ -1,7 +1,7 @@
 package com.crowdin.platform;
 
-import com.crowdin.platform.repository.SharedPrefStringRepository;
-import com.crowdin.platform.repository.StringRepository;
+import com.crowdin.platform.repository.local.SharedPrefStringRepository;
+import com.crowdin.platform.repository.local.StringRepository;
 
 import org.junit.Before;
 import org.junit.Test;

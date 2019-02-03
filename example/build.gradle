@@ -30,9 +30,9 @@ android {
 dependencies {
     implementation project(":crowdin")
 
-    implementation deps.supportAppCompat
-    implementation deps.supportDesign
-    implementation deps.constraintLayout
+    implementation "com.android.support:appcompat-v7:$supportLibrariesVersion"
+    implementation "com.android.support:design:$supportLibrariesVersion"
+    implementation "com.android.support.constraint:constraint-layout:$constraintVersion"
 }
 repositories {
     mavenCentral()

@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
 
-import com.crowdin.platform.repository.StringRepository;
+import com.crowdin.platform.repository.StringDataManager;
 import com.crowdin.platform.utils.LocaleUtils;
 
 /**
@@ -16,12 +16,12 @@ import com.crowdin.platform.utils.LocaleUtils;
  */
 class CrowdinResources extends Resources {
 
-    private final StringRepository stringRepository;
+    private final StringDataManager stringDataManager;
 
     CrowdinResources(@NonNull final Resources res,
-                     @NonNull final StringRepository stringRepository) {
+                     @NonNull final StringDataManager stringDataManager) {
         super(res.getAssets(), res.getDisplayMetrics(), res.getConfiguration());
-        this.stringRepository = stringRepository;
+        this.stringDataManager = stringDataManager;
     }
 
     @NonNull
@@ -78,7 +78,7 @@ class CrowdinResources extends Resources {
     private String getStringFromRepository(int id) {
         try {
             String stringKey = getResourceEntryName(id);
-            return stringRepository.getString(LocaleUtils.getCurrentLanguage(), stringKey);
+            return stringDataManager.getString(LocaleUtils.getCurrentLanguage(), stringKey);
         } catch (NotFoundException ex) {
             return null;
         }
@@ -88,7 +88,7 @@ class CrowdinResources extends Resources {
     private String[] getStringArrayFromRepository(int id) {
         try {
             String stringKey = getResourceEntryName(id);
-            String repositoryString = stringRepository.getString(LocaleUtils.getCurrentLanguage(), stringKey);
+            String repositoryString = stringDataManager.getString(LocaleUtils.getCurrentLanguage(), stringKey);
             return repositoryString.split("\\|");
 
         } catch (Exception ex) {

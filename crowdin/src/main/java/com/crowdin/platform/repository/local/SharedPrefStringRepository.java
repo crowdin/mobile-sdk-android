@@ -1,4 +1,4 @@
-package com.crowdin.platform.repository;
+package com.crowdin.platform.repository.local;
 
 import android.content.Context;
 import android.content.SharedPreferences;

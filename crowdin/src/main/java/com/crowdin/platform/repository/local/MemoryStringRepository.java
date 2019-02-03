@@ -1,4 +1,4 @@
-package com.crowdin.platform.repository;
+package com.crowdin.platform.repository.local;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

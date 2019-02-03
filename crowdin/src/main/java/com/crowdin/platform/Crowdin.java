@@ -3,9 +3,11 @@ package com.crowdin.platform;
 import android.content.Context;
 import android.content.ContextWrapper;
 
-import com.crowdin.platform.repository.MemoryStringRepository;
-import com.crowdin.platform.repository.SharedPrefStringRepository;
-import com.crowdin.platform.repository.StringRepository;
+import com.crowdin.platform.api.CrowdinRetrofitService;
+import com.crowdin.platform.repository.StringDataManager;
+import com.crowdin.platform.repository.local.MemoryStringRepository;
+import com.crowdin.platform.repository.local.SharedPrefStringRepository;
+import com.crowdin.platform.repository.local.StringRepository;
 import com.crowdin.platform.transformers.BottomNavigationViewTransformer;
 import com.crowdin.platform.transformers.NavigationViewTransformer;
 import com.crowdin.platform.transformers.SpinnerTransformer;
@@ -26,8 +28,9 @@ import java.util.Map;
 public abstract class Crowdin {
 
     private static boolean isInitialized = false;
-    private static StringRepository stringRepository;
     private static ViewTransformerManager viewTransformerManager;
+
+    private static StringDataManager stringDataManager;
 
     /**
      * Initialize Crowdin with default configuration.
@@ -50,7 +53,8 @@ public abstract class Crowdin {
         }
 
         isInitialized = true;
-        initStringRepository(context, config);
+        initCrowdinApi(context);
+        initStringDataManager(context, config);
         initViewTransformer();
     }
 
@@ -61,7 +65,7 @@ public abstract class Crowdin {
      * @return the Crowdin wrapped context.
      */
     public static ContextWrapper wrapContext(Context base) {
-        return CrowdinContextWrapper.wrap(base, stringRepository, viewTransformerManager);
+        return CrowdinContextWrapper.wrap(base, stringDataManager, viewTransformerManager);
     }
 
     /**
@@ -71,7 +75,7 @@ public abstract class Crowdin {
      * @param newStrings the strings of the language.
      */
     public static void setStrings(String language, Map<String, String> newStrings) {
-        stringRepository.setStrings(language, newStrings);
+        stringDataManager.setStrings(language, newStrings);
     }
 
     /**
@@ -82,28 +86,23 @@ public abstract class Crowdin {
      * @param value    the string value.
      */
     public static void setString(String language, String key, String value) {
-        stringRepository.setString(language, key, value);
+        stringDataManager.setString(language, key, value);
     }
 
-    static StringRepository getStringRepository() {
-        return stringRepository;
-    }
-
-    private static void initStringRepository(Context context, CrowdinConfig config) {
+    private static void initStringDataManager(Context context, CrowdinConfig config) {
+        StringRepository stringRepository;
         if (config.isPersist()) {
             stringRepository = new SharedPrefStringRepository(context);
         } else {
             stringRepository = new MemoryStringRepository();
         }
 
-        // TODO: handle default loading if needed on init
-//        if (config.getStringsLoader() != null) {
-//            new StringsLoaderTask(context, config.getStringsLoader(), stringRepository).run(),
-//        }
+        stringDataManager = new StringDataManager(
+                CrowdinRetrofitService.getInstance().getCrowdinApi(), stringRepository);
     }
 
     public static void startLoading(Context context) {
-        new StringsLoaderTask(context, null, stringRepository).run();
+        new StringsLoaderTask(context, null, stringDataManager).run();
     }
 
     private static void initViewTransformer() {
@@ -116,6 +115,10 @@ public abstract class Crowdin {
         viewTransformerManager.registerTransformer(new SpinnerTransformer());
         viewTransformerManager.registerTransformer(new ToggleButtonTransformer());
         viewTransformerManager.registerTransformer(new SwitchTransformer());
+    }
+
+    private static void initCrowdinApi(Context context) {
+        CrowdinRetrofitService.getInstance().init(context);
     }
 
     /**
