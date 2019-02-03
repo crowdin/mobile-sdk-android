@@ -1,1 +1,6 @@
-<manifest package="com.crowdin.platform" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.crowdin.platform">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+</manifest>

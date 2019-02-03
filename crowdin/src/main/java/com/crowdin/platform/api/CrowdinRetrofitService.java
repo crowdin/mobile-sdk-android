@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CrowdinRetrofitService {
 
     private static final long SIZE_BYTES = 1024L * 1024L * 8L;
-    private static final String BASE_URL = "https://www.google.com/";
+    private static final String BASE_URL = "https://crowdin.com/";
     private static CrowdinRetrofitService sInstance;
 
     private Retrofit retrofit;

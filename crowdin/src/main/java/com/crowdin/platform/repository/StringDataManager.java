@@ -13,6 +13,8 @@ public class StringDataManager {
     public StringDataManager(RemoteStringRepository remoteRepository, LocalStringRepository localRepository) {
         this.remoteRepository = remoteRepository;
         this.localRepository = localRepository;
+
+        remoteRepository.checkUpdates();
     }
 
     public String getString(String currentLanguage, String stringKey) {
