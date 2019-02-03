@@ -5,9 +5,8 @@ import android.content.ContextWrapper;
 
 import com.crowdin.platform.api.CrowdinRetrofitService;
 import com.crowdin.platform.repository.StringDataManager;
-import com.crowdin.platform.repository.local.MemoryStringRepository;
-import com.crowdin.platform.repository.local.SharedPrefStringRepository;
-import com.crowdin.platform.repository.local.StringRepository;
+import com.crowdin.platform.repository.local.LocalStringRepository;
+import com.crowdin.platform.repository.remote.RemoteStringRepository;
 import com.crowdin.platform.transformers.BottomNavigationViewTransformer;
 import com.crowdin.platform.transformers.NavigationViewTransformer;
 import com.crowdin.platform.transformers.SpinnerTransformer;
@@ -90,15 +89,11 @@ public abstract class Crowdin {
     }
 
     private static void initStringDataManager(Context context, CrowdinConfig config) {
-        StringRepository stringRepository;
-        if (config.isPersist()) {
-            stringRepository = new SharedPrefStringRepository(context);
-        } else {
-            stringRepository = new MemoryStringRepository();
-        }
+        RemoteStringRepository remoteRepository = new RemoteStringRepository(
+                CrowdinRetrofitService.getInstance().getCrowdinApi());
+        LocalStringRepository localRepository = new LocalStringRepository(context, config);
 
-        stringDataManager = new StringDataManager(
-                CrowdinRetrofitService.getInstance().getCrowdinApi(), stringRepository);
+        stringDataManager = new StringDataManager(remoteRepository, localRepository);
     }
 
     public static void startLoading(Context context) {

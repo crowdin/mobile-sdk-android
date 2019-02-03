@@ -1,29 +1,29 @@
 package com.crowdin.platform.repository;
 
-import com.crowdin.platform.api.CrowdinApi;
-import com.crowdin.platform.repository.local.StringRepository;
+import com.crowdin.platform.repository.local.LocalStringRepository;
+import com.crowdin.platform.repository.remote.RemoteStringRepository;
 
 import java.util.Map;
 
 public class StringDataManager {
 
-    private final StringRepository stringRepository;
-    private final CrowdinApi crowdinApi;
+    private final LocalStringRepository localRepository;
+    private final RemoteStringRepository remoteRepository;
 
-    public StringDataManager(CrowdinApi crowdinApi, StringRepository stringRepository) {
-        this.stringRepository = stringRepository;
-        this.crowdinApi = crowdinApi;
+    public StringDataManager(RemoteStringRepository remoteRepository, LocalStringRepository localRepository) {
+        this.remoteRepository = remoteRepository;
+        this.localRepository = localRepository;
     }
 
     public String getString(String currentLanguage, String stringKey) {
-        return stringRepository.getString(currentLanguage, stringKey);
+        return localRepository.getString(currentLanguage, stringKey);
     }
 
     public void setStrings(String language, Map<String, String> newStrings) {
-        stringRepository.setStrings(language, newStrings);
+        localRepository.setStrings(language, newStrings);
     }
 
     public void setString(String language, String key, String value) {
-        stringRepository.setString(language, key, value);
+        localRepository.setString(language, key, value);
     }
 }

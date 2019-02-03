@@ -7,7 +7,7 @@ public class CrowdinConfig {
 
     private boolean persist;
 
-    boolean isPersist() {
+    public boolean isPersist() {
         return persist;
     }
 
