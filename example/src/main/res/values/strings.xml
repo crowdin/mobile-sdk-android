@@ -46,18 +46,6 @@
     <string name="monday">Monday</string>
     <string name="tuesday">Tuesday</string>
     <string name="wednesday">Wednesday</string>
-
-    <string-array name="string_array">
-        <item>one</item>
-        <item>two</item>
-        <item>three</item>
-        <item>four</item>
-        <item>five</item>
-        <item>six</item>
-        <item>seven</item>
-        <item>eight</item>
-        <item>nine</item>
-        <item>ten</item>
-    </string-array>
+    <string name="dynamic_tab_title">Dynamic</string>
 
 </resources>

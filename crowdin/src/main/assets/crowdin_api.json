@@ -91,7 +91,8 @@
         "menu_call": "callDE",
         "monday": "Montag",
         "tuesday": "Dienstag",
-        "wednesday": "Mittwoch"
+        "wednesday": "Mittwoch",
+        "dynamic_tab_title": "Dynamic DE"
       },
       "arrays": [
         {
@@ -103,6 +104,14 @@
             "vier",
             "fünf",
             "sechs"
+          ]
+        },
+        {
+          "name": "tab_array",
+          "values": [
+            "Montag",
+            "Dienstag",
+            "Mittwoch"
           ]
         }
       ]
