@@ -27,8 +27,7 @@ class StringsLoaderTask extends AsyncTask<Void, Void, Map<String, Map<String, St
     //    TODO: consider API loader
     private StringDataManager stringDataManager;
 
-    StringsLoaderTask(Context context, Crowdin.StringsLoader stringsLoader,
-                      StringDataManager stringDataManager) {
+    StringsLoaderTask(Context context, StringDataManager stringDataManager) {
         this.context = new WeakReference<>(context);
         this.stringDataManager = stringDataManager;
     }

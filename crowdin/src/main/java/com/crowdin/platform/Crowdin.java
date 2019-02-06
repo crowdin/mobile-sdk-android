@@ -2,6 +2,9 @@ package com.crowdin.platform;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.res.Resources;
+import android.support.annotation.VisibleForTesting;
+import android.view.Menu;
 
 import com.crowdin.platform.api.CrowdinRetrofitService;
 import com.crowdin.platform.repository.StringDataManager;
@@ -16,8 +19,8 @@ import com.crowdin.platform.transformers.TextViewTransformer;
 import com.crowdin.platform.transformers.ToggleButtonTransformer;
 import com.crowdin.platform.transformers.ToolbarTransformer;
 import com.crowdin.platform.transformers.ViewTransformerManager;
+import com.crowdin.platform.utils.TextUtils;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +33,9 @@ public abstract class Crowdin {
     private static ViewTransformerManager viewTransformerManager;
 
     private static StringDataManager stringDataManager;
+
+    private Crowdin() {
+    }
 
     /**
      * Initialize Crowdin with default configuration.
@@ -96,8 +102,9 @@ public abstract class Crowdin {
         stringDataManager = new StringDataManager(remoteRepository, localRepository);
     }
 
+    @VisibleForTesting
     public static void startLoading(Context context) {
-        new StringsLoaderTask(context, null, stringDataManager).run();
+        new StringsLoaderTask(context, stringDataManager).run();
     }
 
     private static void initViewTransformer() {
@@ -116,25 +123,7 @@ public abstract class Crowdin {
         CrowdinRetrofitService.getInstance().init(context);
     }
 
-    /**
-     * Loader of strings skeleton. Clients can implement this interface if they want to load strings on initialization.
-     * First the list of languages will be asked, then strings of each language.
-     */
-    public interface StringsLoader {
-
-        /**
-         * Get supported languages.
-         *
-         * @return the list of languages.
-         */
-        List<String> getLanguages();
-
-        /**
-         * Get strings of a language as keys &amp; values.
-         *
-         * @param language of the strings.
-         * @return the strings as (key, value).
-         */
-        Map<String, String> getStrings(String language);
+    public static void updateMenuItemsText(Menu menu, Resources resources, int menuId) {
+        TextUtils.updateMenuItemsText(menu, resources, menuId);
     }
 }

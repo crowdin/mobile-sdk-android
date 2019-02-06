@@ -27,8 +27,8 @@ public class SupportToolbarTransformer implements ViewTransformerManager.Transfo
         for (int index = 0; index < attrs.getAttributeCount(); index++) {
             String attributeName = attrs.getAttributeName(index);
             switch (attributeName) {
-                case Constants.ATTRIBUTE_APP_TITLE:
-                case Constants.ATTRIBUTE_TITLE:
+                case Attributes.ATTRIBUTE_APP_TITLE:
+                case Attributes.ATTRIBUTE_TITLE:
                     String title = TextUtils.getTextForAttribute(attrs, index, view, resources);
                     if (title != null) {
                         ((Toolbar) view).setTitle(title);

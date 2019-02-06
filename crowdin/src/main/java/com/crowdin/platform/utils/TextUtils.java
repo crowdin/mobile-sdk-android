@@ -3,7 +3,11 @@ package com.crowdin.platform.utils;
 import android.content.res.Resources;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.SparseArray;
+import android.view.Menu;
 import android.view.View;
+
+import com.crowdin.platform.transformers.MenuItemStrings;
 
 public class TextUtils {
 
@@ -19,5 +23,21 @@ public class TextUtils {
         }
 
         return text;
+    }
+
+    public static void updateMenuItemsText(Menu menu, Resources resources, int resId) {
+        SparseArray<MenuItemStrings> itemStrings = XmlParserUtils.getMenuItemsStrings(resources, resId);
+
+        for (int i = 0; i < itemStrings.size(); i++) {
+            int itemKey = itemStrings.keyAt(i);
+            MenuItemStrings itemValue = itemStrings.valueAt(i);
+
+            if (itemValue.getTitle() != 0) {
+                menu.findItem(itemKey).setTitle(resources.getString(itemValue.getTitle()));
+            }
+            if (itemValue.getTitleCondensed() != 0) {
+                menu.findItem(itemKey).setTitleCondensed(resources.getString(itemValue.getTitleCondensed()));
+            }
+        }
     }
 }

@@ -96,7 +96,6 @@ class CrowdinResources extends Resources {
         }
     }
 
-
     private CharSequence fromHtml(String source) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             //noinspection deprecation

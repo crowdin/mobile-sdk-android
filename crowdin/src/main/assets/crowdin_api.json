@@ -92,7 +92,10 @@
         "monday": "Montag",
         "tuesday": "Dienstag",
         "wednesday": "Mittwoch",
-        "dynamic_tab_title": "Dynamic DE"
+        "dynamic_tab_title": "Dynamic DE",
+        "menu_crop": "Crop DE",
+        "menu_clear": "Clear DE",
+        "menu_refresh": "Refresh DE"
       },
       "arrays": [
         {

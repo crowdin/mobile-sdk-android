@@ -27,8 +27,8 @@ public class SpinnerTransformer implements ViewTransformerManager.Transformer {
         for (int index = 0; index < attrs.getAttributeCount(); index++) {
             String attributeName = attrs.getAttributeName(index);
             switch (attributeName) {
-                case Constants.ATTRIBUTE_ENTRIES:
-                case Constants.ATTRIBUTE_ANDROID_ENTRIES:
+                case Attributes.ATTRIBUTE_ENTRIES:
+                case Attributes.ATTRIBUTE_ANDROID_ENTRIES:
                     String value = attrs.getAttributeValue(index);
                     if (value != null && value.startsWith("@")) {
                         String[] stringArray = resources.getStringArray(attrs.getAttributeResourceValue(index, 0));

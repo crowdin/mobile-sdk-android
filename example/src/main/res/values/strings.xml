@@ -47,5 +47,8 @@
     <string name="tuesday">Tuesday</string>
     <string name="wednesday">Wednesday</string>
     <string name="dynamic_tab_title">Dynamic</string>
+    <string name="menu_crop">Crop</string>
+    <string name="menu_clear">Clear</string>
+    <string name="menu_refresh">Refresh</string>
 
 </resources>

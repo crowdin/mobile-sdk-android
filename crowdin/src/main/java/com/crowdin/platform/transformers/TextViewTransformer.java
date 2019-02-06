@@ -28,16 +28,16 @@ public class TextViewTransformer implements ViewTransformerManager.Transformer {
         for (int index = 0; index < attrs.getAttributeCount(); index++) {
             String attributeName = attrs.getAttributeName(index);
             switch (attributeName) {
-                case Constants.ATTRIBUTE_ANDROID_TEXT:
-                case Constants.ATTRIBUTE_TEXT:
+                case Attributes.ATTRIBUTE_ANDROID_TEXT:
+                case Attributes.ATTRIBUTE_TEXT:
                     String text = TextUtils.getTextForAttribute(attrs, index, view, resources);
                     if (text != null) {
                         ((TextView) view).setText(text);
                     }
                     break;
 
-                case Constants.ATTRIBUTE_ANDROID_HINT:
-                case Constants.ATTRIBUTE_HINT:
+                case Attributes.ATTRIBUTE_ANDROID_HINT:
+                case Attributes.ATTRIBUTE_HINT:
                     String hint = TextUtils.getTextForAttribute(attrs, index, view, resources);
                     if (hint != null) {
                         ((TextView) view).setHint(hint);
