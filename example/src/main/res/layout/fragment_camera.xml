@@ -77,7 +77,7 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_marginBottom="20dp"
-            android:src="@drawable/ic_launcher_foreground"
+            android:src="@android:drawable/btn_radio"
             android:tooltipText="@string/image_button_text" />
 
         <Switch
@@ -97,7 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_marginBottom="20dp"
-            android:src="@drawable/ic_launcher_foreground"
+            android:src="@android:drawable/btn_radio"
             android:tooltipText="@string/image_view_text" />
 
         <Button
