@@ -16,6 +16,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * Crowdin custom layout inflater. it puts hook on view creation, and tries to apply some transformations
@@ -36,7 +37,7 @@ class CrowdinLayoutInflater extends LayoutInflater {
             "android.app."
     };
 
-    protected CrowdinLayoutInflater(Context context) {
+    CrowdinLayoutInflater(Context context) {
         super(context);
         initFactories();
     }
@@ -167,7 +168,7 @@ class CrowdinLayoutInflater extends LayoutInflater {
         }
     }
 
-    private View createCustomViewInternal(View parent, View view, String name, Context viewContext, AttributeSet attrs) {
+    private View createCustomViewInternal(View view, String name, Context viewContext, AttributeSet attrs) {
         // I by no means advise anyone to do this normally, but Google have locked down access to
         // the createView() method, so we never get a callback with attributes at the end of the
         // createViewFromTag chain (which would solve all this unnecessary rubbish).
@@ -181,8 +182,9 @@ class CrowdinLayoutInflater extends LayoutInflater {
             if (mConstructorArgs == null)
                 mConstructorArgs = ReflectionUtils.getField(LayoutInflater.class, "mConstructorArgs");
 
-            final Object[] mConstructorArgsArr = (Object[]) ReflectionUtils.getValue(mConstructorArgs, this);
-            final Object lastContext = mConstructorArgsArr[0];
+            final Object[] mConstructorArgsArr = (Object[]) ReflectionUtils.getValue(
+                    Objects.requireNonNull(mConstructorArgs), this);
+            final Object lastContext = Objects.requireNonNull(mConstructorArgsArr)[0];
             // The LayoutInflater actually finds out the correct context to use. We just need to set
             // it on the mConstructor for the internal method.
             // Set the constructor ars up for the createView, not sure why we can't pass these in.
@@ -204,21 +206,21 @@ class CrowdinLayoutInflater extends LayoutInflater {
 
         private Factory2 factory2;
 
-        public PrivateWrapperFactory2(Factory2 factory2) {
+        PrivateWrapperFactory2(Factory2 factory2) {
             this.factory2 = factory2;
         }
 
         @Override
         public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
             View view = factory2.onCreateView(parent, name, context, attrs);
-            view = createCustomViewInternal(parent, view, name, context, attrs);
+            view = createCustomViewInternal(view, name, context, attrs);
             return applyChange(view, attrs);
         }
 
         @Override
         public View onCreateView(String name, Context context, AttributeSet attrs) {
             View view = factory2.onCreateView(name, context, attrs);
-            view = createCustomViewInternal(null, view, name, context, attrs);
+            view = createCustomViewInternal(view, name, context, attrs);
             return applyChange(view, attrs);
         }
     }

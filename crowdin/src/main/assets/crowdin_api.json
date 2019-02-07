@@ -121,6 +121,16 @@
             "Mittwoch"
           ]
         }
+      ],
+      "plurals": [
+        {
+          "name": "test_plurals",
+          "quantity": {
+            "one": "Test one value: %d. DE",
+            "few": "Test one few: %d. DE",
+            "other": "Test one other: %d. DE"
+          }
+        }
       ]
     }
   ]

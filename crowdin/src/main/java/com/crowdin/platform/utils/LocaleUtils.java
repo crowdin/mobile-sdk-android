@@ -10,4 +10,8 @@ public class LocaleUtils {
     public static String getCurrentLanguage() {
         return Locale.getDefault().getLanguage();
     }
+
+    public static Locale getCurrentLocale() {
+        return Locale.getDefault();
+    }
 }

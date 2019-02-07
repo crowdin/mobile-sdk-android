@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.support.annotation.VisibleForTesting;
 import android.view.Menu;
 
-import com.crowdin.platform.api.CrowdinRetrofitService;
 import com.crowdin.platform.repository.StringDataManager;
 import com.crowdin.platform.repository.local.LocalStringRepository;
 import com.crowdin.platform.repository.remote.RemoteStringRepository;
@@ -42,7 +41,7 @@ public abstract class Crowdin {
      *
      * @param context of the application.
      */
-    public static void init(Context context) {
+    static void init(Context context) {
         init(context, CrowdinConfig.getDefault());
     }
 
@@ -52,7 +51,7 @@ public abstract class Crowdin {
      * @param context of the application.
      * @param config  of the Crowdin.
      */
-    public static void init(Context context, CrowdinConfig config) {
+    static void init(Context context, CrowdinConfig config) {
         if (isInitialized) {
             return;
         }

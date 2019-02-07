@@ -15,7 +15,7 @@ class CrowdinContextWrapper extends ContextWrapper {
     private CrowdinLayoutInflater layoutInflater;
     private ViewTransformerManager viewTransformerManager;
 
-    public static CrowdinContextWrapper wrap(Context context,
+    static CrowdinContextWrapper wrap(Context context,
                                              StringDataManager stringDataManager,
                                              ViewTransformerManager viewTransformerManager) {
         return new CrowdinContextWrapper(context, stringDataManager, viewTransformerManager);

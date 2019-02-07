@@ -1,6 +1,7 @@
 package com.crowdin.platform;
 
 import android.content.res.Resources;
+import android.icu.text.PluralRules;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -74,10 +75,48 @@ class CrowdinResources extends Resources {
         return super.getText(id, def);
     }
 
+    @NonNull
+    @Override
+    public String getQuantityString(int id, int quantity) throws NotFoundException {
+        String stringKey = getResourceEntryName(id);
+        return super.getQuantityString(id, quantity);
+    }
+
+    @NonNull
+    @Override
+    public String getQuantityString(int id, int quantity, Object... formatArgs) throws NotFoundException {
+        String stringKey = getResourceEntryName(id);
+        return super.getQuantityString(id, quantity, formatArgs);
+    }
+
+    @NonNull
+    @Override
+    public CharSequence getQuantityText(int id, int quantity) throws NotFoundException {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            PluralRules rule = PluralRules.forLocale(LocaleUtils.getCurrentLocale());
+            String stringKey = rule.select(quantity);
+            String value = getStringFromRepository(stringKey);
+            if (value != null) {
+                return value;
+            }
+//            TODO: add persistence in pref.
+        }
+        return super.getQuantityText(id, quantity);
+    }
+
     @Nullable
     private String getStringFromRepository(int id) {
         try {
             String stringKey = getResourceEntryName(id);
+            return stringDataManager.getString(LocaleUtils.getCurrentLanguage(), stringKey);
+        } catch (NotFoundException ex) {
+            return null;
+        }
+    }
+
+    @Nullable
+    private String getStringFromRepository(String stringKey) {
+        try {
             return stringDataManager.getString(LocaleUtils.getCurrentLanguage(), stringKey);
         } catch (NotFoundException ex) {
             return null;

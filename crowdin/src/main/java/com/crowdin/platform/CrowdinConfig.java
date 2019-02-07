@@ -7,10 +7,6 @@ public class CrowdinConfig {
 
     private boolean persist;
 
-    public boolean isPersist() {
-        return persist;
-    }
-
     private CrowdinConfig() {
     }
 
@@ -33,5 +29,9 @@ public class CrowdinConfig {
         return new Builder()
                 .persist(true)
                 .build();
+    }
+
+    public boolean isPersist() {
+        return persist;
     }
 }

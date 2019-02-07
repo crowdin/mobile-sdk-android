@@ -11,7 +11,7 @@ class CustomResourcesContextWrapper extends ContextWrapper {
 
     private Resources resources;
 
-    public CustomResourcesContextWrapper(Context base, Resources resources) {
+    CustomResourcesContextWrapper(Context base, Resources resources) {
         super(base);
         this.resources = resources;
     }

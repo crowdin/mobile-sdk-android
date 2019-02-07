@@ -55,7 +55,7 @@ public class ViewTransformerManager {
     /**
      * A view transformer skeleton.
      */
-    public interface Transformer {
+    interface Transformer {
         /**
          * The type of view this transformer is for.
          *

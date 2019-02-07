@@ -1,8 +1,8 @@
-package com.crowdin.platform.api;
+package com.crowdin.platform;
 
 import android.content.Context;
 
-import com.crowdin.platform.BuildConfig;
+import com.crowdin.platform.api.CrowdinApi;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -12,7 +12,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class CrowdinRetrofitService {
+class CrowdinRetrofitService {
 
     private static final long SIZE_BYTES = 1024L * 1024L * 8L;
     private static final String BASE_URL = "https://crowdin.com/";
@@ -25,14 +25,14 @@ public class CrowdinRetrofitService {
     private CrowdinRetrofitService() {
     }
 
-    public static CrowdinRetrofitService getInstance() {
+    static CrowdinRetrofitService getInstance() {
         if (sInstance == null) {
             sInstance = new CrowdinRetrofitService();
         }
         return sInstance;
     }
 
-    public void init(Context context) {
+    void init(Context context) {
         Cache cache = new Cache(context.getCacheDir(), SIZE_BYTES);
         okHttpClient = getHttpClient(cache);
         retrofit = getCrowdinRetrofit(okHttpClient);
@@ -58,7 +58,7 @@ public class CrowdinRetrofitService {
         return builder.build();
     }
 
-    public CrowdinApi getCrowdinApi() {
+    CrowdinApi getCrowdinApi() {
         return crowdinApi == null ? retrofit.create(CrowdinApi.class) : crowdinApi;
     }
 
