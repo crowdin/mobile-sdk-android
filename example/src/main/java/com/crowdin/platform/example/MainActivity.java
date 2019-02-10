@@ -9,8 +9,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.crowdin.platform.Crowdin;
 import com.crowdin.platform.example.fragments.CameraFragment;
 import com.crowdin.platform.example.fragments.GalleryFragment;
 import com.crowdin.platform.example.fragments.HomeFragment;
@@ -41,6 +44,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.post(() -> navigationView.setCheckedItem(R.id.nav_home));
         setTitle(R.string.home);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_menu, menu);
+        Crowdin.updateMenuItemsText(menu, getResources(), R.menu.activity_menu);
+        return true;
     }
 
     @Override

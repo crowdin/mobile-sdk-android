@@ -99,7 +99,9 @@
         "formatting_test0": "Test double %1$d DE",
         "formatting_test1": "Test String %1$s DE",
         "formatting_test2": "Test All %1$d %2$s DE",
-        "formatting_test3": "Test html markup <b>Android</b>! DE"
+        "formatting_test3": "Test html markup <b>Android</b>! DE",
+        "next": "Next DE",
+        "help": "Help DE"
       },
       "arrays": [
         {
