@@ -83,16 +83,11 @@ class CrowdinResources extends Resources {
 
     @Nullable
     private String[] getStringArrayFromRepository(int id) {
-        try {
-            String stringKey = getResourceEntryName(id);
-            String repositoryString = stringDataManager.getString(LocaleUtils.getCurrentLanguage(), stringKey);
-            return repositoryString.split("\\|");
-
-        } catch (Exception ex) {
-            return null;
-        }
+        String arrayId = getResourceEntryName(id);
+        return stringDataManager.getStringArray(LocaleUtils.getCurrentLanguage(), arrayId);
     }
 
+    // TODO: update plurals
     @Nullable
     private String getPluralFromRepository(int id, int quantity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

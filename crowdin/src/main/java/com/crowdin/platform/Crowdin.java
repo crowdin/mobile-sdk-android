@@ -20,8 +20,6 @@ import com.crowdin.platform.transformers.ToolbarTransformer;
 import com.crowdin.platform.transformers.ViewTransformerManager;
 import com.crowdin.platform.utils.TextUtils;
 
-import java.util.Map;
-
 /**
  * Entry point for Crowdin. it will be used for initializing Crowdin components, setting new strings,
  * wrapping activity context.
@@ -70,16 +68,6 @@ public abstract class Crowdin {
      */
     public static ContextWrapper wrapContext(Context base) {
         return CrowdinContextWrapper.wrap(base, stringDataManager, viewTransformerManager);
-    }
-
-    /**
-     * Set strings of a language.
-     *
-     * @param language   the strings are for.
-     * @param newStrings the strings of the language.
-     */
-    public static void setStrings(String language, Map<String, String> newStrings) {
-        stringDataManager.setStrings(language, newStrings);
     }
 
     /**

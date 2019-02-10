@@ -1,17 +1,15 @@
 package com.crowdin.platform.api;
 
-import java.util.List;
-
 public class ArrayData {
 
     private String name;
-    private List<String> values;
+    private String[] values;
 
     public String getName() {
         return name;
     }
 
-    public List<String> getValues() {
+    public String[] getValues() {
         return values;
     }
 }

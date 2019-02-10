@@ -2,8 +2,11 @@ package com.crowdin.platform.repository.local;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 
-import java.util.LinkedHashMap;
+import com.crowdin.platform.api.LanguageData;
+import com.google.gson.Gson;
+
 import java.util.Map;
 
 /**
@@ -24,18 +27,21 @@ public class SharedPrefStringRepository implements StringRepository {
     }
 
     @Override
-    public void setStrings(String language, Map<String, String> strings) {
-        memoryStringRepository.setStrings(language, strings);
-        saveStrings(language, strings);
+    public void setString(String language, LanguageData languageData) {
+        memoryStringRepository.setString(language, languageData);
+        saveStrings(language, languageData);
     }
 
     @Override
     public void setString(String language, String key, String value) {
         memoryStringRepository.setString(language, key, value);
 
-        Map<String, String> keyValues = memoryStringRepository.getStrings(language);
-        keyValues.put(key, value);
-        saveStrings(language, keyValues);
+        LanguageData languageData = memoryStringRepository.getStrings(language);
+        if (languageData == null) {
+            return;
+        }
+        languageData.getResources().put(key, value);
+        saveStrings(language, languageData);
     }
 
     @Override
@@ -43,9 +49,15 @@ public class SharedPrefStringRepository implements StringRepository {
         return memoryStringRepository.getString(language, key);
     }
 
+    @Nullable
     @Override
-    public Map<String, String> getStrings(String language) {
+    public LanguageData getStrings(String language) {
         return memoryStringRepository.getStrings(language);
+    }
+
+    @Override
+    public String[] getStringArray(String language, String arrayId) {
+        return memoryStringRepository.getStringArray(language, arrayId);
     }
 
     private void initSharedPreferences(Context context) {
@@ -56,44 +68,29 @@ public class SharedPrefStringRepository implements StringRepository {
 
     private void loadStrings() {
         Map<String, ?> strings = sharedPreferences.getAll();
+
         for (Map.Entry<String, ?> entry : strings.entrySet()) {
             if (!(entry.getValue() instanceof String)) {
                 continue;
             }
 
             String value = (String) entry.getValue();
-            Map<String, String> keyValues = deserializeKeyValues(value);
             String language = entry.getKey();
-            memoryStringRepository.setStrings(language, keyValues);
+            LanguageData languageData = deserializeKeyValues(value);
+            memoryStringRepository.setString(language, languageData);
         }
     }
 
-    private void saveStrings(String language, Map<String, String> strings) {
-        String content = serializeKeyValues(strings);
+    private void saveStrings(String language, LanguageData languageData) {
+        Gson gson = new Gson();
+        String json = gson.toJson(languageData);
         sharedPreferences.edit()
-                .putString(language, content)
+                .putString(language, json)
                 .apply();
     }
 
-    private Map<String, String> deserializeKeyValues(String content) {
-        Map<String, String> keyValues = new LinkedHashMap<>();
-        String[] items = content.split(",");
-        for (String item : items) {
-            String[] itemKeyValue = item.split("=");
-            keyValues.put(itemKeyValue[0], itemKeyValue[1].replaceAll(",,", ","));
-        }
-        return keyValues;
-    }
-
-    private String serializeKeyValues(Map<String, String> keyValues) {
-        StringBuilder content = new StringBuilder();
-        for (Map.Entry<String, String> item : keyValues.entrySet()) {
-            content.append(item.getKey())
-                    .append("=")
-                    .append(item.getValue().replaceAll(",", ",,"))
-                    .append(",");
-        }
-        content.deleteCharAt(content.length() - 1);
-        return content.toString();
+    private LanguageData deserializeKeyValues(String content) {
+        Gson gson = new Gson();
+        return gson.fromJson(content, LanguageData.class);
     }
 }

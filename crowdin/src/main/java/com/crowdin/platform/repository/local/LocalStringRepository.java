@@ -3,8 +3,7 @@ package com.crowdin.platform.repository.local;
 import android.content.Context;
 
 import com.crowdin.platform.CrowdinConfig;
-
-import java.util.Map;
+import com.crowdin.platform.api.LanguageData;
 
 public class LocalStringRepository {
 
@@ -18,15 +17,19 @@ public class LocalStringRepository {
         }
     }
 
-    public String getString(String currentLanguage, String stringKey) {
-        return localRepository.getString(currentLanguage, stringKey);
+    public String getString(String language, String stringKey) {
+        return localRepository.getString(language, stringKey);
     }
 
-    public void setStrings(String language, Map<String, String> newStrings) {
-        localRepository.setStrings(language, newStrings);
+    public void setString(String language, LanguageData languageData) {
+        localRepository.setString(language, languageData);
     }
 
     public void setString(String language, String key, String value) {
         localRepository.setString(language, key, value);
+    }
+
+    public String[] getStringArray(String language, String arrayId) {
+        return localRepository.getStringArray(language, arrayId);
     }
 }

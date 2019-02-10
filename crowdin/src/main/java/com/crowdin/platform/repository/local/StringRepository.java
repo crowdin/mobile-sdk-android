@@ -1,6 +1,6 @@
 package com.crowdin.platform.repository.local;
 
-import java.util.Map;
+import com.crowdin.platform.api.LanguageData;
 
 /**
  * Repository of strings.
@@ -11,9 +11,9 @@ public interface StringRepository {
      * Set strings(key, value) for a specific language.
      *
      * @param language the strings belongs to.
-     * @param strings  new strings for the language.
+     * @param languageData  new strings for the language.
      */
-    void setStrings(String language, Map<String, String> strings);
+    void setString(String language, LanguageData languageData);
 
     /**
      * set a single string(key, value) for a specific language.
@@ -39,5 +39,9 @@ public interface StringRepository {
      * @param language the lanugage of the strings.
      * @return the map of string key & values. return empty map if there's no.
      */
-    Map<String, String> getStrings(String language);
+    LanguageData getStrings(String language);
+
+
+    //TODO: doc
+    String[] getStringArray(String language, String arrayId);
 }
