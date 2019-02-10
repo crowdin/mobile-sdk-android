@@ -12,6 +12,7 @@ import com.crowdin.platform.utils.LocaleUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -94,21 +95,41 @@ class CrowdinResources extends Resources {
 
     @Nullable
     private String getPluralFromRepository(int id, int quantity) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            String stringKey = getResourceEntryName(id);
+            String repositoryString = stringDataManager.getString(LocaleUtils.getCurrentLanguage(), stringKey);
+            if (repositoryString == null) return null;
 
-        String stringKey = getResourceEntryName(id);
-        String repositoryString = stringDataManager.getString(LocaleUtils.getCurrentLanguage(), stringKey);
-        if (repositoryString == null) return null;
+            HashMap<String, String> map = (HashMap<String, String>) Arrays
+                    .stream(repositoryString.split("\\|"))
+                    .map(new Function<String, String[]>() {
+                        @Override
+                        public String[] apply(String s) {
+                            return s.split("\\^");
+                        }
+                    })
+                    .collect(Collectors.toMap(
+                            new Function<String[], String>() {
+                                @Override
+                                public String apply(String[] strings) {
+                                    return strings[0].trim();
+                                }
+                            },
+                            new Function<String[], String>() {
+                                @Override
+                                public String apply(String[] strings) {
+                                    return strings[1];
+                                }
+                            }
+                    ));
 
-        HashMap<String, String> map = (HashMap<String, String>) Arrays
-                .stream(repositoryString.split("\\|"))
-                .map(s -> s.split("\\^"))
-                .collect(Collectors.toMap(mapItem -> mapItem[0].trim(), mapItem -> mapItem[1]));
+            PluralRules rule = PluralRules.forLocale(LocaleUtils.getCurrentLocale());
+            String ruleName = rule.select(quantity);
 
-        PluralRules rule = PluralRules.forLocale(LocaleUtils.getCurrentLocale());
-        String ruleName = rule.select(quantity);
-
-        return map.get(ruleName);
+            return map.get(ruleName);
+        } else {
+            return null;
+        }
     }
 
     private CharSequence fromHtml(String source) {

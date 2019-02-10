@@ -21,7 +21,7 @@ public class ViewTransformerManager {
      * @param transformer to be added to transformers list.
      */
     public void registerTransformer(Transformer transformer) {
-        transformers.add(new Pair<>(transformer.getViewType(), transformer));
+        transformers.add(new Pair<Class<? extends View>, Transformer>(transformer.getViewType(), transformer));
     }
 
     /**

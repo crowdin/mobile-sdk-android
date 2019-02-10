@@ -20,7 +20,7 @@ public class MemoryStringRepository implements StringRepository {
     @Override
     public void setString(String language, String key, String value) {
         if (!strings.containsKey(language)) {
-            strings.put(language, new LinkedHashMap<>());
+            strings.put(language, new LinkedHashMap<String, String>());
         }
         strings.get(language).put(key, value);
     }

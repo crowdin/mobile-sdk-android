@@ -1,11 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion 28
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion 16
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
@@ -23,11 +23,6 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
     testOptions {
         unitTests {
             includeAndroidResources = true
@@ -35,22 +30,19 @@ android {
     }
 }
 
-ext {
-    supportLibrariesVersion = '28.0.0'
-}
-
 dependencies {
     // Support libraries
-    implementation "com.android.support:appcompat-v7:$supportLibrariesVersion"
-    implementation "com.android.support:design:$supportLibrariesVersion"
-    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
-    implementation "com.google.code.gson:gson:$gson"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofitSupportVersion"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
+    implementation "com.android.support:appcompat-v7:28.0.0"
+    implementation "com.android.support:design:28.0.0"
+    implementation "com.android.support:support-annotations:28.0.0"
+    implementation "com.squareup.retrofit2:retrofit:2.5.0"
+    implementation "com.google.code.gson:gson:2.8.5"
+    implementation "com.squareup.retrofit2:converter-gson:2.5.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:3.11.0"
 
     // Test libraries
-    testImplementation "junit:junit:$junitVersion"
-    testImplementation "org.hamcrest:hamcrest-junit:$hamcrestVersion"
-    testImplementation "org.mockito:mockito-core:$mockitoVersion"
-    testImplementation "org.robolectric:robolectric:$robolectric"
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.hamcrest:hamcrest-junit:2.0.0.0"
+    testImplementation "org.mockito:mockito-core:2.+"
+    testImplementation "org.robolectric:robolectric:3.7.1"
 }
