@@ -31,7 +31,16 @@ public class ShareFragment extends Fragment {
         ((TextView) view.findViewById(R.id.textView2))
                 .setText(getResources().getQuantityString(R.plurals.test_plurals, 2, 2));
         ((TextView) view.findViewById(R.id.textView3))
-                .setText(getResources().getQuantityString(R.plurals.test_plurals, 20, 20));
-    }
+                .setText(getResources().getQuantityString(R.plurals.test_plurals, 4, 4));
 
+
+        ((TextView) view.findViewById(R.id.textView4))
+                .setText(getResources().getQuantityText(R.plurals.test_plurals, 0));
+        ((TextView) view.findViewById(R.id.textView5))
+                .setText(getResources().getQuantityText(R.plurals.test_plurals, 1));
+        ((TextView) view.findViewById(R.id.textView6))
+                .setText(getResources().getQuantityText(R.plurals.test_plurals, 2));
+        ((TextView) view.findViewById(R.id.textView7))
+                .setText(getResources().getQuantityText(R.plurals.test_plurals, 5));
+    }
 }

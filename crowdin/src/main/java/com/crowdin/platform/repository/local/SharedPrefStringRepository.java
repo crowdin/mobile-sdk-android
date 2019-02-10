@@ -75,7 +75,6 @@ public class SharedPrefStringRepository implements StringRepository {
                 .apply();
     }
 
-    // TODO: load only locale version
     private Map<String, String> deserializeKeyValues(String content) {
         Map<String, String> keyValues = new LinkedHashMap<>();
         String[] items = content.split(",");

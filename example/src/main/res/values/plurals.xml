@@ -2,9 +2,10 @@
 <resources>
 
     <plurals name="test_plurals">
-        <item quantity="one">Test one value: %d.</item>
-        <item quantity="few">Test one few: %d.</item>
-        <item quantity="other">Test one other: %d.</item>
+        <item quantity="one">Test one: %d.</item>
+        <item quantity="two">Test two: %d.</item>
+        <item quantity="few">Test few: %d.</item>
+        <item quantity="other">Test other: %d.</item>
     </plurals>
 
 </resources>

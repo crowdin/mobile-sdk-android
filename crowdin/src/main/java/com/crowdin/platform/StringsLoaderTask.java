@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import com.crowdin.platform.api.ArrayData;
+import com.crowdin.platform.api.PluralData;
 import com.crowdin.platform.api.ResourcesResponse;
 import com.crowdin.platform.repository.StringDataManager;
 import com.crowdin.platform.utils.FileUtils;
@@ -46,18 +48,37 @@ class StringsLoaderTask extends AsyncTask<Void, Void, Map<String, Map<String, St
         List<ResourcesResponse.LanguageData> languageDataList = data.getDataList();
         for (ResourcesResponse.LanguageData languageData : languageDataList) {
             Map<String, String> keyValues = new HashMap<>(languageData.getResources());
-            for (ResourcesResponse.StringArray array : languageData.getArrays()) {
-                String value = array.getValues().toString()
-                        .replace(",", "|")
-                        .replaceAll("\\[", "").replaceAll("]", "");
-
-                keyValues.put(array.getName(), value);
-            }
-
+            addArrays(languageData.getArrays(), keyValues);
+            addPlurals(languageData.getPlurals(), keyValues);
             langStrings.put(languageData.getLanguage(), keyValues);
         }
 
         return langStrings;
+    }
+
+    private void addArrays(List<ArrayData> arrays, Map<String, String> keyValues) {
+        if (arrays != null) {
+            for (ArrayData array : arrays) {
+                String value = array.getValues().toString()
+                        .replace(",", "|")
+                        .replaceAll("\\[", "")
+                        .replaceAll("\\]", "");
+
+                keyValues.put(array.getName(), value);
+            }
+        }
+    }
+
+    private void addPlurals(List<PluralData> plurals, Map<String, String> keyValues) {
+        if (plurals != null) {
+            for (PluralData plural : plurals) {
+                keyValues.put(plural.getName(), plural.getQuantity().toString()
+                        .replaceAll(",", "|")
+                        .replaceAll("=", "^")
+                        .replaceAll("\\{", "")
+                        .replaceAll("\\}", ""));
+            }
+        }
     }
 
     @Override

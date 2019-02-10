@@ -10,6 +10,10 @@ import android.text.Html;
 import com.crowdin.platform.repository.StringDataManager;
 import com.crowdin.platform.utils.LocaleUtils;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.stream.Collectors;
+
 /**
  * This is the wrapped resources which will be provided by Crowdin.
  * For getting strings and texts, it checks the strings repository first and if there's a new string
@@ -29,94 +33,47 @@ class CrowdinResources extends Resources {
     @Override
     public String getString(int id) throws NotFoundException {
         String value = getStringFromRepository(id);
-        if (value != null) {
-            return value;
-        }
-        return super.getString(id);
+        return value == null ? super.getString(id) : value;
     }
 
     @NonNull
     @Override
     public String getString(int id, Object... formatArgs) throws NotFoundException {
         String value = getStringFromRepository(id);
-        if (value != null) {
-            return String.format(value, formatArgs);
-        }
-        return super.getString(id, formatArgs);
+        return value == null ? super.getString(id, formatArgs) : String.format(value, formatArgs);
     }
 
     @NonNull
     @Override
     public String[] getStringArray(int id) throws NotFoundException {
         String[] value = getStringArrayFromRepository(id);
-        if (value != null) {
-            return value;
-        }
-
-        return super.getStringArray(id);
+        return value == null ? super.getStringArray(id) : value;
     }
 
     @NonNull
     @Override
     public CharSequence getText(int id) throws NotFoundException {
         String value = getStringFromRepository(id);
-        if (value != null) {
-            return fromHtml(value);
-        }
-        return super.getText(id);
+        return value == null ? super.getText(id) : fromHtml(value);
     }
 
     @Override
     public CharSequence getText(int id, CharSequence def) {
         String value = getStringFromRepository(id);
-        if (value != null) {
-            return fromHtml(value);
-        }
-        return super.getText(id, def);
-    }
-
-    @NonNull
-    @Override
-    public String getQuantityString(int id, int quantity) throws NotFoundException {
-        String stringKey = getResourceEntryName(id);
-        return super.getQuantityString(id, quantity);
-    }
-
-    @NonNull
-    @Override
-    public String getQuantityString(int id, int quantity, Object... formatArgs) throws NotFoundException {
-        String stringKey = getResourceEntryName(id);
-        return super.getQuantityString(id, quantity, formatArgs);
+        return value == null ? super.getText(id, def) : fromHtml(value);
     }
 
     @NonNull
     @Override
     public CharSequence getQuantityText(int id, int quantity) throws NotFoundException {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            PluralRules rule = PluralRules.forLocale(LocaleUtils.getCurrentLocale());
-            String stringKey = rule.select(quantity);
-            String value = getStringFromRepository(stringKey);
-            if (value != null) {
-                return value;
-            }
-//            TODO: add persistence in pref.
-        }
-        return super.getQuantityText(id, quantity);
+        String value = getPluralFromRepository(id, quantity);
+        return value == null ? super.getQuantityText(id, quantity) : value;
     }
 
     @Nullable
     private String getStringFromRepository(int id) {
         try {
             String stringKey = getResourceEntryName(id);
-            return stringDataManager.getString(LocaleUtils.getCurrentLanguage(), stringKey);
-        } catch (NotFoundException ex) {
-            return null;
-        }
-    }
-
-    @Nullable
-    private String getStringFromRepository(String stringKey) {
-        try {
             return stringDataManager.getString(LocaleUtils.getCurrentLanguage(), stringKey);
         } catch (NotFoundException ex) {
             return null;
@@ -133,6 +90,25 @@ class CrowdinResources extends Resources {
         } catch (Exception ex) {
             return null;
         }
+    }
+
+    @Nullable
+    private String getPluralFromRepository(int id, int quantity) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return null;
+
+        String stringKey = getResourceEntryName(id);
+        String repositoryString = stringDataManager.getString(LocaleUtils.getCurrentLanguage(), stringKey);
+        if (repositoryString == null) return null;
+
+        HashMap<String, String> map = (HashMap<String, String>) Arrays
+                .stream(repositoryString.split("\\|"))
+                .map(s -> s.split("\\^"))
+                .collect(Collectors.toMap(mapItem -> mapItem[0].trim(), mapItem -> mapItem[1]));
+
+        PluralRules rule = PluralRules.forLocale(LocaleUtils.getCurrentLocale());
+        String ruleName = rule.select(quantity);
+
+        return map.get(ruleName);
     }
 
     private CharSequence fromHtml(String source) {

@@ -21,7 +21,8 @@ public class ResourcesResponse {
         @SerializedName("app_version")
         private int appVersion;
         private Map<String, String> resources;
-        private List<StringArray> arrays;
+        private List<ArrayData> arrays;
+        private List<PluralData> plurals;
 
         public String getLanguage() {
             return language;
@@ -39,22 +40,12 @@ public class ResourcesResponse {
             return resources;
         }
 
-        public List<StringArray> getArrays() {
+        public List<ArrayData> getArrays() {
             return arrays;
         }
-    }
 
-    public class StringArray {
-
-        private String name;
-        private List<String> values;
-
-        public String getName() {
-            return name;
-        }
-
-        public List<String> getValues() {
-            return values;
+        public List<PluralData> getPlurals() {
+            return plurals;
         }
     }
 }
