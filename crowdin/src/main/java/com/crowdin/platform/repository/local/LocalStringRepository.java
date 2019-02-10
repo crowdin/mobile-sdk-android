@@ -21,15 +21,15 @@ public class LocalStringRepository {
         return localRepository.getString(language, stringKey);
     }
 
-    public void setString(String language, LanguageData languageData) {
-        localRepository.setString(language, languageData);
+    public void saveLanguageData(String language, LanguageData languageData) {
+        localRepository.saveLanguageData(language, languageData);
     }
 
     public void setString(String language, String key, String value) {
         localRepository.setString(language, key, value);
     }
 
-    public String[] getStringArray(String language, String arrayId) {
-        return localRepository.getStringArray(language, arrayId);
+    public String[] getStringArray(String language, String key) {
+        return localRepository.getStringArray(language, key);
     }
 }

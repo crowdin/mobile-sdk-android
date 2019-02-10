@@ -18,7 +18,7 @@ public class MemoryStringRepository implements StringRepository {
     private Map<String, LanguageData> stringsData = new LinkedHashMap<>();
 
     @Override
-    public void setString(String language, LanguageData languageData) {
+    public void saveLanguageData(String language, LanguageData languageData) {
         stringsData.put(language, languageData);
     }
 
@@ -53,11 +53,11 @@ public class MemoryStringRepository implements StringRepository {
 
     @Nullable
     @Override
-    public String[] getStringArray(String language, String arrayId) {
+    public String[] getStringArray(String language, String key) {
         LanguageData languageData = stringsData.get(language);
         if (languageData != null) {
             for (ArrayData array : languageData.getArrays()) {
-                if (array.getName().equals(arrayId)) {
+                if (array.getName().equals(key)) {
                     return array.getValues();
                 }
             }

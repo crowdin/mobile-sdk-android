@@ -49,7 +49,7 @@ class StringsLoaderTask extends AsyncTask<Void, Void, List<LanguageData>> {
     @Override
     protected void onPostExecute(List<LanguageData> languageDataList) {
         for (LanguageData languageData : languageDataList) {
-            stringDataManager.setString(languageData.getLanguage(), languageData);
+            stringDataManager.saveLanguageData(languageData.getLanguage(), languageData);
         }
 
         Toast.makeText(context.get(), "Resources loaded", Toast.LENGTH_SHORT).show();

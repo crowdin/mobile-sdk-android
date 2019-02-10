@@ -27,8 +27,8 @@ public class SharedPrefStringRepository implements StringRepository {
     }
 
     @Override
-    public void setString(String language, LanguageData languageData) {
-        memoryStringRepository.setString(language, languageData);
+    public void saveLanguageData(String language, LanguageData languageData) {
+        memoryStringRepository.saveLanguageData(language, languageData);
         saveStrings(language, languageData);
     }
 
@@ -56,8 +56,8 @@ public class SharedPrefStringRepository implements StringRepository {
     }
 
     @Override
-    public String[] getStringArray(String language, String arrayId) {
-        return memoryStringRepository.getStringArray(language, arrayId);
+    public String[] getStringArray(String language, String key) {
+        return memoryStringRepository.getStringArray(language, key);
     }
 
     private void initSharedPreferences(Context context) {
@@ -77,7 +77,7 @@ public class SharedPrefStringRepository implements StringRepository {
             String value = (String) entry.getValue();
             String language = entry.getKey();
             LanguageData languageData = deserializeKeyValues(value);
-            memoryStringRepository.setString(language, languageData);
+            memoryStringRepository.saveLanguageData(language, languageData);
         }
     }
 

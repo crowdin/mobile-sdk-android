@@ -8,12 +8,12 @@ import com.crowdin.platform.api.LanguageData;
 public interface StringRepository {
 
     /**
-     * Set strings(key, value) for a specific language.
+     * Save {@link LanguageData} for a specific language.
      *
-     * @param language the strings belongs to.
-     * @param languageData  new strings for the language.
+     * @param language     the strings belongs to.
+     * @param languageData new strings for the language.
      */
-    void setString(String language, LanguageData languageData);
+    void saveLanguageData(String language, LanguageData languageData);
 
     /**
      * set a single string(key, value) for a specific language.
@@ -34,14 +34,19 @@ public interface StringRepository {
     String getString(String language, String key);
 
     /**
-     * Get all strings for a specific language.
+     * Get all resource data for a specific language.
      *
      * @param language the lanugage of the strings.
-     * @return the map of string key & values. return empty map if there's no.
+     * @return the {@link LanguageData}. return null if there's no data.
      */
     LanguageData getStrings(String language);
 
-
-    //TODO: doc
-    String[] getStringArray(String language, String arrayId);
+    /**
+     * Get a string array for a language & key.
+     *
+     * @param language the language of the string.
+     * @param key      the string resource id.
+     * @return the string array if exists, otherwise NULL.
+     */
+    String[] getStringArray(String language, String key);
 }
