@@ -3,7 +3,6 @@ package com.crowdin.platform.utils;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.util.Xml;
@@ -16,9 +15,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-import static android.content.ContentValues.TAG;
-
-public class XmlParserUtils {
+class XmlParserUtils {
 
     private static final String XML_MENU = "menu";
     private static final String XML_ITEM = "item";
@@ -26,18 +23,17 @@ public class XmlParserUtils {
     private XmlParserUtils() {
     }
 
-    public static SparseArray<MenuItemStrings> getMenuItemsStrings(Resources resources, int resId) {
+    static SparseArray<MenuItemStrings> getMenuItemsStrings(Resources resources, int resId) {
         XmlResourceParser parser = resources.getLayout(resId);
         AttributeSet attrs = Xml.asAttributeSet(parser);
         try {
-            return parseMenu(resources, parser, attrs);
+            return parseMenu(parser, attrs);
         } catch (XmlPullParserException | IOException e) {
-            Log.e(TAG, "getMenuItemsStrings: ", e.getCause());
             return new SparseArray<>();
         }
     }
 
-    private static SparseArray<MenuItemStrings> parseMenu(Resources resources, XmlPullParser parser, AttributeSet attrs)
+    private static SparseArray<MenuItemStrings> parseMenu(XmlPullParser parser, AttributeSet attrs)
             throws XmlPullParserException, IOException {
         int eventType = parser.getEventType();
         String tagName;
@@ -65,7 +61,7 @@ public class XmlParserUtils {
                 case XmlPullParser.START_TAG:
                     tagName = parser.getName();
                     if (tagName.equals(XML_ITEM)) {
-                        Pair<Integer, MenuItemStrings> item = parseMenuItem(resources, attrs);
+                        Pair<Integer, MenuItemStrings> item = parseMenuItem(attrs);
                         if (item != null) {
                             menuItems.put(item.first, item.second);
                         }
@@ -97,7 +93,7 @@ public class XmlParserUtils {
         return menuItems;
     }
 
-    private static Pair<Integer, MenuItemStrings> parseMenuItem(Resources resources, AttributeSet attrs) {
+    private static Pair<Integer, MenuItemStrings> parseMenuItem(AttributeSet attrs) {
         int menuId = 0;
         MenuItemStrings menuItemStrings = null;
         int attributeCount = attrs.getAttributeCount();
