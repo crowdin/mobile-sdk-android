@@ -10,11 +10,6 @@ import android.text.Html;
 import com.crowdin.platform.repository.StringDataManager;
 import com.crowdin.platform.utils.LocaleUtils;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 /**
  * This is the wrapped resources which will be provided by Crowdin.
  * For getting strings and texts, it checks the strings repository first and if there's a new string
@@ -84,44 +79,18 @@ class CrowdinResources extends Resources {
     @Nullable
     private String[] getStringArrayFromRepository(int id) {
         String key = getResourceEntryName(id);
-        return stringDataManager.getStringArray(LocaleUtils.getCurrentLanguage(), key);
+        return stringDataManager.getStringArray(key);
     }
 
-    // TODO: update plurals
     @Nullable
     private String getPluralFromRepository(int id, int quantity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            String stringKey = getResourceEntryName(id);
-            String repositoryString = stringDataManager.getString(LocaleUtils.getCurrentLanguage(), stringKey);
-            if (repositoryString == null) return null;
-
-            HashMap<String, String> map = (HashMap<String, String>) Arrays
-                    .stream(repositoryString.split("\\|"))
-                    .map(new Function<String, String[]>() {
-                        @Override
-                        public String[] apply(String s) {
-                            return s.split("\\^");
-                        }
-                    })
-                    .collect(Collectors.toMap(
-                            new Function<String[], String>() {
-                                @Override
-                                public String apply(String[] strings) {
-                                    return strings[0].trim();
-                                }
-                            },
-                            new Function<String[], String>() {
-                                @Override
-                                public String apply(String[] strings) {
-                                    return strings[1];
-                                }
-                            }
-                    ));
-
+            String pluralKey = getResourceEntryName(id);
             PluralRules rule = PluralRules.forLocale(LocaleUtils.getCurrentLocale());
             String ruleName = rule.select(quantity);
 
-            return map.get(ruleName);
+            return stringDataManager.getStringPlural(pluralKey, ruleName);
+
         } else {
             return null;
         }

@@ -41,13 +41,21 @@ public interface LocalRepository {
     LanguageData getStrings(String language);
 
     /**
-     * Get a string array for a language & key.
+     * Get a string array for a current language & key.
      *
-     * @param language the language of the string.
-     * @param key      the string resource id.
+     * @param key the string resource id.
      * @return the string array if exists, otherwise NULL.
      */
-    String[] getStringArray(String language, String key);
+    String[] getStringArray(String key);
+
+    /**
+     * Get a string value from plural resource defined by PluralRules for a current language.
+     *
+     * @param resourceKey the plural resource id.
+     * @param quantityKey the key for quantity item defined in plural.
+     * @return the string value if exists, otherwise NULL.
+     */
+    String getStringPlural(String resourceKey, String quantityKey);
 
     /**
      * Returns <tt>true</tt> if repository contains the specified data for language.

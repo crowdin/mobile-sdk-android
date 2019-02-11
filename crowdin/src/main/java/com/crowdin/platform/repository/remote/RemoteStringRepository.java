@@ -7,7 +7,6 @@ import com.crowdin.platform.repository.LanguageDataCallback;
 
 public class RemoteStringRepository implements RemoteRepository {
 
-    private static final String TAG = RemoteStringRepository.class.getSimpleName();
     private final CrowdinApi crowdinApi;
 
     public RemoteStringRepository(CrowdinApi crowdinApi) {

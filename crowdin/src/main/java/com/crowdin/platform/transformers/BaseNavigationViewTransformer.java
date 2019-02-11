@@ -12,8 +12,6 @@ import com.crowdin.platform.utils.TextUtils;
  */
 public abstract class BaseNavigationViewTransformer implements ViewTransformerManager.Transformer {
 
-    private static final String TAG = BaseNavigationViewTransformer.class.getSimpleName();
-
     protected abstract Menu getMenu(View view);
 
     @Override

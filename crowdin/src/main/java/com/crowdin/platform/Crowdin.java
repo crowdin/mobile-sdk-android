@@ -22,8 +22,7 @@ import com.crowdin.platform.transformers.ViewTransformerManager;
 import com.crowdin.platform.utils.TextUtils;
 
 /**
- * Entry point for Crowdin. it will be used for initializing Crowdin components, setting new strings,
- * wrapping activity context.
+ * Entry point for Crowdin. it will be used for setting new strings, wrapping activity context.
  */
 public abstract class Crowdin {
 
@@ -50,7 +49,7 @@ public abstract class Crowdin {
      * @param context of the application.
      * @param config  of the Crowdin.
      */
-    static void init(Context context, CrowdinConfig config) {
+    private static void init(Context context, CrowdinConfig config) {
         if (isInitialized) {
             return;
         }

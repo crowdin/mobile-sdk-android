@@ -25,8 +25,12 @@ public class StringDataManager {
         localRepository.setString(language, key, value);
     }
 
-    public String[] getStringArray(String language, String key) {
-        return localRepository.getStringArray(language, key);
+    public String[] getStringArray(String key) {
+        return localRepository.getStringArray(key);
+    }
+
+    public String getStringPlural(String resourceKey, String quantityKey) {
+        return localRepository.getStringPlural(resourceKey, quantityKey);
     }
 
     public void updateData(Context context) {

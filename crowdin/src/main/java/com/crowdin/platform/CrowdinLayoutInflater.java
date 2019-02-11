@@ -16,7 +16,6 @@ import org.xmlpull.v1.XmlPullParser;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Objects;
 
 /**
  * Crowdin custom layout inflater. it puts hook on view creation, and tries to apply some transformations
@@ -36,11 +35,6 @@ class CrowdinLayoutInflater extends LayoutInflater {
             "android.webkit.",
             "android.app."
     };
-
-    CrowdinLayoutInflater(Context context) {
-        super(context);
-        initFactories();
-    }
 
     CrowdinLayoutInflater(LayoutInflater original,
                           Context newContext,
@@ -182,9 +176,8 @@ class CrowdinLayoutInflater extends LayoutInflater {
             if (mConstructorArgs == null)
                 mConstructorArgs = ReflectionUtils.getField(LayoutInflater.class, "mConstructorArgs");
 
-            final Object[] mConstructorArgsArr = (Object[]) ReflectionUtils.getValue(
-                    Objects.requireNonNull(mConstructorArgs), this);
-            final Object lastContext = Objects.requireNonNull(mConstructorArgsArr)[0];
+            final Object[] mConstructorArgsArr = (Object[]) ReflectionUtils.getValue(mConstructorArgs, this);
+            final Object lastContext = mConstructorArgsArr[0];
             // The LayoutInflater actually finds out the correct context to use. We just need to set
             // it on the mConstructor for the internal method.
             // Set the constructor ars up for the createView, not sure why we can't pass these in.

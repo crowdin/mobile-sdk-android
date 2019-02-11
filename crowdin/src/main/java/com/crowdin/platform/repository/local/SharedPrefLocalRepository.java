@@ -57,8 +57,13 @@ public class SharedPrefLocalRepository implements LocalRepository {
     }
 
     @Override
-    public String[] getStringArray(String language, String key) {
-        return memoryLocalRepository.getStringArray(language, key);
+    public String[] getStringArray(String key) {
+        return memoryLocalRepository.getStringArray(key);
+    }
+
+    @Override
+    public String getStringPlural(String resourceKey, String quantityKey) {
+        return memoryLocalRepository.getStringPlural(resourceKey, quantityKey);
     }
 
     @Override

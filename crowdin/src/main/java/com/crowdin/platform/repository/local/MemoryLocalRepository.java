@@ -4,6 +4,8 @@ import android.support.annotation.Nullable;
 
 import com.crowdin.platform.api.ArrayData;
 import com.crowdin.platform.api.LanguageData;
+import com.crowdin.platform.api.PluralData;
+import com.crowdin.platform.utils.LocaleUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -53,12 +55,27 @@ public class MemoryLocalRepository implements LocalRepository {
 
     @Nullable
     @Override
-    public String[] getStringArray(String language, String key) {
-        LanguageData languageData = stringsData.get(language);
+    public String[] getStringArray(String key) {
+        LanguageData languageData = stringsData.get(LocaleUtils.getCurrentLanguage());
         if (languageData != null) {
             for (ArrayData array : languageData.getArrays()) {
                 if (array.getName().equals(key)) {
                     return array.getValues();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public String getStringPlural(String resourceKey, String quantityKey) {
+        LanguageData languageData = stringsData.get(LocaleUtils.getCurrentLanguage());
+        if (languageData != null) {
+            for (PluralData pluralData : languageData.getPlurals()) {
+                if (pluralData.getName().equals(resourceKey)) {
+                    return pluralData.getQuantity().get(quantityKey);
                 }
             }
         }
