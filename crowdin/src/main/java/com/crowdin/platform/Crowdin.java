@@ -3,11 +3,12 @@ package com.crowdin.platform;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Resources;
-import android.support.annotation.VisibleForTesting;
 import android.view.Menu;
 
 import com.crowdin.platform.repository.StringDataManager;
-import com.crowdin.platform.repository.local.LocalStringRepository;
+import com.crowdin.platform.repository.local.LocalRepository;
+import com.crowdin.platform.repository.local.LocalStringRepositoryFactory;
+import com.crowdin.platform.repository.remote.RemoteRepository;
 import com.crowdin.platform.repository.remote.RemoteStringRepository;
 import com.crowdin.platform.transformers.BottomNavigationViewTransformer;
 import com.crowdin.platform.transformers.NavigationViewTransformer;
@@ -58,6 +59,8 @@ public abstract class Crowdin {
         initCrowdinApi(context);
         initStringDataManager(context, config);
         initViewTransformer();
+
+        stringDataManager.updateData(context);
     }
 
     /**
@@ -82,16 +85,12 @@ public abstract class Crowdin {
     }
 
     private static void initStringDataManager(Context context, CrowdinConfig config) {
-        RemoteStringRepository remoteRepository = new RemoteStringRepository(
+        RemoteRepository remoteRepository = new RemoteStringRepository(
                 CrowdinRetrofitService.getInstance().getCrowdinApi());
-        LocalStringRepository localRepository = new LocalStringRepository(context, config);
+        LocalRepository localRepository =
+                LocalStringRepositoryFactory.createLocalRepository(context, config);
 
         stringDataManager = new StringDataManager(remoteRepository, localRepository);
-    }
-
-    @VisibleForTesting
-    public static void startLoading(Context context) {
-        new StringsLoaderTask(context, stringDataManager).run();
     }
 
     private static void initViewTransformer() {

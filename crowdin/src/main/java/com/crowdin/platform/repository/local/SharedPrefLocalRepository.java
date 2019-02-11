@@ -10,54 +10,60 @@ import com.google.gson.Gson;
 import java.util.Map;
 
 /**
- * A StringRepository which saves/loads the strings in Shared Preferences.
- * it also keeps the strings in memory by using MemoryStringRepository internally for faster access.
+ * A LocalRepository which saves/loads the strings in Shared Preferences.
+ * it also keeps the strings in memory by using MemoryLocalRepository internally for faster access.
  * <p>
  * it's not ThreadSafe.
  */
-public class SharedPrefStringRepository implements StringRepository {
+public class SharedPrefLocalRepository implements LocalRepository {
+
     private static final String SHARED_PREF_NAME = "Restrings";
 
     private SharedPreferences sharedPreferences;
-    private StringRepository memoryStringRepository = new MemoryStringRepository();
+    private LocalRepository memoryLocalRepository = new MemoryLocalRepository();
 
-    public SharedPrefStringRepository(Context context) {
+    SharedPrefLocalRepository(Context context) {
         initSharedPreferences(context);
         loadStrings();
     }
 
     @Override
-    public void saveLanguageData(String language, LanguageData languageData) {
-        memoryStringRepository.saveLanguageData(language, languageData);
-        saveStrings(language, languageData);
+    public void saveLanguageData(LanguageData languageData) {
+        memoryLocalRepository.saveLanguageData(languageData);
+        saveStrings(languageData);
     }
 
     @Override
     public void setString(String language, String key, String value) {
-        memoryStringRepository.setString(language, key, value);
+        memoryLocalRepository.setString(language, key, value);
 
-        LanguageData languageData = memoryStringRepository.getStrings(language);
+        LanguageData languageData = memoryLocalRepository.getStrings(language);
         if (languageData == null) {
             return;
         }
         languageData.getResources().put(key, value);
-        saveStrings(language, languageData);
+        saveStrings(languageData);
     }
 
     @Override
     public String getString(String language, String key) {
-        return memoryStringRepository.getString(language, key);
+        return memoryLocalRepository.getString(language, key);
     }
 
     @Nullable
     @Override
     public LanguageData getStrings(String language) {
-        return memoryStringRepository.getStrings(language);
+        return memoryLocalRepository.getStrings(language);
     }
 
     @Override
     public String[] getStringArray(String language, String key) {
-        return memoryStringRepository.getStringArray(language, key);
+        return memoryLocalRepository.getStringArray(language, key);
+    }
+
+    @Override
+    public boolean isExist(String language) {
+        return memoryLocalRepository.isExist(language);
     }
 
     private void initSharedPreferences(Context context) {
@@ -75,17 +81,16 @@ public class SharedPrefStringRepository implements StringRepository {
             }
 
             String value = (String) entry.getValue();
-            String language = entry.getKey();
             LanguageData languageData = deserializeKeyValues(value);
-            memoryStringRepository.saveLanguageData(language, languageData);
+            memoryLocalRepository.saveLanguageData(languageData);
         }
     }
 
-    private void saveStrings(String language, LanguageData languageData) {
+    private void saveStrings(LanguageData languageData) {
         Gson gson = new Gson();
         String json = gson.toJson(languageData);
         sharedPreferences.edit()
-                .putString(language, json)
+                .putString(languageData.getLanguage(), json)
                 .apply();
     }
 

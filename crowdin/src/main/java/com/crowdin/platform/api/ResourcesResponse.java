@@ -1,15 +1,10 @@
 package com.crowdin.platform.api;
 
-import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
-
 public class ResourcesResponse {
 
-    @SerializedName("data")
-    private List<LanguageData> dataList;
+    private LanguageData data;
 
-    public List<LanguageData> getDataList() {
-        return dataList;
+    public LanguageData getData() {
+        return data;
     }
 }

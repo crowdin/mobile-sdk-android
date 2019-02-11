@@ -9,17 +9,17 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * A StringRepository which keeps the stringsData ONLY in memory.
+ * A LocalRepository which keeps the stringsData ONLY in memory.
  * <p>
  * it's not ThreadSafe.
  */
-public class MemoryStringRepository implements StringRepository {
+public class MemoryLocalRepository implements LocalRepository {
 
     private Map<String, LanguageData> stringsData = new LinkedHashMap<>();
 
     @Override
-    public void saveLanguageData(String language, LanguageData languageData) {
-        stringsData.put(language, languageData);
+    public void saveLanguageData(LanguageData languageData) {
+        stringsData.put(languageData.getLanguage(), languageData);
     }
 
     @Override
@@ -64,5 +64,10 @@ public class MemoryStringRepository implements StringRepository {
         }
 
         return null;
+    }
+
+    @Override
+    public boolean isExist(String language) {
+        return stringsData.get(language) != null;
     }
 }

@@ -1,27 +1,24 @@
 package com.crowdin.platform.repository;
 
+import android.content.Context;
+
 import com.crowdin.platform.api.LanguageData;
-import com.crowdin.platform.repository.local.LocalStringRepository;
-import com.crowdin.platform.repository.remote.RemoteStringRepository;
+import com.crowdin.platform.repository.local.LocalRepository;
+import com.crowdin.platform.repository.remote.RemoteRepository;
+import com.crowdin.platform.utils.LocaleUtils;
 
 public class StringDataManager {
 
-    private final LocalStringRepository localRepository;
-    private final RemoteStringRepository remoteRepository;
+    private final LocalRepository localRepository;
+    private final RemoteRepository remoteRepository;
 
-    public StringDataManager(RemoteStringRepository remoteRepository, LocalStringRepository localRepository) {
+    public StringDataManager(RemoteRepository remoteRepository, LocalRepository localRepository) {
         this.remoteRepository = remoteRepository;
         this.localRepository = localRepository;
-
-        remoteRepository.checkUpdates();
     }
 
     public String getString(String language, String stringKey) {
         return localRepository.getString(language, stringKey);
-    }
-
-    public void saveLanguageData(String language, LanguageData languageData) {
-        localRepository.saveLanguageData(language, languageData);
     }
 
     public void setString(String language, String key, String value) {
@@ -30,5 +27,18 @@ public class StringDataManager {
 
     public String[] getStringArray(String language, String key) {
         return localRepository.getStringArray(language, key);
+    }
+
+    public void updateData(Context context) {
+        String language = LocaleUtils.getCurrentLanguage();
+
+        if (localRepository.isExist(language)) return;
+
+        remoteRepository.fetchData(context, language, new LanguageDataCallback() {
+            @Override
+            public void onDataLoaded(LanguageData languageData) {
+                localRepository.saveLanguageData(languageData);
+            }
+        });
     }
 }

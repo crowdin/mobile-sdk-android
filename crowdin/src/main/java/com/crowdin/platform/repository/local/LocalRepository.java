@@ -5,15 +5,14 @@ import com.crowdin.platform.api.LanguageData;
 /**
  * Repository of strings.
  */
-public interface StringRepository {
+public interface LocalRepository {
 
     /**
      * Save {@link LanguageData} for a specific language.
      *
-     * @param language     the strings belongs to.
      * @param languageData new strings for the language.
      */
-    void saveLanguageData(String language, LanguageData languageData);
+    void saveLanguageData(LanguageData languageData);
 
     /**
      * set a single string(key, value) for a specific language.
@@ -49,4 +48,12 @@ public interface StringRepository {
      * @return the string array if exists, otherwise NULL.
      */
     String[] getStringArray(String language, String key);
+
+    /**
+     * Returns <tt>true</tt> if repository contains the specified data for language.
+     *
+     * @param language to compare.
+     * @return true if exist, otherwise false.
+     */
+    boolean isExist(String language);
 }

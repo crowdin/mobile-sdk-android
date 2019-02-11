@@ -1,15 +1,11 @@
 package com.crowdin.platform.repository.remote;
 
-import android.util.Log;
+import android.content.Context;
 
 import com.crowdin.platform.api.CrowdinApi;
+import com.crowdin.platform.repository.LanguageDataCallback;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class RemoteStringRepository {
+public class RemoteStringRepository implements RemoteRepository {
 
     private static final String TAG = RemoteStringRepository.class.getSimpleName();
     private final CrowdinApi crowdinApi;
@@ -18,18 +14,9 @@ public class RemoteStringRepository {
         this.crowdinApi = crowdinApi;
     }
 
-    public void checkUpdates() {
-        crowdinApi.getValue().enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.d(TAG, "onResponse: " + response.raw());
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d(TAG, "onFailure: " + t.getLocalizedMessage());
-            }
-        });
-
+    @Override
+    public void fetchData(Context context, String language, LanguageDataCallback languageDataCallback) {
+        // TODO: API call
+        new StringsLoaderTask(context, languageDataCallback).run();
     }
 }
