@@ -1,28 +1,32 @@
 ## Crowdin 1.0
-An easy way to replace bundled Strings dynamically, or provide new translations in Android
+An easy way to replace bundled Strings dynamically via Crowdin platform.
 
-### 1. Add dependency
+### 1. Add dependency.
+
+- add SDK as a library module to your project.
+
+### 2. Update your gradle configuration.
+
+setting.gradle:
 ```groovy
-implementation 'com.ice.restring:restring:1.0.0'
+include ':crowdin'
 ```
 
-### 2. Initialize
-Initialize Crowdin in your Application class:
-```java
-Crowdin.init(context);
+app build.gradle:
+```groovy
+implementation project(":crowdin")
 ```
-or if you want more configurations:
-```java
-Crowdin.init(context,
-              new RestringConfig.Builder()
-                  .persist(true)
-                  .stringsLoader(new SampleStringsLoader())
-                  .build()
-        );
-```
+Note:
+maven: implementation 'TODO.Coming soon'
 
-### 3. Inject into Context
-if you have a BaseActivity you can add this there, otherwise you have to add it to all of your activities!
+### 3. Initialize
+
+Initialization is done via provider so no need to call additional methods inside of your application.
+
+
+### 4. Inject into Context
+
+if you have a `BaseActivity` you can add this there, otherwise you have to add it to all of your activities!
 ```java
 @Override
 protected void attachBaseContext(Context newBase) {
@@ -30,77 +34,51 @@ protected void attachBaseContext(Context newBase) {
 }
 ```
 
-### 4. Provide new Strings
-There're two ways to provide new Strings. You can use either way or both.
-
-First way: You can implement Crowdin.StringsLoader like this:
-```java
-public class MyStringsLoader implements Crowdin.StringsLoader {
-
-    //This will be called on background thread.
-    @Override
-    public List<String> getLanguages() {
-        //return your supported languages(e.g. "en", ...)
-    }
-
-    //This will be called on background thread.
-    @Override
-    public Map<String, String> getStrings(String language) {
-        Map<String, String> map = new HashMap<>();
-        // Load your strings here into a map of (key,value)s for this language!
-        return map;
-    }
-}
-```
-and initialize Crowdin like this:
-```java
-Crowdin.init(context,
-              new RestringConfig.Builder()
-                  .persist(true)
-                  .stringsLoader(new MyStringsLoader())
-                  .build()
-        );
-```
-
-Second way:
-Load your Strings in any way / any time / any place and just call this:
-```java
-// e.g. language="en" newStrings=map of (key-value)s
-Crowdin.setStrings(language, newStrings);
-```
-
 ### 5. Done!
+
 Now all strings in your app will be overriden by new strings provided to Crowdin.
 
 ## Notes:
-1. Please note that Crowdin works with current locale, so if you change locale with
+
+Additional info:
+1. You can provide new Strings
+Load your Strings in any way / any time / any place and just call this:
+```java
+Crowdin.setStrings(language, newStrings);
+// e.g. language="en" newStrings=map of (key-value)s
+```
+
+2. Please note that Crowdin works with current locale, so if you change locale with
 ```java
 Locale.setDefault(newLocale);
 ```
 Crowdin will start using strings of the new locale.
 
-2. By default, Crowdin will use shared preferences to save all strings provided to. So if you set a StringsLoader or call .setString() to set the strings into Crowdin, the strings will be there on the next application launch. In case you don't want Crowdin saves strings into shared preferences, you can set it in initialization, like this:
-```java
-Crowdin.init(context,
-              new RestringConfig.Builder()
-                  .persist(false) //Set this to false to prevent saving into shared preferences.
-                  .build()
-        );
-```
-
 3. For displaying a string, Crowdin tries to find that in dynamic strings, and will use bundled version as fallback. In the other words, Only the new provided strings will be overriden and for the rest the bundled version will be used.
 
-## Limitations
-1. Plurals are not supported yet.
-2. String arrays are not supported yet.
+4. If your application uses `adnroidx` and crowdin imported as a module you'll need to add next lines in the `gradle.properties` file:
+```java
+android.enableJetifier=true
+android.useAndroidX=true
+```
 
-## Docs
-* <a href="https://medium.com/@hamidgh/dynamically-change-bundled-strings-a24b97bfd306">Medium</a>
-* <a href="https://hamidness.github.io/restring/index.html">Javadocs</a>
+5. To translate menu items you need to update your `onCreateOptionsMenu` method:
+```java
+@Override
+public void onCreateOptionsMenu(...) {
+    // inflate(R.menu.your_menu, menu);
+    Crowdin.updateMenuItemsText(menu, getResources(), R.menu.your_menu);
+}
+```
+
+## Limitations:
+1. Plurals are supported from SDK version 24.
+2. TabItem text added via xml won't be updated. There is workaround: you can store tabItem titles in your string-array and add tabs dynamically.
+3. `tooltipText` is not supported yet. ImageButton, ImageView etc.
 
 ## License
 <pre>
-Copyright 2018 Hamid Gharehdaghi
+Copyright 2018 Crowdin
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
