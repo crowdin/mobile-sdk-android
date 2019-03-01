@@ -7,7 +7,9 @@ import com.crowdin.platform.api.LanguageData;
 import com.crowdin.platform.api.PluralData;
 import com.crowdin.platform.utils.LocaleUtils;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,7 +30,11 @@ public class MemoryLocalRepository implements LocalRepository {
     public void setString(String language, String key, String value) {
         LanguageData data = stringsData.get(language);
         if (data == null) {
-            stringsData.put(language, new LanguageData(language));
+            LanguageData languageData = new LanguageData(language);
+            Map<String, String> resources = new HashMap<>();
+            resources.put(key, value);
+            languageData.setResources(resources);
+            stringsData.put(language, languageData);
         } else {
             data.getResources().put(key, value);
         }
@@ -58,9 +64,12 @@ public class MemoryLocalRepository implements LocalRepository {
     public String[] getStringArray(String key) {
         LanguageData languageData = stringsData.get(LocaleUtils.getCurrentLanguage());
         if (languageData != null) {
-            for (ArrayData array : languageData.getArrays()) {
-                if (array.getName().equals(key)) {
-                    return array.getValues();
+            List<ArrayData> arrays = languageData.getArrays();
+            if (arrays != null) {
+                for (ArrayData array : arrays) {
+                    if (array.getName().equals(key)) {
+                        return array.getValues();
+                    }
                 }
             }
         }
@@ -73,9 +82,12 @@ public class MemoryLocalRepository implements LocalRepository {
     public String getStringPlural(String resourceKey, String quantityKey) {
         LanguageData languageData = stringsData.get(LocaleUtils.getCurrentLanguage());
         if (languageData != null) {
-            for (PluralData pluralData : languageData.getPlurals()) {
-                if (pluralData.getName().equals(resourceKey)) {
-                    return pluralData.getQuantity().get(quantityKey);
+            List<PluralData> plurals = languageData.getPlurals();
+            if (plurals != null) {
+                for (PluralData pluralData : plurals) {
+                    if (pluralData.getName().equals(resourceKey)) {
+                        return pluralData.getQuantity().get(quantityKey);
+                    }
                 }
             }
         }

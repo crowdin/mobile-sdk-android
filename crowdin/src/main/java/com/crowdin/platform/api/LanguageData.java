@@ -42,4 +42,16 @@ public class LanguageData {
     public List<PluralData> getPlurals() {
         return plurals;
     }
+
+    public void setResources(Map<String, String> resources) {
+        this.resources = resources;
+    }
+
+    public void setArrays(List<ArrayData> arrays) {
+        this.arrays = arrays;
+    }
+
+    public void setPlurals(List<PluralData> plurals) {
+        this.plurals = plurals;
+    }
 }
