@@ -16,6 +16,6 @@ public class RemoteStringRepository implements RemoteRepository {
     @Override
     public void fetchData(Context context, String language, LanguageDataCallback languageDataCallback) {
         // TODO: API call
-        new StringsLoaderTask(context, languageDataCallback).run();
+//        new StringsLoaderTask(context, languageDataCallback).run();
     }
 }

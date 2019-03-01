@@ -3,8 +3,10 @@ package com.crowdin.platform;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Resources;
+import android.support.annotation.VisibleForTesting;
 import android.view.Menu;
 
+import com.crowdin.platform.api.LanguageData;
 import com.crowdin.platform.repository.StringDataManager;
 import com.crowdin.platform.repository.local.LocalRepository;
 import com.crowdin.platform.repository.local.LocalStringRepositoryFactory;
@@ -110,5 +112,10 @@ public abstract class Crowdin {
 
     public static void updateMenuItemsText(Menu menu, Resources resources, int menuId) {
         TextUtils.updateMenuItemsText(menu, resources, menuId);
+    }
+
+    @VisibleForTesting
+    public static void saveLanguageData(LanguageData languageData) {
+        stringDataManager.saveLanguageData(languageData);
     }
 }

@@ -45,4 +45,8 @@ public class StringDataManager {
             }
         });
     }
+
+    public void saveLanguageData(LanguageData languageData) {
+        localRepository.saveLanguageData(languageData);
+    }
 }

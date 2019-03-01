@@ -12,4 +12,12 @@ public class ArrayData {
     public String[] getValues() {
         return values;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setValues(String[] values) {
+        this.values = values;
+    }
 }
