@@ -59,7 +59,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         navigationView.post(() -> navigationView.setCheckedItem(R.id.nav_home));
         setTitle(R.string.home);
 
-        saveLanguageData();
+//        saveLanguageData();
     }
 
     @Override
