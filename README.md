@@ -71,6 +71,30 @@ public void onCreateOptionsMenu(...) {
 }
 ```
 
+6. In case you have custom views that uses `TypedArray` and `stylable` attributes, you will need to use such approach: 
+```java
+int textId = typedArray.getResourceId(R.styleable.sample_item, 0);
+(TextView) textView.setText(textId);
+```
+instead of `typedArray.getString(R.styleable.NavigationEntry_itemText)`
+
+7. Activity title defined via AndroidManifest won't be translated.
+```xml
+<activity
+    android:name=".activities.SampleActivity"
+    android:label="@string/title"/>
+```
+You can simply update your `toolbar` inside of activity or fragment: 
+```java
+toolbar.setTitle(R.string.title);
+```
+
+8. In case your project already overrides `attachBaseContext`:
+```java
+super.attachBaseContext(Crowdin.wrapContext(SomeLib.wrap(newBase)));
+```
+ 
+    
 ## Limitations:
 1. Plurals are supported from SDK version 24.
 2. TabItem text added via xml won't be updated. There is workaround: you can store tabItem titles in your string-array and add tabs dynamically.

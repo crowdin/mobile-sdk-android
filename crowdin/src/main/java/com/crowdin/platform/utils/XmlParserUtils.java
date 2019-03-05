@@ -111,8 +111,6 @@ class XmlParserUtils {
                     if (menuItemStrings == null) {
                         menuItemStrings = new MenuItemStrings();
                     }
-
-                    menuItemStrings.setTitle(attrs.getAttributeResourceValue(index, 0));
                     menuItemStrings.setTitle(attrs.getAttributeResourceValue(index, 0));
                     break;
                 }
