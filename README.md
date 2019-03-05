@@ -76,7 +76,7 @@ public void onCreateOptionsMenu(...) {
 int textId = typedArray.getResourceId(R.styleable.sample_item, 0);
 (TextView) textView.setText(textId);
 ```
-instead of `typedArray.getString(R.styleable.NavigationEntry_itemText)`
+instead of `typedArray.getString(R.styleable.sample_item)`
 
 7. Activity title defined via AndroidManifest won't be translated.
 ```xml
@@ -98,7 +98,7 @@ super.attachBaseContext(Crowdin.wrapContext(SomeLib.wrap(newBase)));
 ## Limitations:
 1. Plurals are supported from SDK version 24.
 2. TabItem text added via xml won't be updated. There is workaround: you can store tabItem titles in your string-array and add tabs dynamically.
-3. `tooltipText` is not supported yet. ImageButton, ImageView etc.
+
 
 ## License
 <pre>
