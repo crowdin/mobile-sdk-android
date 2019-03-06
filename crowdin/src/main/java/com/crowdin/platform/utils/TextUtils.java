@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.crowdin.platform.transformers.MenuItemStrings;
@@ -33,10 +34,16 @@ public class TextUtils {
             MenuItemStrings itemValue = itemStrings.valueAt(i);
 
             if (itemValue.getTitle() != 0) {
-                menu.findItem(itemKey).setTitle(resources.getString(itemValue.getTitle()));
+                MenuItem menuItem = menu.findItem(itemKey);
+                if (menuItem != null) {
+                    menuItem.setTitle(resources.getString(itemValue.getTitle()));
+                }
             }
             if (itemValue.getTitleCondensed() != 0) {
-                menu.findItem(itemKey).setTitleCondensed(resources.getString(itemValue.getTitleCondensed()));
+                MenuItem menuItem = menu.findItem(itemKey);
+                if (menuItem != null) {
+                    menuItem.setTitleCondensed(resources.getString(itemValue.getTitleCondensed()));
+                }
             }
         }
     }
