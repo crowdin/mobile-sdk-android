@@ -1,7 +1,7 @@
 package com.crowdin.platform.api
 
 internal data class ArrayData(val name: String?,
-                     val values: Array<String>?) {
+                              val values: Array<String>?) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -23,5 +23,4 @@ internal data class ArrayData(val name: String?,
         result = 31 * result + (values?.contentHashCode() ?: 0)
         return result
     }
-
 }

@@ -25,10 +25,10 @@ object TextUtils {
             val itemValue = itemStrings.valueAt(i)
 
             if (itemValue.title != 0) {
-                menu.findItem(itemKey).title = resources.getString(itemValue.title)
+                menu.findItem(itemKey)?.title = resources.getString(itemValue.title)
             }
             if (itemValue.titleCondensed != 0) {
-                menu.findItem(itemKey).titleCondensed = resources.getString(itemValue.titleCondensed)
+                menu.findItem(itemKey)?.titleCondensed = resources.getString(itemValue.titleCondensed)
             }
         }
     }

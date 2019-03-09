@@ -99,8 +99,6 @@ internal object XmlParserUtils {
                     if (menuItemStrings == null) {
                         menuItemStrings = MenuItemStrings()
                     }
-
-                    menuItemStrings.title = attrs.getAttributeResourceValue(index, 0)
                     menuItemStrings.title = attrs.getAttributeResourceValue(index, 0)
                 }
                 Attributes.ATTRIBUTE_ANDROID_TITLE_CONDENSED, Attributes.ATTRIBUTE_TITLE_CONDENSED -> {

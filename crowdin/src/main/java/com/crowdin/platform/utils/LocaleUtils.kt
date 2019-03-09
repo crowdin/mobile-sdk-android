@@ -2,7 +2,7 @@ package com.crowdin.platform.utils
 
 import java.util.Locale
 
-object LocaleUtils {
+internal object LocaleUtils {
 
     val currentLanguage: String
         get() = Locale.getDefault().language
