@@ -1,0 +1,97 @@
+package com.crowdin.platform
+
+import android.content.Context
+import android.content.ContextWrapper
+import android.content.res.Resources
+import android.view.Menu
+import com.crowdin.platform.repository.StringDataManager
+import com.crowdin.platform.repository.local.LocalStringRepositoryFactory
+import com.crowdin.platform.repository.remote.RemoteStringRepository
+import com.crowdin.platform.transformers.*
+import com.crowdin.platform.utils.TextUtils
+
+/**
+ * Entry point for Crowdin. it will be used for setting new strings, wrapping activity context.
+ */
+object Crowdin {
+
+    private var isInitialized = false
+    private lateinit var viewTransformerManager: ViewTransformerManager
+    private lateinit var stringDataManager: StringDataManager
+
+    /**
+     * Initialize Crowdin with default configuration.
+     *
+     * @param context of the application.
+     */
+    internal fun init(context: Context) {
+        init(context, CrowdinConfig.default)
+    }
+
+    /**
+     * Initialize Crowdin with the specified configuration.
+     *
+     * @param context of the application.
+     * @param config  of the Crowdin.
+     */
+    private fun init(context: Context, config: CrowdinConfig) {
+        if (isInitialized) {
+            return
+        }
+
+        isInitialized = true
+        initCrowdinApi(context)
+        initStringDataManager(context, config)
+        initViewTransformer()
+
+        stringDataManager.updateData(context)
+    }
+
+    /**
+     * Wraps context of an activity to provide Crowdin features.
+     *
+     * @param base context of an activity.
+     * @return the Crowdin wrapped context.
+     */
+    fun wrapContext(base: Context): ContextWrapper =
+            CrowdinContextWrapper.wrap(base, stringDataManager, viewTransformerManager)
+
+    /**
+     * Set a single string for a language.
+     *
+     * @param language the string is for.
+     * @param key      the string key.
+     * @param value    the string value.
+     */
+    fun setString(language: String, key: String, value: String) {
+        stringDataManager.setString(language, key, value)
+    }
+
+    fun updateMenuItemsText(menu: Menu, resources: Resources, menuId: Int) {
+        TextUtils.updateMenuItemsText(menu, resources, menuId)
+    }
+
+    private fun initCrowdinApi(context: Context) {
+        CrowdinRetrofitService.instance.init(context)
+    }
+
+    private fun initStringDataManager(context: Context, config: CrowdinConfig) {
+        val remoteRepository = RemoteStringRepository(
+                CrowdinRetrofitService.instance.getCrowdinApi())
+        val localRepository = LocalStringRepositoryFactory.createLocalRepository(context, config)
+
+        stringDataManager = StringDataManager(remoteRepository, localRepository)
+    }
+
+    private fun initViewTransformer() {
+        viewTransformerManager = ViewTransformerManager()
+        viewTransformerManager.registerTransformer(TextViewTransformer())
+        viewTransformerManager.registerTransformer(ToolbarTransformer())
+        viewTransformerManager.registerTransformer(SupportToolbarTransformer())
+        viewTransformerManager.registerTransformer(BottomNavigationViewTransformer())
+        viewTransformerManager.registerTransformer(NavigationViewTransformer())
+        viewTransformerManager.registerTransformer(SpinnerTransformer())
+        viewTransformerManager.registerTransformer(ToggleButtonTransformer())
+        viewTransformerManager.registerTransformer(SwitchTransformer())
+    }
+}

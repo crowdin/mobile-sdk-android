@@ -125,7 +125,7 @@ class CrowdinLayoutInflater extends LayoutInflater {
     }
 
     private View applyChange(View view, AttributeSet attrs) {
-        return viewTransformerManager.transform(view, attrs);
+        return viewTransformerManager.transform$crowdin_debug(view, attrs);
     }
 
     private class WrapperFactory implements Factory {
