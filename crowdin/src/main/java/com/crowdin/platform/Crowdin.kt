@@ -53,6 +53,7 @@ object Crowdin {
      * @param base context of an activity.
      * @return the Crowdin wrapped context.
      */
+    @JvmStatic
     fun wrapContext(base: Context): ContextWrapper =
             CrowdinContextWrapper.wrap(base, stringDataManager, viewTransformerManager)
 
@@ -67,6 +68,7 @@ object Crowdin {
         stringDataManager.setString(language, key, value)
     }
 
+    @JvmStatic
     fun updateMenuItemsText(menu: Menu, resources: Resources, menuId: Int) {
         TextUtils.updateMenuItemsText(menu, resources, menuId)
     }

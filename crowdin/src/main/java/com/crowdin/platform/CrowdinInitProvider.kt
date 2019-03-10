@@ -15,8 +15,10 @@ class CrowdinInitProvider : ContentProvider() {
     }
 
     override fun onCreate(): Boolean {
-        Crowdin.init(this.context)
-
+        val context = this.context
+        if (context != null) {
+            Crowdin.init(context)
+        }
         return false
     }
 

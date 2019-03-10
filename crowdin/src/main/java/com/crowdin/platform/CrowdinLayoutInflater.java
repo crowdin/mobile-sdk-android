@@ -28,7 +28,7 @@ public class CrowdinLayoutInflater extends LayoutInflater {
 
     private boolean privateFactorySet = false;
     private Field mConstructorArgs = null;
-    private ViewTransformerManager viewTransformerManager;
+    private final ViewTransformerManager viewTransformerManager;
 
     private static final String[] sClassPrefixList = {
             "android.widget.",
@@ -38,29 +38,14 @@ public class CrowdinLayoutInflater extends LayoutInflater {
 
     CrowdinLayoutInflater(LayoutInflater original,
                           Context newContext,
-                          ViewTransformerManager viewTransformerManager,
-                          final boolean cloned) {
+                          ViewTransformerManager viewTransformerManager) {
         super(original, newContext);
         this.viewTransformerManager = viewTransformerManager;
-        if (!cloned) {
-            initFactories();
-        }
     }
 
     @Override
     public LayoutInflater cloneInContext(Context newContext) {
-        return new CrowdinLayoutInflater(this, newContext, viewTransformerManager, true);
-    }
-
-    private void initFactories() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            if (getFactory2() != null) {
-                setFactory2(getFactory2());
-            }
-        }
-        if (getFactory() != null) {
-            setFactory(getFactory());
-        }
+        return new CrowdinLayoutInflater(this, newContext, viewTransformerManager);
     }
 
     @Override
@@ -129,7 +114,8 @@ public class CrowdinLayoutInflater extends LayoutInflater {
     }
 
     private class WrapperFactory implements Factory {
-        private Factory factory;
+
+        private final Factory factory;
 
         WrapperFactory(Factory factory) {
             this.factory = factory;
@@ -143,7 +129,8 @@ public class CrowdinLayoutInflater extends LayoutInflater {
     }
 
     private class WrapperFactory2 implements Factory2 {
-        private Factory2 factory2;
+
+        private final Factory2 factory2;
 
         WrapperFactory2(Factory2 factory2) {
             this.factory2 = factory2;
@@ -197,7 +184,7 @@ public class CrowdinLayoutInflater extends LayoutInflater {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private class PrivateWrapperFactory2 implements Factory2 {
 
-        private Factory2 factory2;
+        private final Factory2 factory2;
 
         PrivateWrapperFactory2(Factory2 factory2) {
             this.factory2 = factory2;

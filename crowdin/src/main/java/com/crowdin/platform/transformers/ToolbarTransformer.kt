@@ -39,7 +39,7 @@ internal class ToolbarTransformer : ViewTransformerManager.Transformer {
 
     internal companion object {
 
-        private val ATTRIBUTE_TITLE = "title"
-        private val ATTRIBUTE_ANDROID_TITLE = "android:title"
+        private const val ATTRIBUTE_TITLE = "title"
+        private const val ATTRIBUTE_ANDROID_TITLE = "android:title"
     }
 }

@@ -11,8 +11,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 internal class CrowdinRetrofitService private constructor() {
 
-    lateinit var retrofit: Retrofit
-    lateinit var okHttpClient: OkHttpClient
+    private lateinit var retrofit: Retrofit
+    private lateinit var okHttpClient: OkHttpClient
 
     private val crowdinApi: CrowdinApi? = null
 
@@ -38,8 +38,8 @@ internal class CrowdinRetrofitService private constructor() {
 
     companion object {
 
-        private val SIZE_BYTES = 1024L * 1024L * 8L
-        private val BASE_URL = "https://crowdin.com/"
+        private const val SIZE_BYTES = 1024L * 1024L * 8L
+        private const val BASE_URL = "https://crowdin.com/"
         private var sInstance: CrowdinRetrofitService? = null
 
         val instance: CrowdinRetrofitService

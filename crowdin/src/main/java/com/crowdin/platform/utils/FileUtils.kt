@@ -3,7 +3,6 @@ package com.crowdin.platform.utils
 import android.content.Context
 import com.crowdin.platform.api.ResourcesResponse
 import com.google.gson.Gson
-import java.io.IOException
 
 internal object FileUtils {
 
@@ -22,9 +21,8 @@ internal object FileUtils {
 
             Gson().fromJson(json, ResourcesResponse::class.java)
 
-        } catch (e: IOException) {
+        } catch (e: Throwable) {
             data
         }
     }
-
 }

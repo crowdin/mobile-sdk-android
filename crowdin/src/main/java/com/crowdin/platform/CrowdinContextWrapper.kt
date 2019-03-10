@@ -18,7 +18,7 @@ internal class CrowdinContextWrapper private constructor(base: Context,
     override fun getSystemService(name: String): Any {
         if (Context.LAYOUT_INFLATER_SERVICE == name) {
             return CrowdinLayoutInflater(LayoutInflater.from(baseContext),
-                    this, viewTransformerManager, true)
+                    this, viewTransformerManager)
         }
 
         return super.getSystemService(name)

@@ -13,8 +13,8 @@ import java.io.IOException
 
 internal object XmlParserUtils {
 
-    private val XML_MENU = "menu"
-    private val XML_ITEM = "item"
+    private const val XML_MENU = "menu"
+    private const val XML_ITEM = "item"
 
     fun getMenuItemsStrings(resources: Resources, resId: Int): SparseArray<MenuItemStrings> {
         val parser = resources.getLayout(resId)
