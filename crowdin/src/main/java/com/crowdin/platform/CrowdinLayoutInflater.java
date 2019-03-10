@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
  * Transformations can consist of transforming the texts applied on XML layout resources, so that it checks if
  * the string attribute set as a string resource it transforms the text and apply it to the view again.
  */
-class CrowdinLayoutInflater extends LayoutInflater {
+public class CrowdinLayoutInflater extends LayoutInflater {
 
     private boolean privateFactorySet = false;
     private Field mConstructorArgs = null;
@@ -125,7 +125,7 @@ class CrowdinLayoutInflater extends LayoutInflater {
     }
 
     private View applyChange(View view, AttributeSet attrs) {
-        return viewTransformerManager.transform$crowdin_debug(view, attrs);
+        return viewTransformerManager.transform(view, attrs);
     }
 
     private class WrapperFactory implements Factory {
