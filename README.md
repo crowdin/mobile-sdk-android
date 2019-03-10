@@ -98,6 +98,7 @@ super.attachBaseContext(Crowdin.wrapContext(SomeLib.wrap(newBase)));
 ## Limitations:
 1. Plurals are supported from SDK version 24.
 2. TabItem text added via xml won't be updated. There is workaround: you can store tabItem titles in your string-array and add tabs dynamically.
+3. `PreferenceScreen` defined via XML not supported.
 
 
 ## License
