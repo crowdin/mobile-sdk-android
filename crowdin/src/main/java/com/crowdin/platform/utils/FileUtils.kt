@@ -1,7 +1,7 @@
 package com.crowdin.platform.utils
 
 import android.content.Context
-import com.crowdin.platform.api.ResourcesResponse
+import com.crowdin.platform.repository.remote.api.ResourcesResponse
 import com.google.gson.Gson
 
 internal object FileUtils {

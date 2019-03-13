@@ -1,4 +1,4 @@
-package com.crowdin.platform.api
+package com.crowdin.platform.repository.remote.api
 
 import okhttp3.ResponseBody
 import retrofit2.Call

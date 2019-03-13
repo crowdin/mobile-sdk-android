@@ -3,7 +3,7 @@ package com.crowdin.platform.repository.local
 import android.content.Context
 import android.content.SharedPreferences
 
-import com.crowdin.platform.api.LanguageData
+import com.crowdin.platform.repository.remote.api.LanguageData
 import com.google.gson.Gson
 
 /**

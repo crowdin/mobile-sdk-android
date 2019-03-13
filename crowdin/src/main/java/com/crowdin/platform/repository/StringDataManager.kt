@@ -1,7 +1,7 @@
 package com.crowdin.platform.repository
 
 import android.content.Context
-import com.crowdin.platform.api.LanguageData
+import com.crowdin.platform.repository.remote.api.LanguageData
 import com.crowdin.platform.repository.local.LocalRepository
 import com.crowdin.platform.repository.remote.RemoteRepository
 import com.crowdin.platform.utils.LocaleUtils

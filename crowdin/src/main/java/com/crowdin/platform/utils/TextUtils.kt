@@ -3,11 +3,10 @@ package com.crowdin.platform.utils
 import android.content.res.Resources
 import android.util.AttributeSet
 import android.view.Menu
-import android.view.View
 
 object TextUtils {
 
-    fun getTextForAttribute(attrs: AttributeSet, index: Int, view: View, resources: Resources): String? {
+    fun getTextForAttribute(attrs: AttributeSet, index: Int, resources: Resources): String? {
         var text: String? = null
         val value = attrs.getAttributeValue(index)
         if (value != null && value.startsWith("@")) {

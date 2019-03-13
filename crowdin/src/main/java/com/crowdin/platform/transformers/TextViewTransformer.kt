@@ -24,14 +24,14 @@ internal class TextViewTransformer : ViewTransformerManager.Transformer {
             val attributeName = attrs.getAttributeName(index)
             when (attributeName) {
                 Attributes.ATTRIBUTE_ANDROID_TEXT, Attributes.ATTRIBUTE_TEXT -> {
-                    val text = TextUtils.getTextForAttribute(attrs, index, view, resources)
+                    val text = TextUtils.getTextForAttribute(attrs, index, resources)
                     if (text != null) {
                         (view as TextView).text = text
                     }
                 }
 
                 Attributes.ATTRIBUTE_ANDROID_HINT, Attributes.ATTRIBUTE_HINT -> {
-                    val hint = TextUtils.getTextForAttribute(attrs, index, view, resources)
+                    val hint = TextUtils.getTextForAttribute(attrs, index, resources)
                     if (hint != null) {
                         (view as TextView).hint = hint
                     }

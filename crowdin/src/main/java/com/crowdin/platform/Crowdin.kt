@@ -6,6 +6,7 @@ import android.content.res.Resources
 import android.view.Menu
 import com.crowdin.platform.repository.StringDataManager
 import com.crowdin.platform.repository.local.LocalStringRepositoryFactory
+import com.crowdin.platform.repository.remote.CrowdinRetrofitService
 import com.crowdin.platform.repository.remote.RemoteStringRepository
 import com.crowdin.platform.transformers.*
 import com.crowdin.platform.utils.TextUtils

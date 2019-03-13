@@ -3,7 +3,7 @@ package com.crowdin.platform.repository.remote
 import android.content.Context
 import android.os.AsyncTask
 import android.widget.Toast
-import com.crowdin.platform.api.LanguageData
+import com.crowdin.platform.repository.remote.api.LanguageData
 import com.crowdin.platform.repository.LanguageDataCallback
 import com.crowdin.platform.utils.FileUtils
 import java.lang.ref.WeakReference

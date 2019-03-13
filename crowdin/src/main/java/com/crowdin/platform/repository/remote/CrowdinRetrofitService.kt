@@ -1,7 +1,8 @@
-package com.crowdin.platform
+package com.crowdin.platform.repository.remote
 
 import android.content.Context
-import com.crowdin.platform.api.CrowdinApi
+import com.crowdin.platform.BuildConfig
+import com.crowdin.platform.repository.remote.api.CrowdinApi
 import com.google.gson.GsonBuilder
 import okhttp3.Cache
 import okhttp3.OkHttpClient

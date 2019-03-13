@@ -2,7 +2,7 @@ package com.crowdin.platform.repository.remote
 
 import android.content.Context
 
-import com.crowdin.platform.api.CrowdinApi
+import com.crowdin.platform.repository.remote.api.CrowdinApi
 import com.crowdin.platform.repository.LanguageDataCallback
 
 internal class RemoteStringRepository(private val crowdinApi: CrowdinApi) : RemoteRepository {

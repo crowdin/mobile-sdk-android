@@ -1,4 +1,4 @@
-package com.crowdin.platform.api
+package com.crowdin.platform.repository.remote.api
 
 class PluralData {
 

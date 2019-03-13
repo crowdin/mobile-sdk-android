@@ -27,7 +27,7 @@ internal class ToolbarTransformer : ViewTransformerManager.Transformer {
             val attributeName = attrs.getAttributeName(index)
             when (attributeName) {
                 ATTRIBUTE_ANDROID_TITLE, ATTRIBUTE_TITLE -> {
-                    val title = TextUtils.getTextForAttribute(attrs, index, view, resources)
+                    val title = TextUtils.getTextForAttribute(attrs, index, resources)
                     if (title != null) {
                         (view as Toolbar).title = title
                     }
