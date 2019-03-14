@@ -43,6 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="40dp"
+        android:text="@string/formatting_test3"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </LinearLayout>

@@ -6,11 +6,11 @@ import android.view.Menu
 
 object TextUtils {
 
-    fun getTextForAttribute(attrs: AttributeSet, index: Int, resources: Resources): String? {
-        var text: String? = null
+    fun getTextForAttribute(attrs: AttributeSet, index: Int, resources: Resources): CharSequence? {
+        var text: CharSequence? = null
         val value = attrs.getAttributeValue(index)
         if (value != null && value.startsWith("@")) {
-            text = resources.getString(attrs.getAttributeResourceValue(index, 0))
+            text = resources.getText(attrs.getAttributeResourceValue(index, 0))
         }
 
         return text

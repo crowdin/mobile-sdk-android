@@ -54,7 +54,7 @@
     <string name="formatting_test0">Test double %1$d</string>
     <string name="formatting_test1">Test String %1$s</string>
     <string name="formatting_test2">Test All %1$d %2$s</string>
-    <string name="formatting_test3">Test html markup &lt;b>Android&lt;/b>!</string>
+    <string name="formatting_test3">Test html markup <b>Android</b>!</string>
     <string name="next">Next</string>
     <string name="help">Help</string>
 
