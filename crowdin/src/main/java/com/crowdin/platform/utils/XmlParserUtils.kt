@@ -51,7 +51,6 @@ internal object XmlParserUtils {
         val menuItems = SparseArray<MenuItemStrings>()
 
         var reachedEndOfMenu = false
-        var menuLevel = 0
         while (!reachedEndOfMenu) {
             when (eventType) {
                 XmlPullParser.START_TAG -> {
@@ -61,21 +60,8 @@ internal object XmlParserUtils {
                         if (item != null) {
                             menuItems.put(item.first, item.second)
                         }
-                    } else if (tagName == XML_MENU) {
-                        menuLevel++
                     }
                 }
-
-                XmlPullParser.END_TAG -> {
-                    tagName = parser.name
-                    if (tagName == XML_MENU) {
-                        menuLevel--
-                        if (menuLevel <= 0) {
-                            reachedEndOfMenu = true
-                        }
-                    }
-                }
-
                 XmlPullParser.END_DOCUMENT -> reachedEndOfMenu = true
             }
 
