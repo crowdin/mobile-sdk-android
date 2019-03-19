@@ -7,7 +7,7 @@ import android.view.Menu
 import com.crowdin.platform.repository.StringDataManager
 import com.crowdin.platform.repository.local.LocalStringRepositoryFactory
 import com.crowdin.platform.repository.remote.CrowdinRetrofitService
-import com.crowdin.platform.repository.remote.RemoteStringRepository
+import com.crowdin.platform.repository.remote.DefaultRemoteRepository
 import com.crowdin.platform.transformers.*
 import com.crowdin.platform.utils.TextUtils
 
@@ -16,18 +16,8 @@ import com.crowdin.platform.utils.TextUtils
  */
 object Crowdin {
 
-    private var isInitialized = false
     private lateinit var viewTransformerManager: ViewTransformerManager
     private lateinit var stringDataManager: StringDataManager
-
-    /**
-     * Initialize Crowdin with default configuration.
-     *
-     * @param context of the application.
-     */
-    internal fun init(context: Context) {
-        init(context, CrowdinConfig.default)
-    }
 
     /**
      * Initialize Crowdin with the specified configuration.
@@ -35,17 +25,11 @@ object Crowdin {
      * @param context of the application.
      * @param config  of the Crowdin.
      */
-    private fun init(context: Context, config: CrowdinConfig) {
-        if (isInitialized) {
-            return
-        }
-
-        isInitialized = true
+    fun init(context: Context, config: CrowdinConfig) {
         initCrowdinApi(context)
         initStringDataManager(context, config)
         initViewTransformer()
-
-        stringDataManager.updateData(context)
+        stringDataManager.updateData(config)
     }
 
     /**
@@ -79,7 +63,7 @@ object Crowdin {
     }
 
     private fun initStringDataManager(context: Context, config: CrowdinConfig) {
-        val remoteRepository = RemoteStringRepository(
+        val remoteRepository = DefaultRemoteRepository(
                 CrowdinRetrofitService.instance.getCrowdinApi())
         val localRepository = LocalStringRepositoryFactory.createLocalRepository(context, config)
 

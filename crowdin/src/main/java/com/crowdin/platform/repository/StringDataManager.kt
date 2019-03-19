@@ -1,9 +1,9 @@
 package com.crowdin.platform.repository
 
-import android.content.Context
-import com.crowdin.platform.repository.remote.api.LanguageData
+import com.crowdin.platform.CrowdinConfig
 import com.crowdin.platform.repository.local.LocalRepository
 import com.crowdin.platform.repository.remote.RemoteRepository
+import com.crowdin.platform.repository.remote.api.LanguageData
 import com.crowdin.platform.utils.LocaleUtils
 
 internal class StringDataManager(private val remoteRepository: RemoteRepository,
@@ -25,12 +25,13 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
         return localRepository.getStringPlural(resourceKey, quantityKey)
     }
 
-    fun updateData(context: Context) {
+    fun updateData(config: CrowdinConfig) {
         val language = LocaleUtils.currentLanguage
 
         if (localRepository.isExist(language)) return
 
-        remoteRepository.fetchData(context, language, object : LanguageDataCallback {
+        remoteRepository.fetchData(config.distributionKey, language, object : LanguageDataCallback {
+
             override fun onDataLoaded(languageData: LanguageData) {
                 localRepository.saveLanguageData(languageData)
             }
