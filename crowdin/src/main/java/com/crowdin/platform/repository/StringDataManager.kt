@@ -30,7 +30,7 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
         val filePaths = config.filePaths
 
         // TODO: create pool
-        filePaths?.get(0)?.let {
+        filePaths?.forEach {
             remoteRepository.fetchData(config.distributionKey, language, it, object : LanguageDataCallback {
 
                 override fun onDataLoaded(languageData: LanguageData) {
