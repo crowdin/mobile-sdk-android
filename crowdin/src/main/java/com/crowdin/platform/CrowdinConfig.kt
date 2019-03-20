@@ -5,13 +5,14 @@ package com.crowdin.platform
  */
 class CrowdinConfig private constructor() {
 
-    // TODO: provide list of file path
     var isPersist: Boolean = false
     var distributionKey: String? = null
+    var filePaths: List<String>? = null
 
     class Builder {
         private var persist: Boolean = false
         private var distributionKey: String? = null
+        private var filePaths: List<String>? = null
 
         fun persist(persist: Boolean): Builder {
             this.persist = persist
@@ -23,10 +24,16 @@ class CrowdinConfig private constructor() {
             return this
         }
 
+        fun withFilePaths(filePaths: List<String>): Builder {
+            this.filePaths = filePaths
+            return this
+        }
+
         fun build(): CrowdinConfig {
             val config = CrowdinConfig()
             config.isPersist = persist
             config.distributionKey = distributionKey
+            config.filePaths = filePaths
             return config
         }
     }

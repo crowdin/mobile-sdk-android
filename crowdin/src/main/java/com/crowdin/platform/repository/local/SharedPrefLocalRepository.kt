@@ -15,6 +15,10 @@ import com.google.gson.Gson
  */
 internal class SharedPrefLocalRepository internal constructor(context: Context) : LocalRepository {
 
+    companion object {
+        private const val SHARED_PREF_NAME = "com.crowdin.platform.string.repository"
+    }
+
     private lateinit var sharedPreferences: SharedPreferences
     private val memoryLocalRepository = MemoryLocalRepository()
 
@@ -25,20 +29,20 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
 
     override fun saveLanguageData(languageData: LanguageData) {
         memoryLocalRepository.saveLanguageData(languageData)
-        saveStrings(languageData)
+        val data = memoryLocalRepository.getLanguageData(languageData.language) ?: return
+        saveData(data)
     }
 
     override fun setString(language: String, key: String, value: String) {
         memoryLocalRepository.setString(language, key, value)
-
-        val languageData = memoryLocalRepository.getStrings(language) ?: return
+        val languageData = memoryLocalRepository.getLanguageData(language) ?: return
         languageData.resources.plus(Pair(key, value))
-        saveStrings(languageData)
+        saveData(languageData)
     }
 
     override fun getString(language: String, key: String): String? = memoryLocalRepository.getString(language, key)
 
-    override fun getStrings(language: String): LanguageData? = memoryLocalRepository.getStrings(language)
+    override fun getLanguageData(language: String): LanguageData? = memoryLocalRepository.getLanguageData(language)
 
     override fun getStringArray(key: String): Array<String>? = memoryLocalRepository.getStringArray(key)
 
@@ -64,7 +68,7 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
         }
     }
 
-    private fun saveStrings(languageData: LanguageData) {
+    private fun saveData(languageData: LanguageData) {
         val json = Gson().toJson(languageData)
         sharedPreferences.edit()
                 .putString(languageData.language, json)
@@ -73,9 +77,4 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
 
     private fun deserializeKeyValues(content: String): LanguageData =
             Gson().fromJson(content, LanguageData::class.java)
-
-    companion object {
-
-        private const val SHARED_PREF_NAME = "Restrings"
-    }
 }

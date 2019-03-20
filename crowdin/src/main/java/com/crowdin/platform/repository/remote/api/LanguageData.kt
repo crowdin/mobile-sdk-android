@@ -1,13 +1,16 @@
 package com.crowdin.platform.repository.remote.api
 
-import com.google.gson.annotations.SerializedName
-
 internal class LanguageData(val language: String) {
 
-    val version: Int = 0
-    @SerializedName("app_version")
-    val appVersion: Int = 0
-    lateinit var resources: Map<String, String>
-    lateinit var arrays: List<ArrayData>
-    lateinit var plurals: List<PluralData>
+    var resources: Map<String, String> = mutableMapOf()
+    var arrays: List<ArrayData> = mutableListOf()
+    var plurals: List<PluralData> = mutableListOf()
+
+    fun updateResources(languageData: LanguageData) {
+        when {
+            !languageData.resources.isEmpty() -> resources = languageData.resources
+            !languageData.arrays.isEmpty() -> arrays = languageData.arrays
+            !languageData.plurals.isEmpty() -> plurals = languageData.plurals
+        }
+    }
 }

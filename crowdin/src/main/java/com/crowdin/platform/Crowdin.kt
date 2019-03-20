@@ -8,6 +8,7 @@ import com.crowdin.platform.repository.StringDataManager
 import com.crowdin.platform.repository.local.LocalStringRepositoryFactory
 import com.crowdin.platform.repository.remote.CrowdinRetrofitService
 import com.crowdin.platform.repository.remote.DefaultRemoteRepository
+import com.crowdin.platform.repository.remote.XmlReader
 import com.crowdin.platform.transformers.*
 import com.crowdin.platform.utils.TextUtils
 
@@ -64,7 +65,8 @@ object Crowdin {
 
     private fun initStringDataManager(context: Context, config: CrowdinConfig) {
         val remoteRepository = DefaultRemoteRepository(
-                CrowdinRetrofitService.instance.getCrowdinApi())
+                CrowdinRetrofitService.instance.getCrowdinApi(),
+                XmlReader())
         val localRepository = LocalStringRepositoryFactory.createLocalRepository(context, config)
 
         stringDataManager = StringDataManager(remoteRepository, localRepository)

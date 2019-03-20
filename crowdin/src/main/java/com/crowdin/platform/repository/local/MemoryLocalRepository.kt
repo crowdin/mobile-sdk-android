@@ -14,7 +14,12 @@ internal class MemoryLocalRepository : LocalRepository {
     private val stringsData = LinkedHashMap<String, LanguageData>()
 
     override fun saveLanguageData(languageData: LanguageData) {
-        stringsData[languageData.language] = languageData
+        val data = stringsData[languageData.language]
+        if (data == null) {
+            stringsData[languageData.language] = languageData
+        } else {
+            data.updateResources(languageData)
+        }
     }
 
     override fun setString(language: String, key: String, value: String) {
@@ -33,7 +38,7 @@ internal class MemoryLocalRepository : LocalRepository {
         } else languageData.resources[key]
     }
 
-    override fun getStrings(language: String): LanguageData? {
+    override fun getLanguageData(language: String): LanguageData? {
         return if (!stringsData.containsKey(language)) {
             null
         } else stringsData[language]

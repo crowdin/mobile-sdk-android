@@ -27,14 +27,16 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
 
     fun updateData(config: CrowdinConfig) {
         val language = LocaleUtils.currentLanguage
+        val filePaths = config.filePaths
 
-        if (localRepository.isExist(language)) return
+        // TODO: create pool
+        filePaths?.get(0)?.let {
+            remoteRepository.fetchData(config.distributionKey, language, it, object : LanguageDataCallback {
 
-        remoteRepository.fetchData(config.distributionKey, language, object : LanguageDataCallback {
-
-            override fun onDataLoaded(languageData: LanguageData) {
-                localRepository.saveLanguageData(languageData)
-            }
-        })
+                override fun onDataLoaded(languageData: LanguageData) {
+                    localRepository.saveLanguageData(languageData)
+                }
+            })
+        }
     }
 }
