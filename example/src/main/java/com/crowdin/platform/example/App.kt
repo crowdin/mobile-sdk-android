@@ -12,7 +12,9 @@ class App : Application() {
                 CrowdinConfig.Builder()
                         .persist(true)
                         .withDistributionKey("d32682e5a6a5f53a950d934e2eee861e")
-                        .withFilePaths(listOf("strings.xml"))
+                        .withFilePaths(
+                                "strings.xml")
+//                                "strings_plus_array.xml")
                         .build()
         )
     }

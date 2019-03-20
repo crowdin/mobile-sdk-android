@@ -7,12 +7,13 @@ class CrowdinConfig private constructor() {
 
     var isPersist: Boolean = false
     var distributionKey: String? = null
-    var filePaths: List<String>? = null
+    var filePaths: Array<out String>? = null
 
     class Builder {
+
         private var persist: Boolean = false
         private var distributionKey: String? = null
-        private var filePaths: List<String>? = null
+        private var filePaths: Array<out String>? = null
 
         fun persist(persist: Boolean): Builder {
             this.persist = persist
@@ -24,7 +25,7 @@ class CrowdinConfig private constructor() {
             return this
         }
 
-        fun withFilePaths(filePaths: List<String>): Builder {
+        fun withFilePaths(vararg filePaths: String): Builder {
             this.filePaths = filePaths
             return this
         }

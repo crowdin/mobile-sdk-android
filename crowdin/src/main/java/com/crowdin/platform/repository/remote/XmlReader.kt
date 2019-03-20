@@ -11,16 +11,15 @@ internal class XmlReader {
         val pullParserFactory: XmlPullParserFactory
         try {
             pullParserFactory = XmlPullParserFactory.newInstance()
-            val parser = pullParserFactory.newPullParser()
+            val xmlPullParser = pullParserFactory.newPullParser()
 
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
-            parser.setInput(byteStream, null)
+            xmlPullParser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
+            xmlPullParser.setInput(byteStream, null)
 
-            if (parser != null) {
-                val resources = parseXml(parser)
-                val languageData = LanguageData(currentLocale)
-                languageData.resources = resources
-                return languageData
+            if (xmlPullParser != null) {
+                val stringParser = StringParser()
+                val arrayParser = ArrayParser()
+                return parseXml(currentLocale, xmlPullParser, stringParser, arrayParser)
             }
 
         } catch (e: Exception) {
@@ -30,25 +29,32 @@ internal class XmlReader {
         return null
     }
 
-    private fun parseXml(parser: XmlPullParser): MutableMap<String, String> {
+    private fun parseXml(currentLocale: String, parser: XmlPullParser,
+                         stringParser: StringParser, arrayParser: ArrayParser): LanguageData {
         var eventType = parser.eventType
-        val stringParser = StringParser()
 
         while (eventType != XmlPullParser.END_DOCUMENT) {
             when (eventType) {
                 XmlPullParser.START_TAG -> {
                     stringParser.parseStartTag(parser)
+                    arrayParser.parseStartTag(parser)
                 }
                 XmlPullParser.TEXT -> {
                     stringParser.parseText(parser)
+                    arrayParser.parseText(parser)
                 }
                 XmlPullParser.END_TAG -> {
                     stringParser.parseEndTag(parser)
+                    arrayParser.parseEndTag(parser)
                 }
             }
             eventType = parser.next()
         }
 
-        return stringParser.resources
+        val languageData = LanguageData(currentLocale)
+        languageData.resources = stringParser.resources
+        languageData.arrays = arrayParser.arrays
+
+        return languageData
     }
 }

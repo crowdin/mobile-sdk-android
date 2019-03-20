@@ -1,0 +1,9 @@
+<resources>
+    <string name="home_new">Home</string>
+
+    <string-array name="string_array_new">
+        <item>one</item>
+        <item>two<b>test</b></item>
+    </string-array>
+
+</resources>
