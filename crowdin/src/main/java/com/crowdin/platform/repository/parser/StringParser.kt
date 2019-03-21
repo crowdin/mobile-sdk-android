@@ -1,4 +1,4 @@
-package com.crowdin.platform.repository.remote
+package com.crowdin.platform.repository.parser
 
 import org.xmlpull.v1.XmlPullParser
 

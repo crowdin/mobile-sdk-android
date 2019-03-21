@@ -13,7 +13,7 @@ class App : Application() {
                         .persist(true)
                         .withDistributionKey("d32682e5a6a5f53a950d934e2eee861e")
                         .withFilePaths(
-                                "strings.xml", "arrays.xml")
+                                "strings.xml", "arrays.xml", "plurals.xml")
                         .build()
         )
     }

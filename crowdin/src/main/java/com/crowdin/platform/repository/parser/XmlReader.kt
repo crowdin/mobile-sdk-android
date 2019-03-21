@@ -1,4 +1,4 @@
-package com.crowdin.platform.repository.remote
+package com.crowdin.platform.repository.parser
 
 import com.crowdin.platform.repository.remote.api.LanguageData
 import org.xmlpull.v1.XmlPullParser
@@ -19,7 +19,9 @@ internal class XmlReader {
             if (xmlPullParser != null) {
                 val stringParser = StringParser()
                 val arrayParser = ArrayParser()
-                return parseXml(currentLocale, xmlPullParser, stringParser, arrayParser)
+                val pluralParser = PluralParser()
+
+                return parseXml(currentLocale, xmlPullParser, stringParser, arrayParser, pluralParser)
             }
 
         } catch (e: Exception) {
@@ -30,7 +32,7 @@ internal class XmlReader {
     }
 
     private fun parseXml(currentLocale: String, parser: XmlPullParser,
-                         stringParser: StringParser, arrayParser: ArrayParser): LanguageData {
+                         stringParser: StringParser, arrayParser: ArrayParser, pluralParser: PluralParser): LanguageData {
         var eventType = parser.eventType
 
         while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -38,14 +40,17 @@ internal class XmlReader {
                 XmlPullParser.START_TAG -> {
                     stringParser.parseStartTag(parser)
                     arrayParser.parseStartTag(parser)
+                    pluralParser.parseStartTag(parser)
                 }
                 XmlPullParser.TEXT -> {
                     stringParser.parseText(parser)
                     arrayParser.parseText(parser)
+                    pluralParser.parseText(parser)
                 }
                 XmlPullParser.END_TAG -> {
                     stringParser.parseEndTag(parser)
                     arrayParser.parseEndTag(parser)
+                    pluralParser.parseEndTag(parser)
                 }
             }
             eventType = parser.next()
@@ -54,6 +59,7 @@ internal class XmlReader {
         val languageData = LanguageData(currentLocale)
         languageData.resources = stringParser.resources
         languageData.arrays = arrayParser.arrays
+        languageData.plurals = pluralParser.plurals
 
         return languageData
     }

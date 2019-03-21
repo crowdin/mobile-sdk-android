@@ -8,7 +8,7 @@ import com.crowdin.platform.repository.StringDataManager
 import com.crowdin.platform.repository.local.LocalStringRepositoryFactory
 import com.crowdin.platform.repository.remote.CrowdinRetrofitService
 import com.crowdin.platform.repository.remote.DefaultRemoteRepository
-import com.crowdin.platform.repository.remote.XmlReader
+import com.crowdin.platform.repository.parser.XmlReader
 import com.crowdin.platform.transformers.*
 import com.crowdin.platform.utils.TextUtils
 
