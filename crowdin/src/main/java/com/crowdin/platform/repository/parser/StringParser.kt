@@ -10,31 +10,21 @@ internal class StringParser {
 
     val resources: MutableMap<String, String> = mutableMapOf()
     private var isStringStarted = false
-    private var key: String? = null
+    private var isInnerTagOpened = false
+    private var stringKey: String? = null
     private var content: String = ""
 
     fun parseStartTag(parser: XmlPullParser) {
-        val name = parser.name
-        if (name == TAG_STRING || isStringStarted) {
-            val attrCount = parser.attributeCount
-            if (attrCount > 0) {
-                for (item: Int in 0 until parser.attributeCount) {
-                    if (isStringStarted) {
-                        content += "<$name>"
-                    } else {
-                        key = parser.getAttributeValue(item)
-                    }
-
-                    isStringStarted = true
-                    break
-                }
-            } else {
+        when (parser.name) {
+            TAG_STRING -> {
+                isStringStarted = true
+                val attrCount = parser.attributeCount
+                (attrCount > 0).let { if (it) stringKey = parser.getAttributeValue(0) }
+            }
+            else -> {
                 if (isStringStarted) {
-                    content += "<$name>"
-
-                    if (parser.next() == XmlPullParser.TEXT) {
-                        content += parser.text
-                    }
+                    content += "<${parser.name}>"
+                    isInnerTagOpened = true
                 }
             }
         }
@@ -47,18 +37,20 @@ internal class StringParser {
     }
 
     fun parseEndTag(parser: XmlPullParser) {
-        val name = parser.name
         if (isStringStarted) {
-            if (name == TAG_STRING) {
-                if (key != null) {
-                    resources[key!!] = content
+            when (parser.name) {
+                TAG_STRING -> {
+                    if (stringKey != null) {
+                        resources[stringKey!!] = content
+                    }
+                    isStringStarted = false
+                    stringKey = null
+                    content = ""
                 }
-                isStringStarted = false
-                key = null
-                content = ""
-
-            } else {
-                content += "</$name>"
+                else -> {
+                    content += "</${parser.name}>"
+                    isInnerTagOpened = false
+                }
             }
         }
     }

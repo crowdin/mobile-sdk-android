@@ -15,28 +15,22 @@ internal class ArrayParser {
     private var isItemStarted = false
     private var isInnerTagOpened = false
 
-    private var key: String? = null
+    private var arrayKey: String? = null
     private var arrayData: ArrayData? = null
-    private var stringValue: String = ""
+    private var content: String = ""
 
     fun parseStartTag(parser: XmlPullParser) {
         when (parser.name) {
             TAG_STRING_ARRAY -> {
+                isArrayStarted = true
                 arrayData = ArrayData()
                 val attrCount = parser.attributeCount
-                if (attrCount > 0) {
-                    for (item: Int in 0 until parser.attributeCount) {
-                        key = parser.getAttributeValue(item)
-                        arrayData?.name = key
-                        isArrayStarted = true
-                        break
-                    }
-                }
+                (attrCount > 0).let { if (it) arrayKey = parser.getAttributeValue(0) }
             }
             ITEM -> isItemStarted = true
             else -> {
                 if (isArrayStarted && isItemStarted) {
-                    stringValue += "<${parser.name}>"
+                    content += "<${parser.name}>"
                     isInnerTagOpened = true
                 }
             }
@@ -45,7 +39,7 @@ internal class ArrayParser {
 
     fun parseText(parser: XmlPullParser) {
         if (isInnerTagOpened) {
-            stringValue += parser.text
+            content += parser.text
 
         } else if (isArrayStarted && isItemStarted) {
             when (arrayData?.values) {
@@ -59,17 +53,19 @@ internal class ArrayParser {
         if (isArrayStarted) {
             when (parser.name) {
                 TAG_STRING_ARRAY -> {
+                    arrayData?.name = arrayKey
                     arrayData?.let { arrays.add(it) }
+                    arrayKey = ""
                     isArrayStarted = false
                 }
                 ITEM -> {
                     val array = arrayData?.values
-                    array?.set(array.size - 1, array[array.size - 1] + stringValue)
-                    stringValue = ""
+                    array?.set(array.size - 1, array[array.size - 1] + content)
+                    content = ""
                     isItemStarted = false
                 }
                 else -> {
-                    stringValue += "</${parser.name}>"
+                    content += "</${parser.name}>"
                     isInnerTagOpened = false
                 }
             }

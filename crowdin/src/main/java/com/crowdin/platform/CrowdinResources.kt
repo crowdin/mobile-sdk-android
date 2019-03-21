@@ -48,7 +48,7 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
     @Throws(Resources.NotFoundException::class)
     override fun getQuantityText(id: Int, quantity: Int): CharSequence {
         val value = getPluralFromRepository(id, quantity)
-        return value ?: super.getQuantityText(id, quantity)
+        return value?.let { fromHtml(it) } ?: super.getQuantityText(id, quantity)
     }
 
     private fun getStringFromRepository(id: Int): String? =

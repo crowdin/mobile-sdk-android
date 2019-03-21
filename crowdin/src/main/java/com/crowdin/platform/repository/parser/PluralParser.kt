@@ -18,8 +18,8 @@ internal class PluralParser {
     private var pluralData: PluralData? = null
     private var content: String = ""
 
-    private var key: String = ""
     private var quantityKey: String = ""
+    private var quantityItemKey: String = ""
 
     fun parseStartTag(parser: XmlPullParser) {
         when (parser.name) {
@@ -27,12 +27,12 @@ internal class PluralParser {
                 isPluralStarted = true
                 pluralData = PluralData()
                 val attrCount = parser.attributeCount
-                (attrCount > 0).let { if (it) key = parser.getAttributeValue(0) }
+                (attrCount > 0).let { if (it) quantityKey = parser.getAttributeValue(0) }
             }
             ITEM -> {
                 isItemStarted = true
                 val attrCount = parser.attributeCount
-                (attrCount > 0).let { if (it) quantityKey = parser.getAttributeValue(0) }
+                (attrCount > 0).let { if (it) quantityItemKey = parser.getAttributeValue(0) }
             }
             else -> {
                 if (isPluralStarted && isItemStarted) {
@@ -48,7 +48,7 @@ internal class PluralParser {
             content += parser.text
 
         } else if (isPluralStarted && isItemStarted) {
-            pluralData?.quantity?.set(quantityKey, parser.text)
+            pluralData?.quantity?.set(quantityItemKey, parser.text)
         }
     }
 
@@ -56,14 +56,14 @@ internal class PluralParser {
         if (isPluralStarted) {
             when (parser.name) {
                 TAG_PLURALS -> {
-                    pluralData?.name = key
+                    pluralData?.name = quantityKey
                     pluralData?.let { plurals.add(it) }
                     isPluralStarted = false
                 }
                 ITEM -> {
                     val quantityValues = pluralData?.quantity
-                    quantityValues?.set(quantityKey, quantityValues[quantityKey] + content)
-                    quantityKey = ""
+                    quantityValues?.set(quantityItemKey, quantityValues[quantityItemKey] + content)
+                    quantityItemKey = ""
                     content = ""
                     isItemStarted = false
                 }
