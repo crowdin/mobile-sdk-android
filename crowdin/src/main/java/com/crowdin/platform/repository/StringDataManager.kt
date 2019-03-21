@@ -28,8 +28,6 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
     fun updateData(config: CrowdinConfig) {
         val language = LocaleUtils.currentLanguage
         val filePaths = config.filePaths
-
-        // TODO: create pool
         filePaths?.forEach {
             remoteRepository.fetchData(config.distributionKey, language, it, object : LanguageDataCallback {
 
