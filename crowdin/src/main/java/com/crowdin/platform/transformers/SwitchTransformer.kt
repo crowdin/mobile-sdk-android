@@ -28,7 +28,6 @@ internal class SwitchTransformer : ViewTransformerManager.Transformer {
                         (view as Switch).text = text
                     }
                 }
-
                 Attributes.ATTRIBUTE_ANDROID_HINT, Attributes.ATTRIBUTE_HINT -> {
                     val hint = TextUtils.getTextForAttribute(attrs, index, resources)
                     if (hint != null) {
@@ -41,7 +40,6 @@ internal class SwitchTransformer : ViewTransformerManager.Transformer {
                         (view as Switch).textOn = textOn
                     }
                 }
-
                 Attributes.ATTRIBUTE_TEXT_OFF, Attributes.ATTRIBUTE_ANDROID_TEXT_OFF -> {
                     val textOff = TextUtils.getTextForAttribute(attrs, index, resources)
                     if (textOff != null) {

@@ -9,9 +9,6 @@ import com.google.gson.Gson
 /**
  * A LocalRepository which saves/loads the strings in Shared Preferences.
  * it also keeps the strings in memory by using MemoryLocalRepository internally for faster access.
- *
- *
- * it's not ThreadSafe.
  */
 internal class SharedPrefLocalRepository internal constructor(context: Context) : LocalRepository {
 

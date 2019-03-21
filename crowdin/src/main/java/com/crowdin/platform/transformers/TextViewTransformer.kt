@@ -29,7 +29,6 @@ internal class TextViewTransformer : ViewTransformerManager.Transformer {
                         (view as TextView).text = text
                     }
                 }
-
                 Attributes.ATTRIBUTE_ANDROID_HINT, Attributes.ATTRIBUTE_HINT -> {
                     val hint = TextUtils.getTextForAttribute(attrs, index, resources)
                     if (hint != null) {

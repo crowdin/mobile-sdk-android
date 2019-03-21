@@ -30,7 +30,6 @@ internal class XmlReader : Reader {
 
     private fun parseXml(xmlPullParser: XmlPullParser, parser: Parser): LanguageData {
         var eventType = xmlPullParser.eventType
-
         while (eventType != XmlPullParser.END_DOCUMENT) {
             when (eventType) {
                 XmlPullParser.START_TAG -> {

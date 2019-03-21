@@ -6,8 +6,6 @@ import java.util.*
 
 /**
  * A LocalRepository which keeps the stringsData ONLY in memory.
- *
- * it's not ThreadSafe.
  */
 internal class MemoryLocalRepository : LocalRepository {
 

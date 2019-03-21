@@ -26,7 +26,6 @@ internal object XmlParserUtils {
         } catch (e: IOException) {
             SparseArray()
         }
-
     }
 
     @Throws(XmlPullParserException::class, IOException::class)

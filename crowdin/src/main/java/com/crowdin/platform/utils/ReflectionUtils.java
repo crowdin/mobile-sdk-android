@@ -1,7 +1,5 @@
 package com.crowdin.platform.utils;
 
-import android.util.Log;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -12,8 +10,6 @@ import java.lang.reflect.Method;
  * https://github.com/chrisjenx/Calligraphy/blob/master/calligraphy/src/main/java/uk/co/chrisjenx/calligraphy/ReflectionUtils.java
  */
 public class ReflectionUtils {
-
-    private static final String TAG = ReflectionUtils.class.getSimpleName();
 
     private ReflectionUtils() {
     }
@@ -58,10 +54,8 @@ public class ReflectionUtils {
         try {
             if (method == null) return;
             method.invoke(object, args);
-        } catch (IllegalAccessException e) {
-            Log.d(TAG, "Can't invoke method using reflection", e);
-        } catch (InvocationTargetException e) {
-            Log.d(TAG, "Can't invoke method using reflection", e);
+        } catch (IllegalAccessException ignored) {
+        } catch (InvocationTargetException ignored) {
         }
     }
 }
