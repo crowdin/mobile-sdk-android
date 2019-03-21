@@ -1,6 +1,7 @@
 package com.crowdin.platform.repository.remote.api
 
-internal class LanguageData(val language: String) {
+internal class LanguageData(var language: String) {
+    constructor() : this("")
 
     var resources: Map<String, String> = mutableMapOf()
     var arrays: List<ArrayData> = mutableListOf()

@@ -5,9 +5,9 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.InputStream
 
-internal class XmlReader {
+internal class XmlReader : Reader {
 
-    fun parseInput(byteStream: InputStream, currentLocale: String): LanguageData? {
+    override fun parseInput(byteStream: InputStream): LanguageData {
         val pullParserFactory: XmlPullParserFactory
         try {
             pullParserFactory = XmlPullParserFactory.newInstance()
@@ -17,50 +17,35 @@ internal class XmlReader {
             xmlPullParser.setInput(byteStream, null)
 
             if (xmlPullParser != null) {
-                val stringParser = StringParser()
-                val arrayParser = ArrayParser()
-                val pluralParser = PluralParser()
-
-                return parseXml(currentLocale, xmlPullParser, stringParser, arrayParser, pluralParser)
+                val stringResourcesParser = StringResourceParser()
+                return parseXml(xmlPullParser, stringResourcesParser)
             }
 
         } catch (e: Exception) {
-            return null
+            return LanguageData()
         }
 
-        return null
+        return LanguageData()
     }
 
-    private fun parseXml(currentLocale: String, parser: XmlPullParser,
-                         stringParser: StringParser, arrayParser: ArrayParser, pluralParser: PluralParser): LanguageData {
-        var eventType = parser.eventType
+    private fun parseXml(xmlPullParser: XmlPullParser, parser: Parser): LanguageData {
+        var eventType = xmlPullParser.eventType
 
         while (eventType != XmlPullParser.END_DOCUMENT) {
             when (eventType) {
                 XmlPullParser.START_TAG -> {
-                    stringParser.parseStartTag(parser)
-                    arrayParser.parseStartTag(parser)
-                    pluralParser.parseStartTag(parser)
+                    parser.onStartTag(xmlPullParser)
                 }
                 XmlPullParser.TEXT -> {
-                    stringParser.parseText(parser)
-                    arrayParser.parseText(parser)
-                    pluralParser.parseText(parser)
+                    parser.onText(xmlPullParser)
                 }
                 XmlPullParser.END_TAG -> {
-                    stringParser.parseEndTag(parser)
-                    arrayParser.parseEndTag(parser)
-                    pluralParser.parseEndTag(parser)
+                    parser.onEndTag(xmlPullParser)
                 }
             }
-            eventType = parser.next()
+            eventType = xmlPullParser.next()
         }
 
-        val languageData = LanguageData(currentLocale)
-        languageData.resources = stringParser.resources
-        languageData.arrays = arrayParser.arrays
-        languageData.plurals = pluralParser.plurals
-
-        return languageData
+        return parser.getLanguageData()
     }
 }

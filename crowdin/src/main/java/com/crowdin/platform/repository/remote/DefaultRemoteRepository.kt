@@ -2,7 +2,7 @@ package com.crowdin.platform.repository.remote
 
 import android.util.Log
 import com.crowdin.platform.repository.LanguageDataCallback
-import com.crowdin.platform.repository.parser.XmlReader
+import com.crowdin.platform.repository.parser.Reader
 import com.crowdin.platform.repository.remote.api.CrowdinApi
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -13,7 +13,7 @@ import java.util.concurrent.Executors
 
 
 internal class DefaultRemoteRepository(private val crowdinApi: CrowdinApi,
-                                       private val reader: XmlReader) : RemoteRepository {
+                                       private val reader: Reader) : RemoteRepository {
 
     private val TAG: String = DefaultRemoteRepository::class.java.simpleName
 
@@ -25,10 +25,9 @@ internal class DefaultRemoteRepository(private val crowdinApi: CrowdinApi,
                         override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                             val body = response.body()
                             if (response.code() == HttpURLConnection.HTTP_OK && body != null) {
-                                val languageData = reader.parseInput(body.byteStream(), currentLocale)
-                                if (languageData != null) {
-                                    languageDataCallback.onDataLoaded(languageData)
-                                }
+                                val languageData = reader.parseInput(body.byteStream())
+                                languageData.language = currentLocale
+                                languageDataCallback.onDataLoaded(languageData)
                             }
                         }
 

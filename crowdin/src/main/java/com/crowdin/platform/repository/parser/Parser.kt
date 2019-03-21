@@ -1,6 +1,15 @@
 package com.crowdin.platform.repository.parser
 
-interface Parser {
+import com.crowdin.platform.repository.remote.api.LanguageData
+import org.xmlpull.v1.XmlPullParser
 
-    fun parseTag()
+/**
+ * Responsible for handling events related to xml parsing
+ */
+internal interface Parser {
+
+    fun onStartTag(parser: XmlPullParser)
+    fun onText(parser: XmlPullParser)
+    fun onEndTag(parser: XmlPullParser)
+    fun getLanguageData(): LanguageData
 }
