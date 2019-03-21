@@ -5,13 +5,13 @@ package com.crowdin.platform
  */
 class CrowdinConfig private constructor() {
 
-    var isPersist: Boolean = false
+    var isPersist: Boolean = true
     var distributionKey: String? = null
     var filePaths: Array<out String>? = null
 
     class Builder {
 
-        private var persist: Boolean = false
+        private var persist: Boolean = true
         private var distributionKey: String? = null
         private var filePaths: Array<out String>? = null
 
