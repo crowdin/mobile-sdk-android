@@ -6,6 +6,7 @@ import android.content.res.Resources
 import android.view.Menu
 import com.crowdin.platform.repository.StringDataManager
 import com.crowdin.platform.repository.local.LocalStringRepositoryFactory
+import com.crowdin.platform.repository.parser.StringResourceParser
 import com.crowdin.platform.repository.remote.CrowdinRetrofitService
 import com.crowdin.platform.repository.remote.DefaultRemoteRepository
 import com.crowdin.platform.repository.parser.XmlReader
@@ -66,7 +67,7 @@ object Crowdin {
     private fun initStringDataManager(context: Context, config: CrowdinConfig) {
         val remoteRepository = DefaultRemoteRepository(
                 CrowdinRetrofitService.instance.getCrowdinApi(),
-                XmlReader())
+                XmlReader(StringResourceParser()))
         val localRepository = LocalStringRepositoryFactory.createLocalRepository(context, config)
 
         stringDataManager = StringDataManager(remoteRepository, localRepository)

@@ -5,7 +5,7 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.InputStream
 
-internal class XmlReader : Reader {
+internal class XmlReader(var parser: Parser) : Reader {
 
     override fun parseInput(byteStream: InputStream): LanguageData {
         val pullParserFactory: XmlPullParserFactory
@@ -17,8 +17,7 @@ internal class XmlReader : Reader {
             xmlPullParser.setInput(byteStream, null)
 
             if (xmlPullParser != null) {
-                val stringResourcesParser = StringResourceParser()
-                return parseXml(xmlPullParser, stringResourcesParser)
+                return parseXml(xmlPullParser, parser)
             }
 
         } catch (e: Exception) {

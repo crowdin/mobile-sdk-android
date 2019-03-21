@@ -5,6 +5,7 @@ import com.crowdin.platform.repository.local.LocalRepository
 import com.crowdin.platform.repository.remote.RemoteRepository
 import com.crowdin.platform.repository.remote.api.LanguageData
 import com.crowdin.platform.utils.LocaleUtils
+import com.crowdin.platform.utils.ThreadUtils
 
 internal class StringDataManager(private val remoteRepository: RemoteRepository,
                                  private val localRepository: LocalRepository) {
@@ -28,13 +29,15 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
     fun updateData(config: CrowdinConfig) {
         val language = LocaleUtils.currentLanguage
         val filePaths = config.filePaths
-        filePaths?.forEach {
-            remoteRepository.fetchData(config.distributionKey, language, it, object : LanguageDataCallback {
+        ThreadUtils.runInBackgroundPool(Runnable {
+            filePaths?.forEach {
+                remoteRepository.fetchData(config.distributionKey, language, it, object : LanguageDataCallback {
 
-                override fun onDataLoaded(languageData: LanguageData) {
-                    localRepository.saveLanguageData(languageData)
-                }
-            })
-        }
+                    override fun onDataLoaded(languageData: LanguageData) {
+                        localRepository.saveLanguageData(languageData)
+                    }
+                })
+            }
+        }, false)
     }
 }
