@@ -21,8 +21,15 @@ maven: implementation 'TODO.Coming soon'
 
 ### 3. Initialize
 
-Initialization is done via provider so no need to call additional methods inside of your application.
+Add this code in your ``Application`` class.
 
+```java
+Crowdin.init(applicationContext,
+                CrowdinConfig.Builder()
+                        .withDistributionKey("your_distribution_key")
+                        .withFilePaths("your_file_path")
+                        .build()
+```
 
 ### 4. Inject into Context
 
