@@ -7,9 +7,9 @@ import android.view.Menu
 import com.crowdin.platform.repository.StringDataManager
 import com.crowdin.platform.repository.local.LocalStringRepositoryFactory
 import com.crowdin.platform.repository.parser.StringResourceParser
+import com.crowdin.platform.repository.parser.XmlReader
 import com.crowdin.platform.repository.remote.CrowdinRetrofitService
 import com.crowdin.platform.repository.remote.DefaultRemoteRepository
-import com.crowdin.platform.repository.parser.XmlReader
 import com.crowdin.platform.transformers.*
 import com.crowdin.platform.utils.TextUtils
 
@@ -27,6 +27,7 @@ object Crowdin {
      * @param context of the application.
      * @param config  of the Crowdin.
      */
+    @JvmStatic
     fun init(context: Context, config: CrowdinConfig) {
         initCrowdinApi(context)
         initStringDataManager(context, config)
