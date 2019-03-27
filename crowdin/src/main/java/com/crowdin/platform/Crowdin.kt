@@ -1,7 +1,6 @@
 package com.crowdin.platform
 
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.res.Resources
 import android.view.Menu
 import com.crowdin.platform.repository.StringDataManager
@@ -19,7 +18,7 @@ import com.crowdin.platform.utils.TextUtils
 object Crowdin {
 
     private lateinit var viewTransformerManager: ViewTransformerManager
-    private lateinit var stringDataManager: StringDataManager
+    private var stringDataManager: StringDataManager? = null
 
     /**
      * Initialize Crowdin with the specified configuration.
@@ -32,7 +31,7 @@ object Crowdin {
         initCrowdinApi(context)
         initStringDataManager(context, config)
         initViewTransformer()
-        stringDataManager.updateData(config)
+        stringDataManager?.updateData(config)
     }
 
     /**
@@ -42,8 +41,9 @@ object Crowdin {
      * @return the Crowdin wrapped context.
      */
     @JvmStatic
-    fun wrapContext(base: Context): ContextWrapper =
-            CrowdinContextWrapper.wrap(base, stringDataManager, viewTransformerManager)
+    fun wrapContext(base: Context): Context =
+            if (stringDataManager == null) base
+            else CrowdinContextWrapper.wrap(base, stringDataManager, viewTransformerManager)
 
     /**
      * Set a single string for a language.
@@ -53,7 +53,7 @@ object Crowdin {
      * @param value    the string value.
      */
     fun setString(language: String, key: String, value: String) {
-        stringDataManager.setString(language, key, value)
+        stringDataManager?.setString(language, key, value)
     }
 
     @JvmStatic
