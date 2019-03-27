@@ -4,8 +4,8 @@ import com.crowdin.platform.CrowdinConfig
 import com.crowdin.platform.repository.local.LocalRepository
 import com.crowdin.platform.repository.remote.RemoteRepository
 import com.crowdin.platform.repository.remote.api.LanguageData
-import com.crowdin.platform.utils.LocaleUtils
 import com.crowdin.platform.utils.ThreadUtils
+import java.util.*
 
 internal class StringDataManager(private val remoteRepository: RemoteRepository,
                                  private val localRepository: LocalRepository) {
@@ -27,7 +27,7 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
     }
 
     fun updateData(config: CrowdinConfig) {
-        val language = LocaleUtils.currentLanguage
+        val language = Locale.getDefault().language
         val filePaths = config.filePaths
         ThreadUtils.runInBackgroundPool(Runnable {
             filePaths?.forEach {

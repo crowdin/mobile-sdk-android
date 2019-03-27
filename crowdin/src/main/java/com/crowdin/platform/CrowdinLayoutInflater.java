@@ -3,19 +3,14 @@ package com.crowdin.platform;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.crowdin.platform.transformers.ViewTransformerManager;
 import com.crowdin.platform.utils.ReflectionUtils;
 
-import org.xmlpull.v1.XmlPullParser;
-
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 /**
  * Crowdin custom layout inflater. it puts hook on view creation, and tries to apply some transformations
@@ -26,7 +21,6 @@ import java.lang.reflect.Method;
  */
 public class CrowdinLayoutInflater extends LayoutInflater {
 
-    private boolean privateFactorySet = false;
     private Field mConstructorArgs = null;
     private final ViewTransformerManager viewTransformerManager;
 
@@ -59,37 +53,11 @@ public class CrowdinLayoutInflater extends LayoutInflater {
 
     @Override
     public void setFactory2(Factory2 factory2) {
-        if (!(factory2 instanceof WrapperFactory2)) {
-            super.setFactory2(new WrapperFactory2(factory2));
+        if (!(factory2 instanceof PrivateWrapperFactory2)) {
+            super.setFactory2(new PrivateWrapperFactory2(factory2));
         } else {
             super.setFactory2(factory2);
         }
-    }
-
-    private void setPrivateFactoryInternal() {
-        if (privateFactorySet) return;
-        if (!(getContext() instanceof Factory2)) {
-            privateFactorySet = true;
-            return;
-        }
-
-        final Method setPrivateFactoryMethod = ReflectionUtils
-                .getMethod(LayoutInflater.class, "setPrivateFactory");
-
-        if (setPrivateFactoryMethod != null) {
-            PrivateWrapperFactory2 newFactory = new PrivateWrapperFactory2((Factory2) getContext());
-            ReflectionUtils.invokeMethod(
-                    this,
-                    setPrivateFactoryMethod,
-                    newFactory);
-        }
-        privateFactorySet = true;
-    }
-
-    @Override
-    public View inflate(XmlPullParser parser, @Nullable ViewGroup root, boolean attachToRoot) {
-        setPrivateFactoryInternal();
-        return super.inflate(parser, root, attachToRoot);
     }
 
     @Override
@@ -101,8 +69,7 @@ public class CrowdinLayoutInflater extends LayoutInflater {
                     return applyChange(view, attrs);
                 }
             } catch (ClassNotFoundException e) {
-                // In this case we want to let the base class take a crack
-                // at it.
+                // In this case we want to let the base class take a crack at it.
             }
         }
 
@@ -124,27 +91,6 @@ public class CrowdinLayoutInflater extends LayoutInflater {
         @Override
         public View onCreateView(String name, Context context, AttributeSet attrs) {
             View view = factory.onCreateView(name, context, attrs);
-            return applyChange(view, attrs);
-        }
-    }
-
-    private class WrapperFactory2 implements Factory2 {
-
-        private final Factory2 factory2;
-
-        WrapperFactory2(Factory2 factory2) {
-            this.factory2 = factory2;
-        }
-
-        @Override
-        public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
-            View view = factory2.onCreateView(parent, name, context, attrs);
-            return applyChange(view, attrs);
-        }
-
-        @Override
-        public View onCreateView(String name, Context context, AttributeSet attrs) {
-            View view = factory2.onCreateView(name, context, attrs);
             return applyChange(view, attrs);
         }
     }

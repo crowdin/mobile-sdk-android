@@ -4,7 +4,7 @@ import android.content.res.Resources
 import android.util.AttributeSet
 import android.view.Menu
 
-object TextUtils {
+internal object TextUtils {
 
     fun getTextForAttribute(attrs: AttributeSet, index: Int, resources: Resources): CharSequence? {
         var text: CharSequence? = null

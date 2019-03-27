@@ -1,7 +1,6 @@
 package com.crowdin.platform.repository.local
 
 import com.crowdin.platform.repository.remote.api.LanguageData
-import com.crowdin.platform.utils.LocaleUtils
 import java.util.*
 
 /**
@@ -44,7 +43,7 @@ internal class MemoryLocalRepository : LocalRepository {
     }
 
     override fun getStringArray(key: String): Array<String>? {
-        val languageData = stringsData[LocaleUtils.currentLanguage]
+        val languageData = stringsData[Locale.getDefault().language]
         if (languageData != null) {
             for (array in languageData.arrays) {
                 if (array.name == key) {
@@ -57,7 +56,7 @@ internal class MemoryLocalRepository : LocalRepository {
     }
 
     override fun getStringPlural(resourceKey: String, quantityKey: String): String? {
-        val languageData = stringsData[LocaleUtils.currentLanguage]
+        val languageData = stringsData[Locale.getDefault().language]
         if (languageData != null) {
             for (pluralData in languageData.plurals) {
                 if (pluralData.name == resourceKey) {

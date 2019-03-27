@@ -4,9 +4,8 @@ import android.content.res.Resources
 import android.icu.text.PluralRules
 import android.os.Build
 import android.text.Html
-
 import com.crowdin.platform.repository.StringDataManager
-import com.crowdin.platform.utils.LocaleUtils
+import java.util.*
 
 /**
  * This is the wrapped resources which will be provided by Crowdin.
@@ -54,7 +53,7 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
     private fun getStringFromRepository(id: Int): String? =
             try {
                 val stringKey = getResourceEntryName(id)
-                stringDataManager.getString(LocaleUtils.currentLanguage, stringKey)
+                stringDataManager.getString(Locale.getDefault().language, stringKey)
             } catch (ex: Resources.NotFoundException) {
                 null
             }
@@ -67,7 +66,7 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
     private fun getPluralFromRepository(id: Int, quantity: Int): String? =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 val pluralKey = getResourceEntryName(id)
-                val rule = PluralRules.forLocale(LocaleUtils.currentLocale)
+                val rule = PluralRules.forLocale(Locale.getDefault())
                 val ruleName = rule.select(quantity.toDouble())
                 stringDataManager.getStringPlural(pluralKey, ruleName)
             } else {
