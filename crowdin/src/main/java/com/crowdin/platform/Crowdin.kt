@@ -18,6 +18,7 @@ import com.crowdin.platform.utils.TextUtils
 object Crowdin {
 
     private lateinit var viewTransformerManager: ViewTransformerManager
+    private lateinit var config: CrowdinConfig
     private var stringDataManager: StringDataManager? = null
 
     /**
@@ -28,10 +29,11 @@ object Crowdin {
      */
     @JvmStatic
     fun init(context: Context, config: CrowdinConfig) {
+        this.config = config
         initCrowdinApi(context)
         initStringDataManager(context, config)
         initViewTransformer()
-        stringDataManager?.updateData(config)
+        stringDataManager?.updateData(config.filePaths, config.distributionKey)
     }
 
     /**
@@ -56,9 +58,24 @@ object Crowdin {
         stringDataManager?.setString(language, key, value)
     }
 
+    /**
+     * Tries to update title for all items defined in menu xml file.
+     *
+     * @param menu      the options menu in which you place your items.
+     * @param resources class for accessing an application's resources..
+     * @param menuId    the id of menu file.
+     */
     @JvmStatic
     fun updateMenuItemsText(menu: Menu, resources: Resources, menuId: Int) {
         TextUtils.updateMenuItemsText(menu, resources, menuId)
+    }
+
+    /**
+     * Initialize force update from the network.
+     */
+    @JvmStatic
+    fun forceUpdate() {
+        stringDataManager?.updateData(config.filePaths, config.distributionKey)
     }
 
     private fun initCrowdinApi(context: Context) {
