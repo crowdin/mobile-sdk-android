@@ -3,11 +3,13 @@ package com.crowdin.platform.repository.remote
 import com.crowdin.platform.repository.LanguageDataCallback
 import com.crowdin.platform.repository.parser.Reader
 import com.crowdin.platform.repository.remote.api.CrowdinApi
+import com.crowdin.platform.utils.FilePathPlaceholder
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.net.HttpURLConnection
+import java.util.*
 
 internal class DefaultRemoteRepository(private val crowdinApi: CrowdinApi,
                                        private val reader: Reader,
@@ -21,12 +23,13 @@ internal class DefaultRemoteRepository(private val crowdinApi: CrowdinApi,
 
     private var eTagMap = mutableMapOf<String, String>()
 
-    override fun fetchData(currentLocale: String, languageDataCallback: LanguageDataCallback) {
+    override fun fetchData(languageDataCallback: LanguageDataCallback) {
         if (distributionKey == null) return
 
         filePaths?.forEach {
-            val eTag = eTagMap[it]
-            crowdinApi.getFileUpdates(eTag ?: HEADER_ETAG_EMPTY, distributionKey, currentLocale, it)
+            val filePath = validateFilePath(it)
+            val eTag = eTagMap[filePath]
+            crowdinApi.getFileUpdates(eTag ?: HEADER_ETAG_EMPTY, distributionKey, filePath)
                     .enqueue(object : Callback<ResponseBody> {
 
                         override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -35,11 +38,11 @@ internal class DefaultRemoteRepository(private val crowdinApi: CrowdinApi,
 
                             if (response.code() == HttpURLConnection.HTTP_OK && body != null) {
                                 if (fileETag != null) {
-                                    eTagMap[it] = fileETag
+                                    eTagMap[filePath] = fileETag
                                 }
 
                                 val languageData = reader.parseInput(body.byteStream())
-                                languageData.language = currentLocale
+                                languageData.language = Locale.getDefault().language
                                 languageDataCallback.onDataLoaded(languageData)
                             }
                         }
@@ -48,5 +51,13 @@ internal class DefaultRemoteRepository(private val crowdinApi: CrowdinApi,
                         }
                     })
         }
+    }
+
+    private fun validateFilePath(filePath: String): String {
+        if (!filePath.contains("/")) {
+            return "${FilePathPlaceholder.getLanguage()}/$filePath"
+        }
+
+        return filePath
     }
 }
