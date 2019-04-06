@@ -25,17 +25,15 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
         return localRepository.getStringPlural(resourceKey, quantityKey)
     }
 
-    fun updateData(filePaths: Array<out String>?, distributionKey: String?) {
+    fun updateData() {
         val language = Locale.getDefault().language
         ThreadUtils.runInBackgroundPool(Runnable {
-            filePaths?.forEach {
-                remoteRepository.fetchData(distributionKey, language, it, object : LanguageDataCallback {
+            remoteRepository.fetchData(language, object : LanguageDataCallback {
 
-                    override fun onDataLoaded(languageData: LanguageData) {
-                        localRepository.saveLanguageData(languageData)
-                    }
-                })
-            }
+                override fun onDataLoaded(languageData: LanguageData) {
+                    localRepository.saveLanguageData(languageData)
+                }
+            })
         }, false)
     }
 }

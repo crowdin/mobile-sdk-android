@@ -10,25 +10,43 @@ import retrofit2.Response
 import java.net.HttpURLConnection
 
 internal class DefaultRemoteRepository(private val crowdinApi: CrowdinApi,
-                                       private val reader: Reader) : RemoteRepository {
+                                       private val reader: Reader,
+                                       private val distributionKey: String?,
+                                       private val filePaths: Array<out String>?) : RemoteRepository {
 
-    override fun fetchData(distributionKey: String?, currentLocale: String, filePath: String, languageDataCallback: LanguageDataCallback) {
+    companion object {
+        private const val HEADER_ETAG = "ETag"
+        private const val HEADER_ETAG_EMPTY = ""
+    }
+
+    private var eTagMap = mutableMapOf<String, String>()
+
+    override fun fetchData(currentLocale: String, languageDataCallback: LanguageDataCallback) {
         if (distributionKey == null) return
 
-        crowdinApi.getFileUpdates(distributionKey, currentLocale, filePath)
-                .enqueue(object : Callback<ResponseBody> {
+        filePaths?.forEach {
+            val eTag = eTagMap[it]
+            crowdinApi.getFileUpdates(eTag ?: HEADER_ETAG_EMPTY, distributionKey, currentLocale, it)
+                    .enqueue(object : Callback<ResponseBody> {
 
-                    override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                        val body = response.body()
-                        if (response.code() == HttpURLConnection.HTTP_OK && body != null) {
-                            val languageData = reader.parseInput(body.byteStream())
-                            languageData.language = currentLocale
-                            languageDataCallback.onDataLoaded(languageData)
+                        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                            val body = response.body()
+                            val fileETag = response.headers().get(HEADER_ETAG)
+
+                            if (response.code() == HttpURLConnection.HTTP_OK && body != null) {
+                                if (fileETag != null) {
+                                    eTagMap[it] = fileETag
+                                }
+
+                                val languageData = reader.parseInput(body.byteStream())
+                                languageData.language = currentLocale
+                                languageDataCallback.onDataLoaded(languageData)
+                            }
                         }
-                    }
 
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    }
-                })
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        }
+                    })
+        }
     }
 }

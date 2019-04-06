@@ -33,7 +33,7 @@ object Crowdin {
         initCrowdinApi(context)
         initStringDataManager(context, config)
         initViewTransformer()
-        stringDataManager?.updateData(config.filePaths, config.distributionKey)
+        stringDataManager?.updateData()
     }
 
     /**
@@ -75,7 +75,7 @@ object Crowdin {
      */
     @JvmStatic
     fun forceUpdate() {
-        stringDataManager?.updateData(config.filePaths, config.distributionKey)
+        stringDataManager?.updateData()
     }
 
     private fun initCrowdinApi(context: Context) {
@@ -85,7 +85,9 @@ object Crowdin {
     private fun initStringDataManager(context: Context, config: CrowdinConfig) {
         val remoteRepository = DefaultRemoteRepository(
                 CrowdinRetrofitService.instance.getCrowdinApi(),
-                XmlReader(StringResourceParser()))
+                XmlReader(StringResourceParser()),
+                config.distributionKey,
+                config.filePaths)
         val localRepository = LocalStringRepositoryFactory.createLocalRepository(context, config)
 
         stringDataManager = StringDataManager(remoteRepository, localRepository)
