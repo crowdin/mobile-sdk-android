@@ -33,7 +33,7 @@ object Crowdin {
         initCrowdinApi(context)
         initStringDataManager(context, config)
         initViewTransformer()
-        stringDataManager?.updateData()
+        stringDataManager?.updateData(context, config.networkType)
     }
 
     /**
@@ -74,8 +74,8 @@ object Crowdin {
      * Initialize force update from the network.
      */
     @JvmStatic
-    fun forceUpdate() {
-        stringDataManager?.updateData()
+    fun forceUpdate(context: Context) {
+        stringDataManager?.updateData(context, config.networkType)
     }
 
     private fun initCrowdinApi(context: Context) {

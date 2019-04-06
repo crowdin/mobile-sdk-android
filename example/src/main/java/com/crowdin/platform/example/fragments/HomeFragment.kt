@@ -21,7 +21,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<Button>(R.id.load_data_btn).setOnClickListener {
-            Crowdin.forceUpdate()
+            context?.let { it1 -> Crowdin.forceUpdate(it1) }
         }
     }
 }
