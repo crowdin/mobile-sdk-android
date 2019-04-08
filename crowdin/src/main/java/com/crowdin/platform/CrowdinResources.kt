@@ -53,7 +53,7 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
     private fun getStringFromRepository(id: Int): String? =
             try {
                 val stringKey = getResourceEntryName(id)
-                stringDataManager.getString(Locale.getDefault().language, stringKey)
+                stringDataManager.getString(Locale.getDefault().toString(), stringKey)
             } catch (ex: Resources.NotFoundException) {
                 null
             }

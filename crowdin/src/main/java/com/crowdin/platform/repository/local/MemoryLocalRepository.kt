@@ -43,7 +43,7 @@ internal class MemoryLocalRepository : LocalRepository {
     }
 
     override fun getStringArray(key: String): Array<String>? {
-        val languageData = stringsData[Locale.getDefault().language]
+        val languageData = stringsData[Locale.getDefault().toString()]
         if (languageData != null) {
             for (array in languageData.arrays) {
                 if (array.name == key) {
@@ -56,7 +56,7 @@ internal class MemoryLocalRepository : LocalRepository {
     }
 
     override fun getStringPlural(resourceKey: String, quantityKey: String): String? {
-        val languageData = stringsData[Locale.getDefault().language]
+        val languageData = stringsData[Locale.getDefault().toString()]
         if (languageData != null) {
             for (pluralData in languageData.plurals) {
                 if (pluralData.name == resourceKey) {
