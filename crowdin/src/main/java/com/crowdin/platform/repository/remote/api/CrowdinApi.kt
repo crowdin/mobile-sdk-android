@@ -8,7 +8,7 @@ import retrofit2.http.Path
 
 internal interface CrowdinApi {
 
-    @GET("/{distributionHash}/{filePath}")
+    @GET("/{distributionHash}{filePath}")
     fun getFileUpdates(
             @Header("if-none-match") eTag: String,
             @Path("distributionHash") distributionHash: String,
