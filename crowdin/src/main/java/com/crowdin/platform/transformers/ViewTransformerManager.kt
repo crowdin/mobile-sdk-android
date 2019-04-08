@@ -30,7 +30,7 @@ internal class ViewTransformerManager {
      * @param attrs attributes of the view.
      * @return the transformed view.
      */
-     fun transform(view: View?, attrs: AttributeSet): View? {
+    fun transform(view: View?, attrs: AttributeSet): View? {
         if (view == null) {
             return null
         }

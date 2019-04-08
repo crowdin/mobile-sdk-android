@@ -101,7 +101,5 @@ object Crowdin {
         viewTransformerManager.registerTransformer(BottomNavigationViewTransformer())
         viewTransformerManager.registerTransformer(NavigationViewTransformer())
         viewTransformerManager.registerTransformer(SpinnerTransformer())
-        viewTransformerManager.registerTransformer(ToggleButtonTransformer())
-        viewTransformerManager.registerTransformer(SwitchTransformer())
     }
 }

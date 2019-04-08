@@ -2,7 +2,9 @@ package com.crowdin.platform.transformers
 
 import android.util.AttributeSet
 import android.view.View
+import android.widget.Switch
 import android.widget.TextView
+import android.widget.ToggleButton
 import com.crowdin.platform.utils.TextUtils
 
 /**
@@ -33,6 +35,24 @@ internal class TextViewTransformer : ViewTransformerManager.Transformer {
                     val hint = TextUtils.getTextForAttribute(attrs, index, resources)
                     if (hint != null) {
                         (view as TextView).hint = hint
+                    }
+                }
+                Attributes.ATTRIBUTE_TEXT_ON, Attributes.ATTRIBUTE_ANDROID_TEXT_ON -> {
+                    val textOn = TextUtils.getTextForAttribute(attrs, index, resources)
+                    if (textOn != null) {
+                        when (view) {
+                            is Switch -> view.textOn = textOn
+                            is ToggleButton -> view.textOn = textOn
+                        }
+                    }
+                }
+                Attributes.ATTRIBUTE_TEXT_OFF, Attributes.ATTRIBUTE_ANDROID_TEXT_OFF -> {
+                    val textOff = TextUtils.getTextForAttribute(attrs, index, resources)
+                    if (textOff != null) {
+                        when (view) {
+                            is Switch -> view.textOff = textOff
+                            is ToggleButton -> view.textOff = textOff
+                        }
                     }
                 }
             }
