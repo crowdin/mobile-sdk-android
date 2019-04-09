@@ -65,5 +65,5 @@ internal interface LocalRepository {
      */
     fun isExist(language: String): Boolean
 
-    fun getTextId(text: String): Int?
+    fun getTextKey(text: String): String?
 }

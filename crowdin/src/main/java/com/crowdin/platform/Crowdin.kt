@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.view.Menu
 import com.crowdin.platform.repository.StringDataManager
+import com.crowdin.platform.repository.TextIdProvider
 import com.crowdin.platform.repository.local.LocalStringRepositoryFactory
 import com.crowdin.platform.repository.parser.StringResourceParser
 import com.crowdin.platform.repository.parser.XmlReader
@@ -100,7 +101,7 @@ object Crowdin {
 
     private fun initViewTransformer(context: Context) {
         viewTransformerManager = ViewTransformerManager()
-        viewTransformerManager.registerTransformer(TextViewTransformer(context))
+        viewTransformerManager.registerTransformer(TextViewTransformer(context, stringDataManager as TextIdProvider))
         viewTransformerManager.registerTransformer(ToolbarTransformer())
         viewTransformerManager.registerTransformer(SupportToolbarTransformer())
         viewTransformerManager.registerTransformer(BottomNavigationViewTransformer())

@@ -24,7 +24,7 @@ internal class MemoryLocalRepository : LocalRepository {
         if (data == null) {
             stringsData[language] = LanguageData(language)
         } else {
-            data.resources.plus(Pair(key, value))
+            data.resources[key] = value
         }
     }
 
@@ -67,7 +67,22 @@ internal class MemoryLocalRepository : LocalRepository {
         return stringsData[language] != null
     }
 
-    override fun getTextId(text: String): Int? {
+    override fun getTextKey(text: String): String? {
+        val languageData = stringsData[Locale.getDefault().toString()]
+        languageData?.resources?.forEach {
+            if (it.value == text) {
+                return it.key
+            }
+        }
+        // TODO: Refactor
+        // Get from reserve
+        val languageReserveData = stringsData[Locale.getDefault().language]
+        languageReserveData?.resources?.forEach {
+            if (it.value == text) {
+                return it.key
+            }
+        }
+
         return null
     }
 }

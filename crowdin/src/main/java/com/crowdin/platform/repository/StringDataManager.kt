@@ -7,12 +7,13 @@ import com.crowdin.platform.repository.remote.NetworkType
 import com.crowdin.platform.repository.remote.RemoteRepository
 import com.crowdin.platform.repository.remote.api.LanguageData
 import com.crowdin.platform.utils.ThreadUtils
+import java.util.*
 
 internal class StringDataManager(private val remoteRepository: RemoteRepository,
-                                 private val localRepository: LocalRepository): TextIdProvider {
+                                 private val localRepository: LocalRepository) : TextIdProvider {
 
-    override fun provideTextId(text: String): Int? {
-        return localRepository.getTextId(text)
+    override fun provideTextKey(text: String): String? {
+        return localRepository.getTextKey(text)
     }
 
     fun getString(language: String, stringKey: String): String? {
@@ -43,9 +44,13 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
             }, false)
         }
     }
+
+    fun saveReserveResources(stringKey: String, defaultText: String) {
+        localRepository.setString(Locale.getDefault().language, stringKey, defaultText)
+    }
 }
 
-interface TextIdProvider {
+internal interface TextIdProvider {
 
-    fun provideTextId(text: String): Int?
+    fun provideTextKey(text: String): String?
 }

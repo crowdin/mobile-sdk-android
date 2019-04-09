@@ -3,7 +3,7 @@ package com.crowdin.platform.repository.remote.api
 internal class LanguageData(var language: String) {
     constructor() : this("")
 
-    var resources: Map<String, String> = mutableMapOf()
+    var resources: MutableMap<String, String> = mutableMapOf()
     var arrays: List<ArrayData> = mutableListOf()
     var plurals: List<PluralData> = mutableListOf()
 

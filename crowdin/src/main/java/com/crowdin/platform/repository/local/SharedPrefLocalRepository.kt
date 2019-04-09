@@ -33,7 +33,7 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
     override fun setString(language: String, key: String, value: String) {
         memoryLocalRepository.setString(language, key, value)
         val languageData = memoryLocalRepository.getLanguageData(language) ?: return
-        languageData.resources.plus(Pair(key, value))
+        languageData.resources[key] = value
         saveData(languageData)
     }
 
@@ -48,9 +48,7 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
 
     override fun isExist(language: String): Boolean = memoryLocalRepository.isExist(language)
 
-    override fun getTextId(text: String): Int? {
-        return null
-    }
+    override fun getTextKey(text: String): String? = memoryLocalRepository.getTextKey(text)
 
     private fun initSharedPreferences(context: Context) {
         sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)

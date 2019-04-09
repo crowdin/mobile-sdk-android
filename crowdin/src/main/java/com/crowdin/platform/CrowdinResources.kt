@@ -33,10 +33,18 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
         return value ?: super.getStringArray(id)
     }
 
+    // TODO: Apply this approach to getString etc.
     @Throws(Resources.NotFoundException::class)
     override fun getText(id: Int): CharSequence {
         val value = getStringFromRepository(id)
-        return value?.let { fromHtml(it) } ?: super.getText(id)
+        return if (value == null) {
+            val stringKey = getResourceEntryName(id)
+            val defaultText = super.getText(id)
+            stringDataManager.saveReserveResources(stringKey, defaultText.toString())
+            defaultText
+        } else {
+            fromHtml(value)
+        }
     }
 
     override fun getText(id: Int, def: CharSequence): CharSequence {
