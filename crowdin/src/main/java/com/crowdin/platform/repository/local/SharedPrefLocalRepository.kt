@@ -48,6 +48,10 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
 
     override fun isExist(language: String): Boolean = memoryLocalRepository.isExist(language)
 
+    override fun getTextId(text: String): Int? {
+        return null
+    }
+
     private fun initSharedPreferences(context: Context) {
         sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
     }

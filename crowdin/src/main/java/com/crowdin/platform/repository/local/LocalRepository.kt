@@ -64,4 +64,6 @@ internal interface LocalRepository {
      * @return true if exist, otherwise false.
      */
     fun isExist(language: String): Boolean
+
+    fun getTextId(text: String): Int?
 }

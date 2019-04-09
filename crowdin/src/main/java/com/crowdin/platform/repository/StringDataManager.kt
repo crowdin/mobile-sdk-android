@@ -9,7 +9,11 @@ import com.crowdin.platform.repository.remote.api.LanguageData
 import com.crowdin.platform.utils.ThreadUtils
 
 internal class StringDataManager(private val remoteRepository: RemoteRepository,
-                                 private val localRepository: LocalRepository) {
+                                 private val localRepository: LocalRepository): TextIdProvider {
+
+    override fun provideTextId(text: String): Int? {
+        return localRepository.getTextId(text)
+    }
 
     fun getString(language: String, stringKey: String): String? {
         return localRepository.getString(language, stringKey)
@@ -39,4 +43,9 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
             }, false)
         }
     }
+}
+
+interface TextIdProvider {
+
+    fun provideTextId(text: String): Int?
 }

@@ -32,23 +32,22 @@ internal class MemoryLocalRepository : LocalRepository {
         val languageData = stringsData[language]
         return if (languageData == null || !languageData.resources.containsKey(key)) {
             null
-        } else languageData.resources[key]
+        } else {
+            languageData.resources[key]
+        }
     }
 
-    override fun getLanguageData(language: String): LanguageData? {
-        return if (!stringsData.containsKey(language)) {
-            null
-        } else stringsData[language]
-
-    }
+    override fun getLanguageData(language: String): LanguageData? =
+            if (!stringsData.containsKey(language)) {
+                null
+            } else {
+                stringsData[language]
+            }
 
     override fun getStringArray(key: String): Array<String>? {
-        val languageData = stringsData[Locale.getDefault().toString()]
-        if (languageData != null) {
-            for (array in languageData.arrays) {
-                if (array.name == key) {
-                    return array.values
-                }
+        stringsData[Locale.getDefault().toString()]?.arrays?.forEach { array ->
+            if (array.name == key) {
+                return array.values
             }
         }
 
@@ -56,19 +55,19 @@ internal class MemoryLocalRepository : LocalRepository {
     }
 
     override fun getStringPlural(resourceKey: String, quantityKey: String): String? {
-        val languageData = stringsData[Locale.getDefault().toString()]
-        if (languageData != null) {
-            for (pluralData in languageData.plurals) {
-                if (pluralData.name == resourceKey) {
-                    return pluralData.quantity[quantityKey]
-                }
+        stringsData[Locale.getDefault().toString()]?.plurals?.forEach { pluralData ->
+            if (pluralData.name == resourceKey) {
+                return pluralData.quantity[quantityKey]
             }
         }
-
         return null
     }
 
     override fun isExist(language: String): Boolean {
         return stringsData[language] != null
+    }
+
+    override fun getTextId(text: String): Int? {
+        return null
     }
 }

@@ -16,6 +16,16 @@ internal object TextUtils {
         return text
     }
 
+    fun getTextAttributeId(attrs: AttributeSet, index: Int): Int? {
+        var id: Int? = null
+        val value = attrs.getAttributeValue(index)
+        if (value != null && value.startsWith("@")) {
+            id = attrs.getAttributeResourceValue(index, 0)
+        }
+
+        return id
+    }
+
     fun updateMenuItemsText(menu: Menu, resources: Resources, resId: Int) {
         val itemStrings = XmlParserUtils.getMenuItemsStrings(resources, resId)
 

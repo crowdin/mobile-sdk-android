@@ -32,8 +32,8 @@ object Crowdin {
         this.config = config
         initCrowdinApi(context)
         initStringDataManager(context, config)
-        initViewTransformer()
-        stringDataManager?.updateData(context, config.networkType)
+        initViewTransformer(context)
+//        stringDataManager?.updateData(context, config.networkType)
     }
 
     /**
@@ -78,6 +78,11 @@ object Crowdin {
         stringDataManager?.updateData(context, config.networkType)
     }
 
+    @JvmStatic
+    fun invalidate() {
+        viewTransformerManager.invalidate()
+    }
+
     private fun initCrowdinApi(context: Context) {
         CrowdinRetrofitService.instance.init(context)
     }
@@ -93,9 +98,9 @@ object Crowdin {
         stringDataManager = StringDataManager(remoteRepository, localRepository)
     }
 
-    private fun initViewTransformer() {
+    private fun initViewTransformer(context: Context) {
         viewTransformerManager = ViewTransformerManager()
-        viewTransformerManager.registerTransformer(TextViewTransformer())
+        viewTransformerManager.registerTransformer(TextViewTransformer(context))
         viewTransformerManager.registerTransformer(ToolbarTransformer())
         viewTransformerManager.registerTransformer(SupportToolbarTransformer())
         viewTransformerManager.registerTransformer(BottomNavigationViewTransformer())

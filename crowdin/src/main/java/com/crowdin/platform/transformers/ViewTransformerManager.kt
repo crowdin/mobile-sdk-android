@@ -49,6 +49,12 @@ internal class ViewTransformerManager {
         return newView
     }
 
+    fun invalidate() {
+        transformers.forEach {
+            it.second.invalidate()
+        }
+    }
+
     /**
      * A view transformer skeleton.
      */
@@ -68,5 +74,7 @@ internal class ViewTransformerManager {
          * @return the transformed view.
          */
         fun transform(view: View, attrs: AttributeSet): View
+
+        fun invalidate() {}
     }
 }
