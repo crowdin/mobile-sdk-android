@@ -54,27 +54,32 @@ internal class ViewTransformerManager {
             it.second.invalidate()
         }
     }
+}
+
+/**
+ * A view transformer skeleton.
+ */
+internal interface Transformer {
 
     /**
-     * A view transformer skeleton.
+     * The type of view this transformer is for.
+     *
+     * @return the type of view.
      */
-    internal interface Transformer {
-        /**
-         * The type of view this transformer is for.
-         *
-         * @return the type of view.
-         */
-        val viewType: Class<out View>
+    val viewType: Class<out View>
 
-        /**
-         * Apply transformation to a view.
-         *
-         * @param view  to be transformed.
-         * @param attrs attributes of the view.
-         * @return the transformed view.
-         */
-        fun transform(view: View, attrs: AttributeSet): View
+    /**
+     * Apply transformation to a view.
+     *
+     * @param view  to be transformed.
+     * @param attrs attributes of the view.
+     * @return the transformed view.
+     */
+    fun transform(view: View, attrs: AttributeSet): View
 
-        fun invalidate() {}
+    fun invalidate() {}
+
+    companion object {
+        const val UNKNOWN_ID = "-1"
     }
 }

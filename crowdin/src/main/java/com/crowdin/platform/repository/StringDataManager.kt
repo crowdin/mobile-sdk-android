@@ -45,8 +45,9 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
         }
     }
 
+    // TODO: check config manager/translator
     fun saveReserveResources(stringKey: String, defaultText: String) {
-        localRepository.setString(Locale.getDefault().language, stringKey, defaultText)
+        localRepository.setString("${Locale.getDefault().language}-copy", stringKey, defaultText)
     }
 }
 

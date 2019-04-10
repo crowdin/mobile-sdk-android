@@ -18,22 +18,43 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
     @Throws(Resources.NotFoundException::class)
     override fun getString(id: Int): String {
         val value = getStringFromRepository(id)
-        return value ?: super.getString(id)
+        return if (value == null) {
+            val stringKey = getResourceEntryName(id)
+            val defaultText = super.getString(id)
+            stringDataManager.saveReserveResources(stringKey, defaultText.toString())
+            defaultText
+        } else {
+            value
+        }
     }
 
     @Throws(Resources.NotFoundException::class)
     override fun getString(id: Int, vararg formatArgs: Any): String {
         val value = getStringFromRepository(id)
-        return if (value == null) super.getString(id, *formatArgs) else String.format(value, *formatArgs)
+        return if (value == null) {
+            val stringKey = getResourceEntryName(id)
+            val defaultText = super.getString(id, *formatArgs)
+            stringDataManager.saveReserveResources(stringKey, defaultText.toString())
+            defaultText
+        } else {
+            String.format(value, *formatArgs)
+        }
     }
 
+    // TODO: update arrays
     @Throws(Resources.NotFoundException::class)
     override fun getStringArray(id: Int): Array<String> {
         val value = getStringArrayFromRepository(id)
-        return value ?: super.getStringArray(id)
+        return if (value == null) {
+            val stringKey = getResourceEntryName(id)
+            val defaultText = super.getStringArray(id)
+            stringDataManager.saveReserveResources(stringKey, defaultText.toString())
+            defaultText
+        } else {
+            value
+        }
     }
 
-    // TODO: Apply this approach to getString etc.
     @Throws(Resources.NotFoundException::class)
     override fun getText(id: Int): CharSequence {
         val value = getStringFromRepository(id)
@@ -49,9 +70,17 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
 
     override fun getText(id: Int, def: CharSequence): CharSequence {
         val value = getStringFromRepository(id)
-        return value?.let { fromHtml(it) } ?: super.getText(id, def)
+        return if (value == null) {
+            val stringKey = getResourceEntryName(id)
+            val defaultText = super.getText(id, def)
+            stringDataManager.saveReserveResources(stringKey, defaultText.toString())
+            defaultText
+        } else {
+            fromHtml(value)
+        }
     }
 
+    // TODO: update plurals
     @Throws(Resources.NotFoundException::class)
     override fun getQuantityText(id: Int, quantity: Int): CharSequence {
         val value = getPluralFromRepository(id, quantity)

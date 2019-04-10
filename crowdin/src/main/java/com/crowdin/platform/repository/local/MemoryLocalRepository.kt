@@ -68,15 +68,9 @@ internal class MemoryLocalRepository : LocalRepository {
     }
 
     override fun getTextKey(text: String): String? {
-        val languageData = stringsData[Locale.getDefault().toString()]
-        languageData?.resources?.forEach {
-            if (it.value == text) {
-                return it.key
-            }
-        }
         // TODO: Refactor
         // Get from reserve
-        val languageReserveData = stringsData[Locale.getDefault().language]
+        val languageReserveData = stringsData["${Locale.getDefault().language}-copy"]
         languageReserveData?.resources?.forEach {
             if (it.value == text) {
                 return it.key

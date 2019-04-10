@@ -9,7 +9,7 @@ import android.widget.Spinner
  * A transformer which transforms Spinner: it transforms the entries attribute
  * and uses default android.layouts for displaying
  */
-internal class SpinnerTransformer : ViewTransformerManager.Transformer {
+internal class SpinnerTransformer : Transformer {
 
     override val viewType: Class<out View>
         get() = Spinner::class.java

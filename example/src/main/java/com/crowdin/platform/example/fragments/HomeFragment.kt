@@ -23,7 +23,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<Button>(R.id.load_data_btn).setOnClickListener {
-            view.findViewById<TextView>(R.id.textView3).text = getText(R.string.camera)
+            view.findViewById<TextView>(R.id.textView3).text = getString(R.string.formatting_test0, 3)
             view.findViewById<Button>(R.id.load_data_btn).text = getText(R.string.gallery_fragment)
             context?.let { it1 -> Crowdin.forceUpdate(it1) }
         }
@@ -32,7 +32,7 @@ class HomeFragment : Fragment() {
             //            view.findViewById<TextView>(R.id.textView3).text = getText(R.string.camera)
 //            view.findViewById<Button>(R.id.load_data_btn).text = getText(R.string.gallery_fragment)
 
-            Handler().postDelayed({ Crowdin.invalidate() }, 5000)
+            Handler().postDelayed({ Crowdin.invalidate() }, 2000)
         }
     }
 }

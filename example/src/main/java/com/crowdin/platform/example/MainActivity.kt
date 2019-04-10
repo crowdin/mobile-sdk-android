@@ -31,7 +31,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
         navigationView.post { navigationView.setCheckedItem(R.id.nav_home) }
-        setTitle(R.string.home)
+//        setTitle(R.string.home)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
