@@ -99,11 +99,12 @@ object Crowdin {
         stringDataManager = StringDataManager(remoteRepository, localRepository)
     }
 
+    // TODO: remove context if not needed
     private fun initViewTransformer(context: Context) {
         viewTransformerManager = ViewTransformerManager()
-        viewTransformerManager.registerTransformer(TextViewTransformer(context, stringDataManager as TextIdProvider))
-        viewTransformerManager.registerTransformer(ToolbarTransformer())
-        viewTransformerManager.registerTransformer(SupportToolbarTransformer())
+        viewTransformerManager.registerTransformer(TextViewTransformer(stringDataManager as TextIdProvider))
+        viewTransformerManager.registerTransformer(ToolbarTransformer(stringDataManager as TextIdProvider))
+        viewTransformerManager.registerTransformer(SupportToolbarTransformer(stringDataManager as TextIdProvider))
         viewTransformerManager.registerTransformer(BottomNavigationViewTransformer())
         viewTransformerManager.registerTransformer(NavigationViewTransformer())
         viewTransformerManager.registerTransformer(SpinnerTransformer())

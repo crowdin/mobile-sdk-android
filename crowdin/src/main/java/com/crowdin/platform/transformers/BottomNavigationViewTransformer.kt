@@ -9,8 +9,7 @@ import android.view.View
  */
 internal class BottomNavigationViewTransformer : BaseNavigationViewTransformer() {
 
-    override val viewType: Class<out View>
-        get() = BottomNavigationView::class.java
+    override val viewType = BottomNavigationView::class.java
 
     override fun getMenu(view: View): Menu {
         return (view as BottomNavigationView).menu

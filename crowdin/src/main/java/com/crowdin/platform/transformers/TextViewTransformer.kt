@@ -1,6 +1,5 @@
 package com.crowdin.platform.transformers
 
-import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -11,18 +10,14 @@ import android.widget.ToggleButton
 import com.crowdin.platform.repository.TextIdProvider
 import com.crowdin.platform.utils.TextUtils
 import java.lang.ref.WeakReference
-import java.util.*
 
 /**
  * A transformer which transforms TextView(or any view extends it like Button, EditText, ...):
  * it transforms "text" & "hint" attributes.
  */
-internal class TextViewTransformer(val context: Context, val textIdProvider: TextIdProvider) : Transformer {
+internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTransformer() {
 
-    private val createdViews = WeakHashMap<TextView, String>()
-
-    override val viewType: Class<out View>
-        get() = TextView::class.java
+    override val viewType = TextView::class.java
 
     override fun transform(view: View, attrs: AttributeSet): View {
         if (!viewType.isInstance(view)) {
@@ -74,16 +69,6 @@ internal class TextViewTransformer(val context: Context, val textIdProvider: Tex
         }
 
         return view
-    }
-
-    override fun invalidate() {
-        for (createdView in createdViews) {
-            if (createdView.value != Transformer.UNKNOWN_ID) {
-                val view = createdView.key
-                val id = view.context.resources.getIdentifier(createdView.value, "string", context.packageName)
-                view.text = view.context.resources.getText(id)
-            }
-        }
     }
 
     inner class Watcher(var view: WeakReference<TextView>) : TextWatcher {

@@ -11,8 +11,7 @@ import android.widget.Spinner
  */
 internal class SpinnerTransformer : Transformer {
 
-    override val viewType: Class<out View>
-        get() = Spinner::class.java
+    override val viewType = Spinner::class.java
 
     override fun transform(view: View, attrs: AttributeSet): View {
         if (!viewType.isInstance(view)) {
