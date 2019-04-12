@@ -8,6 +8,7 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.ToggleButton
 import com.crowdin.platform.repository.TextIdProvider
+import com.crowdin.platform.utils.FeatureFlags
 import com.crowdin.platform.utils.TextUtils
 import java.lang.ref.WeakReference
 
@@ -25,7 +26,10 @@ internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTra
         }
 
         createdViews[(view as TextView)] = Transformer.UNKNOWN_ID
-        view.addTextChangedListener(Watcher(WeakReference(view)))
+
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
+            view.addTextChangedListener(Watcher(WeakReference(view)))
+        }
 
         val resources = view.context.resources
         for (index in 0 until attrs.attributeCount) {
@@ -35,9 +39,11 @@ internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTra
                     val text = TextUtils.getTextForAttribute(attrs, index, resources)
                     if (text != null) {
                         view.text = text
-                        val id = TextUtils.getTextAttributeKey(resources, attrs, index)
-                        if (id != null) {
-                            createdViews[view] = id
+                        if (FeatureFlags.isRealTimeUpdateEnabled) {
+                            val id = TextUtils.getTextAttributeKey(resources, attrs, index)
+                            if (id != null) {
+                                createdViews[view] = id
+                            }
                         }
                     }
                 }

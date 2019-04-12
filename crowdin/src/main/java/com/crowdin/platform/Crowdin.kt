@@ -11,6 +11,7 @@ import com.crowdin.platform.repository.parser.XmlReader
 import com.crowdin.platform.repository.remote.CrowdinRetrofitService
 import com.crowdin.platform.repository.remote.DefaultRemoteRepository
 import com.crowdin.platform.transformers.*
+import com.crowdin.platform.utils.FeatureFlags
 import com.crowdin.platform.utils.TextUtils
 
 /**
@@ -34,6 +35,7 @@ object Crowdin {
         initCrowdinApi(context)
         initStringDataManager(context, config)
         initViewTransformer(context)
+        FeatureFlags.registerConfig(config)
 //        stringDataManager?.updateData(context, config.networkType)
     }
 
@@ -81,7 +83,14 @@ object Crowdin {
 
     @JvmStatic
     fun invalidate() {
-        viewTransformerManager.invalidate()
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
+            viewTransformerManager.invalidate()
+        }
+    }
+
+    @JvmStatic
+    fun setRealTimeUpdates(value: Boolean) {
+        FeatureFlags.isRealTimeUpdateEnabled = value
     }
 
     private fun initCrowdinApi(context: Context) {

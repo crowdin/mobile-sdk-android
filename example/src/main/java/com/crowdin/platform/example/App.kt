@@ -16,6 +16,7 @@ class App : Application() {
                                 "arrays.xml",
                                 "plurals.xml")
                         .withNetworkType(NetworkType.WIFI)
+                        .withRealTimeUpdates(true)
                         .build())
     }
 }
