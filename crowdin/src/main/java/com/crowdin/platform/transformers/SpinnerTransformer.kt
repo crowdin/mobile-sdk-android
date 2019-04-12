@@ -20,8 +20,7 @@ internal class SpinnerTransformer : Transformer {
 
         val resources = view.context.resources
         for (index in 0 until attrs.attributeCount) {
-            val attributeName = attrs.getAttributeName(index)
-            when (attributeName) {
+            when (attrs.getAttributeName(index)) {
                 Attributes.ATTRIBUTE_ENTRIES, Attributes.ATTRIBUTE_ANDROID_ENTRIES -> {
                     val value = attrs.getAttributeValue(index)
                     if (value != null && value.startsWith("@")) {

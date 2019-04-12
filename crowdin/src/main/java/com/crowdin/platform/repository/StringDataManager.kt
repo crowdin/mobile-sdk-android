@@ -1,16 +1,19 @@
 package com.crowdin.platform.repository
 
 import android.content.Context
+import com.crowdin.platform.LocalDataChangeObserver
 import com.crowdin.platform.repository.local.LocalRepository
 import com.crowdin.platform.repository.remote.Connectivity
 import com.crowdin.platform.repository.remote.NetworkType
 import com.crowdin.platform.repository.remote.RemoteRepository
 import com.crowdin.platform.repository.remote.api.LanguageData
+import com.crowdin.platform.utils.FeatureFlags
 import com.crowdin.platform.utils.ThreadUtils
 import java.util.*
 
 internal class StringDataManager(private val remoteRepository: RemoteRepository,
-                                 private val localRepository: LocalRepository) : TextIdProvider {
+                                 private val localRepository: LocalRepository,
+                                 private val dataChangeObserver: LocalDataChangeObserver) : TextIdProvider {
 
     override fun provideTextKey(text: String): String? {
         return localRepository.getTextKey(text)
@@ -39,6 +42,9 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
 
                     override fun onDataLoaded(languageData: LanguageData) {
                         localRepository.saveLanguageData(languageData)
+                        if (FeatureFlags.isRealTimeUpdateEnabled) {
+                            dataChangeObserver.onDataChanged()
+                        }
                     }
                 })
             }, false)
@@ -47,7 +53,9 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
 
     // TODO: check config manager/translator
     fun saveReserveResources(stringKey: String, defaultText: String) {
-        localRepository.setString("${Locale.getDefault().language}-copy", stringKey, defaultText)
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
+            localRepository.setString("${Locale.getDefault().language}-copy", stringKey, defaultText)
+        }
     }
 }
 

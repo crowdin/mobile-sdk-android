@@ -2,7 +2,10 @@ package com.crowdin.platform
 
 import android.content.Context
 import android.content.res.Resources
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.view.Menu
+import android.widget.Toast
 import com.crowdin.platform.repository.StringDataManager
 import com.crowdin.platform.repository.TextIdProvider
 import com.crowdin.platform.repository.local.LocalStringRepositoryFactory
@@ -37,6 +40,19 @@ object Crowdin {
         initViewTransformer(context)
         FeatureFlags.registerConfig(config)
 //        stringDataManager?.updateData(context, config.networkType)
+
+        // ShakeDetector initialization
+        val mSensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        val shakeDetector = ShakeDetector()
+        shakeDetector.setOnShakeListener(object : ShakeDetector.OnShakeListener {
+
+            override fun onShake(count: Int) {
+                forceUpdate(context)
+                Toast.makeText(context, "Shakeeee", Toast.LENGTH_LONG).show()
+            }
+        })
+        mSensorManager.registerListener(shakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
     }
 
     /**
@@ -105,7 +121,11 @@ object Crowdin {
                 config.filePaths)
         val localRepository = LocalStringRepositoryFactory.createLocalRepository(context, config)
 
-        stringDataManager = StringDataManager(remoteRepository, localRepository)
+        stringDataManager = StringDataManager(remoteRepository, localRepository, object : LocalDataChangeObserver {
+            override fun onDataChanged() {
+                viewTransformerManager.invalidate()
+            }
+        })
     }
 
     // TODO: remove context if not needed
@@ -118,4 +138,9 @@ object Crowdin {
         viewTransformerManager.registerTransformer(NavigationViewTransformer())
         viewTransformerManager.registerTransformer(SpinnerTransformer())
     }
+}
+
+interface LocalDataChangeObserver {
+
+    fun onDataChanged()
 }

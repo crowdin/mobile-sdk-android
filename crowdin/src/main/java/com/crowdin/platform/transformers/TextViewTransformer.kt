@@ -8,6 +8,7 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.ToggleButton
 import com.crowdin.platform.repository.TextIdProvider
+import com.crowdin.platform.repository.local.TextMetaData
 import com.crowdin.platform.utils.FeatureFlags
 import com.crowdin.platform.utils.TextUtils
 import java.lang.ref.WeakReference
@@ -24,25 +25,24 @@ internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTra
         if (!viewType.isInstance(view)) {
             return view
         }
-
-        createdViews[(view as TextView)] = Transformer.UNKNOWN_ID
-
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
-            view.addTextChangedListener(Watcher(WeakReference(view)))
-        }
+        view as TextView
+        var isTextView = false
+        val textMetaData = TextMetaData()
+        textMetaData.textAttributeKey = Transformer.UNKNOWN_ID
 
         val resources = view.context.resources
         for (index in 0 until attrs.attributeCount) {
-            val attributeName = attrs.getAttributeName(index)
-            when (attributeName) {
+            val id = TextUtils.getTextAttributeKey(resources, attrs, index)
+
+            when (attrs.getAttributeName(index)) {
                 Attributes.ATTRIBUTE_ANDROID_TEXT, Attributes.ATTRIBUTE_TEXT -> {
                     val text = TextUtils.getTextForAttribute(attrs, index, resources)
                     if (text != null) {
                         view.text = text
                         if (FeatureFlags.isRealTimeUpdateEnabled) {
-                            val id = TextUtils.getTextAttributeKey(resources, attrs, index)
                             if (id != null) {
-                                createdViews[view] = id
+                                textMetaData.textAttributeKey = id
+                                isTextView = true
                             }
                         }
                     }
@@ -51,6 +51,12 @@ internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTra
                     val hint = TextUtils.getTextForAttribute(attrs, index, resources)
                     if (hint != null) {
                         view.hint = hint
+                        if (FeatureFlags.isRealTimeUpdateEnabled) {
+                            if (id != null) {
+                                textMetaData.hintAttributeKey = id
+                                isTextView = true
+                            }
+                        }
                     }
                 }
                 Attributes.ATTRIBUTE_TEXT_ON, Attributes.ATTRIBUTE_ANDROID_TEXT_ON -> {
@@ -59,6 +65,12 @@ internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTra
                         when (view) {
                             is Switch -> view.textOn = textOn
                             is ToggleButton -> view.textOn = textOn
+                        }
+                        if (FeatureFlags.isRealTimeUpdateEnabled) {
+                            if (id != null) {
+                                textMetaData.textOnAttributeKey = id
+                                isTextView = true
+                            }
                         }
                     }
                 }
@@ -69,9 +81,20 @@ internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTra
                             is Switch -> view.textOff = textOff
                             is ToggleButton -> view.textOff = textOff
                         }
+                        if (FeatureFlags.isRealTimeUpdateEnabled) {
+                            if (id != null) {
+                                textMetaData.textOffAttributeKey = id
+                                isTextView = true
+                            }
+                        }
                     }
                 }
             }
+        }
+
+        if (FeatureFlags.isRealTimeUpdateEnabled && isTextView) {
+            createdViews[view] = textMetaData
+            view.addTextChangedListener(Watcher(WeakReference(view)))
         }
 
         return view
@@ -83,7 +106,9 @@ internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTra
             view.get()?.let {
                 val textKey = textIdProvider.provideTextKey(s.toString())
                 if (textKey != null) {
-                    createdViews[it] = textKey
+                    val textMetaData = createdViews[it]
+                    textMetaData?.textAttributeKey = textKey
+                    createdViews[it] = textMetaData
                 }
             }
         }

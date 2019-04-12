@@ -43,7 +43,9 @@ internal abstract class BaseToolbarTransformer(val textIdProvider: TextIdProvide
             override fun afterTextChanged(s: Editable?) {
                 val textKey = textIdProvider.provideTextKey(s.toString())
                 if (textKey != null) {
-                    createdViews[textView] = textKey
+                    val textMetaData = createdViews[textView]
+                    textMetaData?.textAttributeKey = textKey
+                    createdViews[textView] = textMetaData
                 }
             }
 

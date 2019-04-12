@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.example.R
 
@@ -23,15 +22,10 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<Button>(R.id.load_data_btn).setOnClickListener {
-            view.findViewById<TextView>(R.id.textView3).text = getString(R.string.formatting_test0, 3)
-            view.findViewById<Button>(R.id.load_data_btn).text = getText(R.string.gallery_fragment)
             context?.let { it1 -> Crowdin.forceUpdate(it1) }
         }
 
         view.findViewById<Button>(R.id.invalidate_btn).setOnClickListener {
-            //            view.findViewById<TextView>(R.id.textView3).text = getText(R.string.camera)
-//            view.findViewById<Button>(R.id.load_data_btn).text = getText(R.string.gallery_fragment)
-
             Handler().postDelayed({ Crowdin.invalidate() }, 2000)
         }
     }

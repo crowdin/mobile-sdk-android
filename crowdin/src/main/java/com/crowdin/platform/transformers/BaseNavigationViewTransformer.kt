@@ -18,8 +18,7 @@ internal abstract class BaseNavigationViewTransformer : Transformer {
         }
 
         for (index in 0 until attrs.attributeCount) {
-            val attributeName = attrs.getAttributeName(index)
-            when (attributeName) {
+            when (attrs.getAttributeName(index)) {
                 Attributes.ATTRIBUTE_APP_MENU, Attributes.ATTRIBUTE_MENU -> updateText(view, attrs, index)
             }
         }
