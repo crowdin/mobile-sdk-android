@@ -24,7 +24,6 @@ internal class ToolbarTransformer(textIdProvider: TextIdProvider) : BaseToolbarT
             return view
         }
         view as Toolbar
-        var isTextView = false
         val textMetaData = TextMetaData()
         textMetaData.textAttributeKey = Transformer.UNKNOWN_ID
 
@@ -45,7 +44,6 @@ internal class ToolbarTransformer(textIdProvider: TextIdProvider) : BaseToolbarT
                         if (FeatureFlags.isRealTimeUpdateEnabled) {
                             if (id != null && child != null) {
                                 textMetaData.textAttributeKey = id
-                                isTextView = true
                             }
                         }
                     }
@@ -53,8 +51,8 @@ internal class ToolbarTransformer(textIdProvider: TextIdProvider) : BaseToolbarT
             }
         }
 
-        if (FeatureFlags.isRealTimeUpdateEnabled && isTextView && child != null) {
-            createdViews[child] = textMetaData
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
+            child?.let { createdViews[it] = textMetaData }
             addHierarchyChangeListener(view)
         }
 
