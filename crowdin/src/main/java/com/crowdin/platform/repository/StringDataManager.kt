@@ -15,8 +15,8 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
                                  private val localRepository: LocalRepository,
                                  private val dataChangeObserver: LocalDataChangeObserver) : TextIdProvider {
 
-    override fun provideTextKey(text: String): String? {
-        return localRepository.getTextKey(text)
+    override fun provideTextKey(text: String): SearchResultData {
+        return localRepository.getTextData(text)
     }
 
     fun getString(language: String, stringKey: String): String? {
@@ -61,5 +61,5 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
 
 internal interface TextIdProvider {
 
-    fun provideTextKey(text: String): String?
+    fun provideTextKey(text: String): SearchResultData
 }

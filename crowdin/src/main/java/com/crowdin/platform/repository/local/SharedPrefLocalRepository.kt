@@ -2,6 +2,7 @@ package com.crowdin.platform.repository.local
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.crowdin.platform.repository.SearchResultData
 
 import com.crowdin.platform.repository.remote.api.LanguageData
 import com.google.gson.Gson
@@ -48,7 +49,7 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
 
     override fun isExist(language: String): Boolean = memoryLocalRepository.isExist(language)
 
-    override fun getTextKey(text: String): String? = memoryLocalRepository.getTextKey(text)
+    override fun getTextData(text: String): SearchResultData = memoryLocalRepository.getTextData(text)
 
     private fun initSharedPreferences(context: Context) {
         sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.hardware.Sensor
 import android.hardware.SensorManager
+import android.os.Handler
 import android.view.Menu
 import android.widget.Toast
 import com.crowdin.platform.repository.StringDataManager
@@ -49,7 +50,11 @@ object Crowdin {
 
             override fun onShake(count: Int) {
                 forceUpdate(context)
-                Toast.makeText(context, "Shakeeee", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Shake: force update", Toast.LENGTH_SHORT).show()
+                Handler().postDelayed({
+                    invalidate()
+                    Toast.makeText(context, "Invalidate", Toast.LENGTH_SHORT).show()
+                }, 3000)
             }
         })
         mSensorManager.registerListener(shakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI);

@@ -1,5 +1,6 @@
 package com.crowdin.platform.repository.local
 
+import com.crowdin.platform.repository.SearchResultData
 import com.crowdin.platform.repository.remote.api.LanguageData
 import java.util.*
 
@@ -67,23 +68,37 @@ internal class MemoryLocalRepository : LocalRepository {
         return stringsData[language] != null
     }
 
-    override fun getTextKey(text: String): String? {
+    override fun getTextData(text: String): SearchResultData {
+        val searchResultData = SearchResultData()
         val languageData = stringsData[Locale.getDefault().toString()]
+
+
+        searchInResources(languageData, text, searchResultData)
+
+        languageData?.arrays?.forEach { arrayData ->
+            val arrayName = arrayData.name
+            arrayData.values?.forEachIndexed { index, item ->
+                if (item == text) {
+                    searchResultData.arrayName = arrayName
+                    searchResultData.arrayIndex = index
+                    return searchResultData
+                }
+            }
+        }
+
+        val languageReserveData = stringsData["${Locale.getDefault().language}-copy"]
+        searchInResources(languageReserveData, text, searchResultData)
+
+        return searchResultData
+    }
+
+    private fun searchInResources(languageData: LanguageData?, text: String, searchResultData: SearchResultData): SearchResultData {
         languageData?.resources?.forEach {
             if (it.value == text) {
-                return it.key
+                searchResultData.key = it.key
+                return searchResultData
             }
         }
-
-        // TODO: Refactor
-        // Get from reserve
-        val languageReserveData = stringsData["${Locale.getDefault().language}-copy"]
-        languageReserveData?.resources?.forEach {
-            if (it.value == text) {
-                return it.key
-            }
-        }
-
-        return null
+        return searchResultData
     }
 }

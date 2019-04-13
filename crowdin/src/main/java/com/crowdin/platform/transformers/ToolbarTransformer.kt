@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toolbar
 import com.crowdin.platform.repository.TextIdProvider
-import com.crowdin.platform.repository.local.TextMetaData
+import com.crowdin.platform.repository.TextMetaData
 import com.crowdin.platform.utils.FeatureFlags
 import com.crowdin.platform.utils.TextUtils
 

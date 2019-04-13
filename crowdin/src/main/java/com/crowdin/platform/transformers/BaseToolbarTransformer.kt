@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.crowdin.platform.repository.TextIdProvider
-import com.crowdin.platform.repository.local.TextMetaData
+import com.crowdin.platform.repository.TextMetaData
 
 internal abstract class BaseToolbarTransformer(val textIdProvider: TextIdProvider) : BaseTransformer() {
 
@@ -42,15 +42,17 @@ internal abstract class BaseToolbarTransformer(val textIdProvider: TextIdProvide
     fun addTextWatcherToChild(textView: TextView?) {
         textView?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                val textKey = textIdProvider.provideTextKey(s.toString())
-                if (textKey != null) {
-                    var textMetaData = createdViews[textView]
-                    if (textMetaData == null) {
-                        textMetaData = TextMetaData()
-                    }
-                    textMetaData.textAttributeKey = textKey
-                    createdViews[textView] = textMetaData
+                val resultData = textIdProvider.provideTextKey(s.toString())
+                var textMetaData = createdViews[textView]
+                if (textMetaData == null) {
+                    textMetaData = TextMetaData()
                 }
+
+                if (resultData.hasKey) {
+                    textMetaData.textAttributeKey = resultData.key
+                }
+
+                createdViews[textView] = textMetaData
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

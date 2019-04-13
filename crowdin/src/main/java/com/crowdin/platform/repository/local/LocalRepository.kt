@@ -1,5 +1,6 @@
 package com.crowdin.platform.repository.local
 
+import com.crowdin.platform.repository.SearchResultData
 import com.crowdin.platform.repository.remote.api.LanguageData
 
 /**
@@ -65,5 +66,5 @@ internal interface LocalRepository {
      */
     fun isExist(language: String): Boolean
 
-    fun getTextKey(text: String): String?
+    fun getTextData(text: String): SearchResultData
 }

@@ -1,4 +1,4 @@
-package com.crowdin.platform.repository.local
+package com.crowdin.platform.repository
 
 internal class TextMetaData {
 

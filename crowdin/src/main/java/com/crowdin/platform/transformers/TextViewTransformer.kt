@@ -8,7 +8,7 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.ToggleButton
 import com.crowdin.platform.repository.TextIdProvider
-import com.crowdin.platform.repository.local.TextMetaData
+import com.crowdin.platform.repository.TextMetaData
 import com.crowdin.platform.utils.FeatureFlags
 import com.crowdin.platform.utils.TextUtils
 import java.lang.ref.WeakReference
@@ -26,7 +26,6 @@ internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTra
             return view
         }
         view as TextView
-        var isTextView = false
         val textMetaData = TextMetaData()
         textMetaData.textAttributeKey = Transformer.UNKNOWN_ID
 
@@ -42,7 +41,6 @@ internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTra
                         if (FeatureFlags.isRealTimeUpdateEnabled) {
                             if (id != null) {
                                 textMetaData.textAttributeKey = id
-                                isTextView = true
                             }
                         }
                     }
@@ -54,7 +52,6 @@ internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTra
                         if (FeatureFlags.isRealTimeUpdateEnabled) {
                             if (id != null) {
                                 textMetaData.hintAttributeKey = id
-                                isTextView = true
                             }
                         }
                     }
@@ -69,7 +66,6 @@ internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTra
                         if (FeatureFlags.isRealTimeUpdateEnabled) {
                             if (id != null) {
                                 textMetaData.textOnAttributeKey = id
-                                isTextView = true
                             }
                         }
                     }
@@ -84,7 +80,6 @@ internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTra
                         if (FeatureFlags.isRealTimeUpdateEnabled) {
                             if (id != null) {
                                 textMetaData.textOffAttributeKey = id
-                                isTextView = true
                             }
                         }
                     }
@@ -92,7 +87,7 @@ internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTra
             }
         }
 
-        if (FeatureFlags.isRealTimeUpdateEnabled && isTextView) {
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
             createdViews[view] = textMetaData
             view.addTextChangedListener(Watcher(WeakReference(view)))
         }
@@ -104,12 +99,17 @@ internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTra
 
         override fun afterTextChanged(s: Editable?) {
             view.get()?.let {
-                val textKey = textIdProvider.provideTextKey(s.toString())
-                if (textKey != null) {
-                    val textMetaData = createdViews[it]
-                    textMetaData?.textAttributeKey = textKey
-                    createdViews[it] = textMetaData
+                val resultData = textIdProvider.provideTextKey(s.toString())
+                var textMetaData = createdViews[it]
+                if (textMetaData == null) {
+                    textMetaData = TextMetaData()
                 }
+
+                if (resultData.hasKey) {
+                    textMetaData.textAttributeKey = resultData.key
+                }
+
+                createdViews[it] = textMetaData
             }
         }
 
