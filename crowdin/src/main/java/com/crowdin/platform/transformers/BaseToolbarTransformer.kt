@@ -47,11 +47,7 @@ internal abstract class BaseToolbarTransformer(val textIdProvider: TextIdProvide
                 if (textMetaData == null) {
                     textMetaData = TextMetaData()
                 }
-
-                if (resultData.hasKey) {
-                    textMetaData.textAttributeKey = resultData.key
-                }
-
+                textMetaData.parseResult(resultData)
                 createdViews[textView] = textMetaData
             }
 

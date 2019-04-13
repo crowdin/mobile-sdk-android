@@ -78,8 +78,4 @@ internal interface Transformer {
     fun transform(view: View, attrs: AttributeSet): View
 
     fun invalidate() {}
-
-    companion object {
-        const val UNKNOWN_ID = ""
-    }
 }

@@ -6,6 +6,7 @@ import com.crowdin.platform.repository.local.LocalRepository
 import com.crowdin.platform.repository.remote.Connectivity
 import com.crowdin.platform.repository.remote.NetworkType
 import com.crowdin.platform.repository.remote.RemoteRepository
+import com.crowdin.platform.repository.remote.api.ArrayData
 import com.crowdin.platform.repository.remote.api.LanguageData
 import com.crowdin.platform.utils.FeatureFlags
 import com.crowdin.platform.utils.ThreadUtils
@@ -51,10 +52,13 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
         }
     }
 
-    // TODO: check config manager/translator
-    fun saveReserveResources(stringKey: String, defaultText: String) {
+    fun saveReserveResources(stringKey: String, defaultText: String = "", arrayData: ArrayData = ArrayData()) {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
-            localRepository.setString("${Locale.getDefault().language}-copy", stringKey, defaultText)
+            when {
+                defaultText.isNotEmpty() -> localRepository.setString("${Locale.getDefault().language}-copy", stringKey, defaultText)
+                arrayData.name != null &&
+                        arrayData.values != null -> localRepository.setArrayData("${Locale.getDefault().language}-copy", stringKey, arrayData)
+            }
         }
     }
 }

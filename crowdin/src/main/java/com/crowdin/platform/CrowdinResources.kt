@@ -5,6 +5,7 @@ import android.icu.text.PluralRules
 import android.os.Build
 import android.text.Html
 import com.crowdin.platform.repository.StringDataManager
+import com.crowdin.platform.repository.remote.api.ArrayData
 import java.util.*
 
 /**
@@ -15,7 +16,7 @@ import java.util.*
 internal class CrowdinResources(res: Resources, private val stringDataManager: StringDataManager) :
         Resources(res.assets, res.displayMetrics, res.configuration) {
 
-    @Throws(Resources.NotFoundException::class)
+    @Throws(NotFoundException::class)
     override fun getString(id: Int): String {
         val value = getStringFromRepository(id)
         return if (value == null) {
@@ -28,7 +29,7 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
         }
     }
 
-    @Throws(Resources.NotFoundException::class)
+    @Throws(NotFoundException::class)
     override fun getString(id: Int, vararg formatArgs: Any): String {
         val value = getStringFromRepository(id)
         return if (value == null) {
@@ -41,21 +42,20 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
         }
     }
 
-    // TODO: update arrays
-    @Throws(Resources.NotFoundException::class)
+    @Throws(NotFoundException::class)
     override fun getStringArray(id: Int): Array<String> {
         val value = getStringArrayFromRepository(id)
         return if (value == null) {
             val stringKey = getResourceEntryName(id)
-            val defaultText = super.getStringArray(id)
-            stringDataManager.saveReserveResources(stringKey, defaultText.toString())
-            defaultText
+            val defaultArray = super.getStringArray(id)
+            stringDataManager.saveReserveResources(stringKey, arrayData = ArrayData(stringKey, defaultArray))
+            defaultArray
         } else {
             value
         }
     }
 
-    @Throws(Resources.NotFoundException::class)
+    @Throws(NotFoundException::class)
     override fun getText(id: Int): CharSequence {
         val value = getStringFromRepository(id)
         return if (value == null) {
@@ -81,7 +81,7 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
     }
 
     // TODO: update plurals
-    @Throws(Resources.NotFoundException::class)
+    @Throws(NotFoundException::class)
     override fun getQuantityText(id: Int, quantity: Int): CharSequence {
         val value = getPluralFromRepository(id, quantity)
         return value?.let { fromHtml(it) } ?: super.getQuantityText(id, quantity)
@@ -91,7 +91,7 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
             try {
                 val stringKey = getResourceEntryName(id)
                 stringDataManager.getString(Locale.getDefault().toString(), stringKey)
-            } catch (ex: Resources.NotFoundException) {
+            } catch (ex: NotFoundException) {
                 null
             }
 

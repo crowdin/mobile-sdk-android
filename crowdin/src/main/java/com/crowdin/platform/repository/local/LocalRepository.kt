@@ -1,6 +1,7 @@
 package com.crowdin.platform.repository.local
 
 import com.crowdin.platform.repository.SearchResultData
+import com.crowdin.platform.repository.remote.api.ArrayData
 import com.crowdin.platform.repository.remote.api.LanguageData
 
 /**
@@ -16,13 +17,22 @@ internal interface LocalRepository {
     fun saveLanguageData(languageData: LanguageData)
 
     /**
-     * set a single string(key, value) for a specific language.
+     * Set a single string(key, value) for a specific language.
      *
      * @param language the string belongs to.
      * @param key      the key of the string which is the string resource id.
      * @param value    the new string.
      */
     fun setString(language: String, key: String, value: String)
+
+    /**
+     * Set a string array for a specific language.
+     *
+     * @param language  the string belongs to.
+     * @param key       the key of the string which is the string resource id.
+     * @param arrayData the new string array data.
+     */
+    fun setArrayData(language: String, key: String, arrayData: ArrayData)
 
     /**
      * Get a string for a language & key.

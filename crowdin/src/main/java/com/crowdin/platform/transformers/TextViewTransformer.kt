@@ -27,7 +27,6 @@ internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTra
         }
         view as TextView
         val textMetaData = TextMetaData()
-        textMetaData.textAttributeKey = Transformer.UNKNOWN_ID
 
         val resources = view.context.resources
         for (index in 0 until attrs.attributeCount) {
@@ -104,11 +103,7 @@ internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTra
                 if (textMetaData == null) {
                     textMetaData = TextMetaData()
                 }
-
-                if (resultData.hasKey) {
-                    textMetaData.textAttributeKey = resultData.key
-                }
-
+                textMetaData.parseResult(resultData)
                 createdViews[it] = textMetaData
             }
         }

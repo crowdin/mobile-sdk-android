@@ -3,6 +3,7 @@ package com.crowdin.platform.repository.local
 import android.content.Context
 import android.content.SharedPreferences
 import com.crowdin.platform.repository.SearchResultData
+import com.crowdin.platform.repository.remote.api.ArrayData
 
 import com.crowdin.platform.repository.remote.api.LanguageData
 import com.google.gson.Gson
@@ -34,7 +35,12 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
     override fun setString(language: String, key: String, value: String) {
         memoryLocalRepository.setString(language, key, value)
         val languageData = memoryLocalRepository.getLanguageData(language) ?: return
-        languageData.resources[key] = value
+        saveData(languageData)
+    }
+
+    override fun setArrayData(language: String, key: String, arrayData: ArrayData) {
+        memoryLocalRepository.setArrayData(language, key, arrayData)
+        val languageData = memoryLocalRepository.getLanguageData(language) ?: return
         saveData(languageData)
     }
 

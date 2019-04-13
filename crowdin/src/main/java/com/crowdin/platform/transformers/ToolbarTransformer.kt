@@ -25,7 +25,6 @@ internal class ToolbarTransformer(textIdProvider: TextIdProvider) : BaseToolbarT
         }
         view as Toolbar
         val textMetaData = TextMetaData()
-        textMetaData.textAttributeKey = Transformer.UNKNOWN_ID
 
         var child: TextView? = null
         if (FeatureFlags.isRealTimeUpdateEnabled) {

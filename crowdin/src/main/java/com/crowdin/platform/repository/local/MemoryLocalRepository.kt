@@ -1,6 +1,7 @@
 package com.crowdin.platform.repository.local
 
 import com.crowdin.platform.repository.SearchResultData
+import com.crowdin.platform.repository.remote.api.ArrayData
 import com.crowdin.platform.repository.remote.api.LanguageData
 import java.util.*
 
@@ -12,37 +13,58 @@ internal class MemoryLocalRepository : LocalRepository {
     private val stringsData = LinkedHashMap<String, LanguageData>()
 
     override fun saveLanguageData(languageData: LanguageData) {
-        val data = stringsData[languageData.language]
-        if (data == null) {
-            stringsData[languageData.language] = languageData
-        } else {
-            data.updateResources(languageData)
+        when (val data = stringsData[languageData.language]) {
+            null -> stringsData[languageData.language] = languageData
+            else -> data.updateResources(languageData)
         }
     }
 
     override fun setString(language: String, key: String, value: String) {
-        val data = stringsData[language]
-        if (data == null) {
-            stringsData[language] = LanguageData(language)
-        } else {
-            data.resources[key] = value
+        when (val data = stringsData[language]) {
+            null -> {
+                val languageData = LanguageData(language)
+                languageData.resources[key] = value
+                stringsData[language] = languageData
+            }
+            else -> data.resources[key] = value
+        }
+    }
+
+    override fun setArrayData(language: String, key: String, arrayData: ArrayData) {
+        when (val data = stringsData[language]) {
+            null -> {
+                val languageData = LanguageData(language)
+                languageData.arrays.add(arrayData)
+                stringsData[language] = languageData
+            }
+            else -> {
+                var index = -1
+                data.arrays.forEachIndexed { position, array ->
+                    if (array.name == arrayData.name) {
+                        index = position
+                    }
+                }
+
+                when {
+                    index != -1 -> data.arrays[index] = arrayData
+                    else -> data.arrays.add(arrayData)
+                }
+            }
         }
     }
 
     override fun getString(language: String, key: String): String? {
         val languageData = stringsData[language]
-        return if (languageData == null || !languageData.resources.containsKey(key)) {
-            null
-        } else {
-            languageData.resources[key]
+        return when {
+            languageData == null || !languageData.resources.containsKey(key) -> null
+            else -> languageData.resources[key]
         }
     }
 
     override fun getLanguageData(language: String): LanguageData? =
-            if (!stringsData.containsKey(language)) {
-                null
-            } else {
-                stringsData[language]
+            when {
+                !stringsData.containsKey(language) -> null
+                else -> stringsData[language]
             }
 
     override fun getStringArray(key: String): Array<String>? {
@@ -70,35 +92,35 @@ internal class MemoryLocalRepository : LocalRepository {
 
     override fun getTextData(text: String): SearchResultData {
         val searchResultData = SearchResultData()
+
         val languageData = stringsData[Locale.getDefault().toString()]
-
-
         searchInResources(languageData, text, searchResultData)
+        searchInArrays(languageData, text, searchResultData)
 
+        val languageReserveData = stringsData["${Locale.getDefault().language}-copy"]
+        searchInResources(languageReserveData, text, searchResultData)
+        searchInArrays(languageReserveData, text, searchResultData)
+
+        return searchResultData
+    }
+
+    private fun searchInArrays(languageData: LanguageData?, text: String, searchResultData: SearchResultData) {
         languageData?.arrays?.forEach { arrayData ->
             val arrayName = arrayData.name
             arrayData.values?.forEachIndexed { index, item ->
                 if (item == text) {
                     searchResultData.arrayName = arrayName
                     searchResultData.arrayIndex = index
-                    return searchResultData
                 }
             }
         }
-
-        val languageReserveData = stringsData["${Locale.getDefault().language}-copy"]
-        searchInResources(languageReserveData, text, searchResultData)
-
-        return searchResultData
     }
 
-    private fun searchInResources(languageData: LanguageData?, text: String, searchResultData: SearchResultData): SearchResultData {
+    private fun searchInResources(languageData: LanguageData?, text: String, searchResultData: SearchResultData) {
         languageData?.resources?.forEach {
             if (it.value == text) {
                 searchResultData.key = it.key
-                return searchResultData
             }
         }
-        return searchResultData
     }
 }
