@@ -18,4 +18,12 @@ internal class SearchResultData {
 
     var arrayName: String? = ""
     var arrayIndex: Int = -1
+
+    val isPluralData: Boolean
+        get() {
+            return pluralName != null && pluralName!!.isNotEmpty() && pluralQuantity != -1
+        }
+    var pluralName: String? = ""
+    var pluralQuantity: Int = -1
+    var pluralFormatArgs: Array<out Any?> = arrayOf()
 }

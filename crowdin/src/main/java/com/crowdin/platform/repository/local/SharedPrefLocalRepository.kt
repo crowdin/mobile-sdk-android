@@ -6,6 +6,7 @@ import com.crowdin.platform.repository.SearchResultData
 import com.crowdin.platform.repository.remote.api.ArrayData
 
 import com.crowdin.platform.repository.remote.api.LanguageData
+import com.crowdin.platform.repository.remote.api.PluralData
 import com.google.gson.Gson
 
 /**
@@ -40,6 +41,12 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
 
     override fun setArrayData(language: String, key: String, arrayData: ArrayData) {
         memoryLocalRepository.setArrayData(language, key, arrayData)
+        val languageData = memoryLocalRepository.getLanguageData(language) ?: return
+        saveData(languageData)
+    }
+
+    override fun setPluralData(language: String, key: String, pluralData: PluralData) {
+        memoryLocalRepository.setPluralData(language, key, pluralData)
         val languageData = memoryLocalRepository.getLanguageData(language) ?: return
         saveData(languageData)
     }

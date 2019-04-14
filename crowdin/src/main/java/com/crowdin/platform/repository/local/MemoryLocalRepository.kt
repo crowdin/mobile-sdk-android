@@ -3,6 +3,7 @@ package com.crowdin.platform.repository.local
 import com.crowdin.platform.repository.SearchResultData
 import com.crowdin.platform.repository.remote.api.ArrayData
 import com.crowdin.platform.repository.remote.api.LanguageData
+import com.crowdin.platform.repository.remote.api.PluralData
 import java.util.*
 
 /**
@@ -53,6 +54,31 @@ internal class MemoryLocalRepository : LocalRepository {
         }
     }
 
+    override fun setPluralData(language: String, key: String, pluralData: PluralData) {
+        when (val data = stringsData[language]) {
+            null -> {
+                val languageData = LanguageData(language)
+                languageData.plurals.add(pluralData)
+                stringsData[language] = languageData
+            }
+            else -> {
+                var isExist = false
+                data.plurals.forEach { plural ->
+                    if (plural.name == pluralData.name) {
+                        isExist = true
+                        pluralData.quantity.forEach {
+                            plural.quantity[it.key] = it.value
+                        }
+                        plural.formatArgs = pluralData.formatArgs
+                    }
+                }
+                if (!isExist) {
+                    data.plurals.add(pluralData)
+                }
+            }
+        }
+    }
+
     override fun getString(language: String, key: String): String? {
         val languageData = stringsData[language]
         return when {
@@ -95,13 +121,31 @@ internal class MemoryLocalRepository : LocalRepository {
 
         val languageData = stringsData[Locale.getDefault().toString()]
         searchInResources(languageData, text, searchResultData)
-        searchInArrays(languageData, text, searchResultData)
 
         val languageReserveData = stringsData["${Locale.getDefault().language}-copy"]
         searchInResources(languageReserveData, text, searchResultData)
-        searchInArrays(languageReserveData, text, searchResultData)
 
         return searchResultData
+    }
+
+    private fun searchInResources(languageData: LanguageData?, text: String, searchResultData: SearchResultData) {
+        searchInStrings(languageData, text, searchResultData)
+        searchInArrays(languageData, text, searchResultData)
+        searchInPlurals(languageData, text, searchResultData)
+    }
+
+    private fun searchInPlurals(languageData: LanguageData?, text: String, searchResultData: SearchResultData) {
+        languageData?.plurals?.forEach { pluralData ->
+            val pluralName = pluralData.name
+            pluralData.quantity.forEach {
+                if (it.value == text) {
+                    searchResultData.pluralName = pluralName
+                    searchResultData.pluralQuantity = pluralData.number
+                    searchResultData.pluralFormatArgs = pluralData.formatArgs
+                    return
+                }
+            }
+        }
     }
 
     private fun searchInArrays(languageData: LanguageData?, text: String, searchResultData: SearchResultData) {
@@ -111,15 +155,17 @@ internal class MemoryLocalRepository : LocalRepository {
                 if (item == text) {
                     searchResultData.arrayName = arrayName
                     searchResultData.arrayIndex = index
+                    return
                 }
             }
         }
     }
 
-    private fun searchInResources(languageData: LanguageData?, text: String, searchResultData: SearchResultData) {
+    private fun searchInStrings(languageData: LanguageData?, text: String, searchResultData: SearchResultData) {
         languageData?.resources?.forEach {
             if (it.value == text) {
                 searchResultData.key = it.key
+                return
             }
         }
     }

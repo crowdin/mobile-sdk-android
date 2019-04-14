@@ -6,6 +6,7 @@ import android.os.Build
 import android.text.Html
 import com.crowdin.platform.repository.StringDataManager
 import com.crowdin.platform.repository.remote.api.ArrayData
+import com.crowdin.platform.repository.remote.api.PluralData
 import java.util.*
 
 /**
@@ -15,6 +16,8 @@ import java.util.*
  */
 internal class CrowdinResources(res: Resources, private val stringDataManager: StringDataManager) :
         Resources(res.assets, res.displayMetrics, res.configuration) {
+
+    // TODO: refactor, extract methods. Remove duplication.
 
     @Throws(NotFoundException::class)
     override fun getString(id: Int): String {
@@ -80,11 +83,58 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
         }
     }
 
-    // TODO: update plurals
+    // TODO: save with value as key. Potential issue when getQuantityText invoked but not set into view
     @Throws(NotFoundException::class)
     override fun getQuantityText(id: Int, quantity: Int): CharSequence {
         val value = getPluralFromRepository(id, quantity)
-        return value?.let { fromHtml(it) } ?: super.getQuantityText(id, quantity)
+        return if (value == null) {
+            val pluralKey = getResourceEntryName(id)
+            val defaultText = super.getQuantityText(id, quantity)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                val rule = PluralRules.forLocale(Locale.getDefault())
+                val ruleName = rule.select(quantity.toDouble())
+
+                val quantityMap = mutableMapOf<String, String>()
+                quantityMap[ruleName] = defaultText.toString()
+                val pluralData = PluralData(
+                        pluralKey,
+                        quantityMap,
+                        quantity)
+
+                stringDataManager.saveReserveResources(pluralKey, pluralData = pluralData)
+            }
+            defaultText
+        } else {
+            fromHtml(value)
+        }
+    }
+
+    @Throws(NotFoundException::class)
+    override fun getQuantityString(id: Int, quantity: Int, vararg formatArgs: Any?): String {
+        val value = getPluralFromRepository(id, quantity)
+        return if (value == null) {
+            val pluralKey = getResourceEntryName(id)
+            val defaultText = super.getQuantityString(id, quantity, *formatArgs)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                val rule = PluralRules.forLocale(Locale.getDefault())
+                val ruleName = rule.select(quantity.toDouble())
+
+                val quantityMap = mutableMapOf<String, String>()
+                quantityMap[ruleName] = defaultText.toString()
+                val pluralData = PluralData(
+                        pluralKey,
+                        quantityMap,
+                        quantity,
+                        formatArgs)
+
+                stringDataManager.saveReserveResources(pluralKey, pluralData = pluralData)
+            }
+            defaultText
+        } else {
+            String.format(value, *formatArgs)
+        }
     }
 
     private fun getStringFromRepository(id: Int): String? =

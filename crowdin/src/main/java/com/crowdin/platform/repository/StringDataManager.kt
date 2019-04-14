@@ -8,6 +8,7 @@ import com.crowdin.platform.repository.remote.NetworkType
 import com.crowdin.platform.repository.remote.RemoteRepository
 import com.crowdin.platform.repository.remote.api.ArrayData
 import com.crowdin.platform.repository.remote.api.LanguageData
+import com.crowdin.platform.repository.remote.api.PluralData
 import com.crowdin.platform.utils.FeatureFlags
 import com.crowdin.platform.utils.ThreadUtils
 import java.util.*
@@ -52,12 +53,14 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
         }
     }
 
-    fun saveReserveResources(stringKey: String, defaultText: String = "", arrayData: ArrayData = ArrayData()) {
+    fun saveReserveResources(stringKey: String, defaultText: String = "",
+                             arrayData: ArrayData? = null,
+                             pluralData: PluralData? = null) {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             when {
                 defaultText.isNotEmpty() -> localRepository.setString("${Locale.getDefault().language}-copy", stringKey, defaultText)
-                arrayData.name != null &&
-                        arrayData.values != null -> localRepository.setArrayData("${Locale.getDefault().language}-copy", stringKey, arrayData)
+                arrayData != null -> localRepository.setArrayData("${Locale.getDefault().language}-copy", stringKey, arrayData)
+                pluralData != null -> localRepository.setPluralData("${Locale.getDefault().language}-copy", stringKey, pluralData)
             }
         }
     }
