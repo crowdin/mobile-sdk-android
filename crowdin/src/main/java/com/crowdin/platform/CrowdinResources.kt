@@ -5,8 +5,9 @@ import android.icu.text.PluralRules
 import android.os.Build
 import android.text.Html
 import com.crowdin.platform.repository.StringDataManager
-import com.crowdin.platform.repository.remote.api.ArrayData
-import com.crowdin.platform.repository.remote.api.PluralData
+import com.crowdin.platform.repository.model.ArrayData
+import com.crowdin.platform.repository.model.PluralData
+import com.crowdin.platform.repository.model.StringData
 import java.util.*
 
 /**
@@ -23,10 +24,10 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
     override fun getString(id: Int): String {
         val value = getStringFromRepository(id)
         return if (value == null) {
-            val stringKey = getResourceEntryName(id)
-            val defaultText = super.getString(id)
-            stringDataManager.saveReserveResources(stringKey, defaultText.toString())
-            defaultText
+            val key = getResourceEntryName(id)
+            val defValue = super.getString(id)
+            stringDataManager.saveReserveResources(StringData(key, defValue.toString()))
+            defValue
         } else {
             value
         }
@@ -36,10 +37,10 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
     override fun getString(id: Int, vararg formatArgs: Any): String {
         val value = getStringFromRepository(id)
         return if (value == null) {
-            val stringKey = getResourceEntryName(id)
-            val defaultText = super.getString(id, *formatArgs)
-            stringDataManager.saveReserveResources(stringKey, defaultText.toString())
-            defaultText
+            val key = getResourceEntryName(id)
+            val defValue = super.getString(id, *formatArgs)
+            stringDataManager.saveReserveResources(StringData(key, defValue.toString(), formatArgs))
+            defValue
         } else {
             String.format(value, *formatArgs)
         }
@@ -49,10 +50,10 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
     override fun getStringArray(id: Int): Array<String> {
         val value = getStringArrayFromRepository(id)
         return if (value == null) {
-            val stringKey = getResourceEntryName(id)
-            val defaultArray = super.getStringArray(id)
-            stringDataManager.saveReserveResources(stringKey, arrayData = ArrayData(stringKey, defaultArray))
-            defaultArray
+            val key = getResourceEntryName(id)
+            val defArray = super.getStringArray(id)
+            stringDataManager.saveReserveResources(arrayData = ArrayData(key, defArray))
+            defArray
         } else {
             value
         }
@@ -62,22 +63,23 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
     override fun getText(id: Int): CharSequence {
         val value = getStringFromRepository(id)
         return if (value == null) {
-            val stringKey = getResourceEntryName(id)
-            val defaultText = super.getText(id)
-            stringDataManager.saveReserveResources(stringKey, defaultText.toString())
-            defaultText
+            val key = getResourceEntryName(id)
+            val defValue = super.getText(id)
+            stringDataManager.saveReserveResources(StringData(key, defValue.toString()))
+            defValue
         } else {
             fromHtml(value)
         }
     }
 
-    override fun getText(id: Int, def: CharSequence): CharSequence {
+    override fun getText(id: Int, default: CharSequence): CharSequence {
         val value = getStringFromRepository(id)
         return if (value == null) {
-            val stringKey = getResourceEntryName(id)
-            val defaultText = super.getText(id, def)
-            stringDataManager.saveReserveResources(stringKey, defaultText.toString())
-            defaultText
+            val key = getResourceEntryName(id)
+            val defValue = super.getText(id, default)
+            val stringData = StringData(key, defValue.toString(), def = StringBuilder(default))
+            stringDataManager.saveReserveResources(stringData)
+            defValue
         } else {
             fromHtml(value)
         }
@@ -102,7 +104,7 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
                         quantityMap,
                         quantity)
 
-                stringDataManager.saveReserveResources(pluralKey, pluralData = pluralData)
+                stringDataManager.saveReserveResources(pluralData = pluralData)
             }
             defaultText
         } else {
@@ -129,7 +131,7 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
                         quantity,
                         formatArgs)
 
-                stringDataManager.saveReserveResources(pluralKey, pluralData = pluralData)
+                stringDataManager.saveReserveResources(pluralData = pluralData)
             }
             defaultText
         } else {

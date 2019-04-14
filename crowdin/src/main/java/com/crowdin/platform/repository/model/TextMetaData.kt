@@ -1,4 +1,4 @@
-package com.crowdin.platform.repository
+package com.crowdin.platform.repository.model
 
 internal class TextMetaData {
 
@@ -6,6 +6,8 @@ internal class TextMetaData {
     var hintAttributeKey: String = ""
     var textOnAttributeKey: String = ""
     var textOffAttributeKey: String = ""
+    var stringsFormatArgs: Array<out Any?> = arrayOf()
+    var stringDefault: CharSequence = ""
 
     val hasAttributeKey: Boolean
         get() {
@@ -29,7 +31,11 @@ internal class TextMetaData {
 
     fun parseResult(resultData: SearchResultData) {
         when {
-            resultData.hasKey -> textAttributeKey = resultData.key
+            resultData.hasKey -> {
+                textAttributeKey = resultData.stringKey
+                stringsFormatArgs = resultData.stringsFormatArgs
+                stringDefault = resultData.stringDefault
+            }
             resultData.isArrayItem -> {
                 arrayName = resultData.arrayName
                 arrayIndex = resultData.arrayIndex

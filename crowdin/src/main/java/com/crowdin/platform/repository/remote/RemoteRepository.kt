@@ -1,7 +1,7 @@
 package com.crowdin.platform.repository.remote
 
 import com.crowdin.platform.repository.LanguageDataCallback
-import com.crowdin.platform.repository.remote.api.LanguageData
+import com.crowdin.platform.repository.model.LanguageData
 
 /**
  * Repository of strings from network.

@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
 import com.crowdin.platform.repository.TextIdProvider
-import com.crowdin.platform.repository.TextMetaData
+import com.crowdin.platform.repository.model.TextMetaData
 import com.crowdin.platform.utils.FeatureFlags
 import com.crowdin.platform.utils.TextUtils
 

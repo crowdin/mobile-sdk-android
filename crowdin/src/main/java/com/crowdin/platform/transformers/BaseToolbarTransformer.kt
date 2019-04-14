@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.crowdin.platform.repository.TextIdProvider
-import com.crowdin.platform.repository.TextMetaData
+import com.crowdin.platform.repository.model.TextMetaData
 
 internal abstract class BaseToolbarTransformer(val textIdProvider: TextIdProvider) : BaseTransformer() {
 

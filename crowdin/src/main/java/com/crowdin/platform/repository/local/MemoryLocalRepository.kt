@@ -1,9 +1,6 @@
 package com.crowdin.platform.repository.local
 
-import com.crowdin.platform.repository.SearchResultData
-import com.crowdin.platform.repository.remote.api.ArrayData
-import com.crowdin.platform.repository.remote.api.LanguageData
-import com.crowdin.platform.repository.remote.api.PluralData
+import com.crowdin.platform.repository.model.*
 import java.util.*
 
 /**
@@ -21,17 +18,15 @@ internal class MemoryLocalRepository : LocalRepository {
     }
 
     override fun setString(language: String, key: String, value: String) {
-        when (val data = stringsData[language]) {
-            null -> {
-                val languageData = LanguageData(language)
-                languageData.resources[key] = value
-                stringsData[language] = languageData
-            }
-            else -> data.resources[key] = value
-        }
+        val newStringData = StringData(key, value)
+        saveStringData(language, newStringData)
     }
 
-    override fun setArrayData(language: String, key: String, arrayData: ArrayData) {
+    override fun setStringData(language: String, stringData: StringData) {
+        saveStringData(language, stringData)
+    }
+
+    override fun setArrayData(language: String, arrayData: ArrayData) {
         when (val data = stringsData[language]) {
             null -> {
                 val languageData = LanguageData(language)
@@ -54,7 +49,7 @@ internal class MemoryLocalRepository : LocalRepository {
         }
     }
 
-    override fun setPluralData(language: String, key: String, pluralData: PluralData) {
+    override fun setPluralData(language: String, pluralData: PluralData) {
         when (val data = stringsData[language]) {
             null -> {
                 val languageData = LanguageData(language)
@@ -80,11 +75,14 @@ internal class MemoryLocalRepository : LocalRepository {
     }
 
     override fun getString(language: String, key: String): String? {
-        val languageData = stringsData[language]
-        return when {
-            languageData == null || !languageData.resources.containsKey(key) -> null
-            else -> languageData.resources[key]
+        val languageData = stringsData[language] ?: return null
+        languageData.resources.forEach {
+            if (it.stringKey == key) {
+                return it.stringValue
+            }
         }
+
+        return null
     }
 
     override fun getLanguageData(language: String): LanguageData? =
@@ -163,9 +161,39 @@ internal class MemoryLocalRepository : LocalRepository {
 
     private fun searchInStrings(languageData: LanguageData?, text: String, searchResultData: SearchResultData) {
         languageData?.resources?.forEach {
-            if (it.value == text) {
-                searchResultData.key = it.key
+            if (it.stringValue == text) {
+                searchResultData.stringKey = it.stringKey
+                searchResultData.stringValue = it.stringValue
+                searchResultData.stringsFormatArgs = it.formatArgs
+                searchResultData.stringDefault = it.def
                 return
+            }
+        }
+    }
+
+    private fun getMatch(resources: MutableList<StringData>, newStringData: StringData): StringData? {
+        resources.forEach {
+            if (it.stringKey == newStringData.stringKey) {
+                return it
+            }
+        }
+        return null
+    }
+
+    private fun saveStringData(language: String, newStringData: StringData) {
+        when (val data = stringsData[language]) {
+            null -> {
+                val languageData = LanguageData(language)
+                languageData.resources.add(newStringData)
+                stringsData[language] = languageData
+            }
+            else -> {
+                val stringData = getMatch(data.resources, newStringData)
+                if (stringData == null) {
+                    data.resources.add(newStringData)
+                } else {
+                    stringData.updateResources(newStringData)
+                }
             }
         }
     }

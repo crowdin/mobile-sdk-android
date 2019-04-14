@@ -1,8 +1,9 @@
 package com.crowdin.platform.repository.parser
 
-import com.crowdin.platform.repository.remote.api.ArrayData
-import com.crowdin.platform.repository.remote.api.LanguageData
-import com.crowdin.platform.repository.remote.api.PluralData
+import com.crowdin.platform.repository.model.ArrayData
+import com.crowdin.platform.repository.model.LanguageData
+import com.crowdin.platform.repository.model.PluralData
+import com.crowdin.platform.repository.model.StringData
 import org.xmlpull.v1.XmlPullParser
 
 internal class StringResourceParser : Parser {
@@ -15,7 +16,7 @@ internal class StringResourceParser : Parser {
     }
 
     // String
-    val resources: MutableMap<String, String> = mutableMapOf()
+    val resources: MutableList<StringData> = mutableListOf()
     private var isStringStarted = false
     private var stringKey: String? = null
 
@@ -95,14 +96,14 @@ internal class StringResourceParser : Parser {
             when (parser.name) {
                 TAG_STRING -> {
                     if (stringKey != null) {
-                        resources[stringKey!!] = content
+                        resources.add(StringData(stringKey!!, content))
                     }
                     isStringStarted = false
                     stringKey = null
                     content = ""
                 }
                 TAG_STRING_ARRAY -> {
-                    arrayData?.name = arrayKey
+                    arrayData?.name = arrayKey!!
                     arrayData?.let { arrays.add(it) }
                     arrayKey = ""
                     isArrayStarted = false

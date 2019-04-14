@@ -1,6 +1,6 @@
 package com.crowdin.platform.repository.parser
 
-import com.crowdin.platform.repository.remote.api.LanguageData
+import com.crowdin.platform.repository.model.LanguageData
 import java.io.InputStream
 
 internal interface Reader {

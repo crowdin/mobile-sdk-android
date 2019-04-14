@@ -1,9 +1,6 @@
 package com.crowdin.platform.repository.local
 
-import com.crowdin.platform.repository.SearchResultData
-import com.crowdin.platform.repository.remote.api.ArrayData
-import com.crowdin.platform.repository.remote.api.LanguageData
-import com.crowdin.platform.repository.remote.api.PluralData
+import com.crowdin.platform.repository.model.*
 
 /**
  * Repository of strings.
@@ -27,22 +24,28 @@ internal interface LocalRepository {
     fun setString(language: String, key: String, value: String)
 
     /**
+     * Set a single string(key, value) for a specific language.
+     *
+     * @param language the string belongs to.
+     * @param stringData    the new string data.
+     */
+    fun setStringData(language: String, stringData: StringData)
+
+    /**
      * Set a string array for a specific language.
      *
      * @param language  the string belongs to.
-     * @param key       the key of the string which is the string resource id.
      * @param arrayData the new string array data.
      */
-    fun setArrayData(language: String, key: String, arrayData: ArrayData)
+    fun setArrayData(language: String, arrayData: ArrayData)
 
     /**
      * Set a plural data for a specific language.
      *
      * @param language      the string belongs to.
-     * @param key           the key of the string which is the string resource id.
      * @param pluralData    the new plural data.
      */
-    fun setPluralData(language: String, key: String, pluralData: PluralData)
+    fun setPluralData(language: String, pluralData: PluralData)
 
     /**
      * Get a string for a language & key.

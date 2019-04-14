@@ -1,6 +1,6 @@
 package com.crowdin.platform.repository.parser
 
-import com.crowdin.platform.repository.remote.api.LanguageData
+import com.crowdin.platform.repository.model.LanguageData
 import org.xmlpull.v1.XmlPullParser
 
 /**

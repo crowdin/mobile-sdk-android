@@ -1,6 +1,6 @@
 package com.crowdin.platform.repository
 
-import com.crowdin.platform.repository.remote.api.LanguageData
+import com.crowdin.platform.repository.model.LanguageData
 
 /**
  * Callback for transferring language data.

@@ -1,4 +1,4 @@
-package com.crowdin.platform.repository.remote.api
+package com.crowdin.platform.repository.model
 
 internal class PluralData(var name: String = "",
                           var quantity: MutableMap<String, String> = mutableMapOf(),
