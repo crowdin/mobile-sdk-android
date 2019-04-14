@@ -46,6 +46,7 @@ internal class DefaultRemoteRepository(private val crowdinApi: CrowdinApi,
                             val languageData = reader.parseInput(body.byteStream())
                             languageData.language = Locale.getDefault().toString()
                             languageDataCallback.onDataLoaded(languageData)
+                            reader.close()
                         }
                     }
 

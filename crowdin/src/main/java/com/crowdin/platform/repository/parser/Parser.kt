@@ -12,4 +12,5 @@ internal interface Parser {
     fun onText(parser: XmlPullParser)
     fun onEndTag(parser: XmlPullParser)
     fun getLanguageData(): LanguageData
+    fun clearData()
 }

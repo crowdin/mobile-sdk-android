@@ -11,4 +11,9 @@ internal interface Reader {
      * @param byteStream    stream to be parsed
      */
     fun parseInput(byteStream: InputStream): LanguageData
+
+    /**
+     * Close reader and clear all data
+     */
+    fun close()
 }

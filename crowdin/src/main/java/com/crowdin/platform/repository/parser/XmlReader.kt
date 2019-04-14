@@ -7,6 +7,10 @@ import java.io.InputStream
 
 internal class XmlReader(var parser: Parser) : Reader {
 
+    override fun close() {
+        parser.clearData()
+    }
+
     override fun parseInput(byteStream: InputStream): LanguageData {
         val pullParserFactory: XmlPullParserFactory
         try {

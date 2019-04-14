@@ -19,6 +19,7 @@ internal class StringResourceParser : Parser {
     val resources: MutableList<StringData> = mutableListOf()
     private var isStringStarted = false
     private var stringKey: String? = null
+    private var stringData: StringData? = null
 
     // Array
     val arrays: MutableList<ArrayData> = mutableListOf()
@@ -41,6 +42,8 @@ internal class StringResourceParser : Parser {
         when (parser.name) {
             TAG_STRING -> {
                 isStringStarted = true
+
+                stringData = StringData()
                 val attrCount = parser.attributeCount
                 (attrCount > 0).let { if (it) stringKey = parser.getAttributeValue(0) }
             }
@@ -96,7 +99,9 @@ internal class StringResourceParser : Parser {
             when (parser.name) {
                 TAG_STRING -> {
                     if (stringKey != null) {
-                        resources.add(StringData(stringKey!!, content))
+                        stringData?.stringKey = stringKey!!
+                        stringData?.stringValue = content
+                        stringData?.let { resources.add(it) }
                     }
                     isStringStarted = false
                     stringKey = null
@@ -136,10 +141,16 @@ internal class StringResourceParser : Parser {
 
     override fun getLanguageData(): LanguageData {
         val languageData = LanguageData()
-        languageData.resources = resources
-        languageData.arrays = arrays
-        languageData.plurals = plurals
+        languageData.resources.addAll(resources)
+        languageData.arrays.addAll(arrays)
+        languageData.plurals.addAll(plurals)
 
         return languageData
+    }
+
+    override fun clearData() {
+        resources.clear()
+        arrays.clear()
+        plurals.clear()
     }
 }
