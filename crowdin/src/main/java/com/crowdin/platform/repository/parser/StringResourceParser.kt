@@ -42,7 +42,6 @@ internal class StringResourceParser : Parser {
         when (parser.name) {
             TAG_STRING -> {
                 isStringStarted = true
-
                 stringData = StringData()
                 val attrCount = parser.attributeCount
                 (attrCount > 0).let { if (it) stringKey = parser.getAttributeValue(0) }
@@ -90,7 +89,7 @@ internal class StringResourceParser : Parser {
             }
 
         } else if (isPluralStarted && isItemStarted) {
-            pluralData?.quantity?.set(quantityItemKey, parser.text)
+            content += parser.text
         }
     }
 
@@ -125,7 +124,7 @@ internal class StringResourceParser : Parser {
 
                     } else if (isPluralStarted) {
                         val quantityValues = pluralData?.quantity
-                        quantityValues?.set(quantityItemKey, quantityValues[quantityItemKey] + content)
+                        quantityValues?.set(quantityItemKey, content)
                         quantityItemKey = ""
                     }
                     content = ""

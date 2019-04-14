@@ -35,7 +35,7 @@ object Crowdin {
     @JvmStatic
     fun init(context: Context, config: CrowdinConfig) {
         this.config = config
-        initCrowdinApi(context)
+        initCrowdinApi()
         initStringDataManager(context, config)
         initViewTransformer(context)
         FeatureFlags.registerConfig(config)
@@ -109,8 +109,8 @@ object Crowdin {
         FeatureFlags.isRealTimeUpdateEnabled = value
     }
 
-    private fun initCrowdinApi(context: Context) {
-        CrowdinRetrofitService.instance.init(context)
+    private fun initCrowdinApi() {
+        CrowdinRetrofitService.instance.init()
     }
 
     private fun initStringDataManager(context: Context, config: CrowdinConfig) {

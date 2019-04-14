@@ -61,10 +61,7 @@ internal class MemoryLocalRepository : LocalRepository {
                 data.plurals.forEach { plural ->
                     if (plural.name == pluralData.name) {
                         isExist = true
-                        pluralData.quantity.forEach {
-                            plural.quantity[it.key] = it.value
-                        }
-                        plural.formatArgs = pluralData.formatArgs
+                        plural.updateResources(pluralData)
                     }
                 }
                 if (!isExist) {
@@ -136,7 +133,9 @@ internal class MemoryLocalRepository : LocalRepository {
         languageData?.plurals?.forEach { pluralData ->
             val pluralName = pluralData.name
             pluralData.quantity.forEach {
-                if (it.value == text) {
+                if (it.value == text ||
+                        (pluralData.formatArgs.isNotEmpty()
+                                && it.value == String.format(text, pluralData.formatArgs))) {
                     searchResultData.pluralName = pluralName
                     searchResultData.pluralQuantity = pluralData.number
                     searchResultData.pluralFormatArgs = pluralData.formatArgs

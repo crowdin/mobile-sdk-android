@@ -18,124 +18,113 @@ import java.util.*
 internal class CrowdinResources(res: Resources, private val stringDataManager: StringDataManager) :
         Resources(res.assets, res.displayMetrics, res.configuration) {
 
-    // TODO: refactor, extract methods. Remove duplication.
-
     @Throws(NotFoundException::class)
     override fun getString(id: Int): String {
-        val value = getStringFromRepository(id)
-        return if (value == null) {
-            val key = getResourceEntryName(id)
-            val defValue = super.getString(id)
-            stringDataManager.saveReserveResources(StringData(key, defValue.toString()))
-            defValue
-        } else {
-            value
-        }
+        val key = getResourceEntryName(id)
+        val resultText = getStringFromRepository(id) ?: super.getString(id)
+        saveStringDataToCopy(key, resultText.toString())
+        return resultText
     }
 
     @Throws(NotFoundException::class)
     override fun getString(id: Int, vararg formatArgs: Any): String {
+        val key = getResourceEntryName(id)
         val value = getStringFromRepository(id)
-        return if (value == null) {
-            val key = getResourceEntryName(id)
-            val defValue = super.getString(id, *formatArgs)
-            stringDataManager.saveReserveResources(StringData(key, defValue.toString(), formatArgs))
-            defValue
-        } else {
-            String.format(value, *formatArgs)
-        }
+        val resultText =
+                if (value == null) {
+                    super.getString(id, *formatArgs)
+                } else {
+                    String.format(value, *formatArgs)
+                }
+        saveStringDataToCopy(key, resultText.toString(), formatArgs)
+        return resultText
     }
 
     @Throws(NotFoundException::class)
     override fun getStringArray(id: Int): Array<String> {
-        val value = getStringArrayFromRepository(id)
-        return if (value == null) {
-            val key = getResourceEntryName(id)
-            val defArray = super.getStringArray(id)
-            stringDataManager.saveReserveResources(arrayData = ArrayData(key, defArray))
-            defArray
-        } else {
-            value
-        }
+        val key = getResourceEntryName(id)
+        val resultArray = getStringArrayFromRepository(id) ?: super.getStringArray(id)
+        saveStringArrayDataToCopy(key, resultArray)
+        return resultArray
     }
 
     @Throws(NotFoundException::class)
     override fun getText(id: Int): CharSequence {
+        val key = getResourceEntryName(id)
         val value = getStringFromRepository(id)
-        return if (value == null) {
-            val key = getResourceEntryName(id)
-            val defValue = super.getText(id)
-            stringDataManager.saveReserveResources(StringData(key, defValue.toString()))
-            defValue
-        } else {
-            fromHtml(value)
-        }
+        val resultText =
+                if (value == null) {
+                    super.getText(id)
+                } else {
+                    fromHtml(value)
+                }
+        saveStringDataToCopy(key, resultText.toString())
+        return resultText
     }
 
     override fun getText(id: Int, default: CharSequence): CharSequence {
+        val key = getResourceEntryName(id)
         val value = getStringFromRepository(id)
-        return if (value == null) {
-            val key = getResourceEntryName(id)
-            val defValue = super.getText(id, default)
-            val stringData = StringData(key, defValue.toString(), def = StringBuilder(default))
-            stringDataManager.saveReserveResources(stringData)
-            defValue
-        } else {
-            fromHtml(value)
-        }
+        val resultText =
+                if (value == null) {
+                    super.getText(id, default)
+                } else {
+                    fromHtml(value)
+                }
+        saveStringDataToCopy(key, resultText.toString(), default = default)
+        return resultText
     }
 
-    // TODO: save with value as key. Potential issue when getQuantityText invoked but not set into view
     @Throws(NotFoundException::class)
     override fun getQuantityText(id: Int, quantity: Int): CharSequence {
         val value = getPluralFromRepository(id, quantity)
-        return if (value == null) {
-            val pluralKey = getResourceEntryName(id)
-            val defaultText = super.getQuantityText(id, quantity)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                val rule = PluralRules.forLocale(Locale.getDefault())
-                val ruleName = rule.select(quantity.toDouble())
-
-                val quantityMap = mutableMapOf<String, String>()
-                quantityMap[ruleName] = defaultText.toString()
-                val pluralData = PluralData(
-                        pluralKey,
-                        quantityMap,
-                        quantity)
-
-                stringDataManager.saveReserveResources(pluralData = pluralData)
-            }
-            defaultText
-        } else {
-            fromHtml(value)
-        }
+        val resultText =
+                if (value == null) {
+                    super.getQuantityText(id, quantity)
+                } else {
+                    fromHtml(value)
+                }
+        savePluralToCopy(id, quantity, resultText.toString())
+        return resultText
     }
 
     @Throws(NotFoundException::class)
     override fun getQuantityString(id: Int, quantity: Int, vararg formatArgs: Any?): String {
         val value = getPluralFromRepository(id, quantity)
-        return if (value == null) {
-            val pluralKey = getResourceEntryName(id)
-            val defaultText = super.getQuantityString(id, quantity, *formatArgs)
+        val resultText =
+                if (value == null) {
+                    super.getQuantityString(id, quantity, *formatArgs)
+                } else {
+                    String.format(value, *formatArgs)
+                }
+        savePluralToCopy(id, quantity, resultText.toString(), formatArgs)
+        return resultText
+    }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                val rule = PluralRules.forLocale(Locale.getDefault())
-                val ruleName = rule.select(quantity.toDouble())
+    private fun saveStringDataToCopy(key: String, resultText: String, formatArgs: Array<out Any?> = arrayOf(), default: CharSequence = "") {
+        val stringData = StringData(key, resultText, formatArgs, StringBuilder(default))
+        stringDataManager.saveReserveResources(stringData)
+    }
 
-                val quantityMap = mutableMapOf<String, String>()
-                quantityMap[ruleName] = defaultText.toString()
-                val pluralData = PluralData(
-                        pluralKey,
-                        quantityMap,
-                        quantity,
-                        formatArgs)
+    private fun saveStringArrayDataToCopy(key: String, resultText: Array<String>) {
+        stringDataManager.saveReserveResources(arrayData = ArrayData(key, resultText))
+    }
 
-                stringDataManager.saveReserveResources(pluralData = pluralData)
-            }
-            defaultText
-        } else {
-            String.format(value, *formatArgs)
+    private fun savePluralToCopy(id: Int, quantity: Int, defaultText: String, formatArgs: Array<out Any?> = arrayOf()) {
+        val pluralKey = getResourceEntryName(id)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val rule = PluralRules.forLocale(Locale.getDefault())
+            val ruleName = rule.select(quantity.toDouble())
+
+            val quantityMap = mutableMapOf<String, String>()
+            quantityMap[ruleName] = defaultText
+            val pluralData = PluralData(
+                    pluralKey,
+                    quantityMap,
+                    quantity,
+                    formatArgs)
+
+            stringDataManager.saveReserveResources(pluralData = pluralData)
         }
     }
 
