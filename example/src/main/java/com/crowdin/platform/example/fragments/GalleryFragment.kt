@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import com.crowdin.platform.Crowdin
 
 import com.crowdin.platform.example.R
 import com.crowdin.platform.example.adapter.SampleAdapter
@@ -29,5 +31,7 @@ class GalleryFragment : Fragment() {
         val array = resources.getStringArray(R.array.string_array)
         val adapter = SampleAdapter(array)
         recyclerView.adapter = adapter
+
+        view.findViewById<TextView>(R.id.textView3).setOnClickListener { Crowdin.drawOnUi() }
     }
 }

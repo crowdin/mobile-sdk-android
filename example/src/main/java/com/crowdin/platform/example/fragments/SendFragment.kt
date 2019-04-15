@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.crowdin.platform.Crowdin
 import com.crowdin.platform.example.R
 
 class SendFragment : Fragment() {
@@ -30,5 +31,8 @@ class SendFragment : Fragment() {
 
         val text = getText(R.string.formatting_test3)
         textView3.text = text
+
+
+        view.findViewById<TextView>(R.id.textView0).setOnClickListener { Crowdin.drawOnUi() }
     }
 }

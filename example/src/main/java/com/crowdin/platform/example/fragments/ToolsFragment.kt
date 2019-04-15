@@ -3,6 +3,7 @@ package com.crowdin.platform.example.fragments
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
+import android.widget.TextView
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.example.R
 
@@ -15,6 +16,11 @@ class ToolsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_tools, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        view.findViewById<TextView>(R.id.textView3).setOnClickListener { Crowdin.drawOnUi() }
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

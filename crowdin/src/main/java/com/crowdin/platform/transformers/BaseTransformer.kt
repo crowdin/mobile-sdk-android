@@ -1,10 +1,15 @@
 package com.crowdin.platform.transformers
 
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
+import android.util.Log
+import android.view.View
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.ToggleButton
 import com.crowdin.platform.repository.model.TextMetaData
 import java.util.*
+
 
 internal abstract class BaseTransformer : Transformer {
 
@@ -16,6 +21,34 @@ internal abstract class BaseTransformer : Transformer {
     }
 
     val createdViews = WeakHashMap<TextView, TextMetaData>()
+
+    override fun drawOnLocalizedUI() {
+        for (createdView in createdViews) {
+            val view = createdView.key
+            if (view.visibility != View.VISIBLE) return
+
+            Log.d("TAG", "TopStart:[${view.x}:${view.y}]" +
+                    " BottomEnd:${view.x + view.width}: ${view.y + view.height}")
+
+            val textMetaData = createdView.value
+
+            if (textMetaData.hasAttributeKey
+                    || textMetaData.isArrayItem
+                    || textMetaData.isPluralData) {
+                val shape = GradientDrawable()
+                shape.shape = GradientDrawable.RECTANGLE
+                shape.setStroke(2, Color.BLACK)
+                view.background = shape
+                when {
+                    textMetaData.hasAttributeKey -> view.text = textMetaData.textAttributeKey
+                    textMetaData.isArrayItem -> view.text = "${textMetaData.arrayName}, ${textMetaData.arrayIndex}"
+                    textMetaData.isPluralData -> view.text = "${textMetaData.pluralName}, ${textMetaData.pluralQuantity}"
+                }
+            } else {
+                view.text = "unknown"
+            }
+        }
+    }
 
     override fun invalidate() {
         for (createdView in createdViews) {

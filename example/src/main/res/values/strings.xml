@@ -58,4 +58,13 @@
     <string name="next">Next</string>
     <string name="help">Help</string>
 
+    <string name="text0">Text 0</string>
+    <string name="text1">Text 1</string>
+    <string name="text2">Text 2</string>
+    <string name="text3">Text 3</string>
+    <string name="text4">Text 4</string>
+    <string name="text5">Text arg one %1$s</string>
+    <string name="text6">Text args two %1$s %2$s</string>
+    <string name="text7">Text args with text %1$stest %2$s</string>
+
 </resources>

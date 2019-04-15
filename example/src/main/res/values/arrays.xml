@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="tab_array">
-        <item>@string/monday</item>
-        <item>@string/tuesday</item>
-        <item>@string/wednesday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
     </string-array>
 
     <string-array name="string_array">
@@ -17,5 +17,12 @@
         <item>eight</item>
         <item>nine</item>
         <item>ten</item>
+        <item>eleven</item>
+        <item>twelve</item>
+        <item>thirteen</item>
+        <item>fourteen</item>
+        <item>fifteen</item>
+        <item>sixteen</item>
+        <item>seventeen</item>
     </string-array>
 </resources>

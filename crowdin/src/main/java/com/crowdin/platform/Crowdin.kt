@@ -1,10 +1,13 @@
 package com.crowdin.platform
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.res.Resources
 import android.hardware.Sensor
 import android.hardware.SensorManager
+import android.os.Handler
 import android.view.Menu
+import android.view.WindowManager
 import android.widget.Toast
 import com.crowdin.platform.repository.StringDataManager
 import com.crowdin.platform.repository.TextIdProvider
@@ -16,6 +19,7 @@ import com.crowdin.platform.repository.remote.DefaultRemoteRepository
 import com.crowdin.platform.transformers.*
 import com.crowdin.platform.utils.FeatureFlags
 import com.crowdin.platform.utils.TextUtils
+
 
 /**
  * Entry point for Crowdin. it will be used for setting new strings, wrapping activity context.
@@ -101,6 +105,13 @@ object Crowdin {
     fun invalidate() {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             viewTransformerManager.invalidate()
+        }
+    }
+
+    @JvmStatic
+    fun drawOnUi() {
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
+            viewTransformerManager.drawOnLocalizedUI()
         }
     }
 

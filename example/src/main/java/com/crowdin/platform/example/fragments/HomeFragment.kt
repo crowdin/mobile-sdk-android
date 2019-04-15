@@ -1,12 +1,12 @@
 package com.crowdin.platform.example.fragments
 
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.example.R
 
@@ -21,12 +21,14 @@ class HomeFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        view.findViewById<TextView>(R.id.textView0).setOnClickListener { Crowdin.drawOnUi() }
+
         view.findViewById<Button>(R.id.load_data_btn).setOnClickListener {
             context?.let { it1 -> Crowdin.forceUpdate(it1) }
         }
 
-        view.findViewById<Button>(R.id.invalidate_btn).setOnClickListener {
-            Handler().postDelayed({ Crowdin.invalidate() }, 2000)
-        }
+        view.findViewById<TextView>(R.id.textView5).text = getString(R.string.text5, "str")
+        view.findViewById<TextView>(R.id.textView6).text = getString(R.string.text6, "str", "str")
+        view.findViewById<TextView>(R.id.textView7).text = getString(R.string.text7, "str", "str")
     }
 }

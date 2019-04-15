@@ -54,6 +54,12 @@ internal class ViewTransformerManager {
             it.second.invalidate()
         }
     }
+
+    fun drawOnLocalizedUI() {
+        transformers.forEach {
+            it.second.drawOnLocalizedUI()
+        }
+    }
 }
 
 /**
@@ -78,4 +84,6 @@ internal interface Transformer {
     fun transform(view: View, attrs: AttributeSet): View
 
     fun invalidate() {}
+
+    fun drawOnLocalizedUI() {}
 }
