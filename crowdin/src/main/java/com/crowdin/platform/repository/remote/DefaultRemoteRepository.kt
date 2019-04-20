@@ -48,9 +48,11 @@ internal class DefaultRemoteRepository(private val crowdinApi: CrowdinApi,
                             languageDataCallback.onDataLoaded(languageData)
                             reader.close()
                         }
+                        languageDataCallback.onSuccess()
                     }
 
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    override fun onFailure(call: Call<ResponseBody>, throwable: Throwable) {
+                        languageDataCallback.onFailure(throwable)
                     }
                 })
     }

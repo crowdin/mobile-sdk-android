@@ -1,6 +1,7 @@
 package com.crowdin.platform.repository
 
 import android.content.Context
+import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.LocalDataChangeObserver
 import com.crowdin.platform.repository.local.LocalRepository
 import com.crowdin.platform.repository.model.*
@@ -10,10 +11,17 @@ import com.crowdin.platform.repository.remote.RemoteRepository
 import com.crowdin.platform.utils.FeatureFlags
 import com.crowdin.platform.utils.ThreadUtils
 import java.util.*
+import kotlin.collections.ArrayList
 
 internal class StringDataManager(private val remoteRepository: RemoteRepository,
                                  private val localRepository: LocalRepository,
-                                 private val dataChangeObserver: LocalDataChangeObserver) : TextIdProvider {
+                                 private val dataChangeObserver: LocalDataChangeObserver) : TextMetaDataProvider {
+
+    companion object {
+        private const val STATUS_OK = "ok"
+    }
+
+    private var loadingStateListeners: ArrayList<LoadingStateListener>? = null
 
     override fun provideTextKey(text: String): SearchResultData {
         return localRepository.getTextData(text)
@@ -36,9 +44,15 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
     }
 
     fun updateData(context: Context, networkType: NetworkType) {
-        if (Connectivity.isOnline(context) && Connectivity.isNetworkAllowed(context, networkType)) {
+        val status = validateData(context, networkType)
+
+        if (status == STATUS_OK) {
             ThreadUtils.runInBackgroundPool(Runnable {
                 remoteRepository.fetchData(object : LanguageDataCallback {
+
+                    override fun onSuccess() {
+                        sendOnSuccess()
+                    }
 
                     override fun onDataLoaded(languageData: LanguageData) {
                         localRepository.saveLanguageData(languageData)
@@ -46,9 +60,25 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
                             dataChangeObserver.onDataChanged()
                         }
                     }
+
+                    override fun onFailure(throwable: Throwable) {
+                        sendOnFailure(throwable)
+                    }
                 })
             }, false)
+        } else {
+            sendOnFailure(Throwable(status))
         }
+    }
+
+    private fun validateData(context: Context, networkType: NetworkType): String {
+        var status: String = STATUS_OK
+        when {
+            !Connectivity.isOnline(context) -> status = "No internet connection"
+            !Connectivity.isNetworkAllowed(context, networkType) -> status = "Not allowed to load with current network type: ${networkType.name}"
+        }
+
+        return status
     }
 
     fun saveReserveResources(stringData: StringData? = null,
@@ -62,9 +92,34 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
             }
         }
     }
-}
 
-internal interface TextIdProvider {
+    fun addLoadingStateListener(listener: LoadingStateListener) {
+        if (loadingStateListeners == null) {
+            loadingStateListeners = ArrayList()
+        }
 
-    fun provideTextKey(text: String): SearchResultData
+        loadingStateListeners?.add(listener)
+    }
+
+    fun removeLoadingStateListener(listener: LoadingStateListener) {
+        loadingStateListeners?.let {
+            it.removeAt(it.indexOf(listener))
+        }
+    }
+
+    private fun sendOnSuccess() {
+        loadingStateListeners?.let { listeners ->
+            listeners.forEach {
+                it.onSuccess()
+            }
+        }
+    }
+
+    private fun sendOnFailure(throwable: Throwable) {
+        loadingStateListeners?.let { listeners ->
+            listeners.forEach {
+                it.onFailure(throwable)
+            }
+        }
+    }
 }

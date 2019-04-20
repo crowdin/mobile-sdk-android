@@ -22,7 +22,7 @@ class ShareFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<TextView>(R.id.textView0).setOnClickListener {
-            Crowdin.drawOnUi()
+            Crowdin.takeScreenshot()
         }
 
         view.findViewById<TextView>(R.id.textView0).text = resources.getQuantityString(R.plurals.test_plurals, 0, 0)

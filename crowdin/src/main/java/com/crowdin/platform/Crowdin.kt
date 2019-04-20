@@ -1,16 +1,13 @@
 package com.crowdin.platform
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.res.Resources
 import android.hardware.Sensor
 import android.hardware.SensorManager
-import android.os.Handler
 import android.view.Menu
-import android.view.WindowManager
 import android.widget.Toast
 import com.crowdin.platform.repository.StringDataManager
-import com.crowdin.platform.repository.TextIdProvider
+import com.crowdin.platform.repository.TextMetaDataProvider
 import com.crowdin.platform.repository.local.LocalStringRepositoryFactory
 import com.crowdin.platform.repository.parser.StringResourceParser
 import com.crowdin.platform.repository.parser.XmlReader
@@ -109,7 +106,7 @@ object Crowdin {
     }
 
     @JvmStatic
-    fun drawOnUi() {
+    fun takeScreenshot() {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             viewTransformerManager.drawOnLocalizedUI()
         }
@@ -118,6 +115,23 @@ object Crowdin {
     @JvmStatic
     fun setRealTimeUpdates(value: Boolean) {
         FeatureFlags.isRealTimeUpdateEnabled = value
+    }
+
+    /**
+     * Register callback for tracking loading state
+     * @see LoadingStateListener
+     */
+    @JvmStatic
+    fun registerDataLoadingObserver(listener: LoadingStateListener) {
+        stringDataManager?.addLoadingStateListener(listener)
+    }
+
+    /**
+     * Remove callback for tracking loading state
+     * @see LoadingStateListener
+     */
+    fun unregisterDataLoadingObserver(listener: LoadingStateListener) {
+        stringDataManager?.removeLoadingStateListener(listener)
     }
 
     private fun initCrowdinApi() {
@@ -142,16 +156,11 @@ object Crowdin {
     // TODO: remove context if not needed
     private fun initViewTransformer(context: Context) {
         viewTransformerManager = ViewTransformerManager()
-        viewTransformerManager.registerTransformer(TextViewTransformer(stringDataManager as TextIdProvider))
-        viewTransformerManager.registerTransformer(ToolbarTransformer(stringDataManager as TextIdProvider))
-        viewTransformerManager.registerTransformer(SupportToolbarTransformer(stringDataManager as TextIdProvider))
+        viewTransformerManager.registerTransformer(TextViewTransformer(stringDataManager as TextMetaDataProvider))
+        viewTransformerManager.registerTransformer(ToolbarTransformer(stringDataManager as TextMetaDataProvider))
+        viewTransformerManager.registerTransformer(SupportToolbarTransformer(stringDataManager as TextMetaDataProvider))
         viewTransformerManager.registerTransformer(BottomNavigationViewTransformer())
         viewTransformerManager.registerTransformer(NavigationViewTransformer())
         viewTransformerManager.registerTransformer(SpinnerTransformer())
     }
-}
-
-interface LocalDataChangeObserver {
-
-    fun onDataChanged()
 }

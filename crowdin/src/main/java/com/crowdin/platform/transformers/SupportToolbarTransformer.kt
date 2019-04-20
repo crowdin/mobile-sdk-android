@@ -4,7 +4,7 @@ import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
-import com.crowdin.platform.repository.TextIdProvider
+import com.crowdin.platform.repository.TextMetaDataProvider
 import com.crowdin.platform.repository.model.TextMetaData
 import com.crowdin.platform.utils.FeatureFlags
 import com.crowdin.platform.utils.TextUtils
@@ -12,7 +12,7 @@ import com.crowdin.platform.utils.TextUtils
 /**
  * A transformer which transforms Toolbar(from support library): it transforms the text set as title.
  */
-internal class SupportToolbarTransformer(textIdProvider: TextIdProvider) : BaseToolbarTransformer(textIdProvider) {
+internal class SupportToolbarTransformer(textMetaDataProvider: TextMetaDataProvider) : BaseToolbarTransformer(textMetaDataProvider) {
 
     override val viewType = Toolbar::class.java
 

@@ -8,5 +8,9 @@ import com.crowdin.platform.repository.model.LanguageData
  */
 internal interface LanguageDataCallback {
 
+    fun onSuccess()
+
     fun onDataLoaded(languageData: LanguageData)
+
+    fun onFailure(throwable: Throwable)
 }

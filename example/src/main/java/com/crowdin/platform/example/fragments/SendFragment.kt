@@ -33,6 +33,6 @@ class SendFragment : Fragment() {
         textView3.text = text
 
 
-        view.findViewById<TextView>(R.id.textView0).setOnClickListener { Crowdin.drawOnUi() }
+        view.findViewById<TextView>(R.id.textView0).setOnClickListener { Crowdin.takeScreenshot() }
     }
 }

@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.ToggleButton
-import com.crowdin.platform.repository.TextIdProvider
+import com.crowdin.platform.repository.TextMetaDataProvider
 import com.crowdin.platform.repository.model.TextMetaData
 import com.crowdin.platform.utils.FeatureFlags
 import com.crowdin.platform.utils.TextUtils
@@ -17,7 +17,7 @@ import java.lang.ref.WeakReference
  * A transformer which transforms TextView(or any view extends it like Button, EditText, ...):
  * it transforms "text" & "hint" attributes.
  */
-internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTransformer() {
+internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvider) : BaseTransformer() {
 
     override val viewType = TextView::class.java
 
@@ -98,7 +98,7 @@ internal class TextViewTransformer(val textIdProvider: TextIdProvider) : BaseTra
 
         override fun afterTextChanged(s: Editable?) {
             view.get()?.let {
-                val resultData = textIdProvider.provideTextKey(s.toString())
+                val resultData = textMetaDataProvider.provideTextKey(s.toString())
                 var textMetaData = createdViews[it]
                 if (textMetaData == null) {
                     textMetaData = TextMetaData()
