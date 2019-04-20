@@ -55,6 +55,7 @@ object Crowdin {
 
             override fun onShake(count: Int) {
                 forceUpdate(context)
+                invalidate()
                 Toast.makeText(context, "Shake: force update", Toast.LENGTH_SHORT).show()
             }
         })

@@ -2,12 +2,12 @@ package com.crowdin.platform.example.fragments
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.example.R
@@ -37,11 +37,11 @@ class HomeFragment : Fragment(), LoadingStateListener {
     }
 
     override fun onSuccess() {
-        Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show()
+        Log.d("Crowdin", "HomeFragment: onSuccess")
     }
 
     override fun onFailure(throwable: Throwable) {
-        Toast.makeText(activity, "Fail: ${throwable.localizedMessage}", Toast.LENGTH_SHORT).show()
+        Log.d("Crowdin", "HomeFragment: onFailure ${throwable.localizedMessage}")
     }
 
     override fun onDestroy() {

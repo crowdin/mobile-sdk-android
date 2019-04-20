@@ -32,7 +32,6 @@ class SendFragment : Fragment() {
         val text = getText(R.string.formatting_test3)
         textView3.text = text
 
-
         view.findViewById<TextView>(R.id.textView0).setOnClickListener { Crowdin.takeScreenshot() }
     }
 }

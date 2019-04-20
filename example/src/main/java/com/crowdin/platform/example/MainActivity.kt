@@ -7,13 +7,16 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.crowdin.platform.Crowdin
+import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.example.fragments.*
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, LoadingStateListener {
 
+    private lateinit var navigationView: NavigationView
     private lateinit var drawerLayout: DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,10 +31,26 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         replaceFragment(HomeFragment.newInstance())
-        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        navigationView = findViewById(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
         navigationView.post { navigationView.setCheckedItem(R.id.nav_home) }
         setTitle(R.string.home)
+
+        Crowdin.registerDataLoadingObserver(this)
+    }
+
+    override fun onSuccess() {
+        Crowdin.updateMenuItemsText(navigationView.menu, resources, R.menu.drawer_view)
+        Log.d("Crowdin", "MainActivity: onSuccess")
+    }
+
+    override fun onFailure(throwable: Throwable) {
+        Log.d("Crowdin", "MainActivity: onFailure ${throwable.localizedMessage}")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Crowdin.unregisterDataLoadingObserver(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

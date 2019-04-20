@@ -4,16 +4,20 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.crowdin.platform.Crowdin
-
+import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.example.R
 import com.crowdin.platform.example.adapter.SampleAdapter
 
-class GalleryFragment : Fragment() {
+class GalleryFragment : Fragment(), LoadingStateListener {
+
+    private lateinit var adapter: SampleAdapter
+    private lateinit var recyclerView: RecyclerView
 
     companion object {
         fun newInstance(): GalleryFragment = GalleryFragment()
@@ -24,14 +28,29 @@ class GalleryFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
+        recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(context)
-
         val array = resources.getStringArray(R.array.string_array)
-        val adapter = SampleAdapter(array)
+        adapter = SampleAdapter(array)
         recyclerView.adapter = adapter
 
         view.findViewById<TextView>(R.id.textView3).setOnClickListener { Crowdin.takeScreenshot() }
+        Crowdin.registerDataLoadingObserver(this)
+    }
+
+    override fun onSuccess() {
+        val array = resources.getStringArray(R.array.string_array)
+        adapter.updateData(array)
+        Log.d("Crowdin", "GalleryFragment: onSuccess")
+    }
+
+    override fun onFailure(throwable: Throwable) {
+        Log.d("Crowdin", "GalleryFragment: onFailure ${throwable.localizedMessage}")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Crowdin.unregisterDataLoadingObserver(this)
     }
 }
