@@ -9,6 +9,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        val fifteenMinutes: Long = 60 * 15
         Crowdin.init(applicationContext,
                 CrowdinConfig.Builder()
                         .withDistributionKey("d32682e5a6a5f53a950d934e2eee861e")
@@ -17,6 +18,7 @@ class App : Application() {
                                 "plurals.xml")
                         .withNetworkType(NetworkType.WIFI)
                         .withRealTimeUpdates(true)
+                        .withUpdateInterval(fifteenMinutes)
                         .build())
     }
 }

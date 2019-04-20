@@ -12,6 +12,7 @@ class CrowdinConfig private constructor() {
     var filePaths: Array<out String>? = null
     var networkType: NetworkType = NetworkType.ALL
     var isRealTimeUpdateEnabled: Boolean = false
+    var updateInterval: Long = -1
 
     class Builder {
 
@@ -20,6 +21,7 @@ class CrowdinConfig private constructor() {
         private var filePaths: Array<out String>? = null
         private var networkType: NetworkType = NetworkType.ALL
         private var isRealTimeUpdateEnabled: Boolean = false
+        private var updateInterval: Long = -1
 
         fun persist(persist: Boolean): Builder {
             this.persist = persist
@@ -46,6 +48,12 @@ class CrowdinConfig private constructor() {
             return this
         }
 
+
+        fun withUpdateInterval(updateInterval: Long): Builder {
+            this.updateInterval = updateInterval
+            return this
+        }
+
         fun build(): CrowdinConfig {
             val config = CrowdinConfig()
             config.isPersist = persist
@@ -53,6 +61,7 @@ class CrowdinConfig private constructor() {
             config.filePaths = filePaths
             config.networkType = networkType
             config.isRealTimeUpdateEnabled = isRealTimeUpdateEnabled
+            config.updateInterval = updateInterval
 
             return config
         }

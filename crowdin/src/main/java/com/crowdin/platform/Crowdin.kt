@@ -6,6 +6,7 @@ import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.view.Menu
 import android.widget.Toast
+import com.crowdin.platform.recurringwork.RecurringManager
 import com.crowdin.platform.repository.StringDataManager
 import com.crowdin.platform.repository.TextMetaDataProvider
 import com.crowdin.platform.repository.local.LocalStringRepositoryFactory
@@ -38,9 +39,13 @@ object Crowdin {
         this.config = config
         initCrowdinApi()
         initStringDataManager(context, config)
-        initViewTransformer(context)
+        initViewTransformer()
         FeatureFlags.registerConfig(config)
-//        stringDataManager?.updateData(context, config.networkType)
+
+        when {
+            config.updateInterval != -1L -> RecurringManager.setPeriodicUpdates(context, config)
+            else -> forceUpdate(context)
+        }
 
         // ShakeDetector initialization
         val mSensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -53,7 +58,14 @@ object Crowdin {
                 Toast.makeText(context, "Shake: force update", Toast.LENGTH_SHORT).show()
             }
         })
-        mSensorManager.registerListener(shakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(shakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI)
+    }
+
+    internal fun initForUpdate(context: Context) {
+        this.config = RecurringManager.getConfig(context)
+        initCrowdinApi()
+        initStringDataManager(context, config)
+        forceUpdate(context)
     }
 
     /**
@@ -130,8 +142,17 @@ object Crowdin {
      * Remove callback for tracking loading state
      * @see LoadingStateListener
      */
+    @JvmStatic
     fun unregisterDataLoadingObserver(listener: LoadingStateListener) {
         stringDataManager?.removeLoadingStateListener(listener)
+    }
+
+    /**
+     * Cancel recurring job defined by interval during sdk init.
+     */
+    @JvmStatic
+    fun cancelRecurring(context: Context) {
+        RecurringManager.cancel(context)
     }
 
     private fun initCrowdinApi() {
@@ -153,8 +174,7 @@ object Crowdin {
         })
     }
 
-    // TODO: remove context if not needed
-    private fun initViewTransformer(context: Context) {
+    private fun initViewTransformer() {
         viewTransformerManager = ViewTransformerManager()
         viewTransformerManager.registerTransformer(TextViewTransformer(stringDataManager as TextMetaDataProvider))
         viewTransformerManager.registerTransformer(ToolbarTransformer(stringDataManager as TextMetaDataProvider))

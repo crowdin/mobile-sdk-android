@@ -26,7 +26,7 @@ class HomeFragment : Fragment(), LoadingStateListener {
         view.findViewById<TextView>(R.id.textView0).setOnClickListener { Crowdin.takeScreenshot() }
 
         view.findViewById<Button>(R.id.load_data_btn).setOnClickListener {
-            context?.let { it1 -> Crowdin.forceUpdate(it1) }
+            context?.let { Crowdin.forceUpdate(context!!) }
         }
 
         view.findViewById<TextView>(R.id.textView5).text = getString(R.string.text5, "str")
