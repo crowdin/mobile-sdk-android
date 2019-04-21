@@ -41,14 +41,17 @@ internal class DefaultRemoteRepository(private val crowdinApi: CrowdinApi,
 
                     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                         val body = response.body()
-                        if (response.code() == HttpURLConnection.HTTP_OK && body != null) {
-                            response.headers().get(HEADER_ETAG)?.let { eTag -> eTagMap.put(filePath, eTag) }
-                            val languageData = reader.parseInput(body.byteStream())
-                            languageData.language = Locale.getDefault().toString()
-                            languageDataCallback.onDataLoaded(languageData)
-                            reader.close()
+                        when {
+                            response.code() == HttpURLConnection.HTTP_OK && body != null -> {
+                                response.headers().get(HEADER_ETAG)?.let { eTag -> eTagMap.put(filePath, eTag) }
+                                val languageData = reader.parseInput(body.byteStream())
+                                languageData.language = Locale.getDefault().toString()
+                                languageDataCallback.onDataLoaded(languageData)
+                                reader.close()
+                            }
+                            response.code() == HttpURLConnection.HTTP_NOT_MODIFIED -> languageDataCallback.onSuccess()
+                            else -> languageDataCallback.onFailure(Throwable("Unexpected http error code ${response.code()}"))
                         }
-                        languageDataCallback.onSuccess()
                     }
 
                     override fun onFailure(call: Call<ResponseBody>, throwable: Throwable) {

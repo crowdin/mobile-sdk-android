@@ -18,7 +18,6 @@ import com.crowdin.platform.transformers.*
 import com.crowdin.platform.utils.FeatureFlags
 import com.crowdin.platform.utils.TextUtils
 
-
 /**
  * Entry point for Crowdin. it will be used for setting new strings, wrapping activity context.
  */
@@ -43,23 +42,14 @@ object Crowdin {
         FeatureFlags.registerConfig(config)
 
         when {
-            config.updateInterval != -1L -> RecurringManager.setPeriodicUpdates(context, config)
-            else -> forceUpdate(context)
-        }
-
-        // ShakeDetector initialization
-        val mSensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        val mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        val shakeDetector = ShakeDetector()
-        shakeDetector.setOnShakeListener(object : ShakeDetector.OnShakeListener {
-
-            override fun onShake(count: Int) {
+            config.updateInterval >= RecurringManager.MIN_PERIODIC_INTERVAL_MILLIS ->
+                RecurringManager.setPeriodicUpdates(context, config)
+            else -> {
+                RecurringManager.cancel(context)
                 forceUpdate(context)
-                invalidate()
-                Toast.makeText(context, "Shake: force update", Toast.LENGTH_SHORT).show()
             }
-        })
-        mSensorManager.registerListener(shakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI)
+        }
+        initShake(context)
     }
 
     internal fun initForUpdate(context: Context) {
@@ -125,11 +115,6 @@ object Crowdin {
         }
     }
 
-    @JvmStatic
-    fun setRealTimeUpdates(value: Boolean) {
-        FeatureFlags.isRealTimeUpdateEnabled = value
-    }
-
     /**
      * Register callback for tracking loading state
      * @see LoadingStateListener
@@ -183,5 +168,21 @@ object Crowdin {
         viewTransformerManager.registerTransformer(BottomNavigationViewTransformer())
         viewTransformerManager.registerTransformer(NavigationViewTransformer())
         viewTransformerManager.registerTransformer(SpinnerTransformer())
+    }
+
+    private fun initShake(context: Context) {
+        // ShakeDetector initialization
+        val mSensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        val shakeDetector = ShakeDetector()
+        shakeDetector.setOnShakeListener(object : ShakeDetector.OnShakeListener {
+
+            override fun onShake(count: Int) {
+                forceUpdate(context)
+                invalidate()
+                Toast.makeText(context, "Shake: force update", Toast.LENGTH_SHORT).show()
+            }
+        })
+        mSensorManager.registerListener(shakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI)
     }
 }

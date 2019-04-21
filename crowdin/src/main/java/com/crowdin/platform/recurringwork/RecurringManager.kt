@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit
 
 internal object RecurringManager {
 
+
+    const val MIN_PERIODIC_INTERVAL_MILLIS = 15 * 60 * 1000L // 15 minutes.
     private const val SHARED_PREF_NAME = "com.crowdin.platform.config"
     private const val CROWDIN_CONFIG = "crowdin_config"
     private const val WORKER_UUID = "worker_uuid"
