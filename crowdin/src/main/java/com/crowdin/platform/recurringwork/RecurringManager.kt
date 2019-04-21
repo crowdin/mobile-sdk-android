@@ -37,8 +37,11 @@ internal object RecurringManager {
     }
 
     fun cancel(context: Context) {
-        WorkManager.getInstance().cancelWorkById(getJobId(context))
-        saveRecurringState(context, WORK_CANCELED)
+        val jobId = getJobId(context)
+        if (jobId != null) {
+            WorkManager.getInstance().cancelWorkById(jobId)
+            saveRecurringState(context, WORK_CANCELED)
+        }
     }
 
     private fun saveJobId(context: Context, id: UUID) {
@@ -47,9 +50,15 @@ internal object RecurringManager {
         sharedPreferences.edit().putString(WORKER_UUID, json).apply()
     }
 
-    private fun getJobId(context: Context): UUID {
+    private fun getJobId(context: Context): UUID? {
         val sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
-        return Gson().fromJson(sharedPreferences.getString(WORKER_UUID, ""), UUID::class.java)
+        val value = sharedPreferences.getString(WORKER_UUID, null)
+
+        return if (value == null) {
+            null
+        } else {
+            Gson().fromJson(value, UUID::class.java)
+        }
     }
 
     private fun saveConfig(context: Context, config: CrowdinConfig) {
