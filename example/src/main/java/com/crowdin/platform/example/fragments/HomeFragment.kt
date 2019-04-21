@@ -36,7 +36,7 @@ class HomeFragment : Fragment(), LoadingStateListener {
         Crowdin.registerDataLoadingObserver(this)
     }
 
-    override fun onSuccess() {
+    override fun onDataChanged() {
         Log.d("Crowdin", "HomeFragment: onSuccess")
     }
 

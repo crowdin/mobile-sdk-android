@@ -39,7 +39,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         Crowdin.registerDataLoadingObserver(this)
     }
 
-    override fun onSuccess() {
+    override fun onDataChanged() {
         Crowdin.updateMenuItemsText(navigationView.menu, resources, R.menu.drawer_view)
         Log.d("Crowdin", "MainActivity: onSuccess")
     }

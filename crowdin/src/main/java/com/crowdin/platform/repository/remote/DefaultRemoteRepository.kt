@@ -49,8 +49,8 @@ internal class DefaultRemoteRepository(private val crowdinApi: CrowdinApi,
                                 languageDataCallback.onDataLoaded(languageData)
                                 reader.close()
                             }
-                            response.code() == HttpURLConnection.HTTP_NOT_MODIFIED -> languageDataCallback.onSuccess()
-                            else -> languageDataCallback.onFailure(Throwable("Unexpected http error code ${response.code()}"))
+                            response.code() != HttpURLConnection.HTTP_NOT_MODIFIED ->
+                                languageDataCallback.onFailure(Throwable("Unexpected http error code ${response.code()}"))
                         }
                     }
 

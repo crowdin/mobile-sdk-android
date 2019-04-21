@@ -50,15 +50,13 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
             ThreadUtils.runInBackgroundPool(Runnable {
                 remoteRepository.fetchData(object : LanguageDataCallback {
 
-                    override fun onSuccess() {
-                        sendOnSuccess()
-                    }
-
                     override fun onDataLoaded(languageData: LanguageData) {
                         localRepository.saveLanguageData(languageData)
                         if (FeatureFlags.isRealTimeUpdateEnabled) {
                             dataChangeObserver.onDataChanged()
                         }
+
+                        sendOnDataChanged()
                     }
 
                     override fun onFailure(throwable: Throwable) {
@@ -107,18 +105,18 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
         }
     }
 
-    private fun sendOnSuccess() {
-        loadingStateListeners?.let { listeners ->
-            listeners.forEach {
-                it.onSuccess()
-            }
-        }
-    }
-
     private fun sendOnFailure(throwable: Throwable) {
         loadingStateListeners?.let { listeners ->
             listeners.forEach {
                 it.onFailure(throwable)
+            }
+        }
+    }
+
+    private fun sendOnDataChanged() {
+        loadingStateListeners?.let { listeners ->
+            listeners.forEach {
+                it.onDataChanged()
             }
         }
     }

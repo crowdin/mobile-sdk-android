@@ -39,7 +39,7 @@ class GalleryFragment : Fragment(), LoadingStateListener {
         Crowdin.registerDataLoadingObserver(this)
     }
 
-    override fun onSuccess() {
+    override fun onDataChanged() {
         val array = resources.getStringArray(R.array.string_array)
         adapter.updateData(array)
         Log.d("Crowdin", "GalleryFragment: onSuccess")
