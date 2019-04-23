@@ -2,6 +2,7 @@ package com.crowdin.platform
 
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.view.Menu
@@ -109,8 +110,10 @@ object Crowdin {
     }
 
     @JvmStatic
-    fun takeScreenshot() {
+    fun sendScreenshot(bitmap: Bitmap) {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
+            // TODO: replace this logic extract class
+            stringDataManager?.sendScreenshotWithKeys(bitmap, viewTransformerManager.getResourceKeys())
             viewTransformerManager.drawOnLocalizedUI()
         }
     }

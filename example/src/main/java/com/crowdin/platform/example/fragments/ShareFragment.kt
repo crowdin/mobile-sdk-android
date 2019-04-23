@@ -9,6 +9,7 @@ import android.widget.TextView
 import com.crowdin.platform.Crowdin
 
 import com.crowdin.platform.example.R
+import com.crowdin.platform.utils.ScreenshotUtils
 
 class ShareFragment : Fragment() {
 
@@ -22,7 +23,7 @@ class ShareFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<TextView>(R.id.textView0).setOnClickListener {
-            Crowdin.takeScreenshot()
+            ScreenshotUtils.getBitmapFromView(view, activity!!) { Crowdin.sendScreenshot(it) }
         }
 
         view.findViewById<TextView>(R.id.textView0).text = resources.getQuantityString(R.plurals.test_plurals, 0, 0)

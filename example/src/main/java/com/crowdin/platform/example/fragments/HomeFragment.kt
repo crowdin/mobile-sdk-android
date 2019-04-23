@@ -7,10 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.example.R
+import com.crowdin.platform.utils.ScreenshotUtils
 
 class HomeFragment : Fragment(), LoadingStateListener {
 
@@ -23,7 +25,12 @@ class HomeFragment : Fragment(), LoadingStateListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.findViewById<TextView>(R.id.textView0).setOnClickListener { Crowdin.takeScreenshot() }
+        view.findViewById<TextView>(R.id.textView0).setOnClickListener {
+            ScreenshotUtils.getBitmapFromView(view, activity!!) {
+                view.findViewById<ImageView>(R.id.testImageView).setImageBitmap(it)
+                Crowdin.sendScreenshot(it)
+            }
+        }
 
         view.findViewById<Button>(R.id.load_data_btn).setOnClickListener {
             context?.let { Crowdin.forceUpdate(context!!) }

@@ -13,6 +13,7 @@ import com.crowdin.platform.Crowdin
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.example.R
 import com.crowdin.platform.example.adapter.SampleAdapter
+import com.crowdin.platform.utils.ScreenshotUtils
 
 class GalleryFragment : Fragment(), LoadingStateListener {
 
@@ -35,7 +36,9 @@ class GalleryFragment : Fragment(), LoadingStateListener {
         adapter = SampleAdapter(array)
         recyclerView.adapter = adapter
 
-        view.findViewById<TextView>(R.id.textView3).setOnClickListener { Crowdin.takeScreenshot() }
+        view.findViewById<TextView>(R.id.textView3).setOnClickListener {
+            ScreenshotUtils.getBitmapFromView(view, activity!!) { Crowdin.sendScreenshot(it) }
+        }
         Crowdin.registerDataLoadingObserver(this)
     }
 

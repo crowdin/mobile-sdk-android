@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.example.R
+import com.crowdin.platform.utils.ScreenshotUtils
 
 class CameraFragment : Fragment() {
 
@@ -20,6 +21,8 @@ class CameraFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.findViewById<TextView>(R.id.textView3).setOnClickListener { Crowdin.takeScreenshot() }
+        view.findViewById<TextView>(R.id.textView3).setOnClickListener {
+            ScreenshotUtils.getBitmapFromView(view, activity!!) { Crowdin.sendScreenshot(it) }
+        }
     }
 }

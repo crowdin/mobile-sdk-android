@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.example.R
+import com.crowdin.platform.utils.ScreenshotUtils
 
 class SlideshowFragment : Fragment() {
 
@@ -30,6 +31,8 @@ class SlideshowFragment : Fragment() {
 
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.dynamic_tab_title)))
 
-        view.findViewById<TextView>(R.id.textView3).setOnClickListener { Crowdin.takeScreenshot() }
+        view.findViewById<TextView>(R.id.textView3).setOnClickListener {
+            ScreenshotUtils.getBitmapFromView(view, activity!!) { Crowdin.sendScreenshot(it) }
+        }
     }
 }

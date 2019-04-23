@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.TextView
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.example.R
+import com.crowdin.platform.utils.ScreenshotUtils
 
 class ToolsFragment : Fragment() {
 
@@ -19,15 +20,19 @@ class ToolsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.findViewById<TextView>(R.id.textView3).setOnClickListener { Crowdin.takeScreenshot() }
-
+        view.findViewById<TextView>(R.id.textView3).setOnClickListener {
+            ScreenshotUtils.getBitmapFromView(view, activity!!) { Crowdin.sendScreenshot(it) }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_clear -> {}
-            R.id.menu_crop -> {}
-            R.id.menu_refresh -> {}
+            R.id.menu_clear -> {
+            }
+            R.id.menu_crop -> {
+            }
+            R.id.menu_refresh -> {
+            }
         }
         return true
     }

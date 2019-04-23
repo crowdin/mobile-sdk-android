@@ -1,6 +1,7 @@
 package com.crowdin.platform.repository
 
 import android.content.Context
+import android.graphics.Bitmap
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.LocalDataChangeObserver
 import com.crowdin.platform.repository.local.LocalRepository
@@ -119,5 +120,10 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
                 it.onDataChanged()
             }
         }
+    }
+
+    // TODO: extract to separate class
+    fun sendScreenshotWithKeys(bitmap: Bitmap, resourceKeys: Any) {
+
     }
 }

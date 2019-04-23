@@ -60,6 +60,16 @@ internal class ViewTransformerManager {
             it.second.drawOnLocalizedUI()
         }
     }
+
+    // TODO: add handler
+    fun getResourceKeys(): Any {
+        val mutableList = mutableListOf<String>()
+        transformers.forEach {
+             it.second.getResourceKeys()
+        }
+
+        return mutableList
+    }
 }
 
 /**
@@ -86,4 +96,6 @@ internal interface Transformer {
     fun invalidate() {}
 
     fun drawOnLocalizedUI() {}
+
+    fun getResourceKeys() {}
 }

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.example.R
+import com.crowdin.platform.utils.ScreenshotUtils
 
 class SendFragment : Fragment() {
 
@@ -32,6 +33,8 @@ class SendFragment : Fragment() {
         val text = getText(R.string.formatting_test3)
         textView3.text = text
 
-        view.findViewById<TextView>(R.id.textView0).setOnClickListener { Crowdin.takeScreenshot() }
+        view.findViewById<TextView>(R.id.textView0).setOnClickListener {
+            ScreenshotUtils.getBitmapFromView(view, activity!!) { Crowdin.sendScreenshot(it) }
+        }
     }
 }
