@@ -10,7 +10,11 @@ internal object TextUtils {
         var text: CharSequence? = null
         val value = attrs.getAttributeValue(index)
         if (value != null && value.startsWith("@")) {
-            text = resources.getText(attrs.getAttributeResourceValue(index, 0))
+            text = try {
+                resources.getText(attrs.getAttributeResourceValue(index, 0))
+            } catch (exception: Resources.NotFoundException) {
+                null
+            }
         }
 
         return text
@@ -20,7 +24,11 @@ internal object TextUtils {
         var id: String? = null
         val value = attrs.getAttributeValue(index)
         if (value != null && value.startsWith("@")) {
-            id = res.getResourceEntryName(attrs.getAttributeResourceValue(index, 0))
+            id = try {
+                res.getResourceEntryName(attrs.getAttributeResourceValue(index, 0))
+            } catch (exception: Resources.NotFoundException) {
+                null
+            }
         }
 
         return id
