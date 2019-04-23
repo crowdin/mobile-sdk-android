@@ -1,7 +1,5 @@
 package com.crowdin.platform.transformers
 
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.util.Log
 import android.view.View
 import android.widget.Switch
@@ -27,26 +25,22 @@ internal abstract class BaseTransformer : Transformer {
             val view = createdView.key
             if (view.visibility != View.VISIBLE) return
 
-            Log.d("TAG", "TopStart:[${view.x}:${view.y}]" +
-                    " BottomEnd:${view.x + view.width}: ${view.y + view.height}")
-
             val textMetaData = createdView.value
 
-            if (textMetaData.hasAttributeKey
-                    || textMetaData.isArrayItem
-                    || textMetaData.isPluralData) {
-                val shape = GradientDrawable()
-                shape.shape = GradientDrawable.RECTANGLE
-                shape.setStroke(2, Color.BLACK)
-                view.background = shape
-                when {
-                    textMetaData.hasAttributeKey -> view.text = textMetaData.textAttributeKey
-                    textMetaData.isArrayItem -> view.text = "${textMetaData.arrayName}, ${textMetaData.arrayIndex}"
-                    textMetaData.isPluralData -> view.text = "${textMetaData.pluralName}, ${textMetaData.pluralQuantity}"
-                }
-            } else {
-                view.text = "unknown"
-            }
+            val location = IntArray(2)
+            view.getLocationInWindow(location)
+            logCoordinates(view, location, textMetaData)
+        }
+    }
+
+    private fun logCoordinates(view: TextView, location: IntArray, textMetaData: TextMetaData) {
+        if (location[0] >= view.rootView.x &&
+                location[0] <= view.rootView.width &&
+                location[1] >= view.rootView.y &&
+                location[1] <= view.rootView.height) {
+
+            Log.d("TAG", "Key:${textMetaData.textAttributeKey}, TopStart:[${location[0]}:${location[1]}]" +
+                    " BottomEnd:${location[0] + view.width}: ${location[1] + view.height}")
         }
     }
 
