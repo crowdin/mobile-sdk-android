@@ -6,19 +6,20 @@ import android.support.v7.app.AlertDialog
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Toast
 
 
 object CrowdinUiUtils {
 
-    private const val CROWDIN_AUTH = "https:\\www.crowdin.com/login"
+    private const val URL_PROFILE = "https://crowdin.com/profile"
+    private const val URL_CROWDIN_AUTH = "https:\\www.crowdin.com/login"
+    private const val COOKIE_TOKEN = "csrf_token"
     private var isCookieAvailable = false
 
     @SuppressLint("SetJavaScriptEnabled")
     @JvmStatic
     fun showCrowdinAuthDialog(context: Context) {
         val webView = WebView(context)
-        webView.loadUrl(CROWDIN_AUTH)
+        webView.loadUrl(URL_CROWDIN_AUTH)
         webView.settings.javaScriptEnabled = true
 
         val dialog = AlertDialog.Builder(context)
@@ -41,7 +42,7 @@ object CrowdinUiUtils {
                 if (cookies != null) {
                     val list = cookies.split(";")
                     for (item in list) {
-                        if (item.contains("csrf_token")) {
+                        if (item.contains(COOKIE_TOKEN)) {
                             val temp = item.split("=".toRegex())
                                     .dropLastWhile { it.isEmpty() }
                                     .toTypedArray()
@@ -50,9 +51,8 @@ object CrowdinUiUtils {
                     }
                 }
 
-                if (url == "https://crowdin.com/profile" && value.isNotEmpty()) {
+                if (url == URL_PROFILE && value.isNotEmpty()) {
                     dialog.dismiss()
-                    Toast.makeText(context, "cookie $value", Toast.LENGTH_SHORT).show()
                     isCookieAvailable = true
                 }
             }
