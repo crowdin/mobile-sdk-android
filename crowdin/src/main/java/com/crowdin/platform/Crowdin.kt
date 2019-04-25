@@ -12,6 +12,7 @@ import com.crowdin.platform.recurringwork.RecurringManager
 import com.crowdin.platform.repository.StringDataManager
 import com.crowdin.platform.repository.TextMetaDataProvider
 import com.crowdin.platform.repository.local.LocalStringRepositoryFactory
+import com.crowdin.platform.repository.model.LanguageData
 import com.crowdin.platform.repository.parser.StringResourceParser
 import com.crowdin.platform.repository.parser.XmlReader
 import com.crowdin.platform.repository.remote.CrowdinRetrofitService
@@ -51,7 +52,7 @@ object Crowdin {
             else -> {
                 RecurringManager.cancel(context)
                 forceUpdate(context)
-                loadMapping(config)
+                loadMapping()
             }
         }
         initShake(context)
@@ -193,7 +194,11 @@ object Crowdin {
         mSensorManager.registerListener(shakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI)
     }
 
-    private fun loadMapping(config: CrowdinConfig) {
+    fun saveCookies(csrfToken: String) {
+        // TODO: save cookies
+    }
+
+    private fun loadMapping() {
         if (config.isRealTimeUpdateEnabled) {
             val mappingRepository = MappingRepository(
                     CrowdinRetrofitService.instance.getCrowdinApi(),
@@ -201,13 +206,12 @@ object Crowdin {
                     config.distributionKey,
                     config.filePaths)
             mappingRepository.getMapping(object : MappingCallback {
-                override fun onSuccess() {
-                    Log.d("TAG", "mapping loaded")
-                    stringDataManager?.saveMapping()
+                override fun onSuccess(languageData: LanguageData) {
+                    stringDataManager?.saveMapping(languageData)
                 }
 
                 override fun onFailure(throwable: Throwable) {
-                    Log.d("TAG", "mapping onFailure: ${throwable.localizedMessage}")
+                    Log.d(Crowdin::class.java.simpleName, "Get mapping, onFailure:${throwable.localizedMessage}")
                 }
             })
         }

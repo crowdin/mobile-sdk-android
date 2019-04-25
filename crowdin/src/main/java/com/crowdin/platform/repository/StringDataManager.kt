@@ -20,6 +20,8 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
 
     companion object {
         private const val STATUS_OK = "ok"
+        const val SUF_COPY = "-copy"
+        const val SUF_MAPPING = "-mapping"
     }
 
     private var loadingStateListeners: ArrayList<LoadingStateListener>? = null
@@ -85,9 +87,9 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
                              pluralData: PluralData? = null) {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             when {
-                stringData != null -> localRepository.setStringData("${Locale.getDefault().language}-copy", stringData)
-                arrayData != null -> localRepository.setArrayData("${Locale.getDefault().language}-copy", arrayData)
-                pluralData != null -> localRepository.setPluralData("${Locale.getDefault().language}-copy", pluralData)
+                stringData != null -> localRepository.setStringData(Locale.getDefault().language + SUF_COPY, stringData)
+                arrayData != null -> localRepository.setArrayData(Locale.getDefault().language + SUF_COPY, arrayData)
+                pluralData != null -> localRepository.setPluralData(Locale.getDefault().language + SUF_COPY, pluralData)
             }
         }
     }
@@ -127,7 +129,7 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
 
     }
 
-    fun saveMapping() {
-        // TODO: save mapping
+    fun saveMapping(languageData: LanguageData) {
+        localRepository.saveLanguageData(languageData)
     }
 }

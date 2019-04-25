@@ -27,7 +27,7 @@ internal class StringDataRemoteRepository(private val crowdinApi: CrowdinApi,
     }
 
     private fun requestData(eTag: String?, distributionKey: String, filePath: String, languageDataCallback: LanguageDataCallback) {
-        crowdinApi.getFileUpdates(eTag ?: HEADER_ETAG_EMPTY, distributionKey, filePath)
+        crowdinApi.getResourceFile(eTag ?: HEADER_ETAG_EMPTY, distributionKey, filePath)
                 .enqueue(object : Callback<ResponseBody> {
 
                     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {

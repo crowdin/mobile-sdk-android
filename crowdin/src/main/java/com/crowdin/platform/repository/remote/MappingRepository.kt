@@ -1,5 +1,6 @@
 package com.crowdin.platform.repository.remote
 
+import com.crowdin.platform.repository.StringDataManager
 import com.crowdin.platform.repository.parser.Reader
 import com.crowdin.platform.repository.remote.api.CrowdinApi
 import okhttp3.ResponseBody
@@ -18,15 +19,14 @@ internal class MappingRepository(private val crowdinApi: CrowdinApi,
         if (distributionKey == null) return
 
         filePaths?.forEach {
-            val filePath = validateFilePath(it) + ".cids"
+            val filePath = validateFilePath(it).split("/").takeLast(1).run { "/$it" }.toString()
             val eTag = eTagMap[filePath]
             requestData(eTag, distributionKey, filePath, mappingCallback)
         }
     }
 
     private fun requestData(eTag: String?, distributionKey: String, filePath: String, mappingCallback: MappingCallback) {
-        crowdinApi.getFileUpdates(eTag
-                ?: HEADER_ETAG_EMPTY, distributionKey, filePath)
+        crowdinApi.getMappingFile(eTag ?: HEADER_ETAG_EMPTY, distributionKey, filePath)
                 .enqueue(object : Callback<ResponseBody> {
 
                     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -35,10 +35,9 @@ internal class MappingRepository(private val crowdinApi: CrowdinApi,
                             response.code() == HttpURLConnection.HTTP_OK && body != null -> {
                                 response.headers().get(HEADER_ETAG)?.let { eTag -> eTagMap.put(filePath, eTag) }
                                 val languageData = reader.parseInput(body.byteStream())
-                                languageData.language = Locale.getDefault().toString()
+                                languageData.language = Locale.getDefault().toString() + StringDataManager.SUF_MAPPING
 
-                                // TODO: update
-                                mappingCallback.onSuccess()
+                                mappingCallback.onSuccess(languageData)
                                 reader.close()
                             }
                             response.code() != HttpURLConnection.HTTP_NOT_MODIFIED ->

@@ -1,5 +1,6 @@
 package com.crowdin.platform.repository.local
 
+import com.crowdin.platform.repository.StringDataManager
 import com.crowdin.platform.repository.model.*
 import java.util.*
 
@@ -117,7 +118,7 @@ internal class MemoryLocalRepository : LocalRepository {
         val languageData = stringsData[Locale.getDefault().toString()]
         searchInResources(languageData, text, searchResultData)
 
-        val languageReserveData = stringsData["${Locale.getDefault().language}-copy"]
+        val languageReserveData = stringsData[Locale.getDefault().language + StringDataManager.SUF_COPY]
         searchInResources(languageReserveData, text, searchResultData)
 
         return searchResultData

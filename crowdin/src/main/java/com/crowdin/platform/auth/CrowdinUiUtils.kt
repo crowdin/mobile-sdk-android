@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.crowdin.platform.Crowdin
 
 
 object CrowdinUiUtils {
@@ -37,7 +38,7 @@ object CrowdinUiUtils {
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
-                var value = ""
+                var csrfToken = ""
                 val cookies = CookieManager.getInstance().getCookie(url)
                 if (cookies != null) {
                     val list = cookies.split(";")
@@ -46,14 +47,15 @@ object CrowdinUiUtils {
                             val temp = item.split("=".toRegex())
                                     .dropLastWhile { it.isEmpty() }
                                     .toTypedArray()
-                            value = temp[1]
+                            csrfToken = temp[1]
                         }
                     }
                 }
 
-                if (url == URL_PROFILE && value.isNotEmpty()) {
+                if (url == URL_PROFILE && csrfToken.isNotEmpty()) {
                     dialog.dismiss()
                     isCookieAvailable = true
+                    Crowdin.saveCookies(csrfToken)
                 }
             }
         }
