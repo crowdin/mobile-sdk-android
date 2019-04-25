@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 
-internal class Connectivity private constructor() {
+internal class Connectivity {
 
     init {
         throw InstantiationError()

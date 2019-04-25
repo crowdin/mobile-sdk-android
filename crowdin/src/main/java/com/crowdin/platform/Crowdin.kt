@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.hardware.Sensor
 import android.hardware.SensorManager
+import android.util.Log
 import android.view.Menu
 import android.widget.Toast
 import com.crowdin.platform.recurringwork.RecurringManager
@@ -14,7 +15,9 @@ import com.crowdin.platform.repository.local.LocalStringRepositoryFactory
 import com.crowdin.platform.repository.parser.StringResourceParser
 import com.crowdin.platform.repository.parser.XmlReader
 import com.crowdin.platform.repository.remote.CrowdinRetrofitService
-import com.crowdin.platform.repository.remote.DefaultRemoteRepository
+import com.crowdin.platform.repository.remote.MappingCallback
+import com.crowdin.platform.repository.remote.MappingRepository
+import com.crowdin.platform.repository.remote.StringDataRemoteRepository
 import com.crowdin.platform.transformers.*
 import com.crowdin.platform.utils.FeatureFlags
 import com.crowdin.platform.utils.TextUtils
@@ -48,6 +51,7 @@ object Crowdin {
             else -> {
                 RecurringManager.cancel(context)
                 forceUpdate(context)
+                loadMapping(config)
             }
         }
         initShake(context)
@@ -149,7 +153,7 @@ object Crowdin {
     }
 
     private fun initStringDataManager(context: Context, config: CrowdinConfig) {
-        val remoteRepository = DefaultRemoteRepository(
+        val remoteRepository = StringDataRemoteRepository(
                 CrowdinRetrofitService.instance.getCrowdinApi(),
                 XmlReader(StringResourceParser()),
                 config.distributionKey,
@@ -187,5 +191,25 @@ object Crowdin {
             }
         })
         mSensorManager.registerListener(shakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI)
+    }
+
+    private fun loadMapping(config: CrowdinConfig) {
+        if (config.isRealTimeUpdateEnabled) {
+            val mappingRepository = MappingRepository(
+                    CrowdinRetrofitService.instance.getCrowdinApi(),
+                    XmlReader(StringResourceParser()),
+                    config.distributionKey,
+                    config.filePaths)
+            mappingRepository.getMapping(object : MappingCallback {
+                override fun onSuccess() {
+                    Log.d("TAG", "mapping loaded")
+                    stringDataManager?.saveMapping()
+                }
+
+                override fun onFailure(throwable: Throwable) {
+                    Log.d("TAG", "mapping onFailure: ${throwable.localizedMessage}")
+                }
+            })
+        }
     }
 }

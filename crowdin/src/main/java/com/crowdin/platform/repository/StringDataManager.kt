@@ -126,4 +126,8 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
     fun sendScreenshotWithKeys(bitmap: Bitmap, resourceKeys: Any) {
 
     }
+
+    fun saveMapping() {
+        // TODO: save mapping
+    }
 }

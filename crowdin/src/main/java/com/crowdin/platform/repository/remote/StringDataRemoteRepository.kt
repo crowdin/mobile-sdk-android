@@ -10,20 +10,11 @@ import retrofit2.Response
 import java.net.HttpURLConnection
 import java.util.*
 
-internal class DefaultRemoteRepository(private val crowdinApi: CrowdinApi,
-                                       private val reader: Reader,
-                                       private val distributionKey: String?,
-                                       private val filePaths: Array<out String>?) : RemoteRepository {
+internal class StringDataRemoteRepository(private val crowdinApi: CrowdinApi,
+                                          private val reader: Reader,
+                                          private val distributionKey: String?,
+                                          private val filePaths: Array<out String>?) : BaseRepository() {
 
-    companion object {
-        private const val HEADER_ETAG = "ETag"
-        private const val HEADER_ETAG_EMPTY = ""
-        private const val LOCALE = "%locale%"
-        private const val LOCALE_WITH_UNDERSCORE = "%locale_with_underscore%"
-        private const val ANDROID_CODE = "%android_code%"
-    }
-
-    private var eTagMap = mutableMapOf<String, String>()
 
     override fun fetchData(languageDataCallback: LanguageDataCallback) {
         if (distributionKey == null) return
@@ -58,24 +49,5 @@ internal class DefaultRemoteRepository(private val crowdinApi: CrowdinApi,
                         languageDataCallback.onFailure(throwable)
                     }
                 })
-    }
-
-    private fun validateFilePath(filePath: String): String {
-        var path = filePath
-        val locale = Locale.getDefault()
-        val language = locale.language
-        val country = locale.country
-
-        when {
-            path.contains(LOCALE) -> path = path.replace(LOCALE, "$language-$country")
-            path.contains(LOCALE_WITH_UNDERSCORE) -> path = path.replace(LOCALE_WITH_UNDERSCORE, locale.toString())
-            path.contains(ANDROID_CODE) -> path = path.replace(ANDROID_CODE, "$language-r$country")
-        }
-
-        if (!path.contains("/")) {
-            return "/$language/$path"
-        }
-
-        return path
     }
 }
