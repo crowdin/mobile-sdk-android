@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.LoadingStateListener
+import com.crowdin.platform.auth.CrowdinUiUtils
 import com.crowdin.platform.example.R
 import com.crowdin.platform.utils.ScreenshotUtils
 
@@ -30,6 +31,10 @@ class HomeFragment : Fragment(), LoadingStateListener {
                 view.findViewById<ImageView>(R.id.testImageView).setImageBitmap(it)
                 Crowdin.sendScreenshot(it)
             }
+        }
+
+        view.findViewById<TextView>(R.id.textView1).setOnClickListener {
+            context?.let { it1 -> CrowdinUiUtils.showCrowdinAuthDialog(it1) }
         }
 
         view.findViewById<Button>(R.id.load_data_btn).setOnClickListener {
