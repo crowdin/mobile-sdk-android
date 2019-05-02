@@ -9,7 +9,7 @@ import android.webkit.WebViewClient
 import com.crowdin.platform.Crowdin
 
 
-object CrowdinUiUtils {
+object CrowdinAuth {
 
     private const val URL_PROFILE = "https://crowdin.com/profile"
     private const val URL_CROWDIN_AUTH = "https:\\www.crowdin.com/login"
@@ -18,7 +18,7 @@ object CrowdinUiUtils {
 
     @SuppressLint("SetJavaScriptEnabled")
     @JvmStatic
-    fun showCrowdinAuthDialog(context: Context) {
+    fun showDialog(context: Context) {
         val webView = WebView(context)
         webView.loadUrl(URL_CROWDIN_AUTH)
         webView.settings.javaScriptEnabled = true

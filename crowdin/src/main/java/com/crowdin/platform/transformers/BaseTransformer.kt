@@ -6,6 +6,7 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.ToggleButton
 import com.crowdin.platform.repository.model.TextMetaData
+import com.crowdin.platform.repository.model.ViewData
 import java.util.*
 
 
@@ -20,6 +21,7 @@ internal abstract class BaseTransformer : Transformer {
 
     val createdViews = WeakHashMap<TextView, TextMetaData>()
 
+    // TODO: remove
     override fun drawOnLocalizedUI() {
         for (createdView in createdViews) {
             val view = createdView.key
@@ -33,6 +35,7 @@ internal abstract class BaseTransformer : Transformer {
         }
     }
 
+    // TODO: remove
     private fun logCoordinates(view: TextView, location: IntArray, textMetaData: TextMetaData) {
         if (location[0] >= view.rootView.x &&
                 location[0] <= view.rootView.width &&
@@ -56,6 +59,37 @@ internal abstract class BaseTransformer : Transformer {
             invalidateTextOn(view, textMetaData)
             invalidateTextOff(view, textMetaData)
         }
+    }
+
+    override fun getViewDataFromWindow(): List<ViewData>? {
+        val listViewData = mutableListOf<ViewData>()
+        for (createdView in createdViews) {
+            val view = createdView.key
+            if (view.visibility != View.VISIBLE) return null
+
+            val textMetaData = createdView.value
+
+            val location = IntArray(2)
+            view.getLocationInWindow(location)
+
+            if (location[0] >= view.rootView.x &&
+                    location[0] <= view.rootView.width &&
+                    location[1] >= view.rootView.y &&
+                    location[1] <= view.rootView.height) {
+
+                listViewData.add(ViewData(textMetaData.textAttributeKey,
+                        location[0],
+                        location[1],
+                        location[0] + view.width,
+                        location[1] + view.height))
+
+                // TODO: remove
+                Log.d("TAG", "Key:${textMetaData.textAttributeKey}, TopStart:[${location[0]}:${location[1]}]" +
+                        " BottomEnd:${location[0] + view.width}: ${location[1] + view.height}")
+            }
+        }
+
+        return listViewData
     }
 
     private fun invalidateArrayItem(view: TextView, textMetaData: TextMetaData) {

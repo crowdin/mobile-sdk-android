@@ -19,6 +19,7 @@ import com.crowdin.platform.repository.remote.CrowdinRetrofitService
 import com.crowdin.platform.repository.remote.MappingCallback
 import com.crowdin.platform.repository.remote.MappingRepository
 import com.crowdin.platform.repository.remote.StringDataRemoteRepository
+import com.crowdin.platform.screenshots.ScreenshotManager
 import com.crowdin.platform.transformers.*
 import com.crowdin.platform.utils.FeatureFlags
 import com.crowdin.platform.utils.TextUtils
@@ -117,8 +118,14 @@ object Crowdin {
     @JvmStatic
     fun sendScreenshot(bitmap: Bitmap) {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
-            // TODO: replace this logic extract class
-            stringDataManager?.sendScreenshotWithKeys(bitmap, viewTransformerManager.getResourceKeys())
+            val mappingData = stringDataManager?.getMapping()
+            ScreenshotManager(
+                    CrowdinRetrofitService.instance.getCrowdinApi(),
+                    bitmap,
+                    mappingData,
+                    viewTransformerManager.getResourceKeys())
+            ScreenshotManager.sendScreenshot()
+            // TODO: remove
             viewTransformerManager.drawOnLocalizedUI()
         }
     }
@@ -194,7 +201,7 @@ object Crowdin {
         mSensorManager.registerListener(shakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI)
     }
 
-    fun saveCookies(csrfToken: String) {
+    internal fun saveCookies(csrfToken: String) {
         // TODO: save cookies
     }
 

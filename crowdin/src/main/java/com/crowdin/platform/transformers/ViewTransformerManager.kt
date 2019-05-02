@@ -3,6 +3,7 @@ package com.crowdin.platform.transformers
 import android.util.AttributeSet
 import android.util.Pair
 import android.view.View
+import com.crowdin.platform.repository.model.ViewData
 import java.util.*
 
 /**
@@ -55,17 +56,17 @@ internal class ViewTransformerManager {
         }
     }
 
+    // TODO: remove
     fun drawOnLocalizedUI() {
         transformers.forEach {
             it.second.drawOnLocalizedUI()
         }
     }
 
-    // TODO: add handler
-    fun getResourceKeys(): Any {
-        val mutableList = mutableListOf<String>()
+    fun getResourceKeys(): MutableList<ViewData> {
+        val mutableList = mutableListOf<ViewData>()
         transformers.forEach {
-             it.second.getResourceKeys()
+            it.second.getViewDataFromWindow()
         }
 
         return mutableList
@@ -97,5 +98,13 @@ internal interface Transformer {
 
     fun drawOnLocalizedUI() {}
 
-    fun getResourceKeys() {}
+    /**
+     * Collect data for visible views on a window.
+     *
+     * @return List<ViewData> data related to specific views visible on a window.
+     * @see ViewData
+     */
+    fun getViewDataFromWindow(): List<ViewData>? {
+        return null
+    }
 }
