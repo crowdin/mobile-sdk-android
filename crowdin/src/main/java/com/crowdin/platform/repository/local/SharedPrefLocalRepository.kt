@@ -13,6 +13,7 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
 
     companion object {
         private const val SHARED_PREF_NAME = "com.crowdin.platform.string.repository"
+        private const val COOKIE_CSRF_TOKEN = "cookie.csrf_token"
     }
 
     private lateinit var sharedPreferences: SharedPreferences
@@ -65,6 +66,14 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
     override fun isExist(language: String): Boolean = memoryLocalRepository.isExist(language)
 
     override fun getTextData(text: String): SearchResultData = memoryLocalRepository.getTextData(text)
+
+    override fun saveCookies(csrfToken: String) {
+        memoryLocalRepository.saveCookies(csrfToken)
+        sharedPreferences.edit().putString(COOKIE_CSRF_TOKEN, csrfToken).apply()
+    }
+
+    override fun getCookies(): String? = memoryLocalRepository.getCookies()
+            ?: sharedPreferences.getString(COOKIE_CSRF_TOKEN, null)
 
     private fun initSharedPreferences(context: Context) {
         sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)

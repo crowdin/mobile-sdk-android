@@ -63,7 +63,7 @@ internal class ViewTransformerManager {
         }
     }
 
-    fun getResourceKeys(): MutableList<ViewData> {
+    fun getViewData(): MutableList<ViewData> {
         val mutableList = mutableListOf<ViewData>()
         transformers.forEach {
             it.second.getViewDataFromWindow()

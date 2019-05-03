@@ -10,6 +10,7 @@ import java.util.*
 internal class MemoryLocalRepository : LocalRepository {
 
     private val stringsData = LinkedHashMap<String, LanguageData>()
+    private var csrfToken: String? = null
 
     override fun saveLanguageData(languageData: LanguageData) {
         when (val data = stringsData[languageData.language]) {
@@ -123,6 +124,12 @@ internal class MemoryLocalRepository : LocalRepository {
 
         return searchResultData
     }
+
+    override fun saveCookies(csrfToken: String) {
+        this.csrfToken = csrfToken
+    }
+
+    override fun getCookies(): String? = csrfToken
 
     private fun searchInResources(languageData: LanguageData?, text: String, searchResultData: SearchResultData) {
         searchInStrings(languageData, text, searchResultData)

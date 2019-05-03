@@ -118,13 +118,15 @@ object Crowdin {
     @JvmStatic
     fun sendScreenshot(bitmap: Bitmap) {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
-            val mappingData = stringDataManager?.getMapping()
+            if (stringDataManager == null) return
+
             ScreenshotManager(
                     CrowdinRetrofitService.instance.getCrowdinApi(),
                     bitmap,
-                    mappingData,
-                    viewTransformerManager.getResourceKeys())
+                    stringDataManager!!,
+                    viewTransformerManager.getViewData())
             ScreenshotManager.sendScreenshot()
+
             // TODO: remove
             viewTransformerManager.drawOnLocalizedUI()
         }
@@ -202,7 +204,7 @@ object Crowdin {
     }
 
     internal fun saveCookies(csrfToken: String) {
-        // TODO: save cookies
+        stringDataManager?.saveCookies(csrfToken)
     }
 
     private fun loadMapping() {

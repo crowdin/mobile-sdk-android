@@ -129,4 +129,10 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
 
     fun getMapping(): LanguageData? =
             localRepository.getLanguageData(Locale.getDefault().toString() + SUF_MAPPING)
+
+    fun saveCookies(csrfToken: String) {
+        localRepository.saveCookies(csrfToken)
+    }
+
+    fun getCookies(): String? = localRepository.getCookies()
 }
