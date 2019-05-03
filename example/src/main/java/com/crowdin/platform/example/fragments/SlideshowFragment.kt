@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.example.R
-import com.crowdin.platform.utils.ScreenshotUtils
+import com.crowdin.platform.util.ScreenshotUtils
 
 class SlideshowFragment : Fragment() {
 

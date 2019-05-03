@@ -7,8 +7,8 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.crowdin.platform.transformers.ViewTransformerManager;
-import com.crowdin.platform.utils.ReflectionUtils;
+import com.crowdin.platform.transformer.ViewTransformerManager;
+import com.crowdin.platform.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 

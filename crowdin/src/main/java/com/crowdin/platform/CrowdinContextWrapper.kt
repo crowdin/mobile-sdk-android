@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.view.LayoutInflater
 
-import com.crowdin.platform.repository.StringDataManager
-import com.crowdin.platform.transformers.ViewTransformerManager
+import com.crowdin.platform.data.StringDataManager
+import com.crowdin.platform.transformer.ViewTransformerManager
 
 /**
  * Main Crowdin context wrapper which wraps the context for providing another layout inflater & resources.

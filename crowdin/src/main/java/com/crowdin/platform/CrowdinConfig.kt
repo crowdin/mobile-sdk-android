@@ -1,6 +1,6 @@
 package com.crowdin.platform
 
-import com.crowdin.platform.repository.remote.NetworkType
+import com.crowdin.platform.data.remote.NetworkType
 
 /**
  * Contains configuration properties for initializing Crowdin.

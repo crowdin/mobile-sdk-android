@@ -3,7 +3,7 @@ package com.crowdin.platform.example
 import android.app.Application
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.CrowdinConfig
-import com.crowdin.platform.repository.remote.NetworkType
+import com.crowdin.platform.data.remote.NetworkType
 
 class App : Application() {
 

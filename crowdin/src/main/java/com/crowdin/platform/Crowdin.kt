@@ -9,20 +9,20 @@ import android.util.Log
 import android.view.Menu
 import android.widget.Toast
 import com.crowdin.platform.recurringwork.RecurringManager
-import com.crowdin.platform.repository.StringDataManager
-import com.crowdin.platform.repository.TextMetaDataProvider
-import com.crowdin.platform.repository.local.LocalStringRepositoryFactory
-import com.crowdin.platform.repository.model.LanguageData
-import com.crowdin.platform.repository.parser.StringResourceParser
-import com.crowdin.platform.repository.parser.XmlReader
-import com.crowdin.platform.repository.remote.CrowdinRetrofitService
-import com.crowdin.platform.repository.remote.MappingCallback
-import com.crowdin.platform.repository.remote.MappingRepository
-import com.crowdin.platform.repository.remote.StringDataRemoteRepository
-import com.crowdin.platform.screenshots.ScreenshotManager
-import com.crowdin.platform.transformers.*
-import com.crowdin.platform.utils.FeatureFlags
-import com.crowdin.platform.utils.TextUtils
+import com.crowdin.platform.data.StringDataManager
+import com.crowdin.platform.data.TextMetaDataProvider
+import com.crowdin.platform.data.local.LocalStringRepositoryFactory
+import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.parser.StringResourceParser
+import com.crowdin.platform.data.parser.XmlReader
+import com.crowdin.platform.data.remote.CrowdinRetrofitService
+import com.crowdin.platform.data.remote.MappingCallback
+import com.crowdin.platform.data.remote.MappingRepository
+import com.crowdin.platform.data.remote.StringDataRemoteRepository
+import com.crowdin.platform.screenshot.ScreenshotManager
+import com.crowdin.platform.transformer.*
+import com.crowdin.platform.util.FeatureFlags
+import com.crowdin.platform.util.TextUtils
 
 /**
  * Entry point for Crowdin. it will be used for setting new strings, wrapping activity context.

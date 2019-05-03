@@ -13,7 +13,7 @@ import com.crowdin.platform.Crowdin
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.example.R
 import com.crowdin.platform.example.adapter.SampleAdapter
-import com.crowdin.platform.utils.ScreenshotUtils
+import com.crowdin.platform.util.ScreenshotUtils
 
 class GalleryFragment : Fragment(), LoadingStateListener {
 

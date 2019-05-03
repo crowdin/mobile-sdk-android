@@ -4,10 +4,10 @@ import android.content.res.Resources
 import android.icu.text.PluralRules
 import android.os.Build
 import android.text.Html
-import com.crowdin.platform.repository.StringDataManager
-import com.crowdin.platform.repository.model.ArrayData
-import com.crowdin.platform.repository.model.PluralData
-import com.crowdin.platform.repository.model.StringData
+import com.crowdin.platform.data.StringDataManager
+import com.crowdin.platform.data.model.ArrayData
+import com.crowdin.platform.data.model.PluralData
+import com.crowdin.platform.data.model.StringData
 import java.util.*
 
 /**
