@@ -1,39 +1,39 @@
 package com.crowdin.platform.auth
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.support.v7.app.AlertDialog
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.crowdin.platform.Crowdin
 
+class CrowdinWebActivity : AppCompatActivity() {
 
-object CrowdinAuth {
+    companion object {
 
-    private const val URL_PROFILE = "https://crowdin.com/profile"
-    private const val URL_CROWDIN_AUTH = "https:\\www.crowdin.com/login"
-    private const val COOKIE_TOKEN = "csrf_token"
-    private var isCookieAvailable = false
+        private const val URL_PROFILE = "https://crowdin.com/profile"
+        private const val URL_CROWDIN_AUTH = "https://crowdin.com/login"
+        private const val COOKIE_TOKEN = "csrf_token"
+
+        fun launchActivity(activity: Activity) {
+            activity.startActivity(Intent(activity, CrowdinWebActivity::class.java))
+        }
+    }
 
     @SuppressLint("SetJavaScriptEnabled")
-    @JvmStatic
-    fun showDialog(context: Context) {
-        val webView = WebView(context)
-        webView.loadUrl(URL_CROWDIN_AUTH)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val webView = WebView(this)
+        setContentView(webView)
         webView.settings.javaScriptEnabled = true
-
-        val dialog = AlertDialog.Builder(context)
-                .setView(webView)
-                .create()
+        webView.loadUrl(URL_CROWDIN_AUTH)
         webView.webViewClient = object : WebViewClient() {
 
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 view.loadUrl(url)
-
-                if (!isCookieAvailable) {
-                    dialog.show()
-                }
                 return true
             }
 
@@ -53,9 +53,8 @@ object CrowdinAuth {
                 }
 
                 if (url == URL_PROFILE && csrfToken.isNotEmpty()) {
-                    dialog.dismiss()
-                    isCookieAvailable = true
                     Crowdin.saveCookies(csrfToken)
+                    finish()
                 }
             }
         }

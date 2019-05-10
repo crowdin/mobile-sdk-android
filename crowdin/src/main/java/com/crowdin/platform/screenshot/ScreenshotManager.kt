@@ -1,10 +1,18 @@
 package com.crowdin.platform.screenshot
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.crowdin.platform.data.StringDataManager
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.ViewData
 import com.crowdin.platform.data.remote.api.CrowdinApi
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.ByteArrayOutputStream
+import java.net.HttpURLConnection
+
 
 internal object ScreenshotManager {
 
@@ -20,11 +28,33 @@ internal object ScreenshotManager {
         this.viewDataList = viewDataList
     }
 
-    // TODO: add network request. Find mapping IDs.
     fun sendScreenshot() {
         val mappingData = stringDataManager.getMapping() ?: return
-        val crtKeySpec = stringDataManager.getCookies()
+        val csrfToken = stringDataManager.getCookies() ?: return
         val mappingIds = getMappingIDs(mappingData, viewDataList)
+
+        uploadScreenshot(csrfToken, bitmap)
+    }
+
+    private fun uploadScreenshot(csrfToken: String, bitmap: Bitmap) {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        val byteArray = stream.toByteArray()
+
+        crowdinApi.uploadScreenshot(csrfToken, byteArray).enqueue(object : Callback<ResponseBody> {
+
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                val body = response.body()
+                when {
+                    response.code() == HttpURLConnection.HTTP_OK && body != null -> {
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, throwable: Throwable) {
+                Log.d("TAG", "onFailure")
+            }
+        })
     }
 
     private fun getMappingIDs(mappingData: LanguageData, viewDataList: List<ViewData>): Any {

@@ -87,8 +87,12 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
                 continue
             }
 
-            val languageData = deserializeKeyValues(value1)
-            memoryLocalRepository.saveLanguageData(languageData)
+            try {
+                val languageData = deserializeKeyValues(value1)
+                memoryLocalRepository.saveLanguageData(languageData)
+            } catch (ex: Exception) {
+                // not language data
+            }
         }
     }
 

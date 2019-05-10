@@ -13,7 +13,7 @@ class App : Application() {
         Crowdin.init(applicationContext,
                 CrowdinConfig.Builder()
                         .withDistributionKey("d32682e5a6a5f53a950d934e2eee861e")
-                        .withFilePaths("/%locale%/strings.xml",
+                        .withFilePaths("strings.xml",
                                 "arrays.xml",
                                 "plurals.xml")
                         .withNetworkType(NetworkType.WIFI)
