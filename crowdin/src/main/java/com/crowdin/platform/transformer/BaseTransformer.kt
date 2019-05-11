@@ -38,7 +38,8 @@ internal abstract class BaseTransformer : Transformer {
         val listViewData = mutableListOf<ViewData>()
         for (createdView in createdViews) {
             val view = createdView.key
-            if (view.visibility != View.VISIBLE) return mutableListOf()
+            if (view.visibility != View.VISIBLE) continue
+            if (!view.isShown) continue
 
             val textMetaData = createdView.value
 
