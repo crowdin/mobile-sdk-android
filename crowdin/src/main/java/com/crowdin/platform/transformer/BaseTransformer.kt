@@ -21,32 +21,6 @@ internal abstract class BaseTransformer : Transformer {
 
     val createdViews = WeakHashMap<TextView, TextMetaData>()
 
-    // TODO: remove
-    override fun drawOnLocalizedUI() {
-        for (createdView in createdViews) {
-            val view = createdView.key
-            if (view.visibility != View.VISIBLE) return
-
-            val textMetaData = createdView.value
-
-            val location = IntArray(2)
-            view.getLocationInWindow(location)
-            logCoordinates(view, location, textMetaData)
-        }
-    }
-
-    // TODO: remove
-    private fun logCoordinates(view: TextView, location: IntArray, textMetaData: TextMetaData) {
-        if (location[0] >= view.rootView.x &&
-                location[0] <= view.rootView.width &&
-                location[1] >= view.rootView.y &&
-                location[1] <= view.rootView.height) {
-
-            Log.d("TAG", "Key:${textMetaData.textAttributeKey}, TopStart:[${location[0]}:${location[1]}]" +
-                    " BottomEnd:${location[0] + view.width}: ${location[1] + view.height}")
-        }
-    }
-
     override fun invalidate() {
         for (createdView in createdViews) {
             val view = createdView.key

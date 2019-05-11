@@ -3,10 +3,10 @@ package com.crowdin.platform.screenshot
 import android.graphics.Bitmap
 import android.util.Log
 import com.crowdin.platform.data.StringDataManager
-import com.crowdin.platform.data.model.LanguageData
-import com.crowdin.platform.data.model.ViewData
+import com.crowdin.platform.data.model.*
 import com.crowdin.platform.data.remote.api.CrowdinApi
-import okhttp3.ResponseBody
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,29 +30,51 @@ internal object ScreenshotManager {
 
     fun sendScreenshot() {
         val mappingData = stringDataManager.getMapping() ?: return
-        val csrfToken = stringDataManager.getCookies() ?: return
         val mappingIds = getMappingIDs(mappingData, viewDataList)
 
-        uploadScreenshot(csrfToken, bitmap)
+        uploadScreenshot(bitmap)
     }
 
-    private fun uploadScreenshot(csrfToken: String, bitmap: Bitmap) {
+    private fun uploadScreenshot(bitmap: Bitmap) {
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
         val byteArray = stream.toByteArray()
+        val requestBody = RequestBody.create(MediaType.parse("image/png"), byteArray)
 
-        crowdinApi.uploadScreenshot(csrfToken, byteArray).enqueue(object : Callback<ResponseBody> {
+        crowdinApi.uploadScreenshot(requestBody).enqueue(object : Callback<UploadScreenshotResponse> {
 
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                val body = response.body()
+            override fun onResponse(call: Call<UploadScreenshotResponse>, response: Response<UploadScreenshotResponse>) {
+                val responseBody = response.body()
                 when {
-                    response.code() == HttpURLConnection.HTTP_OK && body != null -> {
+                    response.code() == HttpURLConnection.HTTP_CREATED -> {
+                        responseBody?.let {
+                            it.data?.id?.let { screenId -> createScreenshot(screenId) }
+                        }
                     }
                 }
             }
 
-            override fun onFailure(call: Call<ResponseBody>, throwable: Throwable) {
-                Log.d("TAG", "onFailure")
+            override fun onFailure(call: Call<UploadScreenshotResponse>, throwable: Throwable) {
+                Log.d("TAG", "uploadScreenshot onFailure")
+            }
+        })
+    }
+
+    private fun createScreenshot(id: Int) {
+        val requestBody = CreateScreenshotRequestBody(id, "image")
+        crowdinApi.createScreenshot(requestBody).enqueue(object : Callback<CreateScreenshotResponse> {
+
+            override fun onResponse(call: Call<CreateScreenshotResponse>, response: Response<CreateScreenshotResponse>) {
+                val body = response.body().toString()
+                when {
+                    response.code() == HttpURLConnection.HTTP_CREATED -> {
+                        // created screenshot
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<CreateScreenshotResponse>, throwable: Throwable) {
+                Log.d("TAG", "createScreenshot onFailure")
             }
         })
     }

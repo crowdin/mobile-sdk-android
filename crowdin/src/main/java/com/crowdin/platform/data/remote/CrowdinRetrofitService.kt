@@ -6,6 +6,7 @@ import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 internal class CrowdinRetrofitService private constructor() {
 
@@ -29,6 +30,7 @@ internal class CrowdinRetrofitService private constructor() {
     private fun getCrowdinRetrofit(okHttpClient: OkHttpClient, url: String): Retrofit {
         return Retrofit.Builder()
                 .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(url)
                 .build()
     }
@@ -43,7 +45,7 @@ internal class CrowdinRetrofitService private constructor() {
     companion object {
 
         private const val BASE_DISTRIBUTION_URL = "https://crowdin-distribution.s3.us-east-1.amazonaws.com/"
-        private const val BASE_API_URL = "https://crowdin.com/api/v2/"
+        private const val BASE_API_URL = "https://api-tester:VmpFqTyXPq3ebAyNksUxHwhC@crowdin.com/api/v2/"
 
         private var sInstance: CrowdinRetrofitService? = null
 

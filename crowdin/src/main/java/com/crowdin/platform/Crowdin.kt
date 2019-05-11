@@ -126,9 +126,6 @@ object Crowdin {
                     stringDataManager!!,
                     viewTransformerManager.getViewData())
             ScreenshotManager.sendScreenshot()
-
-            // TODO: remove
-            viewTransformerManager.drawOnLocalizedUI()
         }
     }
 

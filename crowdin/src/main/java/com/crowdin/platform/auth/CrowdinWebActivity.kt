@@ -41,6 +41,7 @@ class CrowdinWebActivity : AppCompatActivity() {
                 var csrfToken = ""
                 val cookies = CookieManager.getInstance().getCookie(url)
                 if (cookies != null) {
+                    Crowdin.saveCookies(cookies)
                     val list = cookies.split(";")
                     for (item in list) {
                         if (item.contains(COOKIE_TOKEN)) {
@@ -53,7 +54,6 @@ class CrowdinWebActivity : AppCompatActivity() {
                 }
 
                 if (url == URL_PROFILE && csrfToken.isNotEmpty()) {
-                    Crowdin.saveCookies(csrfToken)
                     finish()
                 }
             }

@@ -56,13 +56,6 @@ internal class ViewTransformerManager {
         }
     }
 
-    // TODO: remove
-    fun drawOnLocalizedUI() {
-        transformers.forEach {
-            it.second.drawOnLocalizedUI()
-        }
-    }
-
     fun getViewData(): MutableList<ViewData> {
         val mutableList = mutableListOf<ViewData>()
         transformers.forEach {
@@ -95,8 +88,6 @@ internal interface Transformer {
     fun transform(view: View, attrs: AttributeSet): View
 
     fun invalidate() {}
-
-    fun drawOnLocalizedUI() {}
 
     /**
      * Collect data for visible views on a window.

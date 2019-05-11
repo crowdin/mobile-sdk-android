@@ -19,7 +19,8 @@ internal class MappingRepository(private val crowdinDistributionApi: CrowdinDist
         if (distributionKey == null) return
 
         filePaths?.forEach {
-            val filePath = validateFilePath(it).split("/").takeLast(1).run { "/$it" }.toString()
+            // TODO: remove `/en/` for mapping. Need to be discussed. We don't know locally what is source lang.
+            val filePath = validateFilePath(it).split("/").takeLast(1).run { "/en/$it" }.toString()
             val eTag = eTagMap[filePath]
             requestData(eTag, distributionKey, filePath, mappingCallback)
         }
