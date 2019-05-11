@@ -1,6 +1,5 @@
 package com.crowdin.platform.transformer
 
-import android.util.Log
 import android.view.View
 import android.widget.Switch
 import android.widget.TextView
@@ -35,11 +34,11 @@ internal abstract class BaseTransformer : Transformer {
         }
     }
 
-    override fun getViewDataFromWindow(): List<ViewData>? {
+    override fun getViewDataFromWindow(): MutableList<ViewData> {
         val listViewData = mutableListOf<ViewData>()
         for (createdView in createdViews) {
             val view = createdView.key
-            if (view.visibility != View.VISIBLE) return null
+            if (view.visibility != View.VISIBLE) return mutableListOf()
 
             val textMetaData = createdView.value
 
@@ -54,12 +53,8 @@ internal abstract class BaseTransformer : Transformer {
                 listViewData.add(ViewData(textMetaData.textAttributeKey,
                         location[0],
                         location[1],
-                        location[0] + view.width,
-                        location[1] + view.height))
-
-                // TODO: remove
-                Log.d("TAG", "Key:${textMetaData.textAttributeKey}, TopStart:[${location[0]}:${location[1]}]" +
-                        " BottomEnd:${location[0] + view.width}: ${location[1] + view.height}")
+                        view.width,
+                        view.height))
             }
         }
 

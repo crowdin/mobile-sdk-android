@@ -59,7 +59,7 @@ internal class ViewTransformerManager {
     fun getViewData(): MutableList<ViewData> {
         val mutableList = mutableListOf<ViewData>()
         transformers.forEach {
-            it.second.getViewDataFromWindow()
+            mutableList.addAll(it.second.getViewDataFromWindow())
         }
 
         return mutableList
@@ -95,7 +95,7 @@ internal interface Transformer {
      * @return List<ViewData> data related to specific views visible on a window.
      * @see ViewData
      */
-    fun getViewDataFromWindow(): List<ViewData>? {
-        return null
+    fun getViewDataFromWindow(): MutableList<ViewData> {
+        return mutableListOf()
     }
 }

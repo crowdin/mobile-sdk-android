@@ -3,17 +3,19 @@ package com.crowdin.platform.screenshot
 import android.graphics.Bitmap
 import android.util.Log
 import com.crowdin.platform.data.StringDataManager
-import com.crowdin.platform.data.model.*
-import com.crowdin.platform.data.remote.api.CrowdinApi
+import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.ViewData
+import com.crowdin.platform.data.remote.api.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 
-
+// TODO: handle errors and add callback
 internal object ScreenshotManager {
 
     private lateinit var crowdinApi: CrowdinApi
@@ -30,12 +32,11 @@ internal object ScreenshotManager {
 
     fun sendScreenshot() {
         val mappingData = stringDataManager.getMapping() ?: return
-        val mappingIds = getMappingIDs(mappingData, viewDataList)
-
-        uploadScreenshot(bitmap)
+        val tags = getMappingIds(mappingData, viewDataList)
+        uploadScreenshot(bitmap, tags)
     }
 
-    private fun uploadScreenshot(bitmap: Bitmap) {
+    private fun uploadScreenshot(bitmap: Bitmap, tags: MutableList<TagData>) {
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
         val byteArray = stream.toByteArray()
@@ -45,11 +46,9 @@ internal object ScreenshotManager {
 
             override fun onResponse(call: Call<UploadScreenshotResponse>, response: Response<UploadScreenshotResponse>) {
                 val responseBody = response.body()
-                when {
-                    response.code() == HttpURLConnection.HTTP_CREATED -> {
-                        responseBody?.let {
-                            it.data?.id?.let { screenId -> createScreenshot(screenId) }
-                        }
+                if (response.code() == HttpURLConnection.HTTP_CREATED) {
+                    responseBody?.let {
+                        it.data?.id?.let { screenId -> createScreenshot(screenId, tags) }
                     }
                 }
             }
@@ -60,15 +59,15 @@ internal object ScreenshotManager {
         })
     }
 
-    private fun createScreenshot(id: Int) {
-        val requestBody = CreateScreenshotRequestBody(id, "image")
+    private fun createScreenshot(id: Int, tags: MutableList<TagData>) {
+        val requestBody = CreateScreenshotRequestBody(id, "${System.currentTimeMillis()}_image")
         crowdinApi.createScreenshot(requestBody).enqueue(object : Callback<CreateScreenshotResponse> {
 
             override fun onResponse(call: Call<CreateScreenshotResponse>, response: Response<CreateScreenshotResponse>) {
-                val body = response.body().toString()
-                when {
-                    response.code() == HttpURLConnection.HTTP_CREATED -> {
-                        // created screenshot
+                val responseBody = response.body()
+                if (response.code() == HttpURLConnection.HTTP_CREATED) {
+                    responseBody?.let {
+                        it.data.id?.let { screenId -> createTag(screenId, tags) }
                     }
                 }
             }
@@ -79,13 +78,29 @@ internal object ScreenshotManager {
         })
     }
 
-    private fun getMappingIDs(mappingData: LanguageData, viewDataList: List<ViewData>): Any {
-        val list = mutableListOf<String>()
+    private fun createTag(screenId: Int, tags: MutableList<TagData>) {
+        crowdinApi.createTag(screenId, tags).enqueue(object : Callback<ResponseBody> {
+
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                // success
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, throwable: Throwable) {
+                Log.d("TAG", "createTag onFailure")
+            }
+        })
+    }
+
+    private fun getMappingIds(mappingData: LanguageData, viewDataList: List<ViewData>): MutableList<TagData> {
+        val list = mutableListOf<TagData>()
 
         for (viewData in viewDataList) {
             val resKey = viewData.resourceKey
             val mappingValue = getMappingValueForKey(resKey, mappingData)
-            mappingValue?.let { list.add(it) }
+            mappingValue?.let {
+                list.add(TagData(it.toInt(),
+                        Position(viewData.x, viewData.y, viewData.width, viewData.height)))
+            }
         }
 
         return list
