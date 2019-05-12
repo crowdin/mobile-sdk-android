@@ -19,6 +19,7 @@ import com.crowdin.platform.data.remote.MappingCallback
 import com.crowdin.platform.data.remote.MappingRepository
 import com.crowdin.platform.data.remote.StringDataRemoteRepository
 import com.crowdin.platform.recurringwork.RecurringManager
+import com.crowdin.platform.screenshot.ScreenshotCallback
 import com.crowdin.platform.screenshot.ScreenshotManager
 import com.crowdin.platform.transformer.*
 import com.crowdin.platform.util.FeatureFlags
@@ -117,7 +118,7 @@ object Crowdin {
     }
 
     @JvmStatic
-    fun sendScreenshot(bitmap: Bitmap) {
+    fun sendScreenshot(bitmap: Bitmap, screenshotCallback: ScreenshotCallback? = null) {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             if (stringDataManager == null) return
 
@@ -125,7 +126,8 @@ object Crowdin {
                     CrowdinRetrofitService.instance.getCrowdinApi(),
                     bitmap,
                     stringDataManager!!,
-                    viewTransformerManager.getViewData())
+                    viewTransformerManager.getViewData(),
+                    screenshotCallback)
             ScreenshotManager.sendScreenshot()
         }
     }

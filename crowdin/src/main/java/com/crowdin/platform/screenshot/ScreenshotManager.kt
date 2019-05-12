@@ -1,7 +1,6 @@
 package com.crowdin.platform.screenshot
 
 import android.graphics.Bitmap
-import android.util.Log
 import com.crowdin.platform.data.StringDataManager
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.TextMetaData
@@ -16,7 +15,6 @@ import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 
-// TODO: handle errors and add callback
 internal object ScreenshotManager {
 
     private const val MEDIA_TYPE_IMG = "image/png"
@@ -25,12 +23,18 @@ internal object ScreenshotManager {
     private lateinit var bitmap: Bitmap
     private lateinit var stringDataManager: StringDataManager
     private lateinit var viewDataList: List<ViewData>
+    private var screenshotCallback: ScreenshotCallback? = null
 
-    operator fun invoke(crowdinApi: CrowdinApi, bitmap: Bitmap, stringDataManager: StringDataManager, viewDataList: List<ViewData>) {
+    operator fun invoke(crowdinApi: CrowdinApi,
+                        bitmap: Bitmap,
+                        stringDataManager: StringDataManager,
+                        viewDataList: List<ViewData>,
+                        screenshotCallback: ScreenshotCallback?) {
         this.crowdinApi = crowdinApi
         this.bitmap = bitmap
         this.stringDataManager = stringDataManager
         this.viewDataList = viewDataList
+        this.screenshotCallback = screenshotCallback
     }
 
     fun sendScreenshot() {
@@ -57,7 +61,7 @@ internal object ScreenshotManager {
             }
 
             override fun onFailure(call: Call<UploadScreenshotResponse>, throwable: Throwable) {
-                Log.d("TAG", "uploadScreenshot onFailure")
+                screenshotCallback?.onFailure(throwable.localizedMessage)
             }
         })
     }
@@ -76,7 +80,7 @@ internal object ScreenshotManager {
             }
 
             override fun onFailure(call: Call<CreateScreenshotResponse>, throwable: Throwable) {
-                Log.d("TAG", "createScreenshot onFailure")
+                screenshotCallback?.onFailure(throwable.localizedMessage)
             }
         })
     }
@@ -85,11 +89,11 @@ internal object ScreenshotManager {
         crowdinApi.createTag(screenId, tags).enqueue(object : Callback<ResponseBody> {
 
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                // success
+                screenshotCallback?.onSuccess()
             }
 
             override fun onFailure(call: Call<ResponseBody>, throwable: Throwable) {
-                Log.d("TAG", "createTag onFailure")
+                screenshotCallback?.onFailure(throwable.localizedMessage)
             }
         })
     }
