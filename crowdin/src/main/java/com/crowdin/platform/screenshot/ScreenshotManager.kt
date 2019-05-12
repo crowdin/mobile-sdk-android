@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import com.crowdin.platform.data.StringDataManager
 import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.TextMetaData
 import com.crowdin.platform.data.model.ViewData
 import com.crowdin.platform.data.remote.api.*
 import okhttp3.MediaType
@@ -95,8 +96,7 @@ internal object ScreenshotManager {
         val list = mutableListOf<TagData>()
 
         for (viewData in viewDataList) {
-            val resKey = viewData.resourceKey
-            val mappingValue = getMappingValueForKey(resKey, mappingData)
+            val mappingValue = getMappingValueForKey(viewData.textMetaData, mappingData)
             mappingValue?.let {
                 list.add(TagData(it.toInt(),
                         Position(viewData.x, viewData.y, viewData.width, viewData.height)))
@@ -106,21 +106,37 @@ internal object ScreenshotManager {
         return list
     }
 
-    private fun getMappingValueForKey(resKey: String, mappingData: LanguageData): String? {
+    private fun getMappingValueForKey(textMetaData: TextMetaData, mappingData: LanguageData): String? {
         val resources = mappingData.resources
         val arrays = mappingData.arrays
         val plurals = mappingData.plurals
 
-        for (resource in resources) {
-            if (resource.stringKey == resKey) {
-                return resource.stringValue
+        when {
+            textMetaData.hasAttributeKey -> {
+                for (resource in resources) {
+                    if (resource.stringKey == textMetaData.textAttributeKey) {
+                        return resource.stringValue
+                    }
+                }
             }
-        }
-
-        // TODO: array plural, nothing to compare. Check ViewData to extend
-        for (array in arrays) {
-        }
-        for (plural in plurals) {
+            textMetaData.isArrayItem -> {
+                for (array in arrays) {
+                    if (array.name == textMetaData.arrayName && textMetaData.isArrayItem) {
+                        return array.values!![textMetaData.arrayIndex]
+                    }
+                }
+            }
+            textMetaData.isPluralData -> {
+                for (plural in plurals) {
+                    if (plural.name == textMetaData.pluralName) {
+                        try {
+                            return plural.quantity.values.first()
+                        } catch (ex: NoSuchElementException) {
+                            // element not found
+                        }
+                    }
+                }
+            }
         }
 
         return null

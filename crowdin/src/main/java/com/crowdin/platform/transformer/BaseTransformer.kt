@@ -41,7 +41,7 @@ internal abstract class BaseTransformer : Transformer {
             if (view.visibility != View.VISIBLE) continue
             if (!view.isShown) continue
 
-            val textMetaData = createdView.value
+            val textMetaData: TextMetaData = createdView.value
 
             val location = IntArray(2)
             view.getLocationInWindow(location)
@@ -51,7 +51,7 @@ internal abstract class BaseTransformer : Transformer {
                     location[1] >= view.rootView.y &&
                     location[1] <= view.rootView.height) {
 
-                listViewData.add(ViewData(textMetaData.textAttributeKey,
+                listViewData.add(ViewData(textMetaData,
                         location[0],
                         location[1],
                         view.width,

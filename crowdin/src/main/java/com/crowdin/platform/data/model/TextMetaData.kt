@@ -16,16 +16,18 @@ internal class TextMetaData {
 
     val isArrayItem: Boolean
         get() {
-            return arrayName != null && arrayName!!.isNotEmpty() && arrayIndex != -1
+            return arrayName.isNotEmpty() && arrayIndex != -1
         }
-    var arrayName: String? = ""
+
+    var arrayName: String = ""
     var arrayIndex: Int = -1
 
     val isPluralData: Boolean
         get() {
-            return pluralName != null && pluralName!!.isNotEmpty() && pluralQuantity != -1
+            return pluralName.isNotEmpty() && pluralQuantity != -1
         }
-    var pluralName: String? = ""
+
+    var pluralName: String = ""
     var pluralQuantity: Int = -1
     var pluralFormatArgs: Array<out Any?> = arrayOf()
 
