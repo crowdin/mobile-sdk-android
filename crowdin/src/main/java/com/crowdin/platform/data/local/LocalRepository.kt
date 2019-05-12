@@ -59,7 +59,7 @@ internal interface LocalRepository {
     /**
      * Get all resource data for a specific language.
      *
-     * @param language the lanugage of the strings.
+     * @param language the language of the strings.
      * @return the [LanguageData]. return null if there's no data.
      */
     fun getLanguageData(language: String): LanguageData?

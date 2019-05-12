@@ -10,6 +10,6 @@ internal object FeatureFlags {
         this.config = config
     }
 
-    var isRealTimeUpdateEnabled: Boolean = false
+    val isRealTimeUpdateEnabled: Boolean
         get() = config.isRealTimeUpdateEnabled
 }

@@ -2,6 +2,7 @@ package com.crowdin.platform.transformer
 
 import android.annotation.TargetApi
 import android.os.Build
+import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
@@ -16,6 +17,7 @@ import com.crowdin.platform.util.TextUtils
  */
 internal class ToolbarTransformer(textMetaDataProvider: TextMetaDataProvider) : BaseToolbarTransformer(textMetaDataProvider) {
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override val viewType = Toolbar::class.java
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

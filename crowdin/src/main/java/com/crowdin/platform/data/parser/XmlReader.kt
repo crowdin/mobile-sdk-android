@@ -5,7 +5,7 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.InputStream
 
-internal class XmlReader(var parser: Parser) : Reader {
+internal class XmlReader(private var parser: Parser) : Reader {
 
     override fun close() {
         parser.clearData()

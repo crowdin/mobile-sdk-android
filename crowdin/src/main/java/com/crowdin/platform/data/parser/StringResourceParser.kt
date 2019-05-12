@@ -16,20 +16,20 @@ internal class StringResourceParser : Parser {
     }
 
     // String
-    val resources: MutableList<StringData> = mutableListOf()
+    private val resources: MutableList<StringData> = mutableListOf()
     private var isStringStarted = false
     private var stringKey: String? = null
     private var stringData: StringData? = null
 
     // Array
-    val arrays: MutableList<ArrayData> = mutableListOf()
+    private val arrays: MutableList<ArrayData> = mutableListOf()
     private var isArrayStarted = false
     private var isItemStarted = false
     private var arrayKey: String? = null
     private var arrayData: ArrayData? = null
 
     // Plurals
-    var plurals: MutableList<PluralData> = mutableListOf()
+    private var plurals: MutableList<PluralData> = mutableListOf()
     private var isPluralStarted = false
     private var pluralData: PluralData? = null
     private var quantityKey: String = ""

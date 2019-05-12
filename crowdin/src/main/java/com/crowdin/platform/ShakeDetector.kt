@@ -5,7 +5,6 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 
-
 class ShakeDetector : SensorEventListener {
 
     private var mListener: OnShakeListener? = null
@@ -61,14 +60,14 @@ class ShakeDetector : SensorEventListener {
     companion object {
 
         /*
-     * The gForce that is necessary to register as shake.
-     * Must be greater than 1G (one earth gravity unit).
-     * You can install "G-Force", by Blake La Pierre
-     * from the Google Play Store and run it to see how
-     *  many G's it takes to register a shake
-     */
-        private val SHAKE_THRESHOLD_GRAVITY = 1.7f
-        private val SHAKE_SLOP_TIME_MS = 500
-        private val SHAKE_COUNT_RESET_TIME_MS = 3000
+         * The gForce that is necessary to register as shake.
+         * Must be greater than 1G (one earth gravity unit).
+         * You can install "G-Force", by Blake La Pierre
+         * from the Google Play Store and run it to see how
+         *  many G's it takes to register a shake
+         */
+        private const val SHAKE_THRESHOLD_GRAVITY = 1.7f
+        private const val SHAKE_SLOP_TIME_MS = 500
+        private const val SHAKE_COUNT_RESET_TIME_MS = 3000
     }
 }

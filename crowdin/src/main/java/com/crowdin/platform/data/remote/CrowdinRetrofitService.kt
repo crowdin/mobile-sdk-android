@@ -1,5 +1,6 @@
 package com.crowdin.platform.data.remote
 
+import android.annotation.SuppressLint
 import com.crowdin.platform.BuildConfig
 import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
@@ -45,6 +46,7 @@ internal class CrowdinRetrofitService private constructor() {
     companion object {
 
         private const val BASE_DISTRIBUTION_URL = "https://crowdin-distribution.s3.us-east-1.amazonaws.com/"
+        @SuppressLint("AuthLeak")
         private const val BASE_API_URL = "https://api-tester:VmpFqTyXPq3ebAyNksUxHwhC@crowdin.com/api/v2/"
 
         private var sInstance: CrowdinRetrofitService? = null

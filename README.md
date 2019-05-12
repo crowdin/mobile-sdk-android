@@ -43,7 +43,7 @@ protected void attachBaseContext(Context newBase) {
 
 ### 5. Done!
 
-Now all strings in your app will be overriden by new strings provided to Crowdin.
+Now all strings in your app will be overridden by new strings provided to Crowdin.
 
 ## Notes:
 
@@ -61,7 +61,7 @@ Locale.setDefault(newLocale);
 ```
 Crowdin will start using strings of the new locale.
 
-3. For displaying a string, Crowdin tries to find that in dynamic strings, and will use bundled version as fallback. In the other words, Only the new provided strings will be overriden and for the rest the bundled version will be used.
+3. For displaying a string, Crowdin tries to find that in dynamic strings, and will use bundled version as fallback. In the other words, Only the new provided strings will be overridden and for the rest the bundled version will be used.
 
 4. If your application uses `adnroidx` and crowdin imported as a module you'll need to add next lines in the `gradle.properties` file:
 ```java

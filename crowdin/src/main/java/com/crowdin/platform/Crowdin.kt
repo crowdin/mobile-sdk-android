@@ -84,6 +84,7 @@ object Crowdin {
      * @param key      the string key.
      * @param value    the string value.
      */
+    @JvmStatic
     fun setString(language: String, key: String, value: String) {
         stringDataManager?.setString(language, key, value)
     }

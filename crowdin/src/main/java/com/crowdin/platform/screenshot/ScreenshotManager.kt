@@ -19,6 +19,8 @@ import java.net.HttpURLConnection
 // TODO: handle errors and add callback
 internal object ScreenshotManager {
 
+    private const val MEDIA_TYPE_IMG = "image/png"
+    private const val IMG_QUALITY = 100
     private lateinit var crowdinApi: CrowdinApi
     private lateinit var bitmap: Bitmap
     private lateinit var stringDataManager: StringDataManager
@@ -39,9 +41,9 @@ internal object ScreenshotManager {
 
     private fun uploadScreenshot(bitmap: Bitmap, tags: MutableList<TagData>) {
         val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        bitmap.compress(Bitmap.CompressFormat.PNG, IMG_QUALITY, stream)
         val byteArray = stream.toByteArray()
-        val requestBody = RequestBody.create(MediaType.parse("image/png"), byteArray)
+        val requestBody = RequestBody.create(MediaType.parse(MEDIA_TYPE_IMG), byteArray)
 
         crowdinApi.uploadScreenshot(requestBody).enqueue(object : Callback<UploadScreenshotResponse> {
 
@@ -61,7 +63,7 @@ internal object ScreenshotManager {
     }
 
     private fun createScreenshot(id: Int, tags: MutableList<TagData>) {
-        val requestBody = CreateScreenshotRequestBody(id, "${System.currentTimeMillis()}_image")
+        val requestBody = CreateScreenshotRequestBody(id, System.currentTimeMillis().toString())
         crowdinApi.createScreenshot(requestBody).enqueue(object : Callback<CreateScreenshotResponse> {
 
             override fun onResponse(call: Call<CreateScreenshotResponse>, response: Response<CreateScreenshotResponse>) {

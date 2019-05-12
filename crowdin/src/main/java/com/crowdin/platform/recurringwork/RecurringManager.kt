@@ -18,7 +18,7 @@ internal object RecurringManager {
     private const val WORK_STARTED = "started"
     private const val WORK_CANCELED = "canceled"
 
-    lateinit var downloadRequest: PeriodicWorkRequest
+    private lateinit var downloadRequest: PeriodicWorkRequest
 
     fun setPeriodicUpdates(context: Context, config: CrowdinConfig) {
         if (getRecurringState(context) == WORK_STARTED) return

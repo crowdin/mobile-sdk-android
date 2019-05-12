@@ -14,7 +14,6 @@
     <string name="communicate">Communicate</string>
     <string name="camera_fragment">Camera Fragment</string>
     <string name="gallery_fragment">Gallery Fragment</string>
-    <string name="home_fragment">Home Fragment</string>
     <string name="send_fragment">Send Fragment</string>
     <string name="share_fragment">Share Fragment</string>
     <string name="slideshow_fragment">Slideshow Fragment</string>
@@ -28,12 +27,12 @@
     <string name="switch_text">Switch</string>
     <string name="image_view_text">ImageView text</string>
     <string name="button">Button</string>
-    <string name="switch_on">Swith on</string>
+    <string name="switch_on">Switch on</string>
     <string name="switch_off">Switch off</string>
     <string name="toggle_button_on">Toggle button on</string>
     <string name="toggle_button_off">Toggle button off</string>
     <string name="edittext_text">EditText text</string>
-    <string name="editext_hint">EditText hint</string>
+    <string name="edittext_hint">EditText hint</string>
     <string name="multi_auto_complete_text">Multi auto-complete text</string>
     <string name="multi_auto_complete_hint">Multi auto-complete hint</string>
     <string name="checked_text_view">CheckedTextView</string>

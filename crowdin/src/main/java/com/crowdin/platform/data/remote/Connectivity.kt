@@ -64,10 +64,10 @@ enum class NetworkType {
 
         fun fromConnectivityType(connectivityType: Int): NetworkType {
             when (connectivityType) {
-                ConnectivityManager.TYPE_ETHERNET, ConnectivityManager.TYPE_WIFI -> return NetworkType.WIFI
-                ConnectivityManager.TYPE_MOBILE -> return NetworkType.CELLULAR
+                ConnectivityManager.TYPE_ETHERNET, ConnectivityManager.TYPE_WIFI -> return WIFI
+                ConnectivityManager.TYPE_MOBILE -> return CELLULAR
             }
-            return NetworkType.UNKNOWN
+            return UNKNOWN
         }
     }
 }
