@@ -14,7 +14,6 @@ internal open class BaseRepository : CrowdinRepository {
 
     protected var eTagMap = mutableMapOf<String, String>()
 
-
     protected fun validateFilePath(filePath: String): String {
         var path = filePath
         val locale = Locale.getDefault()

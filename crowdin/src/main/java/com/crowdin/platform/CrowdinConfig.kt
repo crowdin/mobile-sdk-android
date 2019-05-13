@@ -13,6 +13,7 @@ class CrowdinConfig private constructor() {
     var networkType: NetworkType = NetworkType.ALL
     var isRealTimeUpdateEnabled: Boolean = false
     var updateInterval: Long = -1
+    var sourceLanguage: String = ""
 
     class Builder {
 
@@ -22,6 +23,7 @@ class CrowdinConfig private constructor() {
         private var networkType: NetworkType = NetworkType.ALL
         private var isRealTimeUpdateEnabled: Boolean = false
         private var updateInterval: Long = -1
+        private var sourceLanguage: String = ""
 
         fun persist(persist: Boolean): Builder {
             this.persist = persist
@@ -43,8 +45,9 @@ class CrowdinConfig private constructor() {
             return this
         }
 
-        fun withRealTimeUpdates(isRealTimeUpdateEnabled: Boolean): Builder {
+        fun withRealTimeUpdates(isRealTimeUpdateEnabled: Boolean, sourceLanguage: String): Builder {
             this.isRealTimeUpdateEnabled = isRealTimeUpdateEnabled
+            this.sourceLanguage = sourceLanguage
             return this
         }
 
@@ -61,6 +64,7 @@ class CrowdinConfig private constructor() {
             config.filePaths = filePaths
             config.networkType = networkType
             config.isRealTimeUpdateEnabled = isRealTimeUpdateEnabled
+            config.sourceLanguage = sourceLanguage
             config.updateInterval = updateInterval
 
             return config

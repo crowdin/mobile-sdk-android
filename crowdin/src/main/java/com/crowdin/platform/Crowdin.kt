@@ -214,7 +214,7 @@ object Crowdin {
                     XmlReader(StringResourceParser()),
                     config.distributionKey,
                     config.filePaths)
-            mappingRepository.getMapping(object : MappingCallback {
+            mappingRepository.getMapping(config.sourceLanguage, object : MappingCallback {
                 override fun onSuccess(languageData: LanguageData) {
                     stringDataManager?.saveMapping(languageData)
                 }
