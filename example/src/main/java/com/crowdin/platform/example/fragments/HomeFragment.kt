@@ -13,11 +13,14 @@ import com.crowdin.platform.Crowdin
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.auth.CrowdinWebActivity
 import com.crowdin.platform.example.R
+import com.crowdin.platform.screenshot.ScreenshotCallback
 import com.crowdin.platform.util.ScreenshotUtils
 
 class HomeFragment : Fragment(), LoadingStateListener {
 
     companion object {
+        private var TAG = HomeFragment::class.java.simpleName
+
         fun newInstance(): HomeFragment = HomeFragment()
     }
 
@@ -29,7 +32,16 @@ class HomeFragment : Fragment(), LoadingStateListener {
         view.findViewById<TextView>(R.id.textView0).setOnClickListener {
             ScreenshotUtils.getBitmapFromView(view, activity!!) {
                 view.findViewById<ImageView>(R.id.testImageView).setImageBitmap(it)
-                Crowdin.sendScreenshot(it)
+                Crowdin.sendScreenshot(it, object : ScreenshotCallback {
+                    override fun onSuccess() {
+                        Log.d(TAG, "Screenshot uploaded")
+                    }
+
+                    override fun onFailure(error: String) {
+                        Log.d(TAG, error)
+                    }
+
+                })
             }
         }
 
