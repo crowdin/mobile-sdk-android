@@ -6,7 +6,6 @@ import android.view.*
 import android.widget.TextView
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.example.R
-import com.crowdin.platform.util.ScreenshotUtils
 
 class ToolsFragment : Fragment() {
 
@@ -21,7 +20,7 @@ class ToolsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<TextView>(R.id.textView3).setOnClickListener {
-            ScreenshotUtils.getBitmapFromView(view, activity!!) { Crowdin.sendScreenshot(it) }
+            Crowdin.sendScreenshot(view, activity!!)
         }
     }
 

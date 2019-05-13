@@ -7,14 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.auth.CrowdinWebActivity
 import com.crowdin.platform.example.R
 import com.crowdin.platform.screenshot.ScreenshotCallback
-import com.crowdin.platform.util.ScreenshotUtils
 
 class HomeFragment : Fragment(), LoadingStateListener {
 
@@ -30,19 +28,15 @@ class HomeFragment : Fragment(), LoadingStateListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<TextView>(R.id.textView0).setOnClickListener {
-            ScreenshotUtils.getBitmapFromView(view, activity!!) {
-                view.findViewById<ImageView>(R.id.testImageView).setImageBitmap(it)
-                Crowdin.sendScreenshot(it, object : ScreenshotCallback {
-                    override fun onSuccess() {
-                        Log.d(TAG, "Screenshot uploaded")
-                    }
+            Crowdin.sendScreenshot(view, activity!!, object : ScreenshotCallback {
+                override fun onSuccess() {
+                    Log.d(TAG, "Screenshot uploaded")
+                }
 
-                    override fun onFailure(error: String) {
-                        Log.d(TAG, error)
-                    }
-
-                })
-            }
+                override fun onFailure(error: String) {
+                    Log.d(TAG, error)
+                }
+            })
         }
 
         view.findViewById<TextView>(R.id.textView1).setOnClickListener {

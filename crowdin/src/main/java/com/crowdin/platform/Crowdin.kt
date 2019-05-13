@@ -1,12 +1,13 @@
 package com.crowdin.platform
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Bitmap
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.util.Log
 import android.view.Menu
+import android.view.View
 import android.widget.Toast
 import com.crowdin.platform.data.StringDataManager
 import com.crowdin.platform.data.TextMetaDataProvider
@@ -23,6 +24,7 @@ import com.crowdin.platform.screenshot.ScreenshotCallback
 import com.crowdin.platform.screenshot.ScreenshotManager
 import com.crowdin.platform.transformer.*
 import com.crowdin.platform.util.FeatureFlags
+import com.crowdin.platform.util.ScreenshotUtils
 import com.crowdin.platform.util.TextUtils
 
 /**
@@ -118,17 +120,19 @@ object Crowdin {
     }
 
     @JvmStatic
-    fun sendScreenshot(bitmap: Bitmap, screenshotCallback: ScreenshotCallback? = null) {
+    fun sendScreenshot(view: View, activity: Activity, screenshotCallback: ScreenshotCallback? = null) {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             if (stringDataManager == null) return
 
-            ScreenshotManager(
-                    CrowdinRetrofitService.instance.getCrowdinApi(),
-                    bitmap,
-                    stringDataManager!!,
-                    viewTransformerManager.getViewData(),
-                    screenshotCallback)
-            ScreenshotManager.sendScreenshot()
+            ScreenshotUtils.getBitmapFromView(view, activity) {
+                ScreenshotManager(
+                        CrowdinRetrofitService.instance.getCrowdinApi(),
+                        it,
+                        stringDataManager!!,
+                        viewTransformerManager.getViewData(),
+                        screenshotCallback)
+                ScreenshotManager.sendScreenshot()
+            }
         }
     }
 
