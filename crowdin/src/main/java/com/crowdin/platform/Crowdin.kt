@@ -59,6 +59,7 @@ object Crowdin {
                 loadMapping()
             }
         }
+//        TODO: remove
         initShake(context)
     }
 
@@ -112,6 +113,7 @@ object Crowdin {
         stringDataManager?.updateData(context, config.networkType)
     }
 
+    //    TODO: consider to be local private in real-time update
     @JvmStatic
     fun invalidate() {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
@@ -119,6 +121,14 @@ object Crowdin {
         }
     }
 
+    /**
+     * Send screenshot of current screen to the crowdin platform.
+     * Will attach tags (keys and position) to UI components on the screen.
+     *
+     * @param view                  required for getting bitmap
+     * @param activity              required for accessing current window
+     * @param screenshotCallback    optional, will provide status of screenshot creating process
+     */
     @JvmStatic
     fun sendScreenshot(view: View, activity: Activity, screenshotCallback: ScreenshotCallback? = null) {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
@@ -138,6 +148,7 @@ object Crowdin {
 
     /**
      * Register callback for tracking loading state
+     *
      * @see LoadingStateListener
      */
     @JvmStatic
@@ -147,6 +158,7 @@ object Crowdin {
 
     /**
      * Remove callback for tracking loading state
+     *
      * @see LoadingStateListener
      */
     @JvmStatic
@@ -156,10 +168,29 @@ object Crowdin {
 
     /**
      * Cancel recurring job defined by interval during sdk init.
+     *
+     * @param context context of an activity.
      */
     @JvmStatic
     fun cancelRecurring(context: Context) {
         RecurringManager.cancel(context)
+    }
+
+    /**
+     * Connect to Crowdin platform for receiving realtime updates.
+     */
+    @JvmStatic
+    fun startRealTimeUpdates() {
+
+//      TODO: update
+    }
+
+    /**
+     * Close realtime update connection.
+     */
+    @JvmStatic
+    fun stopRealTimeUpdates() {
+//      TODO: update
     }
 
     private fun initCrowdinApi() {
@@ -191,6 +222,7 @@ object Crowdin {
         viewTransformerManager.registerTransformer(SpinnerTransformer())
     }
 
+    //    TODO: remove, app responsibility
     private fun initShake(context: Context) {
         // ShakeDetector initialization
         val mSensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager

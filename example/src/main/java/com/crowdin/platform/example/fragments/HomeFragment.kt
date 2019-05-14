@@ -52,18 +52,23 @@ class HomeFragment : Fragment(), LoadingStateListener {
         view.findViewById<TextView>(R.id.textView7).text = getString(R.string.text7, "str", "str")
 
         Crowdin.registerDataLoadingObserver(this)
+
+        // Will connect to Crowdin via sockets.
+        Crowdin.startRealTimeUpdates()
     }
 
     override fun onDataChanged() {
-        Log.d("Crowdin", "HomeFragment: onSuccess")
+        Log.d(TAG, "HomeFragment: onSuccess")
     }
 
     override fun onFailure(throwable: Throwable) {
-        Log.d("Crowdin", "HomeFragment: onFailure ${throwable.localizedMessage}")
+        Log.d(TAG, "HomeFragment: onFailure ${throwable.localizedMessage}")
     }
 
     override fun onDestroy() {
         super.onDestroy()
         Crowdin.unregisterDataLoadingObserver(this)
+        // Close socket connection.
+        Crowdin.stopRealTimeUpdates()
     }
 }

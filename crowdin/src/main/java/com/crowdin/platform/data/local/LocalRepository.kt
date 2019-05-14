@@ -89,9 +89,9 @@ internal interface LocalRepository {
      */
     fun isExist(language: String): Boolean
 
-    fun getTextData(text: String): SearchResultData
+    fun getTextData(text: String): SearchResultData = SearchResultData()
 
-    fun saveCookies(csrfToken: String)
+    fun saveCookies(csrfToken: String) {}
 
-    fun getCookies(): String?
+    fun getCookies(): String? = null
 }

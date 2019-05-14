@@ -1,7 +1,7 @@
 package com.crowdin.platform.screenshot
 
 /**
- * Provides information about screenshot creating state.
+ * Provides information about screenshot creating status.
  */
 interface ScreenshotCallback {
 
@@ -12,6 +12,8 @@ interface ScreenshotCallback {
 
     /**
      * Error happened during uploading screenshot process.
+     *
+     * @param error message.
      */
     fun onFailure(error: String)
 }

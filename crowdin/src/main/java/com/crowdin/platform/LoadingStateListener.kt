@@ -15,6 +15,8 @@ interface LoadingStateListener {
 
     /**
      * Unexpected error during data loading.
+     *
+     * @param throwable error during data update process.
      */
     fun onFailure(throwable: Throwable)
 }
