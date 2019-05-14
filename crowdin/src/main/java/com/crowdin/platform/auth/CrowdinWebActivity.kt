@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -23,6 +24,7 @@ class CrowdinWebActivity : AppCompatActivity() {
         }
     }
 
+    // TODO: test user-agent
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,11 +35,16 @@ class CrowdinWebActivity : AppCompatActivity() {
         webView.webViewClient = object : WebViewClient() {
 
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                val agent = view.settings?.userAgentString
+                Log.d("AGENT", "shouldOverrideUrlLoading: $agent")
                 view.loadUrl(url)
                 return true
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
+                val agent = view?.settings?.userAgentString
+                Log.d("AGENT", "onPageFinished: $agent")
+
                 var csrfToken = ""
                 val cookies = CookieManager.getInstance().getCookie(url)
                 if (cookies != null) {
@@ -53,7 +60,8 @@ class CrowdinWebActivity : AppCompatActivity() {
                     }
                 }
 
-                if (url == URL_PROFILE && csrfToken.isNotEmpty()) {
+                if (csrfToken.isNotEmpty()) {
+                    Crowdin.startRealTimeUpdates(agent)
                     finish()
                 }
             }

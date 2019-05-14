@@ -40,14 +40,20 @@ internal class CrowdinRetrofitService private constructor() {
             crowdinDistributionApi
                     ?: getCrowdinRetrofit(okHttpClient, BASE_DISTRIBUTION_URL).create(CrowdinDistributionApi::class.java)
 
+    // Temp API with login
+    fun getTmpCrowdinApi(): CrowdinApi = crowdinApi
+            ?: getCrowdinRetrofit(okHttpClient, TMP_API_URL).create(CrowdinApi::class.java)
+
     fun getCrowdinApi(): CrowdinApi = crowdinApi
             ?: getCrowdinRetrofit(okHttpClient, BASE_API_URL).create(CrowdinApi::class.java)
+
 
     companion object {
 
         private const val BASE_DISTRIBUTION_URL = "https://crowdin-distribution.s3.us-east-1.amazonaws.com/"
         @SuppressLint("AuthLeak")
-        private const val BASE_API_URL = "https://api-tester:VmpFqTyXPq3ebAyNksUxHwhC@crowdin.com/api/v2/"
+        private const val TMP_API_URL = "https://api-tester:VmpFqTyXPq3ebAyNksUxHwhC@crowdin.com/"
+        private const val BASE_API_URL = "https://crowdin.com/"
 
         private var sInstance: CrowdinRetrofitService? = null
 

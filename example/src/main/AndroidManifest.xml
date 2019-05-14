@@ -10,6 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <!--android:usesCleartextTraffic="true"-->
+        <!--update readme `usesCleartextTraffic` needed for ws connection-->
 
         <activity android:name="com.crowdin.platform.example.MainActivity">
             <intent-filter>

@@ -19,6 +19,7 @@ import com.crowdin.platform.data.remote.CrowdinRetrofitService
 import com.crowdin.platform.data.remote.MappingCallback
 import com.crowdin.platform.data.remote.MappingRepository
 import com.crowdin.platform.data.remote.StringDataRemoteRepository
+import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager
 import com.crowdin.platform.recurringwork.RecurringManager
 import com.crowdin.platform.screenshot.ScreenshotCallback
 import com.crowdin.platform.screenshot.ScreenshotManager
@@ -35,6 +36,7 @@ object Crowdin {
     private lateinit var viewTransformerManager: ViewTransformerManager
     private lateinit var config: CrowdinConfig
     private var stringDataManager: StringDataManager? = null
+    private var realTimeUpdateManager: RealTimeUpdateManager? = null
 
     /**
      * Initialize Crowdin with the specified configuration.
@@ -131,18 +133,17 @@ object Crowdin {
      */
     @JvmStatic
     fun sendScreenshot(view: View, activity: Activity, screenshotCallback: ScreenshotCallback? = null) {
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
-            if (stringDataManager == null) return
+        if (!FeatureFlags.isRealTimeUpdateEnabled) return
+        if (stringDataManager == null) return
 
-            ScreenshotUtils.getBitmapFromView(view, activity) {
-                ScreenshotManager(
-                        CrowdinRetrofitService.instance.getCrowdinApi(),
-                        it,
-                        stringDataManager!!,
-                        viewTransformerManager.getViewData(),
-                        screenshotCallback)
-                ScreenshotManager.sendScreenshot()
-            }
+        ScreenshotUtils.getBitmapFromView(view, activity) {
+            ScreenshotManager(
+                    CrowdinRetrofitService.instance.getTmpCrowdinApi(),
+                    it,
+                    stringDataManager!!,
+                    viewTransformerManager.getViewData(),
+                    screenshotCallback)
+            ScreenshotManager.sendScreenshot()
         }
     }
 
@@ -180,9 +181,17 @@ object Crowdin {
      * Connect to Crowdin platform for receiving realtime updates.
      */
     @JvmStatic
-    fun startRealTimeUpdates() {
+    fun startRealTimeUpdates(agent: String?) {
+        if (!FeatureFlags.isRealTimeUpdateEnabled) return
 
-//      TODO: update
+        if (realTimeUpdateManager == null) {
+            realTimeUpdateManager = RealTimeUpdateManager(
+                    CrowdinRetrofitService.instance.getCrowdinApi(),
+                    config.distributionKey,
+                    stringDataManager,
+                    viewTransformerManager)
+        }
+        realTimeUpdateManager?.openConnection(agent)
     }
 
     /**
@@ -190,7 +199,9 @@ object Crowdin {
      */
     @JvmStatic
     fun stopRealTimeUpdates() {
-//      TODO: update
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
+            realTimeUpdateManager?.closeConnection()
+        }
     }
 
     private fun initCrowdinApi() {

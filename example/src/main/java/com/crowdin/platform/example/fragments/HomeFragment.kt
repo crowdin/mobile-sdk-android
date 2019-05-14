@@ -54,7 +54,7 @@ class HomeFragment : Fragment(), LoadingStateListener {
         Crowdin.registerDataLoadingObserver(this)
 
         // Will connect to Crowdin via sockets.
-        Crowdin.startRealTimeUpdates()
+//        Crowdin.startRealTimeUpdates()
     }
 
     override fun onDataChanged() {
