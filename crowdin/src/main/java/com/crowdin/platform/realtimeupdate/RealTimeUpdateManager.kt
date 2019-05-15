@@ -3,9 +3,10 @@ package com.crowdin.platform.realtimeupdate
 import android.util.Log
 import com.crowdin.platform.data.StringDataManager
 import com.crowdin.platform.data.remote.api.CrowdinApi
-import com.crowdin.platform.data.remote.api.DistributionData
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
+import com.crowdin.platform.data.remote.api.EventResponse
 import com.crowdin.platform.transformer.ViewTransformerManager
+import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
@@ -65,7 +66,7 @@ internal class RealTimeUpdateManager(
                 })
     }
 
-    private fun createConnection(distributionData: DistributionData, cookie: String, xCsrfToken: String) {
+    private fun createConnection(distributionData: DistributionInfoResponse.DistributionData, cookie: String, xCsrfToken: String) {
         val client = OkHttpClient().newBuilder()
                 .addInterceptor { chain ->
                     val original = chain.request()
@@ -89,21 +90,29 @@ internal class RealTimeUpdateManager(
         ws?.close(NORMAL_CLOSURE_STATUS, "Goodbye !")
     }
 
-    private inner class EchoWebSocketListener(var distributionData: DistributionData) : WebSocketListener() {
+    private inner class EchoWebSocketListener(var distributionData: DistributionInfoResponse.DistributionData) : WebSocketListener() {
 
         override fun onOpen(webSocket: WebSocket, response: okhttp3.Response) {
+            val viewDataList = viewTransformerManager.getViewData()
             val project = distributionData.project
             val user = distributionData.user
 
-            webSocket.send("{action: \"subscribe\", event: \"update-draft:${project.wsHash}:${project.id}:${user.id}:de:2448\"}")
+            webSocket.send("{\"action\": \"subscribe\", \"event\": \"update-draft:${project.wsHash}:${project.id}:${user.id}:de:2448\"}")
+            webSocket.send("{\"action\": \"subscribe\", \"event\": \"top-suggestion:${project.wsHash}:${project.id}:de:2448\"}")
+
             output("onOpen : $response")
-            // TODO: subscribe to event
-//            update-draft:<projectWsHash>:<projectId>:<userId>:<language_code>:<stringId>
-//            `update-draft:ud8923u:25:123:uk:12`
         }
 
         override fun onMessage(webSocket: WebSocket?, text: String?) {
-            output("Receiving : " + text!!)
+            output("Receiving : $text")
+            text?.let {
+                val eventData = parseResponse(it)
+                val event = eventData.event
+                if (event.contains("update-draft")) {
+                    val mappingId = event.split(":").last()
+
+                }
+            }
         }
 
         override fun onMessage(webSocket: WebSocket?, bytes: ByteString) {
@@ -118,6 +127,10 @@ internal class RealTimeUpdateManager(
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: okhttp3.Response?) {
             output("Error : " + t.message)
         }
+    }
+
+    private fun parseResponse(response: String): EventResponse {
+        return Gson().fromJson(response, EventResponse::class.java)
     }
 
     private fun output(txt: String) {

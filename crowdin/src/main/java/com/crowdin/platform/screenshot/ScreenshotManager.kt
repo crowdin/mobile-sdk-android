@@ -105,7 +105,7 @@ internal object ScreenshotManager {
             val mappingValue = getMappingValueForKey(viewData.textMetaData, mappingData)
             mappingValue?.let {
                 list.add(TagData(it.toInt(),
-                        Position(viewData.x, viewData.y, viewData.width, viewData.height)))
+                        TagData.Position(viewData.x, viewData.y, viewData.width, viewData.height)))
             }
         }
 
