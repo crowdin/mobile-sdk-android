@@ -12,6 +12,7 @@ import android.widget.Toast
 import com.crowdin.platform.data.StringDataManager
 import com.crowdin.platform.data.TextMetaDataProvider
 import com.crowdin.platform.data.local.LocalStringRepositoryFactory
+import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.parser.StringResourceParser
 import com.crowdin.platform.data.parser.XmlReader
@@ -181,7 +182,7 @@ object Crowdin {
      * Connect to Crowdin platform for receiving realtime updates.
      */
     @JvmStatic
-    fun startRealTimeUpdates(agent: String?) {
+    fun startRealTimeUpdates() {
         if (!FeatureFlags.isRealTimeUpdateEnabled) return
 
         if (realTimeUpdateManager == null) {
@@ -191,7 +192,7 @@ object Crowdin {
                     stringDataManager,
                     viewTransformerManager)
         }
-        realTimeUpdateManager?.openConnection(agent)
+        realTimeUpdateManager?.openConnection()
     }
 
     /**
@@ -250,8 +251,8 @@ object Crowdin {
         mSensorManager.registerListener(shakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI)
     }
 
-    internal fun saveCookies(csrfToken: String) {
-        stringDataManager?.saveCookies(csrfToken)
+    internal fun saveAuthInfo(authInfo: AuthInfo) {
+        stringDataManager?.saveAuthInfo(authInfo)
     }
 
     private fun loadMapping() {

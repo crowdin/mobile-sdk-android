@@ -12,7 +12,7 @@ class App : Application() {
         val fifteenMinutes: Long = 60 * 15
         Crowdin.init(applicationContext,
                 CrowdinConfig.Builder()
-                        .withDistributionKey("d32682e5a6a5f53a950d934e2eee861e")
+                        .withDistributionKey("d5d8249cef350c21219d048106i")
                         .withFilePaths("strings.xml",
                                 "arrays.xml",
                                 "plurals.xml")

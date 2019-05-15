@@ -5,13 +5,15 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.crowdin.platform.Crowdin
+import com.crowdin.platform.data.model.AuthInfo
 
 class CrowdinWebActivity : AppCompatActivity() {
+
+    private lateinit var userAgent: String
 
     companion object {
 
@@ -24,7 +26,6 @@ class CrowdinWebActivity : AppCompatActivity() {
         }
     }
 
-    // TODO: test user-agent
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,36 +36,36 @@ class CrowdinWebActivity : AppCompatActivity() {
         webView.webViewClient = object : WebViewClient() {
 
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                val agent = view.settings?.userAgentString
-                Log.d("AGENT", "shouldOverrideUrlLoading: $agent")
+                userAgent = view.settings.userAgentString
                 view.loadUrl(url)
                 return true
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
-                val agent = view?.settings?.userAgentString
-                Log.d("AGENT", "onPageFinished: $agent")
-
-                var csrfToken = ""
                 val cookies = CookieManager.getInstance().getCookie(url)
-                if (cookies != null) {
-                    Crowdin.saveCookies(cookies)
-                    val list = cookies.split(";")
-                    for (item in list) {
-                        if (item.contains(COOKIE_TOKEN)) {
-                            val temp = item.split("=".toRegex())
-                                    .dropLastWhile { it.isEmpty() }
-                                    .toTypedArray()
-                            csrfToken = temp[1]
-                        }
-                    }
-                }
+                val csrfToken = getToken(cookies)
+                if (url == URL_PROFILE && csrfToken.isNotEmpty()) {
+                    Crowdin.saveAuthInfo(AuthInfo(userAgent, cookies, csrfToken))
 
-                if (csrfToken.isNotEmpty()) {
-                    Crowdin.startRealTimeUpdates(agent)
+                    // TODO: remove
+                    Crowdin.startRealTimeUpdates()
                     finish()
                 }
             }
         }
+    }
+
+    private fun getToken(cookies: String): String {
+        var csrfToken = ""
+        val list = cookies.split(";")
+        for (item in list) {
+            if (item.contains(COOKIE_TOKEN)) {
+                val temp = item.split("=".toRegex())
+                        .dropLastWhile { it.isEmpty() }
+                        .toTypedArray()
+                csrfToken = temp[1]
+            }
+        }
+        return csrfToken
     }
 }

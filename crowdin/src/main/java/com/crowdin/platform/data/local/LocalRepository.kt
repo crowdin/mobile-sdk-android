@@ -91,7 +91,7 @@ internal interface LocalRepository {
 
     fun getTextData(text: String): SearchResultData = SearchResultData()
 
-    fun saveCookies(csrfToken: String) {}
+    fun saveAuthInfo(authInfo: AuthInfo) {}
 
-    fun getCookies(): String? = null
+    fun getAuthInfo(): AuthInfo? = null
 }
