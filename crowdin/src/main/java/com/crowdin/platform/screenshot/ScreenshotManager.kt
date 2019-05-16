@@ -2,8 +2,8 @@ package com.crowdin.platform.screenshot
 
 import android.graphics.Bitmap
 import com.crowdin.platform.data.StringDataManager
+import com.crowdin.platform.data.getMappingValueForKey
 import com.crowdin.platform.data.model.LanguageData
-import com.crowdin.platform.data.model.TextMetaData
 import com.crowdin.platform.data.model.ViewData
 import com.crowdin.platform.data.remote.api.*
 import okhttp3.MediaType
@@ -22,6 +22,7 @@ internal object ScreenshotManager {
     private lateinit var crowdinApi: CrowdinApi
     private lateinit var bitmap: Bitmap
     private lateinit var stringDataManager: StringDataManager
+    private lateinit var sourceLanguage: String
     private lateinit var viewDataList: List<ViewData>
     private var screenshotCallback: ScreenshotCallback? = null
 
@@ -29,16 +30,18 @@ internal object ScreenshotManager {
                         bitmap: Bitmap,
                         stringDataManager: StringDataManager,
                         viewDataList: List<ViewData>,
+                        sourceLanguage: String,
                         screenshotCallback: ScreenshotCallback?) {
         this.crowdinApi = crowdinApi
         this.bitmap = bitmap
         this.stringDataManager = stringDataManager
         this.viewDataList = viewDataList
+        this.sourceLanguage = sourceLanguage
         this.screenshotCallback = screenshotCallback
     }
 
     fun sendScreenshot() {
-        val mappingData = stringDataManager.getMapping() ?: return
+        val mappingData = stringDataManager.getMapping(sourceLanguage) ?: return
         val tags = getMappingIds(mappingData, viewDataList)
         uploadScreenshot(bitmap, tags)
     }
@@ -110,41 +113,5 @@ internal object ScreenshotManager {
         }
 
         return list
-    }
-
-    private fun getMappingValueForKey(textMetaData: TextMetaData, mappingData: LanguageData): String? {
-        val resources = mappingData.resources
-        val arrays = mappingData.arrays
-        val plurals = mappingData.plurals
-
-        when {
-            textMetaData.hasAttributeKey -> {
-                for (resource in resources) {
-                    if (resource.stringKey == textMetaData.textAttributeKey) {
-                        return resource.stringValue
-                    }
-                }
-            }
-            textMetaData.isArrayItem -> {
-                for (array in arrays) {
-                    if (array.name == textMetaData.arrayName && textMetaData.isArrayItem) {
-                        return array.values!![textMetaData.arrayIndex]
-                    }
-                }
-            }
-            textMetaData.isPluralData -> {
-                for (plural in plurals) {
-                    if (plural.name == textMetaData.pluralName) {
-                        try {
-                            return plural.quantity.values.first()
-                        } catch (ex: NoSuchElementException) {
-                            // element not found
-                        }
-                    }
-                }
-            }
-        }
-
-        return null
     }
 }

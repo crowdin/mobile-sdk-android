@@ -150,11 +150,11 @@ internal class CrowdinResources(res: Resources, private val stringDataManager: S
             } else {
                 null
             }
-
-    private fun fromHtml(source: String): CharSequence =
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                Html.fromHtml(source)
-            } else {
-                Html.fromHtml(source, Html.FROM_HTML_MODE_COMPACT)
-            }
 }
+
+internal fun fromHtml(source: String): CharSequence =
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            Html.fromHtml(source)
+        } else {
+            Html.fromHtml(source, Html.FROM_HTML_MODE_COMPACT)
+        }

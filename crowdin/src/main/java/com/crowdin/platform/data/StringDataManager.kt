@@ -20,7 +20,6 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
     companion object {
         private const val STATUS_OK = "ok"
         const val SUF_COPY = "-copy"
-        const val SUF_MAPPING = "-mapping"
     }
 
     private var loadingStateListeners: ArrayList<LoadingStateListener>? = null
@@ -127,8 +126,8 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
         localRepository.saveLanguageData(languageData)
     }
 
-    fun getMapping(): LanguageData? =
-            localRepository.getLanguageData(Locale.getDefault().toString() + SUF_MAPPING)
+    fun getMapping(sourceLanguage: String): LanguageData? =
+            localRepository.getLanguageData(sourceLanguage)
 
     fun saveAuthInfo(authInfo: AuthInfo) {
         localRepository.saveAuthInfo(authInfo)

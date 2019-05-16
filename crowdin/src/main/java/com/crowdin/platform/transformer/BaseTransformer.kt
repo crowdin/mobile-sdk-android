@@ -62,6 +62,10 @@ internal abstract class BaseTransformer : Transformer {
         return listViewData
     }
 
+    override fun getVisibleViewsWithData(): WeakHashMap<TextView, TextMetaData> {
+        return createdViews
+    }
+
     private fun invalidateArrayItem(view: TextView, textMetaData: TextMetaData) {
         if (textMetaData.isArrayItem) {
             val id = view.context.resources.getIdentifier(textMetaData.arrayName,

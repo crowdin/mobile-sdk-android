@@ -3,6 +3,8 @@ package com.crowdin.platform.transformer
 import android.util.AttributeSet
 import android.util.Pair
 import android.view.View
+import android.widget.TextView
+import com.crowdin.platform.data.model.TextMetaData
 import com.crowdin.platform.data.model.ViewData
 import java.util.*
 
@@ -64,6 +66,15 @@ internal class ViewTransformerManager {
 
         return mutableList
     }
+
+    fun getVisibleViewsWithData(): WeakHashMap<TextView, TextMetaData> {
+        val weakHashMap = WeakHashMap<TextView, TextMetaData>()
+        transformers.forEach {
+            weakHashMap.putAll(it.second.getVisibleViewsWithData())
+        }
+
+        return weakHashMap
+    }
 }
 
 /**
@@ -97,5 +108,9 @@ internal interface Transformer {
      */
     fun getViewDataFromWindow(): MutableList<ViewData> {
         return mutableListOf()
+    }
+
+    fun getVisibleViewsWithData(): WeakHashMap<TextView, TextMetaData> {
+        return WeakHashMap()
     }
 }

@@ -143,6 +143,7 @@ object Crowdin {
                     it,
                     stringDataManager!!,
                     viewTransformerManager.getViewData(),
+                    config.sourceLanguage,
                     screenshotCallback)
             ScreenshotManager.sendScreenshot()
         }
@@ -189,6 +190,7 @@ object Crowdin {
             realTimeUpdateManager = RealTimeUpdateManager(
                     CrowdinRetrofitService.instance.getCrowdinApi(),
                     config.distributionKey,
+                    config.sourceLanguage,
                     stringDataManager,
                     viewTransformerManager)
         }
@@ -261,7 +263,8 @@ object Crowdin {
                     CrowdinRetrofitService.instance.getCrowdinDistributionApi(),
                     XmlReader(StringResourceParser()),
                     config.distributionKey,
-                    config.filePaths)
+                    config.filePaths,
+                    config.sourceLanguage)
             mappingRepository.getMapping(config.sourceLanguage, object : MappingCallback {
                 override fun onSuccess(languageData: LanguageData) {
                     stringDataManager?.saveMapping(languageData)

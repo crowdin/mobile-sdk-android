@@ -1,35 +1,40 @@
 package com.crowdin.platform.realtimeupdate
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.TextView
 import com.crowdin.platform.data.StringDataManager
+import com.crowdin.platform.data.getMappingValueForKey
 import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.data.remote.api.EventResponse
+import com.crowdin.platform.fromHtml
 import com.crowdin.platform.transformer.ViewTransformerManager
 import com.google.gson.Gson
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.WebSocket
-import okhttp3.WebSocketListener
-import okio.ByteString
+import okhttp3.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
 
 internal class RealTimeUpdateManager(
         private val crowdinApi: CrowdinApi,
         private val distributionKey: String?,
+        private val sourceLanguage: String,
         private val stringDataManager: StringDataManager?,
         private val viewTransformerManager: ViewTransformerManager) {
 
     companion object {
-        private const val NORMAL_CLOSURE_STATUS = 1000
+        private var TAG = RealTimeUpdateManager::class.java.simpleName
+        private const val NORMAL_CLOSURE_STATUS = 0x3E9
         private const val BASE_WS_URL = "wss://ws-lb.crowdin.com/"
         private const val COOKIE = "Cookie"
+        private const val X_CSRF_TOKEN = "x-csrf-token"
     }
 
-    private var ws: WebSocket? = null
+    private var socket: WebSocket? = null
 
     fun openConnection() {
         distributionKey ?: return
@@ -43,6 +48,10 @@ internal class RealTimeUpdateManager(
                 authInfo.cookies,
                 authInfo.xCsrfToken,
                 distributionKey)
+    }
+
+    fun closeConnection() {
+        socket?.close(NORMAL_CLOSURE_STATUS, null)
     }
 
     private fun getDistributionInfo(userAgent: String, cookies: String,
@@ -68,58 +77,44 @@ internal class RealTimeUpdateManager(
 
     private fun createConnection(distributionData: DistributionInfoResponse.DistributionData, cookie: String, xCsrfToken: String) {
         val client = OkHttpClient().newBuilder()
-                .addInterceptor { chain ->
-                    val original = chain.request()
-                    val authorized = original.newBuilder()
-                            .addHeader(COOKIE, cookie)
-                            .addHeader("x-csrf-token", xCsrfToken)
-                            .build()
-                    chain.proceed(authorized)
-                }
+                .addInterceptor { chain -> addHeaders(chain, cookie, xCsrfToken) }
                 .build()
-
         val request = Request.Builder()
                 .url(BASE_WS_URL)
                 .build()
         val listener = EchoWebSocketListener(distributionData)
-        ws = client.newWebSocket(request, listener)
+        socket = client.newWebSocket(request, listener)
         client.dispatcher().executorService().shutdown()
     }
 
-    fun closeConnection() {
-        ws?.close(NORMAL_CLOSURE_STATUS, "Goodbye !")
+    private fun addHeaders(chain: Interceptor.Chain, cookie: String, xCsrfToken: String): okhttp3.Response {
+        val original = chain.request()
+        val authorized = original.newBuilder()
+                .addHeader(COOKIE, cookie)
+                .addHeader(X_CSRF_TOKEN, xCsrfToken)
+                .build()
+        return chain.proceed(authorized)
     }
 
     private inner class EchoWebSocketListener(var distributionData: DistributionInfoResponse.DistributionData) : WebSocketListener() {
 
+        private var dataHolderMap = mutableMapOf<String, TextView>()
+
         override fun onOpen(webSocket: WebSocket, response: okhttp3.Response) {
-            val viewDataList = viewTransformerManager.getViewData()
-            val project = distributionData.project
-            val user = distributionData.user
-
-            webSocket.send("{\"action\": \"subscribe\", \"event\": \"update-draft:${project.wsHash}:${project.id}:${user.id}:de:2448\"}")
-            webSocket.send("{\"action\": \"subscribe\", \"event\": \"top-suggestion:${project.wsHash}:${project.id}:de:2448\"}")
-
             output("onOpen : $response")
+
+            matchTextKeyWithMappingId()
+            subscribeViews(webSocket)
         }
 
         override fun onMessage(webSocket: WebSocket?, text: String?) {
             output("Receiving : $text")
-            text?.let {
-                val eventData = parseResponse(it)
-                val event = eventData.event
-                if (event.contains("update-draft")) {
-                    val mappingId = event.split(":").last()
 
-                }
-            }
-        }
-
-        override fun onMessage(webSocket: WebSocket?, bytes: ByteString) {
-            output("Receiving bytes : " + bytes.hex())
+            updateViewText(text)
         }
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String?) {
+            dataHolderMap.clear()
             webSocket.close(NORMAL_CLOSURE_STATUS, null)
             output("Closing : $code / $reason")
         }
@@ -127,13 +122,50 @@ internal class RealTimeUpdateManager(
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: okhttp3.Response?) {
             output("Error : " + t.message)
         }
-    }
 
-    private fun parseResponse(response: String): EventResponse {
-        return Gson().fromJson(response, EventResponse::class.java)
-    }
+        private fun matchTextKeyWithMappingId() {
+            val mappingData = stringDataManager?.getMapping(sourceLanguage) ?: return
+            val viewsWithData = viewTransformerManager.getVisibleViewsWithData()
+            for (entry in viewsWithData) {
+                val textMetaData = entry.value
+                val mappingValue = getMappingValueForKey(textMetaData, mappingData)
+                mappingValue?.let { dataHolderMap.put(mappingValue, entry.key) }
+            }
+        }
 
-    private fun output(txt: String) {
-        Log.d("TAG", txt)
+        private fun subscribeViews(webSocket: WebSocket) {
+            val project = distributionData.project
+            val user = distributionData.user
+
+            for (viewDataHolder in dataHolderMap) {
+                webSocket.send(
+                        SubscribeUpdateEvent(project.wsHash,
+                                project.id,
+                                user.id,
+                                Locale.getDefault().language,
+                                viewDataHolder.key).toString())
+            }
+        }
+
+        private fun updateViewText(text: String?) {
+            text?.let {
+                val eventData = parseResponse(it)
+                val event = eventData.event
+                if (event.contains(UPDATE_DRAFT)) {
+                    val mappingId = event.split(":").last()
+                    Handler(Looper.getMainLooper()).post {
+                        dataHolderMap[mappingId]?.text = fromHtml(eventData.data.text)
+                    }
+                }
+            }
+        }
+
+        private fun parseResponse(response: String): EventResponse {
+            return Gson().fromJson(response, EventResponse::class.java)
+        }
+
+        private fun output(txt: String) {
+            Log.d(TAG, txt)
+        }
     }
 }

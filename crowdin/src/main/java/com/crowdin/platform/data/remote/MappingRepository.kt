@@ -1,6 +1,5 @@
 package com.crowdin.platform.data.remote
 
-import com.crowdin.platform.data.StringDataManager
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import okhttp3.ResponseBody
@@ -8,12 +7,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.net.HttpURLConnection
-import java.util.*
 
 internal class MappingRepository(private val crowdinDistributionApi: CrowdinDistributionApi,
                                  private val reader: Reader,
                                  private val distributionKey: String?,
-                                 private val filePaths: Array<out String>?) : BaseRepository() {
+                                 private val filePaths: Array<out String>?,
+                                 private val sourceLanguage: String) : BaseRepository() {
 
     override fun getMapping(sourceLanguage: String, mappingCallback: MappingCallback) {
         if (distributionKey == null) return
@@ -38,7 +37,7 @@ internal class MappingRepository(private val crowdinDistributionApi: CrowdinDist
                             response.code() == HttpURLConnection.HTTP_OK && body != null -> {
                                 response.headers().get(HEADER_ETAG)?.let { eTag -> eTagMap.put(filePath, eTag) }
                                 val languageData = reader.parseInput(body.byteStream())
-                                languageData.language = Locale.getDefault().toString() + StringDataManager.SUF_MAPPING
+                                languageData.language = sourceLanguage
 
                                 mappingCallback.onSuccess(languageData)
                                 reader.close()
