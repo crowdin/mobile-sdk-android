@@ -1,5 +1,7 @@
 package com.crowdin.platform.example
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
@@ -10,8 +12,10 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.LoadingStateListener
+import com.crowdin.platform.auth.CrowdinWebActivity
 import com.crowdin.platform.example.fragments.*
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, LoadingStateListener {
@@ -37,6 +41,19 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         setTitle(R.string.home)
 
         Crowdin.registerDataLoadingObserver(this)
+
+        CrowdinWebActivity.launchActivityForResult(this)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            CrowdinWebActivity.REQUEST_CODE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    Toast.makeText(this, "Auth success", Toast.LENGTH_SHORT).show()
+                    Crowdin.connectRealTimeUpdates()
+                }
+            }
+        }
     }
 
     override fun onDataChanged() {
@@ -51,6 +68,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onDestroy() {
         super.onDestroy()
         Crowdin.unregisterDataLoadingObserver(this)
+        // Close socket connection.
+        Crowdin.disconnectRealTimeUpdates()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

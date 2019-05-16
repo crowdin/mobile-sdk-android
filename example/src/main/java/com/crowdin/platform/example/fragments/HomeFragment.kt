@@ -26,6 +26,7 @@ class HomeFragment : Fragment(), LoadingStateListener {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
+    // TODO: track memory leak
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<TextView>(R.id.textView0).setOnClickListener {
             Crowdin.sendScreenshot(view, activity!!, object : ScreenshotCallback {
@@ -40,7 +41,7 @@ class HomeFragment : Fragment(), LoadingStateListener {
         }
 
         view.findViewById<TextView>(R.id.textView1).setOnClickListener {
-            activity?.let { CrowdinWebActivity.launchActivity(it) }
+            activity?.let { CrowdinWebActivity.launchActivityForResult(it) }
         }
 
         view.findViewById<Button>(R.id.load_data_btn).setOnClickListener {
@@ -52,9 +53,6 @@ class HomeFragment : Fragment(), LoadingStateListener {
         view.findViewById<TextView>(R.id.textView7).text = getString(R.string.text7, "str", "str")
 
         Crowdin.registerDataLoadingObserver(this)
-
-        // Will connect to Crowdin via sockets.
-//        Crowdin.startRealTimeUpdates()
     }
 
     override fun onDataChanged() {
@@ -68,7 +66,5 @@ class HomeFragment : Fragment(), LoadingStateListener {
     override fun onDestroy() {
         super.onDestroy()
         Crowdin.unregisterDataLoadingObserver(this)
-        // Close socket connection.
-        Crowdin.stopRealTimeUpdates()
     }
 }

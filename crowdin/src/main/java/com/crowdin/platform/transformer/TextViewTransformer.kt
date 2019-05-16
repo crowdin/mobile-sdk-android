@@ -89,6 +89,7 @@ internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvide
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             createdViews[view] = textMetaData
             view.addTextChangedListener(Watcher(WeakReference(view)))
+            listener?.onChange()
         }
 
         return view

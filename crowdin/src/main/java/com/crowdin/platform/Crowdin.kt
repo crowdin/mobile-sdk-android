@@ -183,7 +183,7 @@ object Crowdin {
      * Connect to Crowdin platform for receiving realtime updates.
      */
     @JvmStatic
-    fun startRealTimeUpdates() {
+    fun connectRealTimeUpdates() {
         if (!FeatureFlags.isRealTimeUpdateEnabled) return
 
         if (realTimeUpdateManager == null) {
@@ -201,7 +201,7 @@ object Crowdin {
      * Close realtime update connection.
      */
     @JvmStatic
-    fun stopRealTimeUpdates() {
+    fun disconnectRealTimeUpdates() {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             realTimeUpdateManager?.closeConnection()
         }

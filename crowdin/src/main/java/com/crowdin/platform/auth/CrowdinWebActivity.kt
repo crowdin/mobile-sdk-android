@@ -17,12 +17,13 @@ class CrowdinWebActivity : AppCompatActivity() {
 
     companion object {
 
+        const val REQUEST_CODE = 0x463
         private const val URL_PROFILE = "https://crowdin.com/profile"
         private const val URL_CROWDIN_AUTH = "https://crowdin.com/login"
         private const val COOKIE_TOKEN = "csrf_token"
 
-        fun launchActivity(activity: Activity) {
-            activity.startActivity(Intent(activity, CrowdinWebActivity::class.java))
+        fun launchActivityForResult(activity: Activity) {
+            activity.startActivityForResult(Intent(activity, CrowdinWebActivity::class.java), REQUEST_CODE)
         }
     }
 
@@ -46,9 +47,7 @@ class CrowdinWebActivity : AppCompatActivity() {
                 val csrfToken = getToken(cookies)
                 if (url == URL_PROFILE && csrfToken.isNotEmpty()) {
                     Crowdin.saveAuthInfo(AuthInfo(userAgent, cookies, csrfToken))
-
-                    // TODO: remove
-                    Crowdin.startRealTimeUpdates()
+                    setResult(Activity.RESULT_OK)
                     finish()
                 }
             }

@@ -75,6 +75,12 @@ internal class ViewTransformerManager {
 
         return weakHashMap
     }
+
+    fun setOnViewsChangeListener(listener: ViewsChangeListener?) {
+        transformers.forEach {
+            it.second.setOnViewsChangeListener(listener)
+        }
+    }
 }
 
 /**
@@ -113,4 +119,11 @@ internal interface Transformer {
     fun getVisibleViewsWithData(): WeakHashMap<TextView, TextMetaData> {
         return WeakHashMap()
     }
+
+    fun setOnViewsChangeListener(listener: ViewsChangeListener?) {}
+}
+
+internal interface ViewsChangeListener {
+
+    fun onChange() {}
 }

@@ -101,9 +101,7 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
     }
 
     fun removeLoadingStateListener(listener: LoadingStateListener) {
-        loadingStateListeners?.let {
-            it.removeAt(it.indexOf(listener))
-        }
+        loadingStateListeners?.remove(listener)
     }
 
     private fun sendOnFailure(throwable: Throwable) {

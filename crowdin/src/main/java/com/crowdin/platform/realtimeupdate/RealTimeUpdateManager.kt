@@ -6,17 +6,20 @@ import android.util.Log
 import android.widget.TextView
 import com.crowdin.platform.data.StringDataManager
 import com.crowdin.platform.data.getMappingValueForKey
+import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.data.remote.api.EventResponse
 import com.crowdin.platform.fromHtml
 import com.crowdin.platform.transformer.ViewTransformerManager
+import com.crowdin.platform.transformer.ViewsChangeListener
 import com.google.gson.Gson
 import okhttp3.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 
 internal class RealTimeUpdateManager(
@@ -98,13 +101,23 @@ internal class RealTimeUpdateManager(
 
     private inner class EchoWebSocketListener(var distributionData: DistributionInfoResponse.DistributionData) : WebSocketListener() {
 
-        private var dataHolderMap = mutableMapOf<String, TextView>()
+        private var dataHolderMap = ConcurrentHashMap<TextView, String>()
 
         override fun onOpen(webSocket: WebSocket, response: okhttp3.Response) {
             output("onOpen : $response")
 
-            matchTextKeyWithMappingId()
+            val mappingData = stringDataManager?.getMapping(sourceLanguage) ?: return
+            saveMatchedTextViewWithMappingId(mappingData)
             subscribeViews(webSocket)
+
+            // TODO: subscribe only new views
+            viewTransformerManager.setOnViewsChangeListener(object : ViewsChangeListener {
+                override fun onChange() {
+                    output("onChange")
+                    saveMatchedTextViewWithMappingId(mappingData)
+                    subscribeViews(webSocket)
+                }
+            })
         }
 
         override fun onMessage(webSocket: WebSocket?, text: String?) {
@@ -115,6 +128,7 @@ internal class RealTimeUpdateManager(
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String?) {
             dataHolderMap.clear()
+            viewTransformerManager.setOnViewsChangeListener(null)
             webSocket.close(NORMAL_CLOSURE_STATUS, null)
             output("Closing : $code / $reason")
         }
@@ -123,17 +137,19 @@ internal class RealTimeUpdateManager(
             output("Error : " + t.message)
         }
 
-        private fun matchTextKeyWithMappingId() {
-            val mappingData = stringDataManager?.getMapping(sourceLanguage) ?: return
+        private fun saveMatchedTextViewWithMappingId(mappingData: LanguageData) {
+            dataHolderMap.clear()
             val viewsWithData = viewTransformerManager.getVisibleViewsWithData()
             for (entry in viewsWithData) {
                 val textMetaData = entry.value
                 val mappingValue = getMappingValueForKey(textMetaData, mappingData)
-                mappingValue?.let { dataHolderMap.put(mappingValue, entry.key) }
+                mappingValue?.let { dataHolderMap.put(entry.key, mappingValue) }
             }
         }
 
         private fun subscribeViews(webSocket: WebSocket) {
+            output("subscribe: ${dataHolderMap.size}")
+
             val project = distributionData.project
             val user = distributionData.user
 
@@ -143,7 +159,7 @@ internal class RealTimeUpdateManager(
                                 project.id,
                                 user.id,
                                 Locale.getDefault().language,
-                                viewDataHolder.key).toString())
+                                viewDataHolder.value).toString())
             }
         }
 
@@ -154,7 +170,11 @@ internal class RealTimeUpdateManager(
                 if (event.contains(UPDATE_DRAFT)) {
                     val mappingId = event.split(":").last()
                     Handler(Looper.getMainLooper()).post {
-                        dataHolderMap[mappingId]?.text = fromHtml(eventData.data.text)
+                        for (mutableEntry in dataHolderMap) {
+                            if (mutableEntry.value == mappingId) {
+                                mutableEntry.key.text = fromHtml(eventData.data.text)
+                            }
+                        }
                     }
                 }
             }

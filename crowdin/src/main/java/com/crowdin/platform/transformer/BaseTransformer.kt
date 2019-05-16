@@ -18,6 +18,7 @@ internal abstract class BaseTransformer : Transformer {
         private const val TYPE_PLURALS = "plurals"
     }
 
+    var listener: ViewsChangeListener? = null
     val createdViews = WeakHashMap<TextView, TextMetaData>()
 
     override fun invalidate() {
@@ -64,6 +65,10 @@ internal abstract class BaseTransformer : Transformer {
 
     override fun getVisibleViewsWithData(): WeakHashMap<TextView, TextMetaData> {
         return createdViews
+    }
+
+    override fun setOnViewsChangeListener(listener: ViewsChangeListener?) {
+        this.listener = listener
     }
 
     private fun invalidateArrayItem(view: TextView, textMetaData: TextMetaData) {
