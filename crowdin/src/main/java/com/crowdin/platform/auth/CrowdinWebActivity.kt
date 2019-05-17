@@ -5,14 +5,24 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.FrameLayout
+import android.widget.ProgressBar
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.model.AuthInfo
+import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager
+
 
 class CrowdinWebActivity : AppCompatActivity() {
 
+    private lateinit var progressBar: ProgressBar
+    private lateinit var webView: WebView
     private lateinit var userAgent: String
 
     companion object {
@@ -30,8 +40,8 @@ class CrowdinWebActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val webView = WebView(this)
-        setContentView(webView)
+        setContentView(createContentView())
+
         webView.settings.javaScriptEnabled = true
         webView.loadUrl(URL_CROWDIN_AUTH)
         webView.webViewClient = object : WebViewClient() {
@@ -46,12 +56,48 @@ class CrowdinWebActivity : AppCompatActivity() {
                 val cookies = CookieManager.getInstance().getCookie(url)
                 val csrfToken = getToken(cookies)
                 if (url == URL_PROFILE && csrfToken.isNotEmpty()) {
-                    Crowdin.saveAuthInfo(AuthInfo(userAgent, cookies, csrfToken))
+                    val authInfo = AuthInfo(userAgent, cookies, csrfToken)
+                    Crowdin.saveAuthInfo(authInfo)
                     setResult(Activity.RESULT_OK)
-                    finish()
+
+                    progressBar.visibility = View.VISIBLE
+                    Crowdin.getDistributionInfo(userAgent, cookies, csrfToken, object : DistributionInfoCallback {
+                        override fun onSuccess() {
+                            Crowdin.connectRealTimeUpdates()
+                            finish()
+                        }
+
+                        override fun onError(throwable: Throwable) {
+                            finish()
+                            Log.d(RealTimeUpdateManager::class.java.simpleName,
+                                    "Get info, onFailure:${throwable.localizedMessage}")
+                        }
+                    })
                 }
             }
         }
+    }
+
+    private fun createContentView(): FrameLayout {
+        val rootView = FrameLayout(this)
+        webView = WebView(this)
+        rootView.addView(webView)
+
+        progressBar = ProgressBar(applicationContext, null, android.R.attr.progressBarStyle)
+        val progressBarParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        progressBarParams.gravity = Gravity.CENTER
+        progressBar.layoutParams = progressBarParams
+        progressBar.visibility = View.GONE
+        rootView.addView(progressBar)
+
+        return rootView
+    }
+
+    // TODO: could be replaced with generic interface?
+    interface DistributionInfoCallback {
+
+        fun onSuccess()
+        fun onError(throwable: Throwable)
     }
 
     private fun getToken(cookies: String): String {

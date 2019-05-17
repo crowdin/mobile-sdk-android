@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.Toast
+import com.crowdin.platform.auth.CrowdinWebActivity
 import com.crowdin.platform.data.StringDataManager
 import com.crowdin.platform.data.TextMetaDataProvider
 import com.crowdin.platform.data.local.LocalStringRepositoryFactory
@@ -20,6 +21,7 @@ import com.crowdin.platform.data.remote.CrowdinRetrofitService
 import com.crowdin.platform.data.remote.MappingCallback
 import com.crowdin.platform.data.remote.MappingRepository
 import com.crowdin.platform.data.remote.StringDataRemoteRepository
+import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager
 import com.crowdin.platform.recurringwork.RecurringManager
 import com.crowdin.platform.screenshot.ScreenshotCallback
@@ -28,6 +30,9 @@ import com.crowdin.platform.transformer.*
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.ScreenshotUtils
 import com.crowdin.platform.util.TextUtils
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 /**
  * Entry point for Crowdin. it will be used for setting new strings, wrapping activity context.
@@ -187,6 +192,7 @@ object Crowdin {
         if (!FeatureFlags.isRealTimeUpdateEnabled) return
 
         if (realTimeUpdateManager == null) {
+            // TODO: remove API call. Not responsibility of update manager
             realTimeUpdateManager = RealTimeUpdateManager(
                     CrowdinRetrofitService.instance.getCrowdinApi(),
                     config.distributionKey,
@@ -206,6 +212,36 @@ object Crowdin {
             realTimeUpdateManager?.closeConnection()
             realTimeUpdateManager = null
         }
+    }
+
+    internal fun saveAuthInfo(authInfo: AuthInfo) {
+        stringDataManager?.saveAuthInfo(authInfo)
+    }
+
+    internal fun getDistributionInfo(userAgent: String,
+                                     cookies: String,
+                                     xCsrfToken: String,
+                                     callback: CrowdinWebActivity.DistributionInfoCallback) {
+
+        // TODO: extract to DistributionManager
+        CrowdinRetrofitService.instance.getCrowdinApi().getInfo(userAgent, cookies, xCsrfToken, config.distributionKey)
+                .enqueue(object : Callback<DistributionInfoResponse> {
+
+                    override fun onResponse(call: Call<DistributionInfoResponse>, response: Response<DistributionInfoResponse>) {
+                        val distributionInfo = response.body()
+                        distributionInfo?.let {
+                            if (it.success) {
+                                // TODO: save data StringDataManager
+                                callback.onSuccess()
+//                                createConnection(it.data, cookies, xCsrfToken)
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<DistributionInfoResponse>, throwable: Throwable) {
+                        callback.onError(throwable)
+                    }
+                })
     }
 
     private fun initCrowdinApi() {
@@ -252,10 +288,6 @@ object Crowdin {
             }
         })
         mSensorManager.registerListener(shakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI)
-    }
-
-    internal fun saveAuthInfo(authInfo: AuthInfo) {
-        stringDataManager?.saveAuthInfo(authInfo)
     }
 
     private fun loadMapping() {

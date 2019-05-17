@@ -48,6 +48,7 @@ internal class RealTimeUpdateManager(
         viewTransformerManager.setOnViewsChangeListener(null)
     }
 
+    // TODO: remove after DistributionManager implementation
     private fun getDistributionInfo(userAgent: String, cookies: String,
                                     xCsrfToken: String, distributionKey: String) {
         crowdinApi.getInfo(userAgent, cookies, xCsrfToken, distributionKey)

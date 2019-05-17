@@ -1,9 +1,7 @@
 package com.crowdin.platform.realtimeupdate
 
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.support.annotation.RequiresApi
 import android.util.Log
 import android.widget.TextView
 import com.crowdin.platform.data.getMappingValueForKey
@@ -39,10 +37,8 @@ internal class EchoWebSocketListener(var mappingData: LanguageData,
         subscribeViews(webSocket, project, user)
 
         viewTransformerManager.setOnViewsChangeListener(object : ViewsChangeListener {
-            @RequiresApi(Build.VERSION_CODES.N)
             override fun onChange(pair: Pair<TextView, TextMetaData>) {
-                output("SIZE: ${dataHolderMap.size}")
-                dataHolderMap.keys.removeIf { t -> t.get() == null }
+                removeNullable(dataHolderMap)
 
                 val mappingValue = addOrReplaceMatchedView(pair, mappingData)
                 mappingValue?.let {
@@ -129,5 +125,13 @@ internal class EchoWebSocketListener(var mappingData: LanguageData,
 
     private fun output(txt: String) {
         Log.d(TAG, txt)
+    }
+
+    private fun removeNullable(dataHolderMap: ConcurrentHashMap<WeakReference<TextView>, String>) {
+        for (key in dataHolderMap.keys) {
+            if (key.get() == null) {
+                dataHolderMap.remove(key)
+            }
+        }
     }
 }
