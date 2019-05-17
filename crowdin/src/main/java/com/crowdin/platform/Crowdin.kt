@@ -204,6 +204,7 @@ object Crowdin {
     fun disconnectRealTimeUpdates() {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             realTimeUpdateManager?.closeConnection()
+            realTimeUpdateManager = null
         }
     }
 

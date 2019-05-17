@@ -125,5 +125,5 @@ internal interface Transformer {
 
 internal interface ViewsChangeListener {
 
-    fun onChange() {}
+    fun onChange(pair: kotlin.Pair<TextView, TextMetaData>) {}
 }

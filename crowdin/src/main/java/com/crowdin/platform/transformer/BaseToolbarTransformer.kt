@@ -49,6 +49,7 @@ internal abstract class BaseToolbarTransformer(val textMetaDataProvider: TextMet
                 }
                 textMetaData.parseResult(resultData)
                 createdViews[textView] = textMetaData
+                listener?.onChange(Pair(textView, textMetaData))
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

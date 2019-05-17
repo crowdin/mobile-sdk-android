@@ -7,6 +7,7 @@ import android.widget.TextView
 import com.crowdin.platform.data.StringDataManager
 import com.crowdin.platform.data.getMappingValueForKey
 import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.TextMetaData
 import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.data.remote.api.EventResponse
@@ -18,6 +19,7 @@ import okhttp3.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -55,6 +57,7 @@ internal class RealTimeUpdateManager(
 
     fun closeConnection() {
         socket?.close(NORMAL_CLOSURE_STATUS, null)
+        viewTransformerManager.setOnViewsChangeListener(null)
     }
 
     private fun getDistributionInfo(userAgent: String, cookies: String,
@@ -101,21 +104,25 @@ internal class RealTimeUpdateManager(
 
     private inner class EchoWebSocketListener(var distributionData: DistributionInfoResponse.DistributionData) : WebSocketListener() {
 
-        private var dataHolderMap = ConcurrentHashMap<TextView, String>()
+        private var dataHolderMap = ConcurrentHashMap<String, WeakReference<TextView>>()
 
         override fun onOpen(webSocket: WebSocket, response: okhttp3.Response) {
             output("onOpen : $response")
 
             val mappingData = stringDataManager?.getMapping(sourceLanguage) ?: return
-            saveMatchedTextViewWithMappingId(mappingData)
-            subscribeViews(webSocket)
+            val project = distributionData.project
+            val user = distributionData.user
 
-            // TODO: subscribe only new views
+            saveMatchedTextViewWithMappingId(mappingData)
+            subscribeViews(webSocket, project, user)
+
             viewTransformerManager.setOnViewsChangeListener(object : ViewsChangeListener {
-                override fun onChange() {
+                override fun onChange(pair: Pair<TextView, TextMetaData>) {
                     output("onChange")
-                    saveMatchedTextViewWithMappingId(mappingData)
-                    subscribeViews(webSocket)
+                    val mappingValue = addOrReplaceMatchedView(pair, mappingData)
+                    mappingValue?.let {
+                        subscribeView(webSocket, project, user, it)
+                    }
                 }
             })
         }
@@ -128,7 +135,6 @@ internal class RealTimeUpdateManager(
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String?) {
             dataHolderMap.clear()
-            viewTransformerManager.setOnViewsChangeListener(null)
             webSocket.close(NORMAL_CLOSURE_STATUS, null)
             output("Closing : $code / $reason")
         }
@@ -143,24 +149,42 @@ internal class RealTimeUpdateManager(
             for (entry in viewsWithData) {
                 val textMetaData = entry.value
                 val mappingValue = getMappingValueForKey(textMetaData, mappingData)
-                mappingValue?.let { dataHolderMap.put(entry.key, mappingValue) }
+                mappingValue?.let { dataHolderMap.put(mappingValue, WeakReference(entry.key)) }
             }
         }
 
-        private fun subscribeViews(webSocket: WebSocket) {
-            output("subscribe: ${dataHolderMap.size}")
+        private fun addOrReplaceMatchedView(pair: Pair<TextView, TextMetaData>, mappingData: LanguageData): String? {
+            val textMetaData = pair.second
+            val mappingValue = getMappingValueForKey(textMetaData, mappingData)
+            val viewWeakRef = WeakReference(pair.first)
+            mappingValue?.let { dataHolderMap.put(mappingValue, viewWeakRef) }
+            output("Add/Replace:$mappingValue:key:${textMetaData.textAttributeKey}")
 
-            val project = distributionData.project
-            val user = distributionData.user
+            return mappingValue
+        }
+
+
+        private fun subscribeViews(webSocket: WebSocket,
+                                   project: DistributionInfoResponse.DistributionData.ProjectData,
+                                   user: DistributionInfoResponse.DistributionData.UserData) {
+            output("SIZE: ${dataHolderMap.size}")
 
             for (viewDataHolder in dataHolderMap) {
-                webSocket.send(
-                        SubscribeUpdateEvent(project.wsHash,
-                                project.id,
-                                user.id,
-                                Locale.getDefault().language,
-                                viewDataHolder.value).toString())
+                val mappingValue = viewDataHolder.key
+                subscribeView(webSocket, project, user, mappingValue)
             }
+        }
+
+        private fun subscribeView(webSocket: WebSocket,
+                                  project: DistributionInfoResponse.DistributionData.ProjectData,
+                                  user: DistributionInfoResponse.DistributionData.UserData,
+                                  mappingValue: String) {
+            output("SIZE: ${dataHolderMap.size}")
+            webSocket.send(SubscribeUpdateEvent(project.wsHash,
+                    project.id,
+                    user.id,
+                    Locale.getDefault().language,
+                    mappingValue).toString())
         }
 
         private fun updateViewText(text: String?) {
@@ -170,11 +194,7 @@ internal class RealTimeUpdateManager(
                 if (event.contains(UPDATE_DRAFT)) {
                     val mappingId = event.split(":").last()
                     Handler(Looper.getMainLooper()).post {
-                        for (mutableEntry in dataHolderMap) {
-                            if (mutableEntry.value == mappingId) {
-                                mutableEntry.key.text = fromHtml(eventData.data.text)
-                            }
-                        }
+                        dataHolderMap[mappingId]?.get()?.text = fromHtml(eventData.data.text)
                     }
                 }
             }
