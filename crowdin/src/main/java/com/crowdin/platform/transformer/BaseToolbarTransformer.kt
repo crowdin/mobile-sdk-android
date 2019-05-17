@@ -33,22 +33,24 @@ internal abstract class BaseToolbarTransformer(val textMetaDataProvider: TextMet
 
             override fun onChildViewRemoved(parent: View?, child: View?) {
                 if (child is TextView) {
-                    createdViews.remove(child)
+                    removeTextViewWithData(child)
                 }
             }
         })
     }
 
+    // TODO: toolbar is not updated
     fun addTextWatcherToChild(textView: TextView?) {
         textView?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val resultData = textMetaDataProvider.provideTextKey(s.toString())
-                var textMetaData = createdViews[textView]
+                var textMetaData = getViewTextData(textView)
                 if (textMetaData == null) {
                     textMetaData = TextMetaData()
                 }
                 textMetaData.parseResult(resultData)
-                createdViews[textView] = textMetaData
+
+                addViewWithData(textView, textMetaData)
                 listener?.onChange(Pair(textView, textMetaData))
             }
 

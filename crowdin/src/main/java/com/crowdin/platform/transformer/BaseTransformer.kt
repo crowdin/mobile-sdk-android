@@ -19,7 +19,7 @@ internal abstract class BaseTransformer : Transformer {
     }
 
     var listener: ViewsChangeListener? = null
-    val createdViews = WeakHashMap<TextView, TextMetaData>()
+    private val createdViews = WeakHashMap<TextView, TextMetaData>()
 
     override fun invalidate() {
         for (createdView in createdViews) {
@@ -69,6 +69,18 @@ internal abstract class BaseTransformer : Transformer {
 
     override fun setOnViewsChangeListener(listener: ViewsChangeListener?) {
         this.listener = listener
+    }
+
+    fun addViewWithData(view: TextView, textMetaData: TextMetaData) {
+        createdViews[view] = textMetaData
+    }
+
+    fun getViewTextData(view: TextView): TextMetaData? {
+        return createdViews[view]
+    }
+
+    fun removeTextViewWithData(child: TextView) {
+        createdViews.remove(child)
     }
 
     private fun invalidateArrayItem(view: TextView, textMetaData: TextMetaData) {

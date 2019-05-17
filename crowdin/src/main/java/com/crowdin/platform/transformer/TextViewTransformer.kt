@@ -87,7 +87,7 @@ internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvide
         }
 
         if (FeatureFlags.isRealTimeUpdateEnabled) {
-            createdViews[view] = textMetaData
+            addViewWithData(view, textMetaData)
             view.addTextChangedListener(Watcher(WeakReference(view)))
             listener?.onChange(Pair(view, textMetaData))
         }
@@ -100,12 +100,12 @@ internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvide
         override fun afterTextChanged(s: Editable?) {
             view.get()?.let {
                 val resultData = textMetaDataProvider.provideTextKey(s.toString())
-                var textMetaData = createdViews[it]
+                var textMetaData = getViewTextData(it)
                 if (textMetaData == null) {
                     textMetaData = TextMetaData()
                 }
                 textMetaData.parseResult(resultData)
-                createdViews[it] = textMetaData
+                addViewWithData(it, textMetaData)
                 listener?.onChange(Pair(it, textMetaData))
             }
         }

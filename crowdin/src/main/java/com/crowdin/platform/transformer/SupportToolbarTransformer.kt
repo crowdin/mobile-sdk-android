@@ -50,7 +50,7 @@ internal class SupportToolbarTransformer(textMetaDataProvider: TextMetaDataProvi
 
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             child?.let {
-                createdViews[it] = textMetaData
+                addViewWithData(it, textMetaData)
                 listener?.onChange(Pair(it, textMetaData))
             }
             addHierarchyChangeListener(view)
