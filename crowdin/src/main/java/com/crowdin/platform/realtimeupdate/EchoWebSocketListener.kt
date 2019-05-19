@@ -107,7 +107,14 @@ internal class EchoWebSocketListener(var mappingData: LanguageData,
                 project.id,
                 user.id,
                 Locale.getDefault().language,
-                mappingValue).toString())
+                mappingValue)
+                .toString())
+
+        webSocket.send(SubscribeSuggestionEvent(project.wsHash,
+                project.id,
+                Locale.getDefault().language,
+                mappingValue)
+                .toString())
     }
 
     private fun handleMessage(message: String?) {
@@ -116,7 +123,8 @@ internal class EchoWebSocketListener(var mappingData: LanguageData,
             val event = eventResponse.event
             val eventData = eventResponse.data
 
-            if (event.contains(UPDATE_DRAFT)) {
+            if (event.contains(UPDATE_DRAFT)
+                    || event.contains(TOP_SUGGESTION)) {
                 val mappingId = event.split(":").last()
                 for (mutableEntry in dataHolderMap) {
                     val textMetaData = mutableEntry.value
@@ -134,7 +142,7 @@ internal class EchoWebSocketListener(var mappingData: LanguageData,
         val text = eventData.text
         val view = mutableEntry.key.get()
 
-        if (eventData.pluralForm == PLURAL_NONE) {
+        if (eventData.pluralForm == null || eventData.pluralForm == PLURAL_NONE) {
             updateViewText(view, text)
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

@@ -20,7 +20,6 @@ internal class SubscribeUpdateEvent(var wsHash: String,
 
 internal class SubscribeSuggestionEvent(var wsHash: String,
                                         var projectId: String,
-                                        var userId: String,
                                         var language: String,
                                         var mappingId: String) {
 

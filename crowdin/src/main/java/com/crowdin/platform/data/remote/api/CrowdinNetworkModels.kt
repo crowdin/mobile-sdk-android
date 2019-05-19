@@ -42,7 +42,7 @@ internal data class EventResponse(var event: String,
                                   var time: String,
                                   var attributes: Any,
                                   var text: String,
-                                  var pluralForm: String,
+                                  var pluralForm: String?,
                                   @SerializedName("words_count")
                                   var wordsCount: String,
                                   @SerializedName("step_id")
