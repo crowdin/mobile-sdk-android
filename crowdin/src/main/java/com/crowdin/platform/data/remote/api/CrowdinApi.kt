@@ -14,13 +14,15 @@ internal interface CrowdinApi {
             @Body requestBody: RequestBody): Call<UploadScreenshotResponse>
 
     @Headers("Authorization: Basic YXBpLXRlc3RlcjpWbXBGcVR5WFBxM2ViQXlOa3NVeEh3aEM=")
-    @POST("api/v2/projects/352187/screenshots?login=MykhailoNN&account-key=58f81c7c7abc50cec98bfcb7bf030279")
+    @POST("api/v2/projects/{projectId}/screenshots?login=MykhailoNN&account-key=58f81c7c7abc50cec98bfcb7bf030279")
     fun createScreenshot(
+            @Path("projectId") projectId: String,
             @Body requestBody: CreateScreenshotRequestBody): Call<CreateScreenshotResponse>
 
     @Headers("Authorization: Basic YXBpLXRlc3RlcjpWbXBGcVR5WFBxM2ViQXlOa3NVeEh3aEM=")
-    @POST("api/v2/projects/352187/screenshots/{screenshotId}/tags?login=MykhailoNN&account-key=58f81c7c7abc50cec98bfcb7bf030279")
+    @POST("api/v2/projects/{projectId}/screenshots/{screenshotId}/tags?login=MykhailoNN&account-key=58f81c7c7abc50cec98bfcb7bf030279")
     fun createTag(
+            @Path("projectId") projectId: String,
             @Path("screenshotId") screenshotId: Int,
             @Body tags: MutableList<TagData>): Call<ResponseBody>
 

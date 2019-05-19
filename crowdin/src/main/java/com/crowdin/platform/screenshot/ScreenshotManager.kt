@@ -42,11 +42,19 @@ internal object ScreenshotManager {
 
     fun sendScreenshot() {
         val mappingData = stringDataManager.getMapping(sourceLanguage) ?: return
+        val distributionData = stringDataManager.getData(StringDataManager.DISTRIBUTION_DATA, DistributionInfoResponse.DistributionData::class.java)
+        if (distributionData == null) {
+            screenshotCallback?.onFailure("Could not send screenshot: not authorized")
+            return
+        }
+
+        distributionData as DistributionInfoResponse.DistributionData
+        val projectId = distributionData.project.id
         val tags = getMappingIds(mappingData, viewDataList)
-        uploadScreenshot(bitmap, tags)
+        uploadScreenshot(bitmap, tags, projectId)
     }
 
-    private fun uploadScreenshot(bitmap: Bitmap, tags: MutableList<TagData>) {
+    private fun uploadScreenshot(bitmap: Bitmap, tags: MutableList<TagData>, projectId: String) {
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, IMG_QUALITY, stream)
         val byteArray = stream.toByteArray()
@@ -58,7 +66,7 @@ internal object ScreenshotManager {
                 val responseBody = response.body()
                 if (response.code() == HttpURLConnection.HTTP_CREATED) {
                     responseBody?.let {
-                        it.data?.id?.let { screenId -> createScreenshot(screenId, tags) }
+                        it.data?.id?.let { screenId -> createScreenshot(screenId, tags, projectId) }
                     }
                 }
             }
@@ -69,15 +77,15 @@ internal object ScreenshotManager {
         })
     }
 
-    private fun createScreenshot(id: Int, tags: MutableList<TagData>) {
+    private fun createScreenshot(id: Int, tags: MutableList<TagData>, projectId: String) {
         val requestBody = CreateScreenshotRequestBody(id, System.currentTimeMillis().toString())
-        crowdinApi.createScreenshot(requestBody).enqueue(object : Callback<CreateScreenshotResponse> {
+        crowdinApi.createScreenshot(projectId, requestBody).enqueue(object : Callback<CreateScreenshotResponse> {
 
             override fun onResponse(call: Call<CreateScreenshotResponse>, response: Response<CreateScreenshotResponse>) {
                 val responseBody = response.body()
                 if (response.code() == HttpURLConnection.HTTP_CREATED) {
                     responseBody?.let {
-                        it.data.id?.let { screenId -> createTag(screenId, tags) }
+                        it.data.id?.let { screenshotId -> createTag(screenshotId, tags, projectId) }
                     }
                 }
             }
@@ -88,8 +96,8 @@ internal object ScreenshotManager {
         })
     }
 
-    private fun createTag(screenId: Int, tags: MutableList<TagData>) {
-        crowdinApi.createTag(screenId, tags).enqueue(object : Callback<ResponseBody> {
+    private fun createTag(screenshotId: Int, tags: MutableList<TagData>, projectId: String) {
+        crowdinApi.createTag(projectId, screenshotId, tags).enqueue(object : Callback<ResponseBody> {
 
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 screenshotCallback?.onSuccess()
