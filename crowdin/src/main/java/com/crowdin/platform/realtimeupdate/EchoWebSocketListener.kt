@@ -1,5 +1,7 @@
 package com.crowdin.platform.realtimeupdate
 
+import android.icu.text.PluralRules
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -11,6 +13,7 @@ import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.data.remote.api.EventResponse
 import com.crowdin.platform.fromHtml
 import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager.Companion.NORMAL_CLOSURE_STATUS
+import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager.Companion.PLURAL_NONE
 import com.crowdin.platform.transformer.ViewTransformerManager
 import com.crowdin.platform.transformer.ViewsChangeListener
 import com.google.gson.Gson
@@ -25,7 +28,7 @@ internal class EchoWebSocketListener(var mappingData: LanguageData,
                                      var viewTransformerManager: ViewTransformerManager) : WebSocketListener() {
 
     private var TAG = EchoWebSocketListener::class.java.simpleName
-    private var dataHolderMap = ConcurrentHashMap<WeakReference<TextView>, String>()
+    private var dataHolderMap = ConcurrentHashMap<WeakReference<TextView>, TextMetaData>()
 
     override fun onOpen(webSocket: WebSocket, response: okhttp3.Response) {
         output("onOpen : $response")
@@ -50,7 +53,7 @@ internal class EchoWebSocketListener(var mappingData: LanguageData,
 
     override fun onMessage(webSocket: WebSocket?, text: String?) {
         output("Receiving : $text")
-        updateViewText(text)
+        handleMessage(text)
     }
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String?) {
@@ -68,7 +71,10 @@ internal class EchoWebSocketListener(var mappingData: LanguageData,
         for (entry in viewsWithData) {
             val textMetaData = entry.value
             val mappingValue = getMappingValueForKey(textMetaData, mappingData)
-            mappingValue?.let { dataHolderMap.put(WeakReference(entry.key), mappingValue) }
+            mappingValue?.let {
+                textMetaData.mappingValue = mappingValue
+                dataHolderMap.put(WeakReference(entry.key), textMetaData)
+            }
         }
     }
 
@@ -76,17 +82,19 @@ internal class EchoWebSocketListener(var mappingData: LanguageData,
         val textMetaData = pair.second
         val mappingValue = getMappingValueForKey(textMetaData, mappingData)
         val viewWeakRef = WeakReference(pair.first)
-        mappingValue?.let { dataHolderMap.put(viewWeakRef, mappingValue) }
+        mappingValue?.let {
+            textMetaData.mappingValue = mappingValue
+            dataHolderMap.put(viewWeakRef, textMetaData)
+        }
 
         return mappingValue
     }
-
 
     private fun subscribeViews(webSocket: WebSocket,
                                project: DistributionInfoResponse.DistributionData.ProjectData,
                                user: DistributionInfoResponse.DistributionData.UserData) {
         for (viewDataHolder in dataHolderMap) {
-            val mappingValue = viewDataHolder.value
+            val mappingValue = viewDataHolder.value.mappingValue
             subscribeView(webSocket, project, user, mappingValue)
         }
     }
@@ -102,21 +110,46 @@ internal class EchoWebSocketListener(var mappingData: LanguageData,
                 mappingValue).toString())
     }
 
-    private fun updateViewText(text: String?) {
-        text?.let {
-            val eventData = parseResponse(it)
-            val event = eventData.event
+    private fun handleMessage(message: String?) {
+        message?.let {
+            val eventResponse = parseResponse(it)
+            val event = eventResponse.event
+            val eventData = eventResponse.data
+
             if (event.contains(UPDATE_DRAFT)) {
                 val mappingId = event.split(":").last()
-                Handler(Looper.getMainLooper()).post {
-                    for (mutableEntry in dataHolderMap) {
-                        if (mutableEntry.value == mappingId) {
-                            mutableEntry.key.get()?.text = fromHtml(eventData.data.text)
-                        }
+                for (mutableEntry in dataHolderMap) {
+                    val textMetaData = mutableEntry.value
+                    if (textMetaData.mappingValue == mappingId) {
+                        updateMatchedView(eventData, mutableEntry, textMetaData)
                     }
                 }
             }
         }
+    }
+
+    private fun updateMatchedView(eventData: EventResponse.EventData,
+                                  mutableEntry: MutableMap.MutableEntry<WeakReference<TextView>, TextMetaData>,
+                                  textMetaData: TextMetaData) {
+        val text = eventData.text
+        val view = mutableEntry.key.get()
+
+        if (eventData.pluralForm == PLURAL_NONE) {
+            updateViewText(view, text)
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                val quantity = textMetaData.pluralQuantity
+                val rule = PluralRules.forLocale(Locale.getDefault())
+                val ruleName = rule.select(quantity.toDouble())
+                if (eventData.pluralForm == ruleName) {
+                    updateViewText(view, text)
+                }
+            }
+        }
+    }
+
+    private fun updateViewText(view: TextView?, text: String) {
+        Handler(Looper.getMainLooper()).post { view?.text = fromHtml(text) }
     }
 
     private fun parseResponse(response: String): EventResponse {
@@ -127,7 +160,7 @@ internal class EchoWebSocketListener(var mappingData: LanguageData,
         Log.d(TAG, txt)
     }
 
-    private fun removeNullable(dataHolderMap: ConcurrentHashMap<WeakReference<TextView>, String>) {
+    private fun removeNullable(dataHolderMap: ConcurrentHashMap<WeakReference<TextView>, TextMetaData>) {
         for (key in dataHolderMap.keys) {
             if (key.get() == null) {
                 dataHolderMap.remove(key)

@@ -31,6 +31,8 @@ internal class TextMetaData {
     var pluralQuantity: Int = -1
     var pluralFormatArgs: Array<out Any?> = arrayOf()
 
+    var mappingValue: String = ""
+
     fun parseResult(resultData: SearchResultData) {
         when {
             resultData.hasKey -> {

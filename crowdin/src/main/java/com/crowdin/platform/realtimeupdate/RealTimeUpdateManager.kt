@@ -17,6 +17,7 @@ internal class RealTimeUpdateManager(
 
     companion object {
         const val NORMAL_CLOSURE_STATUS = 0x3E9
+        const val PLURAL_NONE = "none"
         private const val BASE_WS_URL = "wss://ws-lb.crowdin.com/"
         private const val COOKIE = "Cookie"
         private const val X_CSRF_TOKEN = "x-csrf-token"
