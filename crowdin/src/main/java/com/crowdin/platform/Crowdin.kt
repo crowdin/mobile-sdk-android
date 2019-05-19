@@ -5,23 +5,20 @@ import android.content.Context
 import android.content.res.Resources
 import android.hardware.Sensor
 import android.hardware.SensorManager
-import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.Toast
-import com.crowdin.platform.auth.CrowdinWebActivity
+import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.StringDataManager
 import com.crowdin.platform.data.TextMetaDataProvider
 import com.crowdin.platform.data.local.LocalStringRepositoryFactory
 import com.crowdin.platform.data.model.AuthInfo
-import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.parser.StringResourceParser
 import com.crowdin.platform.data.parser.XmlReader
 import com.crowdin.platform.data.remote.CrowdinRetrofitService
-import com.crowdin.platform.data.remote.MappingCallback
+import com.crowdin.platform.data.remote.DistributionInfoManager
 import com.crowdin.platform.data.remote.MappingRepository
 import com.crowdin.platform.data.remote.StringDataRemoteRepository
-import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager
 import com.crowdin.platform.recurringwork.RecurringManager
 import com.crowdin.platform.screenshot.ScreenshotCallback
@@ -30,9 +27,6 @@ import com.crowdin.platform.transformer.*
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.ScreenshotUtils
 import com.crowdin.platform.util.TextUtils
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 /**
  * Entry point for Crowdin. it will be used for setting new strings, wrapping activity context.
@@ -43,6 +37,7 @@ object Crowdin {
     private lateinit var config: CrowdinConfig
     private var stringDataManager: StringDataManager? = null
     private var realTimeUpdateManager: RealTimeUpdateManager? = null
+    private var distributionInfoManager: DistributionInfoManager? = null
 
     /**
      * Initialize Crowdin with the specified configuration.
@@ -121,7 +116,7 @@ object Crowdin {
         stringDataManager?.updateData(context, config.networkType)
     }
 
-    //    TODO: consider to be local private in real-time update
+    //    TODO: use after force update ?
     @JvmStatic
     fun invalidate() {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
@@ -192,9 +187,7 @@ object Crowdin {
         if (!FeatureFlags.isRealTimeUpdateEnabled) return
 
         if (realTimeUpdateManager == null) {
-            // TODO: remove API call. Not responsibility of update manager
             realTimeUpdateManager = RealTimeUpdateManager(
-                    CrowdinRetrofitService.instance.getCrowdinApi(),
                     config.distributionKey,
                     config.sourceLanguage,
                     stringDataManager,
@@ -215,33 +208,25 @@ object Crowdin {
     }
 
     internal fun saveAuthInfo(authInfo: AuthInfo) {
-        stringDataManager?.saveAuthInfo(authInfo)
+        stringDataManager?.saveData(StringDataManager.AUTH_INFO, authInfo)
     }
 
     internal fun getDistributionInfo(userAgent: String,
                                      cookies: String,
                                      xCsrfToken: String,
-                                     callback: CrowdinWebActivity.DistributionInfoCallback) {
+                                     callback: DistributionInfoCallback) {
+        if (stringDataManager == null) {
+            callback.onError(Throwable("Local repository could not be null"))
+            return
+        }
 
-        // TODO: extract to DistributionManager
-        CrowdinRetrofitService.instance.getCrowdinApi().getInfo(userAgent, cookies, xCsrfToken, config.distributionKey)
-                .enqueue(object : Callback<DistributionInfoResponse> {
-
-                    override fun onResponse(call: Call<DistributionInfoResponse>, response: Response<DistributionInfoResponse>) {
-                        val distributionInfo = response.body()
-                        distributionInfo?.let {
-                            if (it.success) {
-                                // TODO: save data StringDataManager
-                                callback.onSuccess()
-//                                createConnection(it.data, cookies, xCsrfToken)
-                            }
-                        }
-                    }
-
-                    override fun onFailure(call: Call<DistributionInfoResponse>, throwable: Throwable) {
-                        callback.onError(throwable)
-                    }
-                })
+        if (distributionInfoManager == null) {
+            distributionInfoManager = DistributionInfoManager(
+                    CrowdinRetrofitService.instance.getCrowdinApi(),
+                    stringDataManager!!,
+                    config.distributionKey)
+        }
+        distributionInfoManager?.getDistributionInfo(userAgent, cookies, xCsrfToken, callback)
     }
 
     private fun initCrowdinApi() {
@@ -292,21 +277,16 @@ object Crowdin {
 
     private fun loadMapping() {
         if (config.isRealTimeUpdateEnabled) {
+            stringDataManager ?: return
+
             val mappingRepository = MappingRepository(
                     CrowdinRetrofitService.instance.getCrowdinDistributionApi(),
                     XmlReader(StringResourceParser()),
+                    stringDataManager!!,
                     config.distributionKey,
                     config.filePaths,
                     config.sourceLanguage)
-            mappingRepository.getMapping(config.sourceLanguage, object : MappingCallback {
-                override fun onSuccess(languageData: LanguageData) {
-                    stringDataManager?.saveMapping(languageData)
-                }
-
-                override fun onFailure(throwable: Throwable) {
-                    Log.d(Crowdin::class.java.simpleName, "Get mapping, onFailure:${throwable.localizedMessage}")
-                }
-            })
+            mappingRepository.getMapping()
         }
     }
 }

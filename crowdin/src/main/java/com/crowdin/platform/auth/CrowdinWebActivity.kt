@@ -15,6 +15,7 @@ import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import com.crowdin.platform.Crowdin
+import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager
 
@@ -63,7 +64,6 @@ class CrowdinWebActivity : AppCompatActivity() {
                     progressBar.visibility = View.VISIBLE
                     Crowdin.getDistributionInfo(userAgent, cookies, csrfToken, object : DistributionInfoCallback {
                         override fun onSuccess() {
-                            Crowdin.connectRealTimeUpdates()
                             finish()
                         }
 
@@ -91,13 +91,6 @@ class CrowdinWebActivity : AppCompatActivity() {
         rootView.addView(progressBar)
 
         return rootView
-    }
-
-    // TODO: could be replaced with generic interface?
-    interface DistributionInfoCallback {
-
-        fun onSuccess()
-        fun onError(throwable: Throwable)
     }
 
     private fun getToken(cookies: String): String {

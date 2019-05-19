@@ -39,7 +39,6 @@ internal abstract class BaseToolbarTransformer(val textMetaDataProvider: TextMet
         })
     }
 
-    // TODO: toolbar is not updated
     fun addTextWatcherToChild(textView: TextView?) {
         textView?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {

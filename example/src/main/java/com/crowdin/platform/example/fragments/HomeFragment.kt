@@ -26,7 +26,6 @@ class HomeFragment : Fragment(), LoadingStateListener {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
-    // TODO: track memory leak
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<TextView>(R.id.textView0).setOnClickListener {
             Crowdin.sendScreenshot(view, activity!!, object : ScreenshotCallback {

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.crowdin.platform.data.model.*
 import com.google.gson.Gson
+import java.lang.reflect.Type
 
 /**
  * A LocalRepository which saves/loads the strings in Shared Preferences.
@@ -67,15 +68,19 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
 
     override fun getTextData(text: String): SearchResultData = memoryLocalRepository.getTextData(text)
 
-    override fun saveAuthInfo(authInfo: AuthInfo) {
-        memoryLocalRepository.saveAuthInfo(authInfo)
-        val json = Gson().toJson(authInfo)
-        sharedPreferences.edit().putString(AUTH_INFO, json).apply()
+    override fun saveData(type: String, data: Any) {
+        memoryLocalRepository.saveData(type, data)
+        val json = Gson().toJson(data)
+        sharedPreferences.edit().putString(type, json).apply()
     }
 
-    override fun getAuthInfo(): AuthInfo? {
-        val info = sharedPreferences.getString(AUTH_INFO, null)
-        return memoryLocalRepository.getAuthInfo() ?: Gson().fromJson(info, AuthInfo::class.java)
+    override fun getData(type: String, classType: Type): Any? {
+        val data = memoryLocalRepository.getData(type, classType::class.java)
+        if (data == null) {
+            val info = sharedPreferences.getString(type, null)
+            return Gson().fromJson(info, classType)
+        }
+        return data
     }
 
     private fun initSharedPreferences(context: Context) {

@@ -10,6 +10,7 @@ import com.crowdin.platform.data.remote.NetworkType
 import com.crowdin.platform.data.remote.RemoteRepository
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.ThreadUtils
+import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -20,6 +21,8 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
     companion object {
         private const val STATUS_OK = "ok"
         const val SUF_COPY = "-copy"
+        const val DISTRIBUTION_DATA = "distribution_data"
+        const val AUTH_INFO = "auth_info"
     }
 
     private var loadingStateListeners: ArrayList<LoadingStateListener>? = null
@@ -127,9 +130,11 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
     fun getMapping(sourceLanguage: String): LanguageData? =
             localRepository.getLanguageData(sourceLanguage)
 
-    fun saveAuthInfo(authInfo: AuthInfo) {
-        localRepository.saveAuthInfo(authInfo)
+    fun saveData(type: String, data: Any) {
+        localRepository.saveData(type, data)
     }
 
-    fun getAuthInfo(): AuthInfo? = localRepository.getAuthInfo()
+    fun getData(type: String, classType: Type): Any? {
+        return localRepository.getData(type, classType)
+    }
 }

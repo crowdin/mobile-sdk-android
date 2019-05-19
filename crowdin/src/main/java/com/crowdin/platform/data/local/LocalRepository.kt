@@ -1,6 +1,7 @@
 package com.crowdin.platform.data.local
 
 import com.crowdin.platform.data.model.*
+import java.lang.reflect.Type
 
 /**
  * Repository of strings.
@@ -91,7 +92,7 @@ internal interface LocalRepository {
 
     fun getTextData(text: String): SearchResultData = SearchResultData()
 
-    fun saveAuthInfo(authInfo: AuthInfo) {}
+    fun saveData(type: String, data: Any)
 
-    fun getAuthInfo(): AuthInfo? = null
+    fun getData(type: String, classType: Type): Any?
 }
