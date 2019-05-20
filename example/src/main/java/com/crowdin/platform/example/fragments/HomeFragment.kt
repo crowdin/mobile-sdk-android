@@ -28,7 +28,7 @@ class HomeFragment : Fragment(), LoadingStateListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<TextView>(R.id.textView0).setOnClickListener {
-            Crowdin.sendScreenshot(view, activity!!, object : ScreenshotCallback {
+            Crowdin.sendScreenshot(activity!!, object : ScreenshotCallback {
                 override fun onSuccess() {
                     Log.d(TAG, "Screenshot uploaded")
                 }

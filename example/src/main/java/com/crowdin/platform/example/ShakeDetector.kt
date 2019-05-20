@@ -1,4 +1,4 @@
-package com.crowdin.platform
+package com.crowdin.platform.example
 
 import android.hardware.Sensor
 import android.hardware.SensorEvent

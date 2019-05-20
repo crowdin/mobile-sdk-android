@@ -31,7 +31,7 @@ class SlideshowFragment : Fragment() {
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.dynamic_tab_title)))
 
         view.findViewById<TextView>(R.id.textView3).setOnClickListener {
-            Crowdin.sendScreenshot(view, activity!!)
+            Crowdin.sendScreenshot(activity!!)
         }
     }
 }

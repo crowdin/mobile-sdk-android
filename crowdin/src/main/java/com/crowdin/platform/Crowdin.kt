@@ -3,11 +3,7 @@ package com.crowdin.platform
 import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
-import android.hardware.Sensor
-import android.hardware.SensorManager
 import android.view.Menu
-import android.view.View
-import android.widget.Toast
 import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.StringDataManager
 import com.crowdin.platform.data.TextMetaDataProvider
@@ -62,8 +58,6 @@ object Crowdin {
                 loadMapping()
             }
         }
-//        TODO: remove
-        initShake(context)
     }
 
     internal fun initForUpdate(context: Context) {
@@ -128,15 +122,16 @@ object Crowdin {
      * Send screenshot of current screen to the crowdin platform.
      * Will attach tags (keys and position) to UI components on the screen.
      *
-     * @param view                  required for getting bitmap
      * @param activity              required for accessing current window
      * @param screenshotCallback    optional, will provide status of screenshot creating process
      */
     @JvmStatic
-    fun sendScreenshot(view: View, activity: Activity, screenshotCallback: ScreenshotCallback? = null) {
+    @JvmOverloads
+    fun sendScreenshot(activity: Activity, screenshotCallback: ScreenshotCallback? = null) {
         if (!FeatureFlags.isRealTimeUpdateEnabled) return
         if (stringDataManager == null) return
 
+        val view = activity.window.decorView.rootView
         ScreenshotUtils.getBitmapFromView(view, activity) {
             ScreenshotManager(
                     CrowdinRetrofitService.instance.getTmpCrowdinApi(),
@@ -256,23 +251,6 @@ object Crowdin {
         viewTransformerManager.registerTransformer(BottomNavigationViewTransformer())
         viewTransformerManager.registerTransformer(NavigationViewTransformer())
         viewTransformerManager.registerTransformer(SpinnerTransformer())
-    }
-
-    //    TODO: remove, app responsibility
-    private fun initShake(context: Context) {
-        // ShakeDetector initialization
-        val mSensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        val mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        val shakeDetector = ShakeDetector()
-        shakeDetector.setOnShakeListener(object : ShakeDetector.OnShakeListener {
-
-            override fun onShake(count: Int) {
-                forceUpdate(context)
-                invalidate()
-                Toast.makeText(context, "Shake: force update", Toast.LENGTH_SHORT).show()
-            }
-        })
-        mSensorManager.registerListener(shakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI)
     }
 
     private fun loadMapping() {

@@ -35,7 +35,7 @@ class GalleryFragment : Fragment(), LoadingStateListener {
         adapter = SampleAdapter(array)
         recyclerView.adapter = adapter
 
-        view.findViewById<TextView>(R.id.textView3).setOnClickListener { Crowdin.sendScreenshot(view, activity!!) }
+        view.findViewById<TextView>(R.id.textView3).setOnClickListener { Crowdin.sendScreenshot(activity!!) }
         Crowdin.registerDataLoadingObserver(this)
     }
 

@@ -1,7 +1,10 @@
 package com.crowdin.platform.example
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
@@ -20,6 +23,8 @@ import com.crowdin.platform.example.fragments.*
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, LoadingStateListener {
 
+    private lateinit var shakeDetector: ShakeDetector
+    private lateinit var mSensorManager: SensorManager
     private lateinit var navigationView: NavigationView
     private lateinit var drawerLayout: DrawerLayout
 
@@ -41,8 +46,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         setTitle(R.string.home)
 
         Crowdin.registerDataLoadingObserver(this)
-
         CrowdinWebActivity.launchActivityForResult(this)
+        initShake(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -70,6 +75,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         Crowdin.unregisterDataLoadingObserver(this)
         // Close socket connection.
         Crowdin.disconnectRealTimeUpdates()
+        mSensorManager.unregisterListener(shakeDetector)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -134,4 +140,21 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private fun replaceFragment(fragment: Fragment) =
             supportFragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit()
+
+    private fun initShake(activity: Activity) {
+        // ShakeDetector initialization
+        mSensorManager = activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        shakeDetector = ShakeDetector()
+        val shakeListener = object : ShakeDetector.OnShakeListener {
+
+            override fun onShake(count: Int) {
+                Crowdin.forceUpdate(activity)
+                Crowdin.invalidate()
+                Toast.makeText(activity, "Shake: force update", Toast.LENGTH_SHORT).show()
+            }
+        }
+        shakeDetector.setOnShakeListener(shakeListener)
+        mSensorManager.registerListener(shakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI)
+    }
 }
