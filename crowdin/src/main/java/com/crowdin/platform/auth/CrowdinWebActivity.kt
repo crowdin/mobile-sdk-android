@@ -33,6 +33,7 @@ class CrowdinWebActivity : AppCompatActivity() {
         private const val URL_CROWDIN_AUTH = "https://crowdin.com/login"
         private const val COOKIE_TOKEN = "csrf_token"
 
+        @JvmStatic
         fun launchActivityForResult(activity: Activity) {
             activity.startActivityForResult(Intent(activity, CrowdinWebActivity::class.java), REQUEST_CODE)
         }
