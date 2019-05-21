@@ -9,18 +9,24 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        // Crowdin sdk initialization
         val fifteenMinutes: Long = 60 * 15
+        val distributionKey = "d5d8249cef350c21219d048106i"
         Crowdin.init(applicationContext,
                 CrowdinConfig.Builder()
-                        .withDistributionKey("d5d8249cef350c21219d048106i")
-                        .withFilePaths("strings.xml",
+                        .withDistributionKey(distributionKey)  // required
+                        .withFilePaths(              // required
+                                "strings.xml",
                                 "arrays.xml",
                                 "plurals.xml")
-                        .withNetworkType(NetworkType.WIFI)
-                        .withRealTimeUpdates(true, "en")
-                        .withUpdateInterval(fifteenMinutes)
+                        .withNetworkType(NetworkType.WIFI)     // optional
+                        .withRealTimeUpdates(                  // optional
+                                true,
+                                "en")
+                        .withUpdateInterval(fifteenMinutes)    // optional
                         .build())
 
+        // Using system buttons to take screenshot automatically will upload them to crowdin.
         Crowdin.registerScreenShotContentObserver(this)
     }
 }

@@ -4,10 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.BitmapFactory
-import android.hardware.Sensor
-import android.hardware.SensorManager
 import android.view.Menu
-import android.widget.Toast
 import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.StringDataManager
 import com.crowdin.platform.data.TextMetaDataProvider
@@ -26,7 +23,6 @@ import com.crowdin.platform.screenshot.ScreenshotManager
 import com.crowdin.platform.transformer.*
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.ScreenshotUtils
-import com.crowdin.platform.util.ShakeDetector
 import com.crowdin.platform.util.TextUtils
 
 /**
@@ -40,6 +36,7 @@ object Crowdin {
     private var realTimeUpdateManager: RealTimeUpdateManager? = null
     private var distributionInfoManager: DistributionInfoManager? = null
     private var screenshotManager: ScreenshotManager? = null
+    private var shakeDetectorManager: ShakeDetectorManager? = null
 
     /**
      * Initialize Crowdin with the specified configuration.
@@ -246,6 +243,19 @@ object Crowdin {
         }
     }
 
+    @JvmStatic
+    fun registerShakeDetector(context: Context) {
+        if (shakeDetectorManager == null) {
+            shakeDetectorManager = ShakeDetectorManager()
+        }
+        shakeDetectorManager?.registerShakeDetector(context)
+    }
+
+    @JvmStatic
+    fun unregisterShakeDetector() {
+        shakeDetectorManager?.unregisterShakeDetector()
+    }
+
     internal fun saveAuthInfo(authInfo: AuthInfo) {
         stringDataManager?.saveData(StringDataManager.AUTH_INFO, authInfo)
     }
@@ -312,28 +322,5 @@ object Crowdin {
                     config.sourceLanguage)
             mappingRepository.getMapping()
         }
-    }
-
-    //    TODO: update. Own Manager?
-    private lateinit var shakeDetector: ShakeDetector
-    private var mSensorManager: SensorManager? = null
-
-    fun registerShakeDetector(context: Context) {
-        mSensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        val mAccelerometer = mSensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        shakeDetector = ShakeDetector()
-        val shakeListener = object : ShakeDetector.OnShakeListener {
-
-            override fun onShake(count: Int) {
-                forceUpdate(context)
-                Toast.makeText(context, "Shake: force update", Toast.LENGTH_SHORT).show()
-            }
-        }
-        shakeDetector.setOnShakeListener(shakeListener)
-        mSensorManager?.registerListener(shakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI)
-    }
-
-    fun unregisterShakeDetector() {
-        mSensorManager?.unregisterListener(shakeDetector)
     }
 }

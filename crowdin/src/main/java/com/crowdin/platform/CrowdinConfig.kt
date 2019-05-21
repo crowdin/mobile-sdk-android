@@ -60,7 +60,14 @@ class CrowdinConfig private constructor() {
         fun build(): CrowdinConfig {
             val config = CrowdinConfig()
             config.isPersist = persist
+            if (distributionKey == null) {
+                throw IllegalArgumentException("Crowdin: `distributionKey` cannot be null")
+            }
             config.distributionKey = distributionKey
+
+            if (filePaths == null) {
+                throw IllegalArgumentException("Crowdin: `filePaths` cannot be null")
+            }
             config.filePaths = filePaths
             config.networkType = networkType
             config.isRealTimeUpdateEnabled = isRealTimeUpdateEnabled

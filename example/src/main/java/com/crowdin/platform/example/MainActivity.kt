@@ -40,9 +40,23 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         navigationView.post { navigationView.setCheckedItem(R.id.nav_home) }
         setTitle(R.string.home)
 
+        // Observe data loading.
         Crowdin.registerDataLoadingObserver(this)
+
+        // Crowdin Auth. required for screenshot/realtime update functionality.
         CrowdinWebActivity.launchActivityForResult(this)
+
+        // Simple device shake detector. Could be used for triggering force update.
         Crowdin.registerShakeDetector(this)
+    }
+
+    override fun onDataChanged() {
+        Crowdin.updateMenuItemsText(navigationView.menu, resources, R.menu.drawer_view)
+        Log.d(MainActivity::class.java.simpleName, "LoadingStateListener: onSuccess")
+    }
+
+    override fun onFailure(throwable: Throwable) {
+        Log.d(MainActivity::class.java.simpleName, "LoadingStateListener: onFailure ${throwable.localizedMessage}")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -50,25 +64,24 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             CrowdinWebActivity.REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     Toast.makeText(this, "Auth success", Toast.LENGTH_SHORT).show()
+
+                    // Auth. success, can proceed with screenshot/realtime update functionality.
+                    // Establish connection with crowdin platform.
                     Crowdin.connectRealTimeUpdates()
                 }
             }
         }
     }
 
-    override fun onDataChanged() {
-        Crowdin.updateMenuItemsText(navigationView.menu, resources, R.menu.drawer_view)
-        Log.d("Crowdin", "MainActivity: onSuccess")
-    }
-
-    override fun onFailure(throwable: Throwable) {
-        Log.d("Crowdin", "MainActivity: onFailure ${throwable.localizedMessage}")
-    }
-
     override fun onDestroy() {
         super.onDestroy()
+        // Remove data loading observer.
         Crowdin.unregisterDataLoadingObserver(this)
+
+        // Close connection with crowdin.
         Crowdin.disconnectRealTimeUpdates()
+
+        // Remove shake detector listener.
         Crowdin.unregisterShakeDetector()
     }
 
