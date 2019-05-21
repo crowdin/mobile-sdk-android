@@ -1,6 +1,9 @@
 package com.crowdin.platform.screenshot
 
+import android.content.Context
+import android.database.ContentObserver
 import android.graphics.Bitmap
+import android.provider.MediaStore
 import com.crowdin.platform.data.StringDataManager
 import com.crowdin.platform.data.getMappingValueForKey
 import com.crowdin.platform.data.model.LanguageData
@@ -15,32 +18,19 @@ import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 
-internal object ScreenshotManager {
+internal class ScreenshotManager(private var crowdinApi: CrowdinApi,
+                                 private var stringDataManager: StringDataManager,
+                                 private var sourceLanguage: String,
+                                 private var screenshotCallback: ScreenshotCallback?) {
 
-    private const val MEDIA_TYPE_IMG = "image/png"
-    private const val IMG_QUALITY = 100
-    private lateinit var crowdinApi: CrowdinApi
-    private lateinit var bitmap: Bitmap
-    private lateinit var stringDataManager: StringDataManager
-    private lateinit var sourceLanguage: String
-    private lateinit var viewDataList: List<ViewData>
-    private var screenshotCallback: ScreenshotCallback? = null
-
-    operator fun invoke(crowdinApi: CrowdinApi,
-                        bitmap: Bitmap,
-                        stringDataManager: StringDataManager,
-                        viewDataList: List<ViewData>,
-                        sourceLanguage: String,
-                        screenshotCallback: ScreenshotCallback?) {
-        this.crowdinApi = crowdinApi
-        this.bitmap = bitmap
-        this.stringDataManager = stringDataManager
-        this.viewDataList = viewDataList
-        this.sourceLanguage = sourceLanguage
-        this.screenshotCallback = screenshotCallback
+    companion object {
+        private const val MEDIA_TYPE_IMG = "image/png"
+        private const val IMG_QUALITY = 100
     }
 
-    fun sendScreenshot() {
+    private var contentObserver: ContentObserver? = null
+
+    fun sendScreenshot(bitmap: Bitmap, viewDataList: MutableList<ViewData>) {
         val mappingData = stringDataManager.getMapping(sourceLanguage) ?: return
         val distributionData = stringDataManager.getData(StringDataManager.DISTRIBUTION_DATA, DistributionInfoResponse.DistributionData::class.java)
         if (distributionData == null) {
@@ -52,6 +42,22 @@ internal object ScreenshotManager {
         val projectId = distributionData.project.id
         val tags = getMappingIds(mappingData, viewDataList)
         uploadScreenshot(bitmap, tags, projectId)
+    }
+
+    fun registerScreenShotContentObserver(context: Context) {
+        contentObserver = ScreenshotService(context, ScreenshotHandler())
+        contentObserver?.let {
+            context.contentResolver.registerContentObserver(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    true,
+                    it)
+        }
+    }
+
+    fun unregisterScreenShotContentObserver(context: Context) {
+        contentObserver?.let {
+            context.contentResolver.unregisterContentObserver(it)
+        }
     }
 
     private fun uploadScreenshot(bitmap: Bitmap, tags: MutableList<TagData>, projectId: String) {

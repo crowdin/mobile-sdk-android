@@ -20,5 +20,7 @@ class App : Application() {
                         .withRealTimeUpdates(true, "en")
                         .withUpdateInterval(fifteenMinutes)
                         .build())
+
+        Crowdin.registerScreenShotContentObserver(this)
     }
 }
