@@ -2,7 +2,7 @@ package com.crowdin.platform.data.remote
 
 import java.util.*
 
-internal open class BaseRepository : CrowdinRepository {
+internal abstract class BaseRepository : RemoteRepository {
 
     internal companion object {
         const val HEADER_ETAG = "ETag"

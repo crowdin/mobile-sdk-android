@@ -14,7 +14,6 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
 
     companion object {
         private const val SHARED_PREF_NAME = "com.crowdin.platform.string.repository"
-        private const val AUTH_INFO = "auth.info"
     }
 
     private lateinit var sharedPreferences: SharedPreferences

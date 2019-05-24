@@ -15,8 +15,7 @@ internal class StringDataRemoteRepository(private val crowdinDistributionApi: Cr
                                           private val distributionKey: String?,
                                           private val filePaths: Array<out String>?) : BaseRepository() {
 
-
-    override fun fetchData(languageDataCallback: LanguageDataCallback) {
+    override fun fetchData(languageDataCallback: LanguageDataCallback?) {
         if (distributionKey == null) return
 
         filePaths?.forEach {
@@ -26,7 +25,8 @@ internal class StringDataRemoteRepository(private val crowdinDistributionApi: Cr
         }
     }
 
-    private fun requestData(eTag: String?, distributionKey: String, filePath: String, languageDataCallback: LanguageDataCallback) {
+    private fun requestData(eTag: String?, distributionKey: String, filePath: String,
+                            languageDataCallback: LanguageDataCallback?) {
         crowdinDistributionApi.getResourceFile(eTag ?: HEADER_ETAG_EMPTY, distributionKey, filePath)
                 .enqueue(object : Callback<ResponseBody> {
 
@@ -37,16 +37,16 @@ internal class StringDataRemoteRepository(private val crowdinDistributionApi: Cr
                                 response.headers().get(HEADER_ETAG)?.let { eTag -> eTagMap.put(filePath, eTag) }
                                 val languageData = reader.parseInput(body.byteStream())
                                 languageData.language = Locale.getDefault().toString()
-                                languageDataCallback.onDataLoaded(languageData)
+                                languageDataCallback?.onDataLoaded(languageData)
                                 reader.close()
                             }
                             response.code() != HttpURLConnection.HTTP_NOT_MODIFIED ->
-                                languageDataCallback.onFailure(Throwable("Unexpected http error code ${response.code()}"))
+                                languageDataCallback?.onFailure(Throwable("Unexpected http error code ${response.code()}"))
                         }
                     }
 
                     override fun onFailure(call: Call<ResponseBody>, throwable: Throwable) {
-                        languageDataCallback.onFailure(throwable)
+                        languageDataCallback?.onFailure(throwable)
                     }
                 })
     }

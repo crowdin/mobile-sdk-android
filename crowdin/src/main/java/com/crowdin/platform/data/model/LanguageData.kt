@@ -1,6 +1,7 @@
 package com.crowdin.platform.data.model
 
 internal class LanguageData(var language: String) {
+
     constructor() : this("")
 
     var resources: MutableList<StringData> = mutableListOf()

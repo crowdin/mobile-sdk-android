@@ -326,7 +326,7 @@ object Crowdin {
                     config.distributionKey,
                     config.filePaths,
                     config.sourceLanguage)
-            mappingRepository.getMapping()
+            mappingRepository.fetchData()
         }
     }
 }
