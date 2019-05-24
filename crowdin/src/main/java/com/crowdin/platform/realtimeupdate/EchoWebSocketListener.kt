@@ -24,10 +24,9 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 internal class EchoWebSocketListener(var mappingData: LanguageData,
-                                     var distributionData: DistributionInfoResponse.DistributionData,
-                                     var viewTransformerManager: ViewTransformerManager) : WebSocketListener() {
+                                     private var distributionData: DistributionInfoResponse.DistributionData,
+                                     private var viewTransformerManager: ViewTransformerManager) : WebSocketListener() {
 
-    private var TAG = EchoWebSocketListener::class.java.simpleName
     private var dataHolderMap = ConcurrentHashMap<WeakReference<TextView>, TextMetaData>()
 
     override fun onOpen(webSocket: WebSocket, response: okhttp3.Response) {
@@ -164,8 +163,8 @@ internal class EchoWebSocketListener(var mappingData: LanguageData,
         return Gson().fromJson(response, EventResponse::class.java)
     }
 
-    private fun output(txt: String) {
-        Log.d(TAG, txt)
+    private fun output(message: String) {
+        Log.d(EchoWebSocketListener::class.java.simpleName, message)
     }
 
     private fun removeNullable(dataHolderMap: ConcurrentHashMap<WeakReference<TextView>, TextMetaData>) {

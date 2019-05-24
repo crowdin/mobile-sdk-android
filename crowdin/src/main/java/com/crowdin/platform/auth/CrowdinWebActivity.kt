@@ -19,7 +19,6 @@ import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager
 
-
 class CrowdinWebActivity : AppCompatActivity() {
 
     private lateinit var progressBar: ProgressBar

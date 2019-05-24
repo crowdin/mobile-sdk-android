@@ -8,7 +8,6 @@ import com.crowdin.platform.data.model.TextMetaData
 import com.crowdin.platform.data.model.ViewData
 import java.util.*
 
-
 internal abstract class BaseTransformer : Transformer {
 
     companion object {

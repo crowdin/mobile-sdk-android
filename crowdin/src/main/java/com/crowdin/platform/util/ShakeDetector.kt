@@ -64,7 +64,7 @@ class ShakeDetector : SensorEventListener {
          * Must be greater than 1G (one earth gravity unit).
          * You can install "G-Force", by Blake La Pierre
          * from the Google Play Store and run it to see how
-         *  many G's it takes to register a shake
+         * many G's it takes to register a shake
          */
         private const val SHAKE_THRESHOLD_GRAVITY = 1.7f
         private const val SHAKE_SLOP_TIME_MS = 500

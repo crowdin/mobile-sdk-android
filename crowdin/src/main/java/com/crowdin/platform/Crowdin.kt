@@ -114,6 +114,9 @@ object Crowdin {
         stringDataManager?.updateData(context, config.networkType)
     }
 
+    /**
+     * Update text for all text views on current screen.
+     */
     @JvmStatic
     fun invalidate() {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
@@ -141,7 +144,15 @@ object Crowdin {
         }
     }
 
+    /**
+     * Send screenshot of current screen to the crowdin platform.
+     * Will attach tags (keys and position) to UI components on the screen.
+     *
+     * @param filePath              path to created screenshot file
+     * @param screenshotCallback    optional, will provide status of screenshot creating process
+     */
     @JvmStatic
+    @JvmOverloads
     fun sendScreenshot(filePath: String, screenshotCallback: ScreenshotCallback? = null) {
         if (!FeatureFlags.isRealTimeUpdateEnabled) return
         if (stringDataManager == null) return
@@ -221,6 +232,9 @@ object Crowdin {
         }
     }
 
+    /**
+     * Register shake detector. Will trigger force update on shake event.
+     */
     @JvmStatic
     fun registerShakeDetector(context: Context) {
         if (shakeDetectorManager == null) {
@@ -229,6 +243,9 @@ object Crowdin {
         shakeDetectorManager?.registerShakeDetector(context)
     }
 
+    /**
+     * Unregister shake detector.
+     */
     @JvmStatic
     fun unregisterShakeDetector() {
         shakeDetectorManager?.unregisterShakeDetector()

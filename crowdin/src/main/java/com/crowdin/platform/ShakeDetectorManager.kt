@@ -3,7 +3,7 @@ package com.crowdin.platform
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorManager
-import android.widget.Toast
+import android.util.Log
 import com.crowdin.platform.util.ShakeDetector
 
 internal class ShakeDetectorManager {
@@ -19,7 +19,7 @@ internal class ShakeDetectorManager {
 
             override fun onShake(count: Int) {
                 Crowdin.forceUpdate(context)
-                Toast.makeText(context, "Shake: force update", Toast.LENGTH_SHORT).show()
+                Log.d(ShakeDetectorManager::class.java.simpleName, "Shake: force update")
             }
         }
         shakeDetector.setOnShakeListener(shakeListener)

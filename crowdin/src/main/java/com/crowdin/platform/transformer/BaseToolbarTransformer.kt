@@ -8,7 +8,8 @@ import android.widget.TextView
 import com.crowdin.platform.data.TextMetaDataProvider
 import com.crowdin.platform.data.model.TextMetaData
 
-internal abstract class BaseToolbarTransformer(val textMetaDataProvider: TextMetaDataProvider) : BaseTransformer() {
+internal abstract class BaseToolbarTransformer(val textMetaDataProvider: TextMetaDataProvider)
+    : BaseTransformer() {
 
     fun findChildView(parent: ViewGroup): TextView? {
         var textView: TextView? = null
