@@ -47,10 +47,11 @@ object Crowdin {
     @JvmStatic
     fun init(context: Context, config: CrowdinConfig) {
         this.config = config
+        FeatureFlags.registerConfig(config)
         initCrowdinApi()
         initStringDataManager(context, config)
         initViewTransformer()
-        FeatureFlags.registerConfig(config)
+        initFeatureManagers()
 
         when {
             config.updateInterval >= RecurringManager.MIN_PERIODIC_INTERVAL_MILLIS ->
@@ -113,7 +114,6 @@ object Crowdin {
         stringDataManager?.updateData(context, config.networkType)
     }
 
-    //    TODO: use after force update ?
     @JvmStatic
     fun invalidate() {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
@@ -135,15 +135,8 @@ object Crowdin {
         if (stringDataManager == null) return
 
         val view = activity.window.decorView.rootView
-        // TODO: replace with provider
         ScreenshotUtils.getBitmapFromView(view, activity) {
-            if (screenshotManager == null) {
-                screenshotManager = ScreenshotManager(
-                        CrowdinRetrofitService.instance.getTmpCrowdinApi(),
-                        stringDataManager!!,
-                        config.sourceLanguage,
-                        screenshotCallback)
-            }
+            screenshotManager?.setScreenshotCallback(screenshotCallback)
             screenshotManager?.sendScreenshot(it, viewTransformerManager.getViewData())
         }
     }
@@ -154,14 +147,7 @@ object Crowdin {
         if (stringDataManager == null) return
 
         val bitmap = BitmapFactory.decodeFile(filePath)
-        // TODO: replace with provider
-        if (screenshotManager == null) {
-            screenshotManager = ScreenshotManager(
-                    CrowdinRetrofitService.instance.getTmpCrowdinApi(),
-                    stringDataManager!!,
-                    config.sourceLanguage,
-                    screenshotCallback)
-        }
+        screenshotManager?.setScreenshotCallback(screenshotCallback)
         screenshotManager?.sendScreenshot(bitmap, viewTransformerManager.getViewData())
     }
 
@@ -221,14 +207,6 @@ object Crowdin {
     @JvmStatic
     fun connectRealTimeUpdates() {
         if (!FeatureFlags.isRealTimeUpdateEnabled) return
-        // TODO: replace with provider
-        if (realTimeUpdateManager == null) {
-            realTimeUpdateManager = RealTimeUpdateManager(
-                    config.distributionKey,
-                    config.sourceLanguage,
-                    stringDataManager,
-                    viewTransformerManager)
-        }
         realTimeUpdateManager?.openConnection()
     }
 
@@ -268,13 +246,6 @@ object Crowdin {
             callback.onError(Throwable("Local repository could not be null"))
             return
         }
-        // TODO: replace with provider
-        if (distributionInfoManager == null) {
-            distributionInfoManager = DistributionInfoManager(
-                    CrowdinRetrofitService.instance.getCrowdinApi(),
-                    stringDataManager!!,
-                    config.distributionKey)
-        }
         distributionInfoManager?.getDistributionInfo(userAgent, cookies, xCsrfToken, callback)
     }
 
@@ -282,8 +253,27 @@ object Crowdin {
         CrowdinRetrofitService.instance.init()
     }
 
+    private fun initFeatureManagers() {
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
+            distributionInfoManager = DistributionInfoManager(
+                    CrowdinRetrofitService.instance.getCrowdinApi(),
+                    stringDataManager!!,
+                    Crowdin.config.distributionKey)
+
+            realTimeUpdateManager = RealTimeUpdateManager(
+                    Crowdin.config.distributionKey,
+                    Crowdin.config.sourceLanguage,
+                    stringDataManager,
+                    viewTransformerManager)
+
+            screenshotManager = ScreenshotManager(
+                    CrowdinRetrofitService.instance.getTmpCrowdinApi(),
+                    stringDataManager!!,
+                    Crowdin.config.sourceLanguage)
+        }
+    }
+
     private fun initStringDataManager(context: Context, config: CrowdinConfig) {
-        // TODO: replace with provider?
         val remoteRepository = StringDataRemoteRepository(
                 CrowdinRetrofitService.instance.getCrowdinDistributionApi(),
                 XmlReader(StringResourceParser()),
@@ -311,7 +301,6 @@ object Crowdin {
     private fun loadMapping() {
         if (config.isRealTimeUpdateEnabled) {
             stringDataManager ?: return
-            // TODO: replace with provider?
 
             val mappingRepository = MappingRepository(
                     CrowdinRetrofitService.instance.getCrowdinDistributionApi(),

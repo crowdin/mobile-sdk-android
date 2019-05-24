@@ -20,14 +20,14 @@ import java.net.HttpURLConnection
 
 internal class ScreenshotManager(private var crowdinApi: CrowdinApi,
                                  private var stringDataManager: StringDataManager,
-                                 private var sourceLanguage: String,
-                                 private var screenshotCallback: ScreenshotCallback?) {
+                                 private var sourceLanguage: String) {
 
     companion object {
         private const val MEDIA_TYPE_IMG = "image/png"
         private const val IMG_QUALITY = 100
     }
 
+    private var screenshotCallback: ScreenshotCallback? = null
     private var contentObserver: ContentObserver? = null
 
     fun sendScreenshot(bitmap: Bitmap, viewDataList: MutableList<ViewData>) {
@@ -58,6 +58,10 @@ internal class ScreenshotManager(private var crowdinApi: CrowdinApi,
         contentObserver?.let {
             context.contentResolver.unregisterContentObserver(it)
         }
+    }
+
+    fun setScreenshotCallback(screenshotCallback: ScreenshotCallback?) {
+        this.screenshotCallback = screenshotCallback
     }
 
     private fun uploadScreenshot(bitmap: Bitmap, tags: MutableList<TagData>, projectId: String) {
