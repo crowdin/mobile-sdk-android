@@ -34,7 +34,8 @@ class CrowdinWebActivity : AppCompatActivity() {
 
         @JvmStatic
         fun launchActivityForResult(activity: Activity) {
-            activity.startActivityForResult(Intent(activity, CrowdinWebActivity::class.java), REQUEST_CODE)
+            activity.startActivityForResult(
+                    Intent(activity, CrowdinWebActivity::class.java), REQUEST_CODE)
         }
     }
 
@@ -42,7 +43,6 @@ class CrowdinWebActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(createContentView())
-
         webView.settings.javaScriptEnabled = true
         webView.loadUrl(URL_CROWDIN_AUTH)
         webView.webViewClient = object : WebViewClient() {

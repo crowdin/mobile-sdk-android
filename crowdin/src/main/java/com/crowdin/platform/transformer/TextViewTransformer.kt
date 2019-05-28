@@ -99,8 +99,8 @@ internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvide
 
         override fun afterTextChanged(s: Editable?) {
             view.get()?.let {
-                val resultData = textMetaDataProvider.provideTextKey(s.toString())
-                var textMetaData = getViewTextData(it)
+                val resultData = textMetaDataProvider.provideTextMetaData(s.toString())
+                var textMetaData = getViewTextMetaData(it)
                 if (textMetaData == null) {
                     textMetaData = TextMetaData()
                 }

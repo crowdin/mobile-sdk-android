@@ -46,7 +46,9 @@ internal class RealTimeUpdateManager(
         viewTransformerManager.setOnViewsChangeListener(null)
     }
 
-    private fun createConnection(distributionData: DistributionInfoResponse.DistributionData, cookie: String, xCsrfToken: String) {
+    private fun createConnection(distributionData: DistributionInfoResponse.DistributionData,
+                                 cookie: String,
+                                 xCsrfToken: String) {
         val mappingData = stringDataManager?.getMapping(sourceLanguage) ?: return
         val client = OkHttpClient().newBuilder()
                 .addInterceptor { chain -> addHeaders(chain, cookie, xCsrfToken) }
@@ -66,6 +68,7 @@ internal class RealTimeUpdateManager(
                 .addHeader(COOKIE, cookie)
                 .addHeader(X_CSRF_TOKEN, xCsrfToken)
                 .build()
+
         return chain.proceed(authorized)
     }
 }

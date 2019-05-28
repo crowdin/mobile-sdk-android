@@ -9,14 +9,14 @@ import com.crowdin.platform.data.remote.Connectivity
 import com.crowdin.platform.data.remote.NetworkType
 import com.crowdin.platform.data.remote.RemoteRepository
 import com.crowdin.platform.util.FeatureFlags
-import com.crowdin.platform.util.ThreadUtils
 import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
 
 internal class StringDataManager(private val remoteRepository: RemoteRepository,
                                  private val localRepository: LocalRepository,
-                                 private val dataChangeObserver: LocalDataChangeObserver) : TextMetaDataProvider {
+                                 private val dataChangeObserver: LocalDataChangeObserver)
+    : TextMetaDataProvider {
 
     companion object {
         private const val STATUS_OK = "ok"
@@ -27,7 +27,7 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
 
     private var loadingStateListeners: ArrayList<LoadingStateListener>? = null
 
-    override fun provideTextKey(text: String): SearchResultData {
+    override fun provideTextMetaData(text: String): TextMetaData {
         return localRepository.getTextData(text)
     }
 
@@ -49,25 +49,21 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
 
     fun updateData(context: Context, networkType: NetworkType) {
         val status = validateData(context, networkType)
-
         if (status == STATUS_OK) {
-            ThreadUtils.runInBackgroundPool(Runnable {
-                remoteRepository.fetchData(object : LanguageDataCallback {
+            remoteRepository.fetchData(object : LanguageDataCallback {
 
-                    override fun onDataLoaded(languageData: LanguageData) {
-                        localRepository.saveLanguageData(languageData)
-                        if (FeatureFlags.isRealTimeUpdateEnabled) {
-                            dataChangeObserver.onDataChanged()
-                        }
-
-                        sendOnDataChanged()
+                override fun onDataLoaded(languageData: LanguageData) {
+                    localRepository.saveLanguageData(languageData)
+                    if (FeatureFlags.isRealTimeUpdateEnabled) {
+                        dataChangeObserver.onDataChanged()
                     }
+                    sendOnDataChanged()
+                }
 
-                    override fun onFailure(throwable: Throwable) {
-                        sendOnFailure(throwable)
-                    }
-                })
-            }, false)
+                override fun onFailure(throwable: Throwable) {
+                    sendOnFailure(throwable)
+                }
+            })
         } else {
             sendOnFailure(Throwable(status))
         }

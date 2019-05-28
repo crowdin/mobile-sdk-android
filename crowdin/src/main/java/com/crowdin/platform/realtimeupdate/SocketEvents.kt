@@ -14,7 +14,6 @@ internal class SubscribeUpdateEvent(private var wsHash: String,
                 "\"action\":\"subscribe\", " +
                 "\"event\": \"$UPDATE_DRAFT:$wsHash:$projectId:$userId:$language:$mappingId\"" +
                 "}"
-
     }
 }
 
@@ -28,6 +27,5 @@ internal class SubscribeSuggestionEvent(private var wsHash: String,
                 "\"action\":\"subscribe\", " +
                 "\"event\": \"$TOP_SUGGESTION:$wsHash:$projectId:$language:$mappingId\"" +
                 "}"
-
     }
 }

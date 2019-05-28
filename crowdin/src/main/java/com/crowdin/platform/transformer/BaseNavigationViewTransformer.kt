@@ -8,7 +8,7 @@ import com.crowdin.platform.util.TextUtils
 /**
  * A transformer which transforms navigation views: it transforms the texts coming from the menu.
  */
-internal abstract class BaseNavigationViewTransformer : Transformer {
+internal abstract class BaseNavigationViewTransformer : BaseTransformer() {
 
     protected abstract fun getMenu(view: View): Menu
 
@@ -19,7 +19,8 @@ internal abstract class BaseNavigationViewTransformer : Transformer {
 
         for (index in 0 until attrs.attributeCount) {
             when (attrs.getAttributeName(index)) {
-                Attributes.ATTRIBUTE_APP_MENU, Attributes.ATTRIBUTE_MENU -> updateText(view, attrs, index)
+                Attributes.ATTRIBUTE_APP_MENU, Attributes.ATTRIBUTE_MENU ->
+                    updateText(view, attrs, index)
             }
         }
 

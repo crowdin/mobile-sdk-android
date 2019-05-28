@@ -20,8 +20,9 @@ internal class ScreenshotHandler : Handler() {
                         Log.d(ScreenshotHandler::class.java.simpleName, "Screenshot uploaded")
                     }
 
-                    override fun onFailure(error: String) {
-                        Log.d(ScreenshotHandler::class.java.simpleName, "Screenshot uploading error: $error")
+                    override fun onFailure(throwable: Throwable) {
+                        Log.d(ScreenshotHandler::class.java.simpleName,
+                                "Screenshot uploading error: ${throwable.localizedMessage}")
                     }
                 })
             }

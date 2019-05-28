@@ -23,7 +23,6 @@ internal class ScreenshotService(private val context: Context,
 
     override fun onChange(selfChange: Boolean) {
         val resolver = context.contentResolver
-
         val current = System.currentTimeMillis() / 1000
         val selection = String.format("date_added > %s and date_added < %s and ( _data like ? or _data like ? or _data like ? )",
                 current - TIME_GAP,

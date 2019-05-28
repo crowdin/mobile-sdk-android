@@ -12,8 +12,9 @@ import com.crowdin.platform.transformer.ViewTransformerManager
  */
 internal class CrowdinContextWrapper private constructor(base: Context,
                                                          stringDataManager: StringDataManager,
-                                                         private val viewTransformerManager: ViewTransformerManager) :
-        ContextWrapper(CustomResourcesContextWrapper(base, CrowdinResources(base.resources, stringDataManager))) {
+                                                         private val viewTransformerManager: ViewTransformerManager)
+    : ContextWrapper(CustomResourcesContextWrapper(base,
+        CrowdinResources(base.resources, stringDataManager))) {
 
     override fun getSystemService(name: String): Any {
         if (Context.LAYOUT_INFLATER_SERVICE == name) {
@@ -24,7 +25,7 @@ internal class CrowdinContextWrapper private constructor(base: Context,
         return super.getSystemService(name)
     }
 
-    internal companion object {
+    companion object {
 
         fun wrap(context: Context, stringDataManager: StringDataManager?,
                  viewTransformerManager: ViewTransformerManager): Context {

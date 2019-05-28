@@ -32,9 +32,10 @@ internal class ScreenshotManager(private var crowdinApi: CrowdinApi,
 
     fun sendScreenshot(bitmap: Bitmap, viewDataList: MutableList<ViewData>) {
         val mappingData = stringDataManager.getMapping(sourceLanguage) ?: return
-        val distributionData = stringDataManager.getData(StringDataManager.DISTRIBUTION_DATA, DistributionInfoResponse.DistributionData::class.java)
+        val distributionData = stringDataManager.getData(StringDataManager.DISTRIBUTION_DATA,
+                DistributionInfoResponse.DistributionData::class.java)
         if (distributionData == null) {
-            screenshotCallback?.onFailure("Could not send screenshot: not authorized")
+            screenshotCallback?.onFailure(Throwable("Could not send screenshot: not authorized"))
             return
         }
 
@@ -55,9 +56,7 @@ internal class ScreenshotManager(private var crowdinApi: CrowdinApi,
     }
 
     fun unregisterScreenShotContentObserver(context: Context) {
-        contentObserver?.let {
-            context.contentResolver.unregisterContentObserver(it)
-        }
+        contentObserver?.let { context.contentResolver.unregisterContentObserver(it) }
     }
 
     fun setScreenshotCallback(screenshotCallback: ScreenshotCallback?) {
@@ -76,19 +75,19 @@ internal class ScreenshotManager(private var crowdinApi: CrowdinApi,
                 val responseBody = response.body()
                 if (response.code() == HttpURLConnection.HTTP_CREATED) {
                     responseBody?.let {
-                        it.data?.id?.let { screenId -> createScreenshot(screenId, tags, projectId) }
+                        it.data?.id?.let { screenshotId -> createScreenshot(screenshotId, tags, projectId) }
                     }
                 }
             }
 
             override fun onFailure(call: Call<UploadScreenshotResponse>, throwable: Throwable) {
-                screenshotCallback?.onFailure(throwable.localizedMessage)
+                screenshotCallback?.onFailure(throwable)
             }
         })
     }
 
-    private fun createScreenshot(id: Int, tags: MutableList<TagData>, projectId: String) {
-        val requestBody = CreateScreenshotRequestBody(id, System.currentTimeMillis().toString())
+    private fun createScreenshot(screenshotId: Int, tags: MutableList<TagData>, projectId: String) {
+        val requestBody = CreateScreenshotRequestBody(screenshotId, System.currentTimeMillis().toString())
         crowdinApi.createScreenshot(projectId, requestBody).enqueue(object : Callback<CreateScreenshotResponse> {
 
             override fun onResponse(call: Call<CreateScreenshotResponse>, response: Response<CreateScreenshotResponse>) {
@@ -101,7 +100,7 @@ internal class ScreenshotManager(private var crowdinApi: CrowdinApi,
             }
 
             override fun onFailure(call: Call<CreateScreenshotResponse>, throwable: Throwable) {
-                screenshotCallback?.onFailure(throwable.localizedMessage)
+                screenshotCallback?.onFailure(throwable)
             }
         })
     }
@@ -114,14 +113,13 @@ internal class ScreenshotManager(private var crowdinApi: CrowdinApi,
             }
 
             override fun onFailure(call: Call<ResponseBody>, throwable: Throwable) {
-                screenshotCallback?.onFailure(throwable.localizedMessage)
+                screenshotCallback?.onFailure(throwable)
             }
         })
     }
 
     private fun getMappingIds(mappingData: LanguageData, viewDataList: List<ViewData>): MutableList<TagData> {
         val list = mutableListOf<TagData>()
-
         for (viewData in viewDataList) {
             val mappingValue = getMappingValueForKey(viewData.textMetaData, mappingData)
             mappingValue?.let {

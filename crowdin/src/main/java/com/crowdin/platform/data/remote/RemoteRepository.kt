@@ -9,7 +9,7 @@ import com.crowdin.platform.data.model.LanguageData
 internal interface RemoteRepository {
 
     /**
-     * Save [LanguageData] for a specific language. Executes on a background thread.
+     * Save [LanguageData] for a specific language.
      *
      * @param languageDataCallback  delivers data back to caller.
      */

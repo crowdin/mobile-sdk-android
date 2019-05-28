@@ -21,7 +21,7 @@ internal class ViewTransformerManager {
      *
      * @param transformer to be added to transformers list.
      */
-    internal fun registerTransformer(transformer: Transformer) =
+    fun registerTransformer(transformer: Transformer) =
             transformers.add(Pair(transformer.viewType, transformer))
 
     /**
@@ -34,10 +34,7 @@ internal class ViewTransformerManager {
      * @return the transformed view.
      */
     fun transform(view: View?, attrs: AttributeSet): View? {
-        if (view == null) {
-            return null
-        }
-
+        view ?: return null
         var newView: View = view
         for (pair in transformers) {
             val type = pair.first
@@ -104,7 +101,10 @@ internal interface Transformer {
      */
     fun transform(view: View, attrs: AttributeSet): View
 
-    fun invalidate() {}
+    /**
+     * Update text attributes.
+     */
+    fun invalidate()
 
     /**
      * Collect data for visible views on a window.
@@ -112,18 +112,30 @@ internal interface Transformer {
      * @return List<ViewData> data related to specific views visible on a window.
      * @see ViewData
      */
-    fun getViewDataFromWindow(): MutableList<ViewData> {
-        return mutableListOf()
-    }
+    fun getViewDataFromWindow(): MutableList<ViewData>
 
-    fun getVisibleViewsWithData(): WeakHashMap<TextView, TextMetaData> {
-        return WeakHashMap()
-    }
+    /**
+     * Collect visible on a window views and related to them data.
+     *
+     * @return WeakHashMap<TextView, TextMetaData> map of views and text metadata.
+     */
+    fun getVisibleViewsWithData(): WeakHashMap<TextView, TextMetaData>
 
-    fun setOnViewsChangeListener(listener: ViewsChangeListener?) {}
+    /**
+     * Set view change listener.
+     *
+     * @see ViewsChangeListener
+     */
+    fun setOnViewsChangeListener(listener: ViewsChangeListener?)
 }
 
+/**
+ * Allows to track when new view created or text has changed.
+ */
 internal interface ViewsChangeListener {
 
+    /**
+     * View created or text has changed.
+     */
     fun onChange(pair: kotlin.Pair<TextView, TextMetaData>) {}
 }

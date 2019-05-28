@@ -33,8 +33,8 @@ class HomeFragment : Fragment(), LoadingStateListener {
                     Log.d(TAG, "Screenshot uploaded")
                 }
 
-                override fun onFailure(error: String) {
-                    Log.d(TAG, error)
+                override fun onFailure(throwable: Throwable) {
+                    Log.d(TAG, throwable.localizedMessage)
                 }
             })
         }

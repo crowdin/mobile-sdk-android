@@ -1,4 +1,4 @@
-package com.crowdin.platform.util
+package com.crowdin.platform.screenshot
 
 import android.app.Activity
 import android.graphics.Bitmap
@@ -13,7 +13,6 @@ object ScreenshotUtils {
     @JvmStatic
     fun getBitmapFromView(view: View, activity: Activity, callback: (Bitmap) -> Unit) {
         val root = view.rootView
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             activity.window?.let { window ->
                 val bitmap = Bitmap.createBitmap(root.width, root.height, Bitmap.Config.ARGB_8888)
@@ -39,11 +38,11 @@ object ScreenshotUtils {
         }
     }
 
-    private fun takeScreenshot(v: View): Bitmap {
-        v.isDrawingCacheEnabled = true
-        v.buildDrawingCache(true)
-        val bitmap = Bitmap.createBitmap(v.drawingCache)
-        v.isDrawingCacheEnabled = false
+    private fun takeScreenshot(view: View): Bitmap {
+        view.isDrawingCacheEnabled = true
+        view.buildDrawingCache(true)
+        val bitmap = Bitmap.createBitmap(view.drawingCache)
+        view.isDrawingCacheEnabled = false
         return bitmap
     }
 }

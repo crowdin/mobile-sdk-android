@@ -1,4 +1,4 @@
-package com.crowdin.platform.util
+package com.crowdin.platform.data.parser
 
 import android.content.res.Resources
 import android.util.AttributeSet
@@ -6,7 +6,6 @@ import android.util.Pair
 import android.util.SparseArray
 import android.util.Xml
 import com.crowdin.platform.transformer.Attributes
-import com.crowdin.platform.transformer.MenuItemStrings
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
@@ -17,10 +16,10 @@ internal object XmlParserUtils {
     private const val XML_ITEM = "item"
 
     fun getMenuItemsStrings(resources: Resources, resId: Int): SparseArray<MenuItemStrings> {
-        val parser = resources.getLayout(resId)
-        val attrs = Xml.asAttributeSet(parser)
+        val xmlResourceParser = resources.getLayout(resId)
+        val attributeSet = Xml.asAttributeSet(xmlResourceParser)
         return try {
-            parseMenu(parser, attrs)
+            parseMenu(xmlResourceParser, attributeSet)
         } catch (e: XmlPullParserException) {
             SparseArray()
         } catch (e: IOException) {
@@ -29,22 +28,22 @@ internal object XmlParserUtils {
     }
 
     @Throws(XmlPullParserException::class, IOException::class)
-    private fun parseMenu(parser: XmlPullParser, attrs: AttributeSet): SparseArray<MenuItemStrings> {
-        var eventType = parser.eventType
+    private fun parseMenu(xmlPullParser: XmlPullParser, attributeSet: AttributeSet): SparseArray<MenuItemStrings> {
+        var eventType = xmlPullParser.eventType
         var tagName: String
 
         // This loop will skip to the menu start tag
         do {
             if (eventType == XmlPullParser.START_TAG) {
-                tagName = parser.name
+                tagName = xmlPullParser.name
                 if (tagName == XML_MENU) {
-                    eventType = parser.next()
+                    eventType = xmlPullParser.next()
                     break
                 }
 
                 throw RuntimeException("Expecting menu, got $tagName")
             }
-            eventType = parser.next()
+            eventType = xmlPullParser.next()
         } while (eventType != XmlPullParser.END_DOCUMENT)
 
         val menuItems = SparseArray<MenuItemStrings>()
@@ -53,9 +52,9 @@ internal object XmlParserUtils {
         while (!reachedEndOfMenu) {
             when (eventType) {
                 XmlPullParser.START_TAG -> {
-                    tagName = parser.name
+                    tagName = xmlPullParser.name
                     if (tagName == XML_ITEM) {
-                        val item = parseMenuItem(attrs)
+                        val item = parseMenuItem(attributeSet)
                         if (item != null) {
                             menuItems.put(item.first, item.second)
                         }
@@ -64,35 +63,35 @@ internal object XmlParserUtils {
                 XmlPullParser.END_DOCUMENT -> reachedEndOfMenu = true
             }
 
-            eventType = parser.next()
+            eventType = xmlPullParser.next()
         }
         return menuItems
     }
 
-    private fun parseMenuItem(attrs: AttributeSet): Pair<Int, MenuItemStrings>? {
+    private fun parseMenuItem(attributeSet: AttributeSet): Pair<Int, MenuItemStrings>? {
         var menuId = 0
         var menuItemStrings: MenuItemStrings? = null
-        val attributeCount = attrs.attributeCount
+        val attributeCount = attributeSet.attributeCount
         loop@ for (index in 0 until attributeCount) {
-            when (attrs.getAttributeName(index)) {
+            when (attributeSet.getAttributeName(index)) {
                 Attributes.ATTRIBUTE_ANDROID_ID, Attributes.ATTRIBUTE_ID -> {
-                    menuId = attrs.getAttributeResourceValue(index, 0)
+                    menuId = attributeSet.getAttributeResourceValue(index, 0)
                 }
                 Attributes.ATTRIBUTE_ANDROID_TITLE, Attributes.ATTRIBUTE_TITLE -> {
-                    val value = attrs.getAttributeValue(index)
+                    val value = attributeSet.getAttributeValue(index)
                     if (value == null || !value.startsWith("@")) break@loop
                     if (menuItemStrings == null) {
                         menuItemStrings = MenuItemStrings()
                     }
-                    menuItemStrings.title = attrs.getAttributeResourceValue(index, 0)
+                    menuItemStrings.title = attributeSet.getAttributeResourceValue(index, 0)
                 }
                 Attributes.ATTRIBUTE_ANDROID_TITLE_CONDENSED, Attributes.ATTRIBUTE_TITLE_CONDENSED -> {
-                    val value = attrs.getAttributeValue(index)
+                    val value = attributeSet.getAttributeValue(index)
                     if (value == null || !value.startsWith("@")) break@loop
                     if (menuItemStrings == null) {
                         menuItemStrings = MenuItemStrings()
                     }
-                    menuItemStrings.titleCondensed = attrs.getAttributeResourceValue(index, 0)
+                    menuItemStrings.titleCondensed = attributeSet.getAttributeResourceValue(index, 0)
                 }
             }
         }

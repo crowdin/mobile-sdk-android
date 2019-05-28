@@ -74,7 +74,7 @@ internal abstract class BaseTransformer : Transformer {
         createdViews[view] = textMetaData
     }
 
-    fun getViewTextData(view: TextView): TextMetaData? {
+    fun getViewTextMetaData(view: TextView): TextMetaData? {
         return createdViews[view]
     }
 

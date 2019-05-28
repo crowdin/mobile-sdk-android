@@ -90,9 +90,27 @@ internal interface LocalRepository {
      */
     fun isExist(language: String): Boolean
 
-    fun getTextData(text: String): SearchResultData = SearchResultData()
+    /**
+     * Retrieves text related meta data.
+     *
+     * @param text searchable text.
+     * @return TextMetaData meta data.
+     */
+    fun getTextData(text: String): TextMetaData = TextMetaData()
 
+    /**
+     * Save any data object to local storage.
+     *
+     * @param type of data.
+     * @param data to be stored.
+     */
     fun saveData(type: String, data: Any)
 
+    /**
+     * Retrieve any data object from locale storage.
+     *
+     * @param type of data.
+     * @param classType of data.
+     */
     fun getData(type: String, classType: Type): Any?
 }

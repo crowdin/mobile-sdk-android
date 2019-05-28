@@ -3,6 +3,7 @@ package com.crowdin.platform.util
 import android.content.res.Resources
 import android.util.AttributeSet
 import android.view.Menu
+import com.crowdin.platform.data.parser.XmlParserUtils
 
 internal object TextUtils {
 

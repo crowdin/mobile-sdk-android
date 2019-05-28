@@ -17,7 +17,7 @@ class CrowdinConfig private constructor() {
 
     class Builder {
 
-        private var persist: Boolean = true
+        private var isPersist: Boolean = true
         private var distributionKey: String? = null
         private var filePaths: Array<out String>? = null
         private var networkType: NetworkType = NetworkType.ALL
@@ -25,8 +25,8 @@ class CrowdinConfig private constructor() {
         private var updateInterval: Long = -1
         private var sourceLanguage: String = ""
 
-        fun persist(persist: Boolean): Builder {
-            this.persist = persist
+        fun persist(isPersist: Boolean): Builder {
+            this.isPersist = isPersist
             return this
         }
 
@@ -59,7 +59,7 @@ class CrowdinConfig private constructor() {
 
         fun build(): CrowdinConfig {
             val config = CrowdinConfig()
-            config.isPersist = persist
+            config.isPersist = isPersist
             if (distributionKey == null) {
                 throw IllegalArgumentException("Crowdin: `distributionKey` cannot be null")
             }

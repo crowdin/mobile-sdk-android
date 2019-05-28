@@ -22,7 +22,7 @@ import com.crowdin.platform.screenshot.ScreenshotCallback
 import com.crowdin.platform.screenshot.ScreenshotManager
 import com.crowdin.platform.transformer.*
 import com.crowdin.platform.util.FeatureFlags
-import com.crowdin.platform.util.ScreenshotUtils
+import com.crowdin.platform.screenshot.ScreenshotUtils
 import com.crowdin.platform.util.TextUtils
 
 /**
@@ -98,7 +98,7 @@ object Crowdin {
      * Tries to update title for all items defined in menu xml file.
      *
      * @param menu      the options menu in which you place your items.
-     * @param resources class for accessing an application's resources..
+     * @param resources class for accessing an application's resources.
      * @param menuId    the id of menu file.
      */
     @JvmStatic
@@ -126,10 +126,10 @@ object Crowdin {
 
     /**
      * Send screenshot of current screen to the crowdin platform.
-     * Will attach tags (keys and position) to UI components on the screen.
+     * Will attach tags (keys and position) related to UI components from the screen.
      *
-     * @param activity              required for accessing current window
-     * @param screenshotCallback    optional, will provide status of screenshot creating process
+     * @param activity              required for accessing current window.
+     * @param screenshotCallback    optional, will provide status of screenshot creating process.
      */
     @JvmStatic
     @JvmOverloads
@@ -146,10 +146,10 @@ object Crowdin {
 
     /**
      * Send screenshot of current screen to the crowdin platform.
-     * Will attach tags (keys and position) to UI components on the screen.
+     * Will attach tags (keys and position) related to UI components from the screen.
      *
-     * @param filePath              path to created screenshot file
-     * @param screenshotCallback    optional, will provide status of screenshot creating process
+     * @param filePath              path to created screenshot file.
+     * @param screenshotCallback    optional, will provide status of screenshot creating process.
      */
     @JvmStatic
     @JvmOverloads
@@ -183,7 +183,7 @@ object Crowdin {
     }
 
     /**
-     * Register callback for tracking loading state
+     * Register callback for tracking loading state.
      *
      * @see LoadingStateListener
      */
@@ -193,7 +193,7 @@ object Crowdin {
     }
 
     /**
-     * Remove callback for tracking loading state
+     * Remove callback for tracking loading state.
      *
      * @see LoadingStateListener
      */
@@ -316,7 +316,7 @@ object Crowdin {
     }
 
     private fun loadMapping() {
-        if (config.isRealTimeUpdateEnabled) {
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
             stringDataManager ?: return
 
             val mappingRepository = MappingRepository(

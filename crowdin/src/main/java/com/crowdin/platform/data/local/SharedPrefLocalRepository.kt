@@ -54,18 +54,21 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
         saveData(languageData)
     }
 
-    override fun getString(language: String, key: String): String? = memoryLocalRepository.getString(language, key)
+    override fun getString(language: String, key: String): String? =
+            memoryLocalRepository.getString(language, key)
 
-    override fun getLanguageData(language: String): LanguageData? = memoryLocalRepository.getLanguageData(language)
+    override fun getLanguageData(language: String): LanguageData? =
+            memoryLocalRepository.getLanguageData(language)
 
-    override fun getStringArray(key: String): Array<String>? = memoryLocalRepository.getStringArray(key)
+    override fun getStringArray(key: String): Array<String>? =
+            memoryLocalRepository.getStringArray(key)
 
     override fun getStringPlural(resourceKey: String, quantityKey: String): String? =
             memoryLocalRepository.getStringPlural(resourceKey, quantityKey)
 
     override fun isExist(language: String): Boolean = memoryLocalRepository.isExist(language)
 
-    override fun getTextData(text: String): SearchResultData = memoryLocalRepository.getTextData(text)
+    override fun getTextData(text: String): TextMetaData = memoryLocalRepository.getTextData(text)
 
     override fun saveData(type: String, data: Any) {
         memoryLocalRepository.saveData(type, data)
@@ -75,11 +78,10 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
 
     override fun getData(type: String, classType: Type): Any? {
         val data = memoryLocalRepository.getData(type, classType::class.java)
-        if (data == null) {
+        return data ?: run {
             val info = sharedPreferences.getString(type, null)
             return Gson().fromJson(info, classType)
         }
-        return data
     }
 
     private fun initSharedPreferences(context: Context) {

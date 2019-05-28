@@ -4,7 +4,7 @@ import com.crowdin.platform.data.model.LanguageData
 import org.xmlpull.v1.XmlPullParser
 
 /**
- * Responsible for handling events related to xml parsing
+ * Responsible for handling events related to xml parsing.
  */
 internal interface Parser {
 

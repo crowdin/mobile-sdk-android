@@ -114,16 +114,16 @@ internal class MemoryLocalRepository : LocalRepository {
         return stringsData[language] != null
     }
 
-    override fun getTextData(text: String): SearchResultData {
-        val searchResultData = SearchResultData()
+    override fun getTextData(text: String): TextMetaData {
+        val textMetaData = TextMetaData()
 
         val languageData = stringsData[Locale.getDefault().toString()]
-        searchInResources(languageData, text, searchResultData)
+        searchInResources(languageData, text, textMetaData)
 
         val languageReserveData = stringsData[Locale.getDefault().language + StringDataManager.SUF_COPY]
-        searchInResources(languageReserveData, text, searchResultData)
+        searchInResources(languageReserveData, text, textMetaData)
 
-        return searchResultData
+        return textMetaData
     }
 
     override fun saveData(type: String, data: Any) {
@@ -132,13 +132,13 @@ internal class MemoryLocalRepository : LocalRepository {
 
     override fun getData(type: String, classType: Type): Any? = generalData[type]
 
-    private fun searchInResources(languageData: LanguageData?, text: String, searchResultData: SearchResultData) {
+    private fun searchInResources(languageData: LanguageData?, text: String, searchResultData: TextMetaData) {
         searchInStrings(languageData, text, searchResultData)
         searchInArrays(languageData, text, searchResultData)
         searchInPlurals(languageData, text, searchResultData)
     }
 
-    private fun searchInPlurals(languageData: LanguageData?, text: String, searchResultData: SearchResultData) {
+    private fun searchInPlurals(languageData: LanguageData?, text: String, searchResultData: TextMetaData) {
         languageData?.plurals?.forEach { pluralData ->
             val pluralName = pluralData.name
             pluralData.quantity.forEach {
@@ -154,26 +154,25 @@ internal class MemoryLocalRepository : LocalRepository {
         }
     }
 
-    private fun searchInArrays(languageData: LanguageData?, text: String, searchResultData: SearchResultData) {
+    private fun searchInArrays(languageData: LanguageData?, text: String, textMetaData: TextMetaData) {
         languageData?.arrays?.forEach { arrayData ->
             val arrayName = arrayData.name
             arrayData.values?.forEachIndexed { index, item ->
                 if (item == text) {
-                    searchResultData.arrayName = arrayName
-                    searchResultData.arrayIndex = index
+                    textMetaData.arrayName = arrayName
+                    textMetaData.arrayIndex = index
                     return
                 }
             }
         }
     }
 
-    private fun searchInStrings(languageData: LanguageData?, text: String, searchResultData: SearchResultData) {
+    private fun searchInStrings(languageData: LanguageData?, text: String, textMetaData: TextMetaData) {
         languageData?.resources?.forEach {
             if (it.stringValue == text) {
-                searchResultData.stringKey = it.stringKey
-                searchResultData.stringValue = it.stringValue
-                searchResultData.stringsFormatArgs = it.formatArgs
-                searchResultData.stringDefault = it.def
+                textMetaData.textAttributeKey = it.stringKey
+                textMetaData.stringsFormatArgs = it.formatArgs
+                textMetaData.stringDefault = it.def
                 return
             }
         }

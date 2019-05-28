@@ -33,21 +33,21 @@ internal class TextMetaData {
 
     var mappingValue: String = ""
 
-    fun parseResult(resultData: SearchResultData) {
+    fun parseResult(textMetaData: TextMetaData) {
         when {
-            resultData.hasKey -> {
-                textAttributeKey = resultData.stringKey
-                stringsFormatArgs = resultData.stringsFormatArgs
-                stringDefault = resultData.stringDefault
+            textMetaData.hasAttributeKey -> {
+                textAttributeKey = textMetaData.textAttributeKey
+                stringsFormatArgs = textMetaData.stringsFormatArgs
+                stringDefault = textMetaData.stringDefault
             }
-            resultData.isArrayItem -> {
-                arrayName = resultData.arrayName
-                arrayIndex = resultData.arrayIndex
+            textMetaData.isArrayItem -> {
+                arrayName = textMetaData.arrayName
+                arrayIndex = textMetaData.arrayIndex
             }
-            resultData.isPluralData -> {
-                pluralName = resultData.pluralName
-                pluralQuantity = resultData.pluralQuantity
-                pluralFormatArgs = resultData.pluralFormatArgs
+            textMetaData.isPluralData -> {
+                pluralName = textMetaData.pluralName
+                pluralQuantity = textMetaData.pluralQuantity
+                pluralFormatArgs = textMetaData.pluralFormatArgs
             }
         }
     }

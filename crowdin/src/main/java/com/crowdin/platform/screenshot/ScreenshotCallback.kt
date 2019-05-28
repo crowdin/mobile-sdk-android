@@ -13,7 +13,7 @@ interface ScreenshotCallback {
     /**
      * Error happened during uploading screenshot process.
      *
-     * @param error message.
+     * @param throwable Throwable error.
      */
-    fun onFailure(error: String)
+    fun onFailure(throwable: Throwable)
 }

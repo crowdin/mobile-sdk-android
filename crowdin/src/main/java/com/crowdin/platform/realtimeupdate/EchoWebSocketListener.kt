@@ -25,7 +25,8 @@ import java.util.concurrent.ConcurrentHashMap
 
 internal class EchoWebSocketListener(var mappingData: LanguageData,
                                      private var distributionData: DistributionInfoResponse.DistributionData,
-                                     private var viewTransformerManager: ViewTransformerManager) : WebSocketListener() {
+                                     private var viewTransformerManager: ViewTransformerManager)
+    : WebSocketListener() {
 
     private var dataHolderMap = ConcurrentHashMap<WeakReference<TextView>, TextMetaData>()
 
@@ -80,10 +81,9 @@ internal class EchoWebSocketListener(var mappingData: LanguageData,
     private fun addOrReplaceMatchedView(pair: Pair<TextView, TextMetaData>, mappingData: LanguageData): String? {
         val textMetaData = pair.second
         val mappingValue = getMappingValueForKey(textMetaData, mappingData)
-        val viewWeakRef = WeakReference(pair.first)
         mappingValue?.let {
             textMetaData.mappingValue = mappingValue
-            dataHolderMap.put(viewWeakRef, textMetaData)
+            dataHolderMap.put(WeakReference(pair.first), textMetaData)
         }
 
         return mappingValue
@@ -156,7 +156,7 @@ internal class EchoWebSocketListener(var mappingData: LanguageData,
     }
 
     private fun updateViewText(view: TextView?, text: String) {
-        Handler(Looper.getMainLooper()).post { view?.text = fromHtml(text) }
+        Handler(Looper.getMainLooper()).post { view?.text = text.fromHtml() }
     }
 
     private fun parseResponse(response: String): EventResponse {

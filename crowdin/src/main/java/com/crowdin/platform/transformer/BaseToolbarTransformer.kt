@@ -43,8 +43,8 @@ internal abstract class BaseToolbarTransformer(val textMetaDataProvider: TextMet
     fun addTextWatcherToChild(textView: TextView?) {
         textView?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                val resultData = textMetaDataProvider.provideTextKey(s.toString())
-                var textMetaData = getViewTextData(textView)
+                val resultData = textMetaDataProvider.provideTextMetaData(s.toString())
+                var textMetaData = getViewTextMetaData(textView)
                 if (textMetaData == null) {
                     textMetaData = TextMetaData()
                 }

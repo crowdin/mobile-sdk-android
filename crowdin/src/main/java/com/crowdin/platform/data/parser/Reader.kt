@@ -6,14 +6,14 @@ import java.io.InputStream
 internal interface Reader {
 
     /**
-     * Converts input stream to language data object
+     * Converts input stream to language data object.
      *
-     * @param byteStream stream to be parsed
+     * @param byteStream stream to be parsed.
      */
     fun parseInput(byteStream: InputStream): LanguageData
 
     /**
-     * Close reader and clear all data
+     * Close reader and clear all data.
      */
     fun close()
 }

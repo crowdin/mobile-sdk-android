@@ -4,11 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 
-internal class Connectivity {
-
-    init {
-        throw InstantiationError()
-    }
+internal class Connectivity private constructor() {
 
     companion object {
 
