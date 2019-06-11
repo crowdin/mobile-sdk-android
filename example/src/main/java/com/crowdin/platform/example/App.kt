@@ -14,16 +14,16 @@ class App : Application() {
         val distributionKey = "d5d8249cef350c21219d048106i"
         Crowdin.init(applicationContext,
                 CrowdinConfig.Builder()
-                        .withDistributionKey(distributionKey)  // required
-                        .withFilePaths(              // required
+                        .withDistributionKey(distributionKey)            // required
+                        .withFilePaths(                        // required
                                 "strings.xml",
                                 "arrays.xml",
                                 "plurals.xml")
-                        .withNetworkType(NetworkType.WIFI)     // optional
-                        .withRealTimeUpdates(                  // optional
-                                true,
-                                "en")
-                        .withUpdateInterval(fifteenMinutes)    // optional
+                        .withNetworkType(NetworkType.WIFI)               // optional
+                        .withRealTimeUpdates(true) // optional
+                        .withScreenshotEnabled(true)   // optional
+                        .withSourceLanguage("en")          // optional
+                        .withUpdateInterval(fifteenMinutes)              // optional
                         .build())
 
         // Using system buttons to take screenshot automatically will upload them to crowdin.

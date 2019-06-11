@@ -20,9 +20,9 @@ import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager
 import com.crowdin.platform.recurringwork.RecurringManager
 import com.crowdin.platform.screenshot.ScreenshotCallback
 import com.crowdin.platform.screenshot.ScreenshotManager
+import com.crowdin.platform.screenshot.ScreenshotUtils
 import com.crowdin.platform.transformer.*
 import com.crowdin.platform.util.FeatureFlags
-import com.crowdin.platform.screenshot.ScreenshotUtils
 import com.crowdin.platform.util.TextUtils
 
 /**
@@ -134,7 +134,7 @@ object Crowdin {
     @JvmStatic
     @JvmOverloads
     fun sendScreenshot(activity: Activity, screenshotCallback: ScreenshotCallback? = null) {
-        if (!FeatureFlags.isRealTimeUpdateEnabled) return
+        if (!FeatureFlags.isScreenshotEnabled) return
         if (stringDataManager == null) return
 
         val view = activity.window.decorView.rootView
@@ -154,7 +154,7 @@ object Crowdin {
     @JvmStatic
     @JvmOverloads
     fun sendScreenshot(filePath: String, screenshotCallback: ScreenshotCallback? = null) {
-        if (!FeatureFlags.isRealTimeUpdateEnabled) return
+        if (!FeatureFlags.isScreenshotEnabled) return
         if (stringDataManager == null) return
 
         val bitmap = BitmapFactory.decodeFile(filePath)
@@ -271,18 +271,22 @@ object Crowdin {
     }
 
     private fun initFeatureManagers() {
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
+        if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             distributionInfoManager = DistributionInfoManager(
                     CrowdinRetrofitService.instance.getCrowdinApi(),
                     stringDataManager!!,
                     Crowdin.config.distributionKey)
+        }
 
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
             realTimeUpdateManager = RealTimeUpdateManager(
                     Crowdin.config.distributionKey,
                     Crowdin.config.sourceLanguage,
                     stringDataManager,
                     viewTransformerManager)
+        }
 
+        if (FeatureFlags.isScreenshotEnabled) {
             screenshotManager = ScreenshotManager(
                     CrowdinRetrofitService.instance.getTmpCrowdinApi(),
                     stringDataManager!!,
@@ -316,7 +320,7 @@ object Crowdin {
     }
 
     private fun loadMapping() {
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
+        if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             stringDataManager ?: return
 
             val mappingRepository = MappingRepository(

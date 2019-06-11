@@ -12,6 +12,7 @@ class CrowdinConfig private constructor() {
     var filePaths: Array<out String>? = null
     var networkType: NetworkType = NetworkType.ALL
     var isRealTimeUpdateEnabled: Boolean = false
+    var isScreenshotEnabled: Boolean = false
     var updateInterval: Long = -1
     var sourceLanguage: String = ""
 
@@ -22,6 +23,7 @@ class CrowdinConfig private constructor() {
         private var filePaths: Array<out String>? = null
         private var networkType: NetworkType = NetworkType.ALL
         private var isRealTimeUpdateEnabled: Boolean = false
+        private var isScreenshotEnabled: Boolean = false
         private var updateInterval: Long = -1
         private var sourceLanguage: String = ""
 
@@ -45,12 +47,20 @@ class CrowdinConfig private constructor() {
             return this
         }
 
-        fun withRealTimeUpdates(isRealTimeUpdateEnabled: Boolean, sourceLanguage: String): Builder {
+        fun withRealTimeUpdates(isRealTimeUpdateEnabled: Boolean): Builder {
             this.isRealTimeUpdateEnabled = isRealTimeUpdateEnabled
-            this.sourceLanguage = sourceLanguage
             return this
         }
 
+        fun withScreenshotEnabled(isScreenshotEnabled: Boolean): Builder {
+            this.isScreenshotEnabled = isScreenshotEnabled
+            return this
+        }
+
+        fun withSourceLanguage(sourceLanguage: String): Builder {
+            this.sourceLanguage = sourceLanguage
+            return this
+        }
 
         fun withUpdateInterval(updateInterval: Long): Builder {
             this.updateInterval = updateInterval
@@ -71,6 +81,11 @@ class CrowdinConfig private constructor() {
             config.filePaths = filePaths
             config.networkType = networkType
             config.isRealTimeUpdateEnabled = isRealTimeUpdateEnabled
+            config.isScreenshotEnabled = isScreenshotEnabled
+
+            if ((isRealTimeUpdateEnabled || isScreenshotEnabled) && sourceLanguage.isEmpty()) {
+                throw IllegalArgumentException("Crowdin: `sourceLanguage` cannot be empty")
+            }
             config.sourceLanguage = sourceLanguage
             config.updateInterval = updateInterval
 
