@@ -31,11 +31,15 @@ class CrowdinWebActivity : AppCompatActivity() {
         private const val URL_PROFILE = "https://crowdin.com/profile"
         private const val URL_CROWDIN_AUTH = "https://crowdin.com/login"
         private const val COOKIE_TOKEN = "csrf_token"
+        private const val EVENT_TYPE = "type"
+        const val EVENT_REAL_TIME_UPDATES = "realtime_update"
 
         @JvmStatic
-        fun launchActivityForResult(activity: Activity) {
-            activity.startActivityForResult(
-                    Intent(activity, CrowdinWebActivity::class.java), REQUEST_CODE)
+        @JvmOverloads
+        fun launchActivityForResult(activity: Activity, type: String? = null) {
+            val intent = Intent(activity, CrowdinWebActivity::class.java)
+            type?.let { intent.putExtra(EVENT_TYPE, type) }
+            activity.startActivityForResult(intent, REQUEST_CODE)
         }
     }
 
@@ -43,6 +47,8 @@ class CrowdinWebActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(createContentView())
+        val event = intent.getStringExtra(EVENT_TYPE)
+
         webView.settings.javaScriptEnabled = true
         webView.loadUrl(URL_CROWDIN_AUTH)
         webView.webViewClient = object : WebViewClient() {
@@ -64,6 +70,9 @@ class CrowdinWebActivity : AppCompatActivity() {
                     progressBar.visibility = View.VISIBLE
                     Crowdin.getDistributionInfo(userAgent, cookies, csrfToken, object : DistributionInfoCallback {
                         override fun onSuccess() {
+                            when (event) {
+                                EVENT_REAL_TIME_UPDATES -> Crowdin.createConnection()
+                            }
                             finish()
                         }
 

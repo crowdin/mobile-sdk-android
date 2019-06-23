@@ -1,7 +1,5 @@
 package com.crowdin.platform.example
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
@@ -12,10 +10,8 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.LoadingStateListener
-import com.crowdin.platform.auth.CrowdinWebActivity
 import com.crowdin.platform.example.fragments.*
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, LoadingStateListener {
@@ -44,7 +40,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         Crowdin.registerDataLoadingObserver(this)
 
         // Crowdin Auth. required for screenshot/realtime update functionality.
-        CrowdinWebActivity.launchActivityForResult(this)
+        Crowdin.connectRealTimeUpdates(this)
 
         // Simple device shake detector. Could be used for triggering force update.
         Crowdin.registerShakeDetector(this)
@@ -57,20 +53,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     override fun onFailure(throwable: Throwable) {
         Log.d(MainActivity::class.java.simpleName, "LoadingStateListener: onFailure ${throwable.localizedMessage}")
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            CrowdinWebActivity.REQUEST_CODE -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    Toast.makeText(this, "Auth success", Toast.LENGTH_SHORT).show()
-
-                    // Auth. success, can proceed with screenshot/realtime update functionality.
-                    // Establish connection with crowdin platform.
-                    Crowdin.connectRealTimeUpdates()
-                }
-            }
-        }
     }
 
     override fun onDestroy() {

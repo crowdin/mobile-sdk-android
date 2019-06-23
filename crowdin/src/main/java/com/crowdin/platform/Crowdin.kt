@@ -5,8 +5,9 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.view.Menu
+import com.crowdin.platform.auth.CrowdinWebActivity
+import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.DistributionInfoCallback
-import com.crowdin.platform.data.StringDataManager
 import com.crowdin.platform.data.TextMetaDataProvider
 import com.crowdin.platform.data.local.LocalStringRepositoryFactory
 import com.crowdin.platform.data.model.AuthInfo
@@ -32,7 +33,7 @@ object Crowdin {
 
     private lateinit var viewTransformerManager: ViewTransformerManager
     private lateinit var config: CrowdinConfig
-    private var stringDataManager: StringDataManager? = null
+    private var dataManager: DataManager? = null
     private var realTimeUpdateManager: RealTimeUpdateManager? = null
     private var distributionInfoManager: DistributionInfoManager? = null
     private var screenshotManager: ScreenshotManager? = null
@@ -79,8 +80,8 @@ object Crowdin {
      */
     @JvmStatic
     fun wrapContext(base: Context): Context =
-            if (stringDataManager == null) base
-            else CrowdinContextWrapper.wrap(base, stringDataManager, viewTransformerManager)
+            if (dataManager == null) base
+            else CrowdinContextWrapper.wrap(base, dataManager, viewTransformerManager)
 
     /**
      * Set a single string for a language.
@@ -91,7 +92,7 @@ object Crowdin {
      */
     @JvmStatic
     fun setString(language: String, key: String, value: String) {
-        stringDataManager?.setString(language, key, value)
+        dataManager?.setString(language, key, value)
     }
 
     /**
@@ -111,7 +112,7 @@ object Crowdin {
      */
     @JvmStatic
     fun forceUpdate(context: Context) {
-        stringDataManager?.updateData(context, config.networkType)
+        dataManager?.updateData(context, config.networkType)
     }
 
     /**
@@ -119,9 +120,7 @@ object Crowdin {
      */
     @JvmStatic
     fun invalidate() {
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
-            viewTransformerManager.invalidate()
-        }
+        viewTransformerManager.invalidate()
     }
 
     /**
@@ -134,13 +133,12 @@ object Crowdin {
     @JvmStatic
     @JvmOverloads
     fun sendScreenshot(activity: Activity, screenshotCallback: ScreenshotCallback? = null) {
-        if (!FeatureFlags.isScreenshotEnabled) return
-        if (stringDataManager == null) return
-
-        val view = activity.window.decorView.rootView
-        ScreenshotUtils.getBitmapFromView(view, activity) {
-            screenshotManager?.setScreenshotCallback(screenshotCallback)
-            screenshotManager?.sendScreenshot(it, viewTransformerManager.getViewData())
+        screenshotManager?.let {
+            val view = activity.window.decorView.rootView
+            ScreenshotUtils.getBitmapFromView(view, activity) {
+                screenshotManager?.setScreenshotCallback(screenshotCallback)
+                screenshotManager?.sendScreenshot(it, viewTransformerManager.getViewData())
+            }
         }
     }
 
@@ -154,12 +152,11 @@ object Crowdin {
     @JvmStatic
     @JvmOverloads
     fun sendScreenshot(filePath: String, screenshotCallback: ScreenshotCallback? = null) {
-        if (!FeatureFlags.isScreenshotEnabled) return
-        if (stringDataManager == null) return
-
-        val bitmap = BitmapFactory.decodeFile(filePath)
-        screenshotManager?.setScreenshotCallback(screenshotCallback)
-        screenshotManager?.sendScreenshot(bitmap, viewTransformerManager.getViewData())
+        screenshotManager?.let {
+            val bitmap = BitmapFactory.decodeFile(filePath)
+            screenshotManager?.setScreenshotCallback(screenshotCallback)
+            screenshotManager?.sendScreenshot(bitmap, viewTransformerManager.getViewData())
+        }
     }
 
     /**
@@ -189,7 +186,7 @@ object Crowdin {
      */
     @JvmStatic
     fun registerDataLoadingObserver(listener: LoadingStateListener) {
-        stringDataManager?.addLoadingStateListener(listener)
+        dataManager?.addLoadingStateListener(listener)
     }
 
     /**
@@ -199,7 +196,7 @@ object Crowdin {
      */
     @JvmStatic
     fun unregisterDataLoadingObserver(listener: LoadingStateListener) {
-        stringDataManager?.removeLoadingStateListener(listener)
+        dataManager?.removeLoadingStateListener(listener)
     }
 
     /**
@@ -216,8 +213,17 @@ object Crowdin {
      * Connect to Crowdin platform for receiving realtime updates.
      */
     @JvmStatic
-    fun connectRealTimeUpdates() {
-        if (!FeatureFlags.isRealTimeUpdateEnabled) return
+    fun connectRealTimeUpdates(activity: Activity) {
+        realTimeUpdateManager?.let {
+            when {
+                dataManager!!.isAuthorized() -> createConnection()
+                else -> CrowdinWebActivity.launchActivityForResult(activity,
+                        CrowdinWebActivity.EVENT_REAL_TIME_UPDATES)
+            }
+        }
+    }
+
+    internal fun createConnection() {
         realTimeUpdateManager?.openConnection()
     }
 
@@ -226,8 +232,8 @@ object Crowdin {
      */
     @JvmStatic
     fun disconnectRealTimeUpdates() {
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
-            realTimeUpdateManager?.closeConnection()
+        realTimeUpdateManager?.let {
+            it.closeConnection()
             realTimeUpdateManager = null
         }
     }
@@ -252,17 +258,13 @@ object Crowdin {
     }
 
     internal fun saveAuthInfo(authInfo: AuthInfo) {
-        stringDataManager?.saveData(StringDataManager.AUTH_INFO, authInfo)
+        dataManager?.saveData(DataManager.AUTH_INFO, authInfo)
     }
 
     internal fun getDistributionInfo(userAgent: String,
                                      cookies: String,
                                      xCsrfToken: String,
                                      callback: DistributionInfoCallback) {
-        if (stringDataManager == null) {
-            callback.onError(Throwable("Local repository could not be null"))
-            return
-        }
         distributionInfoManager?.getDistributionInfo(userAgent, cookies, xCsrfToken, callback)
     }
 
@@ -274,7 +276,7 @@ object Crowdin {
         if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             distributionInfoManager = DistributionInfoManager(
                     CrowdinRetrofitService.instance.getCrowdinApi(),
-                    stringDataManager!!,
+                    dataManager!!,
                     Crowdin.config.distributionKey)
         }
 
@@ -282,14 +284,14 @@ object Crowdin {
             realTimeUpdateManager = RealTimeUpdateManager(
                     Crowdin.config.distributionKey,
                     Crowdin.config.sourceLanguage,
-                    stringDataManager,
+                    dataManager,
                     viewTransformerManager)
         }
 
         if (FeatureFlags.isScreenshotEnabled) {
             screenshotManager = ScreenshotManager(
                     CrowdinRetrofitService.instance.getTmpCrowdinApi(),
-                    stringDataManager!!,
+                    dataManager!!,
                     Crowdin.config.sourceLanguage)
         }
     }
@@ -302,7 +304,7 @@ object Crowdin {
                 config.filePaths)
         val localRepository = LocalStringRepositoryFactory.createLocalRepository(context, config)
 
-        stringDataManager = StringDataManager(remoteRepository, localRepository, object : LocalDataChangeObserver {
+        dataManager = DataManager(remoteRepository, localRepository, object : LocalDataChangeObserver {
             override fun onDataChanged() {
                 viewTransformerManager.invalidate()
             }
@@ -311,9 +313,9 @@ object Crowdin {
 
     private fun initViewTransformer() {
         viewTransformerManager = ViewTransformerManager()
-        viewTransformerManager.registerTransformer(TextViewTransformer(stringDataManager as TextMetaDataProvider))
-        viewTransformerManager.registerTransformer(ToolbarTransformer(stringDataManager as TextMetaDataProvider))
-        viewTransformerManager.registerTransformer(SupportToolbarTransformer(stringDataManager as TextMetaDataProvider))
+        viewTransformerManager.registerTransformer(TextViewTransformer(dataManager as TextMetaDataProvider))
+        viewTransformerManager.registerTransformer(ToolbarTransformer(dataManager as TextMetaDataProvider))
+        viewTransformerManager.registerTransformer(SupportToolbarTransformer(dataManager as TextMetaDataProvider))
         viewTransformerManager.registerTransformer(BottomNavigationViewTransformer())
         viewTransformerManager.registerTransformer(NavigationViewTransformer())
         viewTransformerManager.registerTransformer(SpinnerTransformer())
@@ -321,12 +323,10 @@ object Crowdin {
 
     private fun loadMapping() {
         if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
-            stringDataManager ?: return
-
             val mappingRepository = MappingRepository(
                     CrowdinRetrofitService.instance.getCrowdinDistributionApi(),
                     XmlReader(StringResourceParser()),
-                    stringDataManager!!,
+                    dataManager!!,
                     config.distributionKey,
                     config.filePaths,
                     config.sourceLanguage)

@@ -4,7 +4,7 @@ import android.content.Context
 import android.database.ContentObserver
 import android.graphics.Bitmap
 import android.provider.MediaStore
-import com.crowdin.platform.data.StringDataManager
+import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.getMappingValueForKey
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.ViewData
@@ -19,7 +19,7 @@ import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 
 internal class ScreenshotManager(private var crowdinApi: CrowdinApi,
-                                 private var stringDataManager: StringDataManager,
+                                 private var dataManager: DataManager,
                                  private var sourceLanguage: String) {
 
     companion object {
@@ -31,8 +31,13 @@ internal class ScreenshotManager(private var crowdinApi: CrowdinApi,
     private var contentObserver: ContentObserver? = null
 
     fun sendScreenshot(bitmap: Bitmap, viewDataList: MutableList<ViewData>) {
-        val mappingData = stringDataManager.getMapping(sourceLanguage) ?: return
-        val distributionData = stringDataManager.getData(StringDataManager.DISTRIBUTION_DATA,
+        if (!dataManager.isAuthorized()) {
+            screenshotCallback?.onFailure(Throwable("Could not send screenshot: not authorized"))
+            return
+        }
+
+        val mappingData = dataManager.getMapping(sourceLanguage) ?: return
+        val distributionData = dataManager.getData(DataManager.DISTRIBUTION_DATA,
                 DistributionInfoResponse.DistributionData::class.java)
         if (distributionData == null) {
             screenshotCallback?.onFailure(Throwable("Could not send screenshot: not authorized"))
@@ -68,6 +73,7 @@ internal class ScreenshotManager(private var crowdinApi: CrowdinApi,
         bitmap.compress(Bitmap.CompressFormat.PNG, IMG_QUALITY, stream)
         val byteArray = stream.toByteArray()
         val requestBody = RequestBody.create(MediaType.parse(MEDIA_TYPE_IMG), byteArray)
+        bitmap.recycle()
 
         crowdinApi.uploadScreenshot(requestBody).enqueue(object : Callback<UploadScreenshotResponse> {
 

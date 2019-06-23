@@ -2,7 +2,7 @@ package com.crowdin.platform.data.remote
 
 import android.util.Log
 import com.crowdin.platform.data.LanguageDataCallback
-import com.crowdin.platform.data.StringDataManager
+import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import okhttp3.ResponseBody
@@ -13,7 +13,7 @@ import java.net.HttpURLConnection
 
 internal class MappingRepository(private val crowdinDistributionApi: CrowdinDistributionApi,
                                  private val reader: Reader,
-                                 private val stringDataManager: StringDataManager,
+                                 private val dataManager: DataManager,
                                  private val distributionKey: String?,
                                  private val filePaths: Array<out String>?,
                                  private val sourceLanguage: String) : BaseRepository() {
@@ -44,7 +44,7 @@ internal class MappingRepository(private val crowdinDistributionApi: CrowdinDist
                                 val languageData = reader.parseInput(body.byteStream())
                                 languageData.language = sourceLanguage
                                 reader.close()
-                                stringDataManager.saveMapping(languageData)
+                                dataManager.saveMapping(languageData)
                                 languageDataCallback?.onDataLoaded(languageData)
                             }
                             response.code() != HttpURLConnection.HTTP_NOT_MODIFIED -> {

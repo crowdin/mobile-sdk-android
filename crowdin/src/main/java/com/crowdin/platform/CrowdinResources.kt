@@ -4,7 +4,7 @@ import android.content.res.Resources
 import android.icu.text.PluralRules
 import android.os.Build
 import android.text.Html
-import com.crowdin.platform.data.StringDataManager
+import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
@@ -16,7 +16,7 @@ import java.util.*
  * that will be returned, otherwise it will fallback to the original resource strings.
  */
 internal class CrowdinResources(res: Resources,
-                                private val stringDataManager: StringDataManager) :
+                                private val dataManager: DataManager) :
         Resources(res.assets,
                 res.displayMetrics,
                 res.configuration) {
@@ -100,7 +100,7 @@ internal class CrowdinResources(res: Resources,
                                      string: String,
                                      formatArgs: Array<out Any?> = arrayOf(),
                                      default: CharSequence = "") {
-        stringDataManager.saveReserveResources(
+        dataManager.saveReserveResources(
                 StringData(entryName,
                         string,
                         formatArgs,
@@ -108,7 +108,7 @@ internal class CrowdinResources(res: Resources,
     }
 
     private fun saveStringArrayDataToCopy(key: String, resultText: Array<String>) {
-        stringDataManager.saveReserveResources(arrayData = ArrayData(key, resultText))
+        dataManager.saveReserveResources(arrayData = ArrayData(key, resultText))
     }
 
     private fun savePluralToCopy(id: Int,
@@ -127,21 +127,21 @@ internal class CrowdinResources(res: Resources,
                     quantity,
                     formatArgs)
 
-            stringDataManager.saveReserveResources(pluralData = pluralData)
+            dataManager.saveReserveResources(pluralData = pluralData)
         }
     }
 
     private fun getStringFromRepository(id: Int): String? =
             try {
                 val entryName = getResourceEntryName(id)
-                stringDataManager.getString(Locale.getDefault().toString(), entryName)
+                dataManager.getString(Locale.getDefault().toString(), entryName)
             } catch (ex: NotFoundException) {
                 null
             }
 
     private fun getStringArrayFromRepository(id: Int): Array<String>? {
         val entryName = getResourceEntryName(id)
-        return stringDataManager.getStringArray(entryName)
+        return dataManager.getStringArray(entryName)
     }
 
     private fun getPluralFromRepository(id: Int, quantity: Int): String? =
@@ -149,7 +149,7 @@ internal class CrowdinResources(res: Resources,
                 val entryName = getResourceEntryName(id)
                 val rule = PluralRules.forLocale(Locale.getDefault())
                 val ruleName = rule.select(quantity.toDouble())
-                stringDataManager.getStringPlural(entryName, ruleName)
+                dataManager.getStringPlural(entryName, ruleName)
             } else {
                 null
             }

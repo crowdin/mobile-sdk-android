@@ -1,6 +1,6 @@
 package com.crowdin.platform.realtimeupdate
 
-import com.crowdin.platform.data.StringDataManager
+import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.transformer.ViewTransformerManager
@@ -12,7 +12,7 @@ import okhttp3.WebSocket
 internal class RealTimeUpdateManager(
         private val distributionKey: String?,
         private val sourceLanguage: String,
-        private val stringDataManager: StringDataManager?,
+        private val dataManager: DataManager?,
         private val viewTransformerManager: ViewTransformerManager) {
 
     companion object {
@@ -27,13 +27,13 @@ internal class RealTimeUpdateManager(
 
     fun openConnection() {
         distributionKey ?: return
-        stringDataManager ?: return
+        dataManager ?: return
 
-        val authInfo = stringDataManager.getData(StringDataManager.AUTH_INFO, AuthInfo::class.java)
+        val authInfo = dataManager.getData(DataManager.AUTH_INFO, AuthInfo::class.java)
         authInfo ?: return
         authInfo as AuthInfo
 
-        val distributionData = stringDataManager.getData(StringDataManager.DISTRIBUTION_DATA,
+        val distributionData = dataManager.getData(DataManager.DISTRIBUTION_DATA,
                 DistributionInfoResponse.DistributionData::class.java)
         distributionData ?: return
         distributionData as DistributionInfoResponse.DistributionData
@@ -49,7 +49,7 @@ internal class RealTimeUpdateManager(
     private fun createConnection(distributionData: DistributionInfoResponse.DistributionData,
                                  cookie: String,
                                  xCsrfToken: String) {
-        val mappingData = stringDataManager?.getMapping(sourceLanguage) ?: return
+        val mappingData = dataManager?.getMapping(sourceLanguage) ?: return
         val client = OkHttpClient().newBuilder()
                 .addInterceptor { chain -> addHeaders(chain, cookie, xCsrfToken) }
                 .build()

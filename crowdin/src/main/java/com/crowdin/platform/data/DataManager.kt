@@ -13,9 +13,9 @@ import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
 
-internal class StringDataManager(private val remoteRepository: RemoteRepository,
-                                 private val localRepository: LocalRepository,
-                                 private val dataChangeObserver: LocalDataChangeObserver)
+internal class DataManager(private val remoteRepository: RemoteRepository,
+                           private val localRepository: LocalRepository,
+                           private val dataChangeObserver: LocalDataChangeObserver)
     : TextMetaDataProvider {
 
     companion object {
@@ -132,5 +132,10 @@ internal class StringDataManager(private val remoteRepository: RemoteRepository,
 
     fun getData(type: String, classType: Type): Any? {
         return localRepository.getData(type, classType)
+    }
+
+    fun isAuthorized(): Boolean {
+        val authInfo = getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?
+        return authInfo != null
     }
 }
