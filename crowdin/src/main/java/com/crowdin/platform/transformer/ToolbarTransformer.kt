@@ -2,11 +2,11 @@ package com.crowdin.platform.transformer
 
 import android.annotation.TargetApi
 import android.os.Build
-import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
 import android.widget.Toolbar
+import androidx.annotation.RequiresApi
 import com.crowdin.platform.data.TextMetaDataProvider
 import com.crowdin.platform.data.model.TextMetaData
 import com.crowdin.platform.util.FeatureFlags

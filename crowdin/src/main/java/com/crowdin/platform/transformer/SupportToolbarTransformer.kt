@@ -1,9 +1,9 @@
 package com.crowdin.platform.transformer
 
-import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import com.crowdin.platform.data.TextMetaDataProvider
 import com.crowdin.platform.data.model.TextMetaData
 import com.crowdin.platform.util.FeatureFlags

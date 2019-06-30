@@ -1,8 +1,8 @@
 package com.crowdin.platform.transformer
 
-import android.support.design.widget.BottomNavigationView
 import android.view.Menu
 import android.view.View
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 /**
  * A transformer which transforms BottomNavigationView: it transforms the texts coming from the menu.

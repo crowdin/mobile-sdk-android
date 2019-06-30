@@ -1,9 +1,9 @@
 package com.crowdin.platform.example.fragments
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.*
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.example.R
 

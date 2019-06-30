@@ -1,8 +1,8 @@
 package com.crowdin.platform.transformer
 
-import android.support.design.widget.NavigationView
 import android.view.Menu
 import android.view.View
+import com.google.android.material.navigation.NavigationView
 
 /**
  * A transformer which transforms NavigationView: it transforms the texts coming from the menu.
