@@ -35,8 +35,8 @@ internal object TextUtils {
         return id
     }
 
-    fun updateMenuItemsText(menu: Menu, resources: Resources, resId: Int) {
-        val itemStrings = XmlParserUtils.getMenuItemsStrings(resources, resId)
+    fun updateMenuItemsText(menuRes: Int, menu: Menu, resources: Resources) {
+        val itemStrings = XmlParserUtils.getMenuItemsStrings(menuRes, resources)
 
         for (i in 0 until itemStrings.size()) {
             val itemKey = itemStrings.keyAt(i)

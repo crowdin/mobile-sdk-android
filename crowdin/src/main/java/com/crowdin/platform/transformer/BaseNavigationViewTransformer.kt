@@ -32,8 +32,8 @@ internal abstract class BaseNavigationViewTransformer : BaseTransformer() {
         val value = attrs.getAttributeValue(index)
         if (value == null || !value.startsWith("@")) return
 
-        val resId = attrs.getAttributeResourceValue(index, 0)
+        val resRes = attrs.getAttributeResourceValue(index, 0)
         val menu = getMenu(view)
-        TextUtils.updateMenuItemsText(menu, resources, resId)
+        TextUtils.updateMenuItemsText(resRes, menu, resources)
     }
 }

@@ -15,8 +15,8 @@ internal object XmlParserUtils {
     private const val XML_MENU = "menu"
     private const val XML_ITEM = "item"
 
-    fun getMenuItemsStrings(resources: Resources, resId: Int): SparseArray<MenuItemStrings> {
-        val xmlResourceParser = resources.getLayout(resId)
+    fun getMenuItemsStrings(menuRes: Int, resources: Resources): SparseArray<MenuItemStrings> {
+        val xmlResourceParser = resources.getLayout(menuRes)
         val attributeSet = Xml.asAttributeSet(xmlResourceParser)
         return try {
             parseMenu(xmlResourceParser, attributeSet)

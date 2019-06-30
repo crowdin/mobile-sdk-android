@@ -23,7 +23,7 @@ maven: implementation 'TODO.Coming soon'
 
 Add this code in your ``Application`` class.
 
-```Kotlin
+```kotlin
 Crowdin.init(applicationContext,
         CrowdinConfig.Builder()
                 .withDistributionHash(your_distributionHash)    // required
@@ -48,7 +48,7 @@ Crowdin.init(applicationContext,
 ### 4. Inject into Context
 
 if you have a `BaseActivity` you can add this there, otherwise you have to add it to all of your activities!
-```Kotlin
+```kotlin
 override fun attachBaseContext(newBase: Context) {
     super.attachBaseContext(Crowdin.wrapContext(newBase))
 }
@@ -62,7 +62,7 @@ Now all strings in your app will be overridden by new strings provided to Crowdi
 ## Real-time updates
 
 1. Add the following code in Application class:
-```Kotlin
+```kotlin
 Crowdin.init(applicationContext,
         CrowdinConfig.Builder()
                  ... , 
@@ -73,7 +73,7 @@ Crowdin.init(applicationContext,
 
 2. Crowdin Authorization is required for Real-Time updates. To create connection use this method:  
 Activity/Fragment:
-```Kotlin
+```kotlin
 override fun onCreate(savedInstanceState: Bundle?) {...
     // Crowdin Auth. required for screenshot/realtime update functionality.
     Crowdin.connectRealTimeUpdates(this)
@@ -82,7 +82,7 @@ override fun onCreate(savedInstanceState: Bundle?) {...
 In case you are not authorized you will be prompted to login in crowdin platform. Otherwise connection will be created.
 
 You can disconnect via:
-```Kotlin
+```kotlin
 override fun onDestroy() {
    super.onDestroy()
    // Close connection with crowdin.
@@ -93,7 +93,7 @@ override fun onDestroy() {
 ## Screenshots
 
 1. Add the following code in Application class:
-```Kotlin
+```kotlin
 Crowdin.init(applicationContext, ... ,
         CrowdinConfig.Builder()
                 ...
@@ -111,7 +111,7 @@ In case you are not authorized you can start auth process from your code by call
 
 It will open login webView.
 Additionally you can handle result if needed.
-```Kotlin
+```kotlin
 override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
    when (requestCode) {
        CrowdinWebActivity.REQUEST_CODE -> {
@@ -124,7 +124,7 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 ```
 
 After auth success you can use system buttons to capture screenshots or do it programmatically, with callback if needed:
-```Kotlin
+```kotlin
 Crowdin.sendScreenshot(activity!!, object : ScreenshotCallback {
    override fun onSuccess() {
        Log.d(TAG, "Screenshot uploaded")
@@ -158,9 +158,16 @@ Crowdin will start using strings of the new locale.
 4. To translate menu items you need to update your `onCreateOptionsMenu` method:
 ```kotlin
 override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    menuInflater.inflate(R.menu.your_menu, menu)
-    Crowdin.updateMenuItemsText(menu, resources, R.menu.your_menu)
+    menuInflater.inflateWithCrowdin(R.menu.activity_menu, menu, resources)
     return true
+}
+```
+
+```java
+@Override
+public boolean onCreateOptionsMenu(Menu menu) {
+    ExtentionsKt.inflateWithCrowdin(getMenuInflater(), R.menu.your_menu, menu, getResources());
+    return true;
 }
 ```
 
@@ -190,7 +197,7 @@ super.attachBaseContext(Crowdin.wrapContext(SomeLib.wrap(newBase)));
 
 ## Additionally
 1. You can register/unregister observer for data changes by adding this lines:
-```Kotlin
+```kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
     // Observe data loading.
     Crowdin.registerDataLoadingObserver(this)
@@ -198,7 +205,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 ```
 
 2. ShakeDetector for triggering force upload from crowdin. It will try to download latest updates from release.
-```Kotlin
+```kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
     // Simple device shake detector. Could be used for triggering force update.
     Crowdin.registerShakeDetector(this)

@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.example.fragments.*
+import com.crowdin.platform.util.inflateWithCrowdin
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, LoadingStateListener {
@@ -47,7 +48,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     override fun onDataChanged() {
-        Crowdin.updateMenuItemsText(navigationView.menu, resources, R.menu.drawer_view)
+        Crowdin.updateMenuItemsText(R.menu.drawer_view, navigationView.menu, resources)
         Log.d(MainActivity::class.java.simpleName, "LoadingStateListener: onSuccess")
     }
 
@@ -68,8 +69,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.activity_menu, menu)
-        Crowdin.updateMenuItemsText(menu, resources, R.menu.activity_menu)
+        menuInflater.inflateWithCrowdin(R.menu.activity_menu, menu, resources)
         return true
     }
 

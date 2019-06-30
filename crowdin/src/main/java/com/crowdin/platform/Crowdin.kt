@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.view.Menu
+import androidx.annotation.MenuRes
 import com.crowdin.platform.auth.CrowdinWebActivity
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.DistributionInfoCallback
@@ -98,13 +99,13 @@ object Crowdin {
     /**
      * Tries to update title for all items defined in menu xml file.
      *
+     * @param menuRes    the id of menu file.
      * @param menu      the options menu in which you place your items.
      * @param resources class for accessing an application's resources.
-     * @param menuId    the id of menu file.
      */
     @JvmStatic
-    fun updateMenuItemsText(menu: Menu, resources: Resources, menuId: Int) {
-        TextUtils.updateMenuItemsText(menu, resources, menuId)
+    fun updateMenuItemsText(@MenuRes menuRes: Int, menu: Menu, resources: Resources) {
+        TextUtils.updateMenuItemsText(menuRes, menu, resources)
     }
 
     /**

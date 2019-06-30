@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.example.R
+import com.crowdin.platform.util.inflateWithCrowdin
 
 class ToolsFragment : Fragment() {
 
@@ -37,7 +38,6 @@ class ToolsFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.fragment_menu, menu)
-        Crowdin.updateMenuItemsText(menu, resources, R.menu.fragment_menu)
+        inflater.inflateWithCrowdin(R.menu.fragment_menu, menu, resources)
     }
 }
