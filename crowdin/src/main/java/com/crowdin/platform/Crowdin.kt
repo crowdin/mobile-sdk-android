@@ -277,12 +277,12 @@ object Crowdin {
             distributionInfoManager = DistributionInfoManager(
                     CrowdinRetrofitService.instance.getCrowdinApi(),
                     dataManager!!,
-                    Crowdin.config.distributionKey)
+                    Crowdin.config.distributionHash)
         }
 
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             realTimeUpdateManager = RealTimeUpdateManager(
-                    Crowdin.config.distributionKey,
+                    Crowdin.config.distributionHash,
                     Crowdin.config.sourceLanguage,
                     dataManager,
                     viewTransformerManager)
@@ -300,7 +300,7 @@ object Crowdin {
         val remoteRepository = StringDataRemoteRepository(
                 CrowdinRetrofitService.instance.getCrowdinDistributionApi(),
                 XmlReader(StringResourceParser()),
-                config.distributionKey,
+                config.distributionHash,
                 config.filePaths)
         val localRepository = LocalStringRepositoryFactory.createLocalRepository(context, config)
 
@@ -327,7 +327,7 @@ object Crowdin {
                     CrowdinRetrofitService.instance.getCrowdinDistributionApi(),
                     XmlReader(StringResourceParser()),
                     dataManager!!,
-                    config.distributionKey,
+                    config.distributionHash,
                     config.filePaths,
                     config.sourceLanguage)
             mappingRepository.fetchData()

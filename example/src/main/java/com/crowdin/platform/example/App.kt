@@ -11,10 +11,10 @@ class App : Application() {
         super.onCreate()
         // Crowdin sdk initialization
         val fifteenMinutes: Long = 60 * 15
-        val distributionKey = "d5d8249cef350c21219d048106i"
+        val distributionHash = "d5d8249cef350c21219d048106i"
         Crowdin.init(applicationContext,
                 CrowdinConfig.Builder()
-                        .withDistributionKey(distributionKey)            // required
+                        .withDistributionHash(distributionHash)          // required
                         .withFilePaths(                        // required
                                 "strings.xml",
                                 "arrays.xml",

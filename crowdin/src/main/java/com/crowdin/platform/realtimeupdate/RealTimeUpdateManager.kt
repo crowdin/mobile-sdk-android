@@ -10,7 +10,7 @@ import okhttp3.Request
 import okhttp3.WebSocket
 
 internal class RealTimeUpdateManager(
-        private val distributionKey: String?,
+        private val distributionHash: String?,
         private val sourceLanguage: String,
         private val dataManager: DataManager?,
         private val viewTransformerManager: ViewTransformerManager) {
@@ -26,7 +26,7 @@ internal class RealTimeUpdateManager(
     private var socket: WebSocket? = null
 
     fun openConnection() {
-        distributionKey ?: return
+        distributionHash ?: return
         dataManager ?: return
 
         val authInfo = dataManager.getData(DataManager.AUTH_INFO, AuthInfo::class.java)

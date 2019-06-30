@@ -14,12 +14,12 @@ import java.net.HttpURLConnection
 internal class MappingRepository(private val crowdinDistributionApi: CrowdinDistributionApi,
                                  private val reader: Reader,
                                  private val dataManager: DataManager,
-                                 private val distributionKey: String?,
+                                 private val distributionHash: String?,
                                  private val filePaths: Array<out String>?,
                                  private val sourceLanguage: String) : BaseRepository() {
 
     override fun fetchData(languageDataCallback: LanguageDataCallback?) {
-        if (distributionKey == null) return
+        if (distributionHash == null) return
 
         filePaths?.forEach {
             val filePath = validateFilePath(it)
@@ -27,13 +27,13 @@ internal class MappingRepository(private val crowdinDistributionApi: CrowdinDist
                     .takeLast(1)
                     .run { "/$sourceLanguage/$it" }.toString()
             val eTag = eTagMap[filePath]
-            requestData(eTag, distributionKey, filePath, languageDataCallback)
+            requestData(eTag, distributionHash, filePath, languageDataCallback)
         }
     }
 
-    private fun requestData(eTag: String?, distributionKey: String, filePath: String,
+    private fun requestData(eTag: String?, distributionHash: String, filePath: String,
                             languageDataCallback: LanguageDataCallback?) {
-        crowdinDistributionApi.getMappingFile(eTag ?: HEADER_ETAG_EMPTY, distributionKey, filePath)
+        crowdinDistributionApi.getMappingFile(eTag ?: HEADER_ETAG_EMPTY, distributionHash, filePath)
                 .enqueue(object : Callback<ResponseBody> {
 
                     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {

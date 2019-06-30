@@ -32,5 +32,5 @@ internal interface CrowdinApi {
             @Header("User-Agent") agent: String,
             @Header("Cookie") cookie: String,
             @Header("x-csrf-token") xCsrfToken: String,
-            @Query("distribution_hash") distributionKey: String?): Call<DistributionInfoResponse>
+            @Query("distribution_hash") distributionHash: String?): Call<DistributionInfoResponse>
 }

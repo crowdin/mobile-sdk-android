@@ -8,7 +8,7 @@ import com.crowdin.platform.data.remote.NetworkType
 class CrowdinConfig private constructor() {
 
     var isPersist: Boolean = true
-    var distributionKey: String? = null
+    var distributionHash: String? = null
     var filePaths: Array<out String>? = null
     var networkType: NetworkType = NetworkType.ALL
     var isRealTimeUpdateEnabled: Boolean = false
@@ -19,7 +19,7 @@ class CrowdinConfig private constructor() {
     class Builder {
 
         private var isPersist: Boolean = true
-        private var distributionKey: String? = null
+        private var distributionHash: String? = null
         private var filePaths: Array<out String>? = null
         private var networkType: NetworkType = NetworkType.ALL
         private var isRealTimeUpdateEnabled: Boolean = false
@@ -32,8 +32,8 @@ class CrowdinConfig private constructor() {
             return this
         }
 
-        fun withDistributionKey(distributionKey: String): Builder {
-            this.distributionKey = distributionKey
+        fun withDistributionHash(distributionHash: String): Builder {
+            this.distributionHash = distributionHash
             return this
         }
 
@@ -70,10 +70,10 @@ class CrowdinConfig private constructor() {
         fun build(): CrowdinConfig {
             val config = CrowdinConfig()
             config.isPersist = isPersist
-            if (distributionKey == null) {
-                throw IllegalArgumentException("Crowdin: `distributionKey` cannot be null")
+            if (distributionHash == null) {
+                throw IllegalArgumentException("Crowdin: `distributionHash` cannot be null")
             }
-            config.distributionKey = distributionKey
+            config.distributionHash = distributionHash
 
             if (filePaths == null) {
                 throw IllegalArgumentException("Crowdin: `filePaths` cannot be null")

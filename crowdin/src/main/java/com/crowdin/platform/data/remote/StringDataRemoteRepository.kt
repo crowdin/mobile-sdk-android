@@ -12,22 +12,22 @@ import java.util.*
 
 internal class StringDataRemoteRepository(private val crowdinDistributionApi: CrowdinDistributionApi,
                                           private val reader: Reader,
-                                          private val distributionKey: String?,
+                                          private val distributionHash: String?,
                                           private val filePaths: Array<out String>?) : BaseRepository() {
 
     override fun fetchData(languageDataCallback: LanguageDataCallback?) {
-        if (distributionKey == null) return
+        if (distributionHash == null) return
 
         filePaths?.forEach {
             val filePath = validateFilePath(it)
             val eTag = eTagMap[filePath]
-            requestData(eTag, distributionKey, filePath, languageDataCallback)
+            requestData(eTag, distributionHash, filePath, languageDataCallback)
         }
     }
 
-    private fun requestData(eTag: String?, distributionKey: String, filePath: String,
+    private fun requestData(eTag: String?, distributionHash: String, filePath: String,
                             languageDataCallback: LanguageDataCallback?) {
-        crowdinDistributionApi.getResourceFile(eTag ?: HEADER_ETAG_EMPTY, distributionKey, filePath)
+        crowdinDistributionApi.getResourceFile(eTag ?: HEADER_ETAG_EMPTY, distributionHash, filePath)
                 .enqueue(object : Callback<ResponseBody> {
 
                     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {

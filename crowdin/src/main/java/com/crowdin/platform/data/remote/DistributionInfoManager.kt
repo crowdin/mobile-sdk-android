@@ -11,13 +11,13 @@ import retrofit2.Response
 
 internal class DistributionInfoManager(private val crowdinApi: CrowdinApi,
                                        private val dataManager: DataManager,
-                                       private val distributionKey: String?) {
+                                       private val distributionHash: String?) {
 
     fun getDistributionInfo(userAgent: String,
                             cookies: String,
                             xCsrfToken: String,
                             callback: DistributionInfoCallback) {
-        crowdinApi.getInfo(userAgent, cookies, xCsrfToken, distributionKey)
+        crowdinApi.getInfo(userAgent, cookies, xCsrfToken, distributionHash)
                 .enqueue(object : Callback<DistributionInfoResponse> {
 
                     override fun onResponse(call: Call<DistributionInfoResponse>, response: Response<DistributionInfoResponse>) {
