@@ -172,7 +172,7 @@ internal class MemoryLocalRepository : LocalRepository {
             if (it.stringValue == text) {
                 textMetaData.textAttributeKey = it.stringKey
                 textMetaData.stringsFormatArgs = it.formatArgs
-                textMetaData.stringDefault = it.def
+                textMetaData.stringDefault = it.default
                 return
             }
         }

@@ -140,22 +140,51 @@ Crowdin.sendScreenshot(activity!!, object : ScreenshotCallback {
 ## Notes:
 
 Additional info:
-1. You can provide new Strings
+
+1. SKD uses `androidx` version of libraries. In case your project still not migrated to androidx you can add this lines in the `gradle.properties` file:
+```groovy
+android.enableJetifier=true
+android.useAndroidX=true
+```
+
+List of SDK dependencies:
+```groovy
+dependencies {
+    implementation "androidx.appcompat:appcompat:1.0.2"
+    
+    // Scheduled updates.
+    implementation "androidx.work:work-runtime-ktx:2.0.1"
+    
+    // Support for material components
+    implementation "com.google.android.material:material:1.0.0"
+    
+    // Networking
+    implementation "com.squareup.retrofit2:retrofit:2.6.0"
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
+    implementation "com.google.code.gson:gson:2.8.5"
+    implementation "com.squareup.okhttp3:logging-interceptor:3.11.0"
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.31"
+}
+```
+
+
+2. You can provide new Strings
 Load your Strings in any way / any time / any place and just call this:
 ```java
 Crowdin.setStrings(language, newStrings);
 // e.g. language="en" newStrings=map of (key-value)s
 ```
 
-2. Please note that Crowdin works with current locale, so if you change locale with
+3. Please note that Crowdin works with current locale, so if you change locale with
 ```java
 Locale.setDefault(newLocale);
 ```
 Crowdin will start using strings of the new locale.
 
-3. For displaying a string, Crowdin tries to find that in dynamic strings, and will use bundled version as fallback. In the other words, Only the new provided strings will be overridden and for the rest the bundled version will be used.
+4. For displaying a string, Crowdin tries to find that in dynamic strings, and will use bundled version as fallback. In the other words, Only the new provided strings will be overridden and for the rest the bundled version will be used.
 
-4. To translate menu items you need to update your `onCreateOptionsMenu` method:
+5. To translate menu items you need to update your `onCreateOptionsMenu` method:
 ```kotlin
 override fun onCreateOptionsMenu(menu: Menu): Boolean {
     menuInflater.inflateWithCrowdin(R.menu.activity_menu, menu, resources)
@@ -171,14 +200,14 @@ public boolean onCreateOptionsMenu(Menu menu) {
 }
 ```
 
-5. In case you have custom views that uses `TypedArray` and `stylable` attributes, you will need to use such approach: 
+6. In case you have custom views that uses `TypedArray` and `stylable` attributes, you will need to use such approach: 
 ```kotlin
 val textId = typedArray.getResourceId(R.styleable.sample_item, 0)
 textView.setText(textId)
 ```
 instead of `typedArray.getString(R.styleable.sample_item)`
 
-6. Activity title defined via AndroidManifest won't be translated.
+7. Activity title defined via AndroidManifest won't be translated.
 ```xml
 <activity
     android:name=".activities.SampleActivity"
@@ -190,7 +219,7 @@ You can simply update your `toolbar` inside of activity or fragment:
 toolbar.setTitle(R.string.title);
 ```
 
-7. In case your project already overrides `attachBaseContext`:
+8. In case your project already overrides `attachBaseContext`:
 ```java
 super.attachBaseContext(Crowdin.wrapContext(SomeLib.wrap(newBase)));
 ```

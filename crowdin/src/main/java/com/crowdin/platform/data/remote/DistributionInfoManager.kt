@@ -1,8 +1,8 @@
 package com.crowdin.platform.data.remote
 
-import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.DataManager.Companion.DISTRIBUTION_DATA
+import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import retrofit2.Call

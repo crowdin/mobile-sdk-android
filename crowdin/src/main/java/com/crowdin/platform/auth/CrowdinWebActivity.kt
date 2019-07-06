@@ -70,8 +70,8 @@ class CrowdinWebActivity : AppCompatActivity() {
                     progressBar.visibility = View.VISIBLE
                     Crowdin.getDistributionInfo(userAgent, cookies, csrfToken, object : DistributionInfoCallback {
                         override fun onSuccess() {
-                            when (event) {
-                                EVENT_REAL_TIME_UPDATES -> Crowdin.createConnection()
+                            if (event == EVENT_REAL_TIME_UPDATES) {
+                                Crowdin.createConnection()
                             }
                             finish()
                         }

@@ -13,7 +13,7 @@ import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.TextUtils
 
 /**
- * A transformer which transforms Toolbar: it transforms the text set as title.
+ * A transformer which transforms Toolbar: it transforms the text, set as a title.
  */
 internal class ToolbarTransformer(textMetaDataProvider: TextMetaDataProvider) : BaseToolbarTransformer(textMetaDataProvider) {
 

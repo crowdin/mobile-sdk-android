@@ -23,7 +23,7 @@ import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-internal class EchoWebSocketListener(var mappingData: LanguageData,
+internal class EchoWebSocketListener(private var mappingData: LanguageData,
                                      private var distributionData: DistributionInfoResponse.DistributionData,
                                      private var viewTransformerManager: ViewTransformerManager)
     : WebSocketListener() {
@@ -31,7 +31,7 @@ internal class EchoWebSocketListener(var mappingData: LanguageData,
     private var dataHolderMap = ConcurrentHashMap<WeakReference<TextView>, TextMetaData>()
 
     override fun onOpen(webSocket: WebSocket, response: okhttp3.Response) {
-        output("onOpen : $response")
+        output("onOpen")
 
         val project = distributionData.project
         val user = distributionData.user
@@ -52,7 +52,6 @@ internal class EchoWebSocketListener(var mappingData: LanguageData,
     }
 
     override fun onMessage(webSocket: WebSocket?, text: String?) {
-        output("Receiving : $text")
         handleMessage(text)
     }
 
@@ -62,8 +61,8 @@ internal class EchoWebSocketListener(var mappingData: LanguageData,
         output("Closing : $code / $reason")
     }
 
-    override fun onFailure(webSocket: WebSocket, t: Throwable, response: okhttp3.Response?) {
-        output("Error : " + t.message)
+    override fun onFailure(webSocket: WebSocket, throwable: Throwable, response: okhttp3.Response?) {
+        output("Error : " + throwable.message)
     }
 
     private fun saveMatchedTextViewWithMappingId(mappingData: LanguageData) {

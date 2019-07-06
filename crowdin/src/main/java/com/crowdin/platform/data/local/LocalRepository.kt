@@ -25,15 +25,15 @@ internal interface LocalRepository {
     fun setString(language: String, key: String, value: String)
 
     /**
-     * Set a single string(key, value) for a specific language.
+     * Set a string data for a specific language.
      *
-     * @param language the string belongs to.
+     * @param language      the string belongs to.
      * @param stringData    the new string data.
      */
     fun setStringData(language: String, stringData: StringData)
 
     /**
-     * Set a string array for a specific language.
+     * Set a string array data for a specific language.
      *
      * @param language  the string belongs to.
      * @param arrayData the new string array data.
