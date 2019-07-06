@@ -146,6 +146,7 @@ Additional info:
 android.enableJetifier=true
 android.useAndroidX=true
 ```
+It might require additional changes in your code. 
 
 List of SDK dependencies:
 ```groovy
@@ -170,6 +171,7 @@ dependencies {
 
 
 2. You can provide new Strings
+
 Load your Strings in any way / any time / any place and just call this:
 ```java
 Crowdin.setStrings(language, newStrings);
@@ -253,7 +255,7 @@ Also there are other public methods in `Crowdin` class. You can find details in 
 
 ## License
 <pre>
-Copyright 2018 Crowdin
+Copyright 2019 Crowdin
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
