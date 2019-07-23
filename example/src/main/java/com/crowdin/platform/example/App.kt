@@ -19,7 +19,7 @@ class App : Application() {
                                 "strings.xml",
                                 "arrays.xml",
                                 "plurals.xml")
-                        .withNetworkType(NetworkType.WIFI)               // optional
+                        .withNetworkType(NetworkType.ALL)                // optional
                         .withRealTimeUpdates(true) // optional
                         .withScreenshotEnabled(true)   // optional
                         .withSourceLanguage("en")          // optional
