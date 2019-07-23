@@ -4,6 +4,7 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
+import android.view.InflateException
 import android.view.LayoutInflater
 import android.view.View
 import com.crowdin.platform.transformer.ViewTransformerManager
@@ -54,6 +55,7 @@ internal class CrowdinLayoutInflater constructor(original: LayoutInflater,
                 }
             } catch (e: ClassNotFoundException) {
                 // In this case we want to let the base class take a crack at it.
+            } catch (inflateException: InflateException) {
             }
         }
         return super.onCreateView(name, attrs)
@@ -79,6 +81,7 @@ internal class CrowdinLayoutInflater constructor(original: LayoutInflater,
             try {
                 view = createView(name, null, attrs)
             } catch (ignored: ClassNotFoundException) {
+            } catch (inflateException: InflateException) {
             }
         }
         return view
