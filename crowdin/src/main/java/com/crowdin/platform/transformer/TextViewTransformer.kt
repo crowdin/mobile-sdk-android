@@ -96,7 +96,7 @@ internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvide
     }
 
     inner class Watcher(var view: WeakReference<TextView>) : TextWatcher {
-
+        // Handle case when @string res set programmatically
         override fun afterTextChanged(s: Editable?) {
             view.get()?.let {
                 val resultData = textMetaDataProvider.provideTextMetaData(s.toString())
