@@ -7,6 +7,7 @@ import android.widget.TextView
 import com.crowdin.platform.data.model.TextMetaData
 import com.crowdin.platform.data.model.ViewData
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Manages all view transformers as a central point for layout inflater.
@@ -64,13 +65,13 @@ internal class ViewTransformerManager {
         return mutableList
     }
 
-    fun getVisibleViewsWithData(): WeakHashMap<TextView, TextMetaData> {
-        val weakHashMap = WeakHashMap<TextView, TextMetaData>()
+    fun getVisibleViewsWithData(): ConcurrentHashMap<TextView, TextMetaData> {
+        val concurrentHashMap = ConcurrentHashMap<TextView, TextMetaData>()
         transformers.forEach {
-            weakHashMap.putAll(it.second.getVisibleViewsWithData())
+            concurrentHashMap.putAll(it.second.getVisibleViewsWithData())
         }
 
-        return weakHashMap
+        return concurrentHashMap
     }
 
     fun setOnViewsChangeListener(listener: ViewsChangeListener?) {
@@ -117,9 +118,9 @@ internal interface Transformer {
     /**
      * Collect visible on a window views and related to them data.
      *
-     * @return WeakHashMap<TextView, TextMetaData> map of views and text metadata.
+     * @return ConcurrentHashMap<TextView, TextMetaData> map of views and text metadata.
      */
-    fun getVisibleViewsWithData(): WeakHashMap<TextView, TextMetaData>
+    fun getVisibleViewsWithData(): ConcurrentHashMap<TextView, TextMetaData>
 
     /**
      * Set view change listener.
