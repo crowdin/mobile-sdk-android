@@ -1,6 +1,5 @@
 package com.crowdin.platform.data.remote
 
-import android.annotation.SuppressLint
 import com.crowdin.platform.BuildConfig
 import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
@@ -40,22 +39,16 @@ internal class CrowdinRetrofitService private constructor() {
             crowdinDistributionApi
                     ?: getCrowdinRetrofit(okHttpClient, BASE_DISTRIBUTION_URL).create(CrowdinDistributionApi::class.java)
 
-    // Temp API with login
-    fun getTmpCrowdinApi(): CrowdinApi = crowdinApi
-            ?: getCrowdinRetrofit(okHttpClient, TMP_API_URL).create(CrowdinApi::class.java)
-
     fun getCrowdinApi(): CrowdinApi = crowdinApi
             ?: getCrowdinRetrofit(okHttpClient, BASE_API_URL).create(CrowdinApi::class.java)
 
     fun getCrowdinAuthApi(): CrowdinApi = crowdinApi
-            ?: getCrowdinRetrofit(okHttpClient, TMP_AUTH_API_URL).create(CrowdinApi::class.java)
+            ?: getCrowdinRetrofit(okHttpClient, AUTH_API_URL).create(CrowdinApi::class.java)
 
     companion object {
 
         private const val BASE_DISTRIBUTION_URL = "https://crowdin-distribution.s3.us-east-1.amazonaws.com/"
-        @SuppressLint("AuthLeak")
-        private const val TMP_API_URL = "https://api-tester:VmpFqTyXPq3ebAyNksUxHwhC@crowdin.com/"
-        private const val TMP_AUTH_API_URL = "https://api-tester:VmpFqTyXPq3ebAyNksUxHwhC@accounts.crowdin.com/"
+        private const val AUTH_API_URL = "https://accounts.crowdin.com/"
         private const val BASE_API_URL = "https://crowdin.com/"
 
         private var sInstance: CrowdinRetrofitService? = null

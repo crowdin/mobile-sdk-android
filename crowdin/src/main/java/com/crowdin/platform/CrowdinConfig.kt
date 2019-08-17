@@ -47,13 +47,13 @@ class CrowdinConfig private constructor() {
             return this
         }
 
-        fun withRealTimeUpdates(isRealTimeUpdateEnabled: Boolean): Builder {
-            this.isRealTimeUpdateEnabled = isRealTimeUpdateEnabled
+        fun withRealTimeUpdates(): Builder {
+            this.isRealTimeUpdateEnabled = true
             return this
         }
 
-        fun withScreenshotEnabled(isScreenshotEnabled: Boolean): Builder {
-            this.isScreenshotEnabled = isScreenshotEnabled
+        fun withScreenshotEnabled(): Builder {
+            this.isScreenshotEnabled = true
             return this
         }
 

@@ -144,4 +144,9 @@ internal class DataManager(private val remoteRepository: RemoteRepository,
         val data = getData(DISTRIBUTION_DATA, DistributionInfoResponse.DistributionData::class.java) as DistributionInfoResponse.DistributionData?
         return data != null
     }
+
+    fun isTokenExpired(): Boolean {
+        val authInfo = getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?
+        return authInfo?.isExpired() ?: true
+    }
 }

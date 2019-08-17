@@ -14,7 +14,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField 'String', 'CLIENT_ID', '"test-sdk"'
         buildConfigField 'String', 'CLIENT_SECRET', '"79MG6E8DZfEeomalfnoKx7dA0CVuwtPC3jQTB3ts"'
-        buildConfigField 'String', 'URL_CROWDIN_AUTH', '"https://api-tester:VmpFqTyXPq3ebAyNksUxHwhC@accounts.crowdin.com/oauth/authorize?client_id=test-sdk&response_type=code&scope=project.content.screenshots&redirect_uri=crowdintest://"'
+        buildConfigField 'String', 'URL_CROWDIN_AUTH', '"https://accounts.crowdin.com/oauth/authorize?client_id=test-sdk&response_type=code&scope=project.content.screenshots&redirect_uri=crowdintest://"'
     }
 
     buildTypes {

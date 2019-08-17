@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.BitmapFactory
-import android.util.Log
 import android.view.Menu
 import androidx.annotation.MenuRes
 import com.crowdin.platform.auth.AuthActivity
@@ -212,23 +211,26 @@ object Crowdin {
     }
 
     /**
-     * Connect to Crowdin platform for receiving realtime updates.
+     * Auth to Crowdin platform. Create connection for realtime updates if feature turned on.
      */
     @JvmStatic
-    fun connectRealTimeUpdates(activity: Activity) {
+    fun authorize(activity: Activity) {
         dataManager?.let {
-            if (it.isDistributionDataAvailable()) {
-                Log.d("TAG", "isDistributionDataAvailable: true")
-                createConnection()
+            if (it.isAuthorized()) {
+                if (FeatureFlags.isRealTimeUpdateEnabled) {
+                    createConnection()
+                }
             } else {
-                Log.d("TAG", "launchActivity")
-                AuthActivity.launchActivity(activity, AuthActivity.EVENT_REAL_TIME_UPDATES)
+                var type: String? = null
+                if (FeatureFlags.isRealTimeUpdateEnabled) {
+                    type = AuthActivity.EVENT_REAL_TIME_UPDATES
+                }
+                AuthActivity.launchActivity(activity, type)
             }
         }
     }
 
     internal fun createConnection() {
-        Log.d("TAG", "createConnection")
         realTimeUpdateManager?.openConnection()
     }
 
@@ -291,7 +293,7 @@ object Crowdin {
 
         if (FeatureFlags.isScreenshotEnabled) {
             screenshotManager = ScreenshotManager(
-                    CrowdinRetrofitService.instance.getTmpCrowdinApi(),
+                    CrowdinRetrofitService.instance.getCrowdinApi(),
                     dataManager!!,
                     Crowdin.config.sourceLanguage)
         }

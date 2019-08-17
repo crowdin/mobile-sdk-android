@@ -1,6 +1,5 @@
 package com.crowdin.platform.data.remote
 
-import android.util.Log
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.DataManager.Companion.AUTH_INFO
 import com.crowdin.platform.data.DataManager.Companion.DISTRIBUTION_DATA
@@ -17,18 +16,14 @@ internal class DistributionInfoManager(private val crowdinApi: CrowdinApi,
                                        private val distributionHash: String) {
 
     fun getDistributionInfo(callback: DistributionInfoCallback) {
-        Log.d("TAG", "getDistributionInfo")
-
         val authInfo = dataManager.getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?
         authInfo ?: return
         val bearer = "Bearer ${authInfo.accessToken}"
         crowdinApi.getInfo(bearer, distributionHash)
                 .enqueue(object : Callback<DistributionInfoResponse> {
-
                     override fun onResponse(call: Call<DistributionInfoResponse>, response: Response<DistributionInfoResponse>) {
                         val distributionInfo = response.body()
                         distributionInfo?.let {
-                            Log.d("TAG", "getDistributionInfo saveData")
                             dataManager.saveData(DISTRIBUTION_DATA, it.data)
                             callback.onSuccess()
                         }

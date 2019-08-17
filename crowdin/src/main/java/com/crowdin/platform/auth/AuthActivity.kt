@@ -12,6 +12,7 @@ import com.crowdin.platform.Crowdin
 import com.crowdin.platform.R
 import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.model.AuthInfo
+import com.crowdin.platform.data.model.AuthResponse
 import com.crowdin.platform.data.model.TokenRequest
 import com.crowdin.platform.data.remote.CrowdinRetrofitService
 import com.crowdin.platform.util.ThreadUtils
@@ -29,7 +30,6 @@ internal class AuthActivity : AppCompatActivity() {
         const val EVENT_REAL_TIME_UPDATES = "realtime_update"
         private const val GRANT_TYPE = "authorization_code"
         private const val REDIRECT_URI = "crowdintest://"
-        private const val AUTH_URL = "https://api-tester:VmpFqTyXPq3ebAyNksUxHwhC@accounts.crowdin.com/oauth/authorize?client_id=test-sdk&response_type=code&scope=project.content.screenshots&redirect_uri=crowdintest://"
 
         @JvmStatic
         @JvmOverloads
@@ -45,8 +45,6 @@ internal class AuthActivity : AppCompatActivity() {
         val data = intent?.data
         val code = data?.getQueryParameter("code") ?: ""
         handleCode(code)
-
-        Log.d("TAG", "onNewIntent Code: $code")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +54,7 @@ internal class AuthActivity : AppCompatActivity() {
         event = intent.getStringExtra(EVENT_TYPE)
 
         if (authAttemptCounter != AUTH_ATTEMPT_THRESHOLD) {
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(AUTH_URL))
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.URL_CROWDIN_AUTH))
             startActivity(browserIntent)
             authAttemptCounter++
         } else {
@@ -67,16 +65,12 @@ internal class AuthActivity : AppCompatActivity() {
     private fun handleCode(code: String) {
         if (code.isNotEmpty()) {
             statusTextView.text = getString(R.string.loading)
-            Log.d("TAG", "code.isNotEmpty")
-
             ThreadUtils.runInBackgroundPool(Runnable {
                 val apiService = CrowdinRetrofitService.instance.getCrowdinAuthApi()
                 val response = apiService.getToken(TokenRequest(GRANT_TYPE, BuildConfig.CLIENT_ID,
                         BuildConfig.CLIENT_SECRET, REDIRECT_URI, code)).execute()
                 if (response.isSuccessful && response.body() != null) {
-                    Log.d("TAG", "response.isSuccessful")
-                    Crowdin.saveAuthInfo(AuthInfo(response.body()!!))
-                    getDistributionInfo(event)
+                    getDistributionInfo(event, response.body()!!)
                 } else {
                     Toast.makeText(this, "Not authenticated.", Toast.LENGTH_LONG).show()
                     finish()
@@ -84,22 +78,15 @@ internal class AuthActivity : AppCompatActivity() {
             }, false)
 
         } else {
-            if (authAttemptCounter != AUTH_ATTEMPT_THRESHOLD) {
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(AUTH_URL))
-                startActivity(browserIntent)
-                authAttemptCounter++
-            } else {
-                Toast.makeText(this, "Not authorized.", Toast.LENGTH_LONG).show()
-                finish()
-            }
+            Toast.makeText(this, "Not authorized.", Toast.LENGTH_LONG).show()
+            finish()
         }
     }
 
-    private fun getDistributionInfo(event: String?) {
-        Log.d("TAG", "AuthActivity: getDistributionInfo")
+    private fun getDistributionInfo(event: String?, authResponse: AuthResponse) {
         Crowdin.getDistributionInfo(object : DistributionInfoCallback {
             override fun onSuccess() {
-                Log.d("TAG", "AuthActivity: onSuccess: $event")
+                Crowdin.saveAuthInfo(AuthInfo(authResponse))
                 if (event == EVENT_REAL_TIME_UPDATES) {
                     Crowdin.createConnection()
                 }
@@ -108,7 +95,7 @@ internal class AuthActivity : AppCompatActivity() {
 
             override fun onError(throwable: Throwable) {
                 finish()
-                Log.d("TAG", "Get info, onFailure:${throwable.localizedMessage}")
+                Log.d(AuthActivity::class.java.simpleName, "Get info, onFailure:${throwable.localizedMessage}")
             }
         })
     }

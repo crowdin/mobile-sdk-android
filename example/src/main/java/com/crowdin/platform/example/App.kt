@@ -20,8 +20,8 @@ class App : Application() {
                                 "arrays.xml",
                                 "plurals.xml")
                         .withNetworkType(NetworkType.ALL)                // optional
-                        .withRealTimeUpdates(true) // optional
-                        .withScreenshotEnabled(true)   // optional
+                        .withRealTimeUpdates()                           // optional
+                        .withScreenshotEnabled()                         // optional
                         .withSourceLanguage("en")          // optional
                         .withUpdateInterval(fifteenMinutes)              // optional
                         .build())
