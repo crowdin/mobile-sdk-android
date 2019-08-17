@@ -12,7 +12,6 @@ import com.crowdin.platform.Crowdin
 import com.crowdin.platform.R
 import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.model.AuthInfo
-import com.crowdin.platform.data.model.AuthResponse
 import com.crowdin.platform.data.model.TokenRequest
 import com.crowdin.platform.data.remote.CrowdinRetrofitService
 import com.crowdin.platform.util.ThreadUtils
@@ -70,7 +69,8 @@ internal class AuthActivity : AppCompatActivity() {
                 val response = apiService.getToken(TokenRequest(GRANT_TYPE, BuildConfig.CLIENT_ID,
                         BuildConfig.CLIENT_SECRET, REDIRECT_URI, code)).execute()
                 if (response.isSuccessful && response.body() != null) {
-                    getDistributionInfo(event, response.body()!!)
+                    Crowdin.saveAuthInfo(AuthInfo(response.body()!!))
+                    getDistributionInfo(event)
                 } else {
                     Toast.makeText(this, "Not authenticated.", Toast.LENGTH_LONG).show()
                     finish()
@@ -83,10 +83,9 @@ internal class AuthActivity : AppCompatActivity() {
         }
     }
 
-    private fun getDistributionInfo(event: String?, authResponse: AuthResponse) {
+    private fun getDistributionInfo(event: String?) {
         Crowdin.getDistributionInfo(object : DistributionInfoCallback {
             override fun onSuccess() {
-                Crowdin.saveAuthInfo(AuthInfo(authResponse))
                 if (event == EVENT_REAL_TIME_UPDATES) {
                     Crowdin.createConnection()
                 }
@@ -94,6 +93,7 @@ internal class AuthActivity : AppCompatActivity() {
             }
 
             override fun onError(throwable: Throwable) {
+                Crowdin.saveAuthInfo(null)
                 finish()
                 Log.d(AuthActivity::class.java.simpleName, "Get info, onFailure:${throwable.localizedMessage}")
             }

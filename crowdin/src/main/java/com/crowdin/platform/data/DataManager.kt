@@ -127,7 +127,7 @@ internal class DataManager(private val remoteRepository: RemoteRepository,
     fun getMapping(sourceLanguage: String): LanguageData? =
             localRepository.getLanguageData(sourceLanguage)
 
-    fun saveData(type: String, data: Any) {
+    fun saveData(type: String, data: Any?) {
         localRepository.saveData(type, data)
     }
 

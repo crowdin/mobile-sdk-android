@@ -264,7 +264,7 @@ object Crowdin {
         shakeDetectorManager?.unregisterShakeDetector()
     }
 
-    internal fun saveAuthInfo(authInfo: AuthInfo) {
+    internal fun saveAuthInfo(authInfo: AuthInfo?) {
         dataManager?.saveData(DataManager.AUTH_INFO, authInfo)
     }
 

@@ -11,7 +11,7 @@ import java.util.*
 internal class MemoryLocalRepository : LocalRepository {
 
     private val stringsData = LinkedHashMap<String, LanguageData>()
-    private val generalData = mutableMapOf<String, Any>()
+    private val generalData = mutableMapOf<String, Any?>()
 
     override fun saveLanguageData(languageData: LanguageData) {
         when (val data = stringsData[languageData.language]) {
@@ -126,7 +126,7 @@ internal class MemoryLocalRepository : LocalRepository {
         return textMetaData
     }
 
-    override fun saveData(type: String, data: Any) {
+    override fun saveData(type: String, data: Any?) {
         generalData[type] = data
     }
 
