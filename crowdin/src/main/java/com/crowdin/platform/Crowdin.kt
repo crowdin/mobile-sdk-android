@@ -4,9 +4,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.view.Menu
 import androidx.annotation.MenuRes
-import com.crowdin.platform.auth.CrowdinWebActivity
+import com.crowdin.platform.auth.AuthActivity
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.TextMetaDataProvider
@@ -215,16 +216,19 @@ object Crowdin {
      */
     @JvmStatic
     fun connectRealTimeUpdates(activity: Activity) {
-        realTimeUpdateManager?.let {
-            when {
-                dataManager!!.isAuthorized() -> createConnection()
-                else -> CrowdinWebActivity.launchActivityForResult(activity,
-                        CrowdinWebActivity.EVENT_REAL_TIME_UPDATES)
+        dataManager?.let {
+            if (it.isDistributionDataAvailable()) {
+                Log.d("TAG", "isDistributionDataAvailable: true")
+                createConnection()
+            } else {
+                Log.d("TAG", "launchActivity")
+                AuthActivity.launchActivity(activity, AuthActivity.EVENT_REAL_TIME_UPDATES)
             }
         }
     }
 
     internal fun createConnection() {
+        Log.d("TAG", "createConnection")
         realTimeUpdateManager?.openConnection()
     }
 
@@ -262,11 +266,8 @@ object Crowdin {
         dataManager?.saveData(DataManager.AUTH_INFO, authInfo)
     }
 
-    internal fun getDistributionInfo(userAgent: String,
-                                     cookies: String,
-                                     xCsrfToken: String,
-                                     callback: DistributionInfoCallback) {
-        distributionInfoManager?.getDistributionInfo(userAgent, cookies, xCsrfToken, callback)
+    internal fun getDistributionInfo(callback: DistributionInfoCallback) {
+        distributionInfoManager?.getDistributionInfo(callback)
     }
 
     private fun initCrowdinApi() {
@@ -283,7 +284,6 @@ object Crowdin {
 
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             realTimeUpdateManager = RealTimeUpdateManager(
-                    Crowdin.config.distributionHash,
                     Crowdin.config.sourceLanguage,
                     dataManager,
                     viewTransformerManager)

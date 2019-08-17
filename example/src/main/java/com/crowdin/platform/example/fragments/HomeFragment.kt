@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.LoadingStateListener
-import com.crowdin.platform.auth.CrowdinWebActivity
 import com.crowdin.platform.example.R
 import com.crowdin.platform.screenshot.ScreenshotCallback
 
@@ -37,10 +36,6 @@ class HomeFragment : Fragment(), LoadingStateListener {
                     Log.d(TAG, throwable.localizedMessage)
                 }
             })
-        }
-
-        view.findViewById<TextView>(R.id.textView1).setOnClickListener {
-            activity?.let { CrowdinWebActivity.launchActivityForResult(it) }
         }
 
         view.findViewById<Button>(R.id.load_data_btn).setOnClickListener {

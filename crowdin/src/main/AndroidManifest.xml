@@ -6,6 +6,18 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
-        <activity android:name=".auth.CrowdinWebActivity" />
+        <activity
+            android:name=".auth.AuthActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/Transparent">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="crowdintest" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

@@ -1,44 +1,31 @@
 package com.crowdin.platform.realtimeupdate
 
 import com.crowdin.platform.data.DataManager
-import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.transformer.ViewTransformerManager
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
 
-internal class RealTimeUpdateManager(
-        private val distributionHash: String?,
-        private val sourceLanguage: String,
-        private val dataManager: DataManager?,
-        private val viewTransformerManager: ViewTransformerManager) {
+internal class RealTimeUpdateManager(private val sourceLanguage: String,
+                                     private val dataManager: DataManager?,
+                                     private val viewTransformerManager: ViewTransformerManager) {
 
     companion object {
         const val NORMAL_CLOSURE_STATUS = 0x3E9
         const val PLURAL_NONE = "none"
         private const val BASE_WS_URL = "wss://ws-lb.crowdin.com/"
-        private const val COOKIE = "Cookie"
-        private const val X_CSRF_TOKEN = "x-csrf-token"
     }
 
     private var socket: WebSocket? = null
 
     fun openConnection() {
-        distributionHash ?: return
         dataManager ?: return
-
-        val authInfo = dataManager.getData(DataManager.AUTH_INFO, AuthInfo::class.java)
-        authInfo ?: return
-        authInfo as AuthInfo
-
         val distributionData = dataManager.getData(DataManager.DISTRIBUTION_DATA,
-                DistributionInfoResponse.DistributionData::class.java)
+                DistributionInfoResponse.DistributionData::class.java) as DistributionInfoResponse.DistributionData?
         distributionData ?: return
-        distributionData as DistributionInfoResponse.DistributionData
 
-        createConnection(distributionData, authInfo.cookies, authInfo.xCsrfToken)
+        createConnection(distributionData)
     }
 
     fun closeConnection() {
@@ -46,29 +33,15 @@ internal class RealTimeUpdateManager(
         viewTransformerManager.setOnViewsChangeListener(null)
     }
 
-    private fun createConnection(distributionData: DistributionInfoResponse.DistributionData,
-                                 cookie: String,
-                                 xCsrfToken: String) {
+    private fun createConnection(distributionData: DistributionInfoResponse.DistributionData) {
         val mappingData = dataManager?.getMapping(sourceLanguage) ?: return
-        val client = OkHttpClient().newBuilder()
-                .addInterceptor { chain -> addHeaders(chain, cookie, xCsrfToken) }
-                .build()
+        val client = OkHttpClient().newBuilder().build()
         val request = Request.Builder()
                 .url(BASE_WS_URL)
                 .build()
 
         val listener = EchoWebSocketListener(mappingData, distributionData, viewTransformerManager)
         socket = client.newWebSocket(request, listener)
-        client.dispatcher().executorService().shutdown()
-    }
-
-    private fun addHeaders(chain: Interceptor.Chain, cookie: String, xCsrfToken: String): okhttp3.Response {
-        val original = chain.request()
-        val authorized = original.newBuilder()
-                .addHeader(COOKIE, cookie)
-                .addHeader(X_CSRF_TOKEN, xCsrfToken)
-                .build()
-
-        return chain.proceed(authorized)
+        client.dispatcher.executorService.shutdown()
     }
 }

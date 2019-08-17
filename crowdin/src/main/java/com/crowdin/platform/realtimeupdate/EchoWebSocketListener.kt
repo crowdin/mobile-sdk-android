@@ -56,11 +56,11 @@ internal class EchoWebSocketListener(private var mappingData: LanguageData,
         }
     }
 
-    override fun onMessage(webSocket: WebSocket?, text: String?) {
+    override fun onMessage(webSocket: WebSocket, text: String) {
         handleMessage(text)
     }
 
-    override fun onClosing(webSocket: WebSocket, code: Int, reason: String?) {
+    override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
         dataHolderMap.clear()
         webSocket.close(NORMAL_CLOSURE_STATUS, null)
         output("Closing : $code / $reason")

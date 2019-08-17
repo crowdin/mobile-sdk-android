@@ -9,8 +9,8 @@ import com.crowdin.platform.data.getMappingValueForKey
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.ViewData
 import com.crowdin.platform.data.remote.api.*
-import okhttp3.MediaType
-import okhttp3.RequestBody
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -72,7 +72,7 @@ internal class ScreenshotManager(private var crowdinApi: CrowdinApi,
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, IMG_QUALITY, stream)
         val byteArray = stream.toByteArray()
-        val requestBody = RequestBody.create(MediaType.parse(MEDIA_TYPE_IMG), byteArray)
+        val requestBody = byteArray.toRequestBody(MEDIA_TYPE_IMG.toMediaTypeOrNull(), 0, byteArray.size)
         bitmap.recycle()
 
         crowdinApi.uploadScreenshot(requestBody).enqueue(object : Callback<UploadScreenshotResponse> {
