@@ -1,6 +1,8 @@
 package com.crowdin.platform.data.remote
 
 import com.crowdin.platform.BuildConfig
+import com.crowdin.platform.Session
+import com.crowdin.platform.SessionImpl
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.remote.api.AuthApi
 import com.crowdin.platform.data.remote.api.CrowdinApi

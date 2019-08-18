@@ -1,8 +1,6 @@
-package com.crowdin.platform.data.remote
+package com.crowdin.platform
 
 import android.util.Log
-import com.crowdin.platform.BuildConfig
-import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.AuthResponse

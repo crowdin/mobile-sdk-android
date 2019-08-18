@@ -1,8 +1,8 @@
-package com.crowdin.platform.data.remote
+package com.crowdin.platform
 
 import com.crowdin.platform.data.model.AuthResponse
 
-interface Session {
+internal interface Session {
 
     fun isAuthorized(): Boolean
 
