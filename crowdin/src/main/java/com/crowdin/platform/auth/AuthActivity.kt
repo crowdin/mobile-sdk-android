@@ -65,7 +65,7 @@ internal class AuthActivity : AppCompatActivity() {
         if (code.isNotEmpty()) {
             statusTextView.text = getString(R.string.loading)
             ThreadUtils.runInBackgroundPool(Runnable {
-                val apiService = CrowdinRetrofitService.instance.getCrowdinAuthApi()
+                val apiService = CrowdinRetrofitService.getCrowdinAuthApi()
                 val response = apiService.getToken(TokenRequest(GRANT_TYPE, BuildConfig.CLIENT_ID,
                         BuildConfig.CLIENT_SECRET, REDIRECT_URI, code)).execute()
                 if (response.isSuccessful && response.body() != null) {
