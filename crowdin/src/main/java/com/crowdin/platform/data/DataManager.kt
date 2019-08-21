@@ -150,13 +150,13 @@ internal class DataManager(private val remoteRepository: RemoteRepository,
         return authInfo?.isExpired() ?: true
     }
 
-    fun getAccessToken(): String {
+    fun getAccessToken(): String? {
         val authInfo = getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?
-        return authInfo!!.accessToken
+        return authInfo?.accessToken
     }
 
-    fun getRefreshToken(): String {
+    fun getRefreshToken(): String? {
         val authInfo = getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?
-        return authInfo!!.refreshToken
+        return authInfo?.refreshToken
     }
 }

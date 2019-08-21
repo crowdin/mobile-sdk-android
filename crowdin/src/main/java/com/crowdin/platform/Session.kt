@@ -8,7 +8,7 @@ internal interface Session {
 
     fun isTokenExpired(): Boolean
 
-    fun getAccessToken(): String
+    fun getAccessToken(): String?
 
     fun refreshToken(): Boolean
 

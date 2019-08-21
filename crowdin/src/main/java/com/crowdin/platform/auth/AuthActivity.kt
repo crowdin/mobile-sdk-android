@@ -85,7 +85,7 @@ internal class AuthActivity : AppCompatActivity() {
 
     private fun getDistributionInfo(event: String?) {
         Crowdin.getDistributionInfo(object : DistributionInfoCallback {
-            override fun onSuccess() {
+            override fun onResponse() {
                 if (event == EVENT_REAL_TIME_UPDATES) {
                     Crowdin.createConnection()
                 }

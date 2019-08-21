@@ -14,10 +14,12 @@ internal class SessionImpl(private val dataManager: DataManager,
 
     override fun isTokenExpired(): Boolean = dataManager.isTokenExpired()
 
-    override fun getAccessToken(): String = dataManager.getAccessToken()
+    override fun getAccessToken(): String? = dataManager.getAccessToken()
 
     override fun refreshToken(): Boolean {
         val refreshToken = dataManager.getRefreshToken()
+        refreshToken ?: return false
+
         val response = authApi.getToken(RefreshToken("refresh_token", BuildConfig.CLIENT_ID,
                 BuildConfig.CLIENT_SECRET, refreshToken)).execute()
         val authResponse = response.body()
@@ -27,10 +29,11 @@ internal class SessionImpl(private val dataManager: DataManager,
     }
 
     override fun invalidate() {
+        dataManager.saveData(DataManager.AUTH_INFO, null)
         Log.e(SessionImpl::class.java.simpleName, "Token expired. Refresh silent failed.")
     }
 
     override fun saveToken(authResponse: AuthResponse) {
-        Crowdin.saveAuthInfo(AuthInfo(authResponse))
+        dataManager.saveData(DataManager.AUTH_INFO, AuthInfo(authResponse))
     }
 }

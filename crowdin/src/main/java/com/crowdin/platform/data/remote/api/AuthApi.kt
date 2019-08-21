@@ -5,7 +5,7 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-interface AuthApi {
+internal interface AuthApi {
 
     @POST("oauth/token")
     fun getToken(@Body tokenRequest: Any): Call<AuthResponse>

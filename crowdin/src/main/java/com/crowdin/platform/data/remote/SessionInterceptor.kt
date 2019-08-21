@@ -51,7 +51,9 @@ internal class SessionInterceptor(private val session: Session) : Interceptor {
 
     private fun addHeaderToRequest(original: Request): Request {
         val accessToken = session.getAccessToken()
-        val requestBuilder = original.newBuilder().header("Authorization", "Bearer $accessToken")
+        val requestBuilder = original.newBuilder()
+        accessToken ?: return requestBuilder.build()
+        requestBuilder.header("Authorization", "Bearer $accessToken")
         return requestBuilder.build()
     }
 
