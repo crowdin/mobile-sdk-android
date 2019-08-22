@@ -48,7 +48,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     override fun onDataChanged() {
-        Crowdin.updateMenuItemsText(R.menu.drawer_view, navigationView.menu, resources)
+        menuInflater.inflateWithCrowdin(R.menu.drawer_view, navigationView.menu, resources)
         Log.d(MainActivity::class.java.simpleName, "LoadingStateListener: onSuccess")
     }
 
