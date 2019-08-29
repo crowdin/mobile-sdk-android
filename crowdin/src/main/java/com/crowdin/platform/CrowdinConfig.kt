@@ -1,5 +1,6 @@
 package com.crowdin.platform
 
+import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.remote.NetworkType
 
 /**
@@ -15,6 +16,7 @@ class CrowdinConfig private constructor() {
     var isScreenshotEnabled: Boolean = false
     var updateInterval: Long = -1
     var sourceLanguage: String = ""
+    var authConfig: AuthConfig? = null
 
     class Builder {
 
@@ -26,6 +28,7 @@ class CrowdinConfig private constructor() {
         private var isScreenshotEnabled: Boolean = false
         private var updateInterval: Long = -1
         private var sourceLanguage: String = ""
+        private var authConfig: AuthConfig? = null
 
         fun persist(isPersist: Boolean): Builder {
             this.isPersist = isPersist
@@ -67,27 +70,32 @@ class CrowdinConfig private constructor() {
             return this
         }
 
+        fun withAuthConfig(authConfig: AuthConfig): Builder {
+            this.authConfig = authConfig
+            return this
+        }
+
         fun build(): CrowdinConfig {
             val config = CrowdinConfig()
             config.isPersist = isPersist
-            if (distributionHash.isEmpty()) {
-                throw IllegalArgumentException("Crowdin: `distributionHash` cannot be empty")
-            }
+            require(distributionHash.isNotEmpty()) { "Crowdin: `distributionHash` cannot be empty" }
+
             config.distributionHash = distributionHash
 
-            if (filePaths == null) {
-                throw IllegalArgumentException("Crowdin: `filePaths` cannot be null")
-            }
+            requireNotNull(filePaths) { "Crowdin: `filePaths` cannot be null" }
+
             config.filePaths = filePaths
             config.networkType = networkType
             config.isRealTimeUpdateEnabled = isRealTimeUpdateEnabled
             config.isScreenshotEnabled = isScreenshotEnabled
 
-            if ((isRealTimeUpdateEnabled || isScreenshotEnabled) && sourceLanguage.isEmpty()) {
-                throw IllegalArgumentException("Crowdin: `sourceLanguage` cannot be empty")
+            require(!((isRealTimeUpdateEnabled || isScreenshotEnabled) && sourceLanguage.isEmpty())) {
+                "Crowdin: `sourceLanguage` cannot be empty"
             }
+
             config.sourceLanguage = sourceLanguage
             config.updateInterval = updateInterval
+            config.authConfig = authConfig
 
             return config
         }

@@ -11,6 +11,7 @@ import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.TextMetaDataProvider
 import com.crowdin.platform.data.local.LocalStringRepositoryFactory
+import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.parser.StringResourceParser
 import com.crowdin.platform.data.parser.XmlReader
@@ -273,29 +274,29 @@ object Crowdin {
     private fun initFeatureManagers() {
         if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             distributionInfoManager = DistributionInfoManager(
-                    CrowdinRetrofitService.getCrowdinApi(dataManager!!),
+                    CrowdinRetrofitService.getCrowdinApi(dataManager!!, config.authConfig?.organizationName),
                     dataManager!!,
-                    Crowdin.config.distributionHash)
+                    config.distributionHash)
         }
 
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             realTimeUpdateManager = RealTimeUpdateManager(
-                    Crowdin.config.sourceLanguage,
+                    config.sourceLanguage,
                     dataManager,
                     viewTransformerManager)
         }
 
         if (FeatureFlags.isScreenshotEnabled) {
             screenshotManager = ScreenshotManager(
-                    CrowdinRetrofitService.getCrowdinApi(dataManager!!),
+                    CrowdinRetrofitService.getCrowdinApi(dataManager!!, config.authConfig?.organizationName),
                     dataManager!!,
-                    Crowdin.config.sourceLanguage)
+                    config.sourceLanguage)
         }
     }
 
     private fun initStringDataManager(context: Context, config: CrowdinConfig) {
         val remoteRepository = StringDataRemoteRepository(
-                CrowdinRetrofitService.getCrowdinDistributionApi(),
+                CrowdinRetrofitService.getCrowdinDistributionApi(config.authConfig?.organizationName),
                 XmlReader(StringResourceParser()),
                 config.distributionHash,
                 config.filePaths)
@@ -321,7 +322,7 @@ object Crowdin {
     private fun loadMapping() {
         if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             val mappingRepository = MappingRepository(
-                    CrowdinRetrofitService.getCrowdinDistributionApi(),
+                    CrowdinRetrofitService.getCrowdinDistributionApi(config.authConfig?.organizationName),
                     XmlReader(StringResourceParser()),
                     dataManager!!,
                     config.distributionHash,
@@ -330,4 +331,6 @@ object Crowdin {
             mappingRepository.fetchData()
         }
     }
+
+    fun getAuthConfig(): AuthConfig? = config.authConfig
 }

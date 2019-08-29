@@ -81,13 +81,13 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
     }
 
     override fun getData(type: String, classType: Type): Any? {
-        return when (memoryLocalRepository.getData(type, classType::class.java)) {
-            null -> null
-            else -> {
-                val info = sharedPreferences.getString(type, null)
-                info?.let { return Gson().fromJson(info, classType) }
-                return null
-            }
+        val data = memoryLocalRepository.getData(type, classType::class.java)
+        if (data == null) {
+            val info = sharedPreferences.getString(type, null)
+            info?.let { return Gson().fromJson(info, classType) }
+            return null
+        } else {
+            return data
         }
     }
 

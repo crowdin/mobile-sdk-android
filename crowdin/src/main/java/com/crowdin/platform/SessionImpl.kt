@@ -20,8 +20,14 @@ internal class SessionImpl(private val dataManager: DataManager,
         val refreshToken = dataManager.getRefreshToken()
         refreshToken ?: return false
 
-        val response = authApi.getToken(RefreshToken("refresh_token", BuildConfig.CLIENT_ID,
-                BuildConfig.CLIENT_SECRET, refreshToken)).execute()
+        val authConfig = Crowdin.getAuthConfig()
+        val clientId = authConfig?.clientId ?: ""
+        val clientSecret = authConfig?.clientSecret ?: ""
+        val domain = authConfig?.organizationName
+
+        val response = authApi.getToken(
+                RefreshToken("refresh_token", clientId, clientSecret, refreshToken), domain)
+                .execute()
         val authResponse = response.body()
         authResponse?.let { saveToken(it) }
 

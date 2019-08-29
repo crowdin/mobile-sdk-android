@@ -15,8 +15,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 internal object CrowdinRetrofitService {
 
     private const val BASE_DISTRIBUTION_URL = "https://crowdin-distribution.s3.us-east-1.amazonaws.com/"
+    //    private const val BASE_DISTRIBUTION_URL = "https://distributions.crowdin.net/"
+    private const val BASE_DISTRIBUTION_URL_ENTERPRISE = "https://production-enterprise-distribution.s3.us-east-1.amazonaws.com/"
     private const val AUTH_API_URL = "https://accounts.crowdin.com/"
-    private const val BASE_API_URL = "https://crowdin.com/"
+    private const val BASE_API_URL = "https://api.crowdin.com/"
 
     private var okHttpClient: OkHttpClient? = null
     private var interceptableOkHttpClient: OkHttpClient? = null
@@ -61,13 +63,23 @@ internal object CrowdinRetrofitService {
                 .build()
     }
 
-    fun getCrowdinDistributionApi(): CrowdinDistributionApi =
-            crowdinDistributionApi
-                    ?: getCrowdinRetrofit(getHttpClient(), BASE_DISTRIBUTION_URL).create(CrowdinDistributionApi::class.java)
+    fun getCrowdinDistributionApi(organizationName: String?): CrowdinDistributionApi {
+        val baseUrl = if (organizationName == null) {
+            BASE_DISTRIBUTION_URL
+        } else {
+            BASE_DISTRIBUTION_URL_ENTERPRISE
+        }
+        return crowdinDistributionApi
+                ?: getCrowdinRetrofit(getHttpClient(), baseUrl).create(CrowdinDistributionApi::class.java)
+    }
 
-    fun getCrowdinApi(dataManager: DataManager): CrowdinApi = crowdinApi
-            ?: getCrowdinRetrofit(getInterceptableHttpClient(SessionImpl(dataManager, getCrowdinAuthApi())),
-                    BASE_API_URL).create(CrowdinApi::class.java)
+    fun getCrowdinApi(dataManager: DataManager, organizationName: String?): CrowdinApi {
+        var baseUrl = BASE_API_URL
+        organizationName?.let { baseUrl = "https://${organizationName}.crowdin.com/" }
+        return crowdinApi
+                ?: getCrowdinRetrofit(getInterceptableHttpClient(SessionImpl(dataManager, getCrowdinAuthApi())),
+                        baseUrl).create(CrowdinApi::class.java)
+    }
 
     fun getCrowdinAuthApi(): AuthApi = authApi
             ?: getCrowdinRetrofit(getHttpClient(), AUTH_API_URL).create(AuthApi::class.java)

@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.crowdin.platform.BuildConfig
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.R
 import com.crowdin.platform.data.DistributionInfoCallback
@@ -21,9 +20,13 @@ internal class AuthActivity : AppCompatActivity() {
 
     private var event: String? = null
     private var authAttemptCounter = 0
+    private lateinit var clientId: String
+    private lateinit var clientSecret: String
+    private var domain: String? = null
 
     companion object {
 
+        private const val DOMAIN = "domain"
         private const val AUTH_ATTEMPT_THRESHOLD = 1
         private const val EVENT_TYPE = "type"
         const val EVENT_REAL_TIME_UPDATES = "realtime_update"
@@ -52,8 +55,22 @@ internal class AuthActivity : AppCompatActivity() {
         statusTextView.text = getString(R.string.authorizing)
         event = intent.getStringExtra(EVENT_TYPE)
 
+        val authConfig = Crowdin.getAuthConfig()
+        clientId = authConfig?.clientId ?: ""
+        clientSecret = authConfig?.clientSecret ?: ""
+        domain = authConfig?.organizationName
+
         if (authAttemptCounter != AUTH_ATTEMPT_THRESHOLD) {
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.URL_CROWDIN_AUTH))
+            val builder = Uri.Builder()
+                    .scheme("https")
+                    .authority("accounts.crowdin.com")
+                    .appendPath("oauth")
+                    .appendPath("authorize")
+                    .encodedQuery("client_id=$clientId&response_type=code&scope=project.content.screenshots&redirect_uri=crowdintest://")
+
+            domain?.let { builder.appendQueryParameter(DOMAIN, it) }
+            val url = builder.build().toString()
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(browserIntent)
             authAttemptCounter++
         } else {
@@ -66,14 +83,16 @@ internal class AuthActivity : AppCompatActivity() {
             statusTextView.text = getString(R.string.loading)
             ThreadUtils.runInBackgroundPool(Runnable {
                 val apiService = CrowdinRetrofitService.getCrowdinAuthApi()
-                val response = apiService.getToken(TokenRequest(GRANT_TYPE, BuildConfig.CLIENT_ID,
-                        BuildConfig.CLIENT_SECRET, REDIRECT_URI, code)).execute()
+                val response = apiService.getToken(TokenRequest(GRANT_TYPE,
+                        clientId, clientSecret, REDIRECT_URI, code), domain).execute()
                 if (response.isSuccessful && response.body() != null) {
                     Crowdin.saveAuthInfo(AuthInfo(response.body()!!))
                     getDistributionInfo(event)
                 } else {
-                    Toast.makeText(this, "Not authenticated.", Toast.LENGTH_LONG).show()
-                    finish()
+                    runOnUiThread {
+                        Toast.makeText(this, "Not authenticated.", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
                 }
             }, false)
 
