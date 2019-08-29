@@ -9,12 +9,14 @@ import okhttp3.WebSocket
 
 internal class RealTimeUpdateManager(private val sourceLanguage: String,
                                      private val dataManager: DataManager?,
-                                     private val viewTransformerManager: ViewTransformerManager) {
+                                     private val viewTransformerManager: ViewTransformerManager,
+                                     private val organizationName: String?) {
 
     companion object {
         const val NORMAL_CLOSURE_STATUS = 0x3E9
         const val PLURAL_NONE = "none"
         private const val BASE_WS_URL = "wss://ws-lb.crowdin.com/"
+        private const val BASE_WS_URL_ENTERPRISE = "wss://enterprise.crowdin.com/wsproxy"
     }
 
     private var socket: WebSocket? = null
@@ -36,8 +38,14 @@ internal class RealTimeUpdateManager(private val sourceLanguage: String,
     private fun createConnection(distributionData: DistributionInfoResponse.DistributionData) {
         val mappingData = dataManager?.getMapping(sourceLanguage) ?: return
         val client = OkHttpClient().newBuilder().build()
+        val baseUrl = if (organizationName == null) {
+            BASE_WS_URL
+        } else {
+            BASE_WS_URL_ENTERPRISE
+        }
+
         val request = Request.Builder()
-                .url(BASE_WS_URL)
+                .url(baseUrl)
                 .build()
 
         val listener = EchoWebSocketListener(mappingData, distributionData, viewTransformerManager)

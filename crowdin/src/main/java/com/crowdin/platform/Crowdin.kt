@@ -283,7 +283,8 @@ object Crowdin {
             realTimeUpdateManager = RealTimeUpdateManager(
                     config.sourceLanguage,
                     dataManager,
-                    viewTransformerManager)
+                    viewTransformerManager,
+                    config.authConfig?.organizationName)
         }
 
         if (FeatureFlags.isScreenshotEnabled) {
