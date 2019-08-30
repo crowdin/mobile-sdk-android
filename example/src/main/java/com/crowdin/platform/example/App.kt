@@ -13,7 +13,7 @@ class App : Application() {
         // Crowdin sdk initialization
         val fifteenMinutes: Long = 60 * 15
         // enterprise
-        val distributionHash = "693743ebc92464492aa26e3b2ozt"
+        val distributionHash = "e-1782b33219e56d471a283b2ozt"
         val clientId = "XjNxVvoJh6XMf8NGnwuG"
         val clientSecret = "Dw5TxCKvKQQRcPyAWEkTCZlxRGmcja6AFZNSld6U"
 
@@ -34,7 +34,9 @@ class App : Application() {
                         .withScreenshotEnabled()                         // optional
                         .withSourceLanguage("en")          // optional
                         .withUpdateInterval(fifteenMinutes)              // optional
+                        // enterprise
                         .withAuthConfig(AuthConfig(clientId, clientSecret, "serhiy"))
+                        // default
 //                        .withAuthConfig(AuthConfig(clientId, clientSecret))
                         .build())
 

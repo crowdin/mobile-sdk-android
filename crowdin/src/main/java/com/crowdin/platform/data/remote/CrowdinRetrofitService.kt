@@ -14,9 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 internal object CrowdinRetrofitService {
 
-    private const val BASE_DISTRIBUTION_URL = "https://crowdin-distribution.s3.us-east-1.amazonaws.com/"
-    //    private const val BASE_DISTRIBUTION_URL = "https://distributions.crowdin.net/"
-    private const val BASE_DISTRIBUTION_URL_ENTERPRISE = "https://production-enterprise-distribution.s3.us-east-1.amazonaws.com/"
+    private const val BASE_DISTRIBUTION_URL = "https://distributions.crowdin.net/"
     private const val AUTH_API_URL = "https://accounts.crowdin.com/"
     private const val BASE_API_URL = "https://api.crowdin.com/"
 
@@ -63,14 +61,9 @@ internal object CrowdinRetrofitService {
                 .build()
     }
 
-    fun getCrowdinDistributionApi(organizationName: String?): CrowdinDistributionApi {
-        val baseUrl = if (organizationName == null) {
-            BASE_DISTRIBUTION_URL
-        } else {
-            BASE_DISTRIBUTION_URL_ENTERPRISE
-        }
+    fun getCrowdinDistributionApi(): CrowdinDistributionApi {
         return crowdinDistributionApi
-                ?: getCrowdinRetrofit(getHttpClient(), baseUrl).create(CrowdinDistributionApi::class.java)
+                ?: getCrowdinRetrofit(getHttpClient(), BASE_DISTRIBUTION_URL).create(CrowdinDistributionApi::class.java)
     }
 
     fun getCrowdinApi(dataManager: DataManager, organizationName: String?): CrowdinApi {

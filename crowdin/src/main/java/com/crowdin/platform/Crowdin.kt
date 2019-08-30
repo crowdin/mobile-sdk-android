@@ -283,8 +283,7 @@ object Crowdin {
             realTimeUpdateManager = RealTimeUpdateManager(
                     config.sourceLanguage,
                     dataManager,
-                    viewTransformerManager,
-                    config.authConfig?.organizationName)
+                    viewTransformerManager)
         }
 
         if (FeatureFlags.isScreenshotEnabled) {
@@ -297,7 +296,7 @@ object Crowdin {
 
     private fun initStringDataManager(context: Context, config: CrowdinConfig) {
         val remoteRepository = StringDataRemoteRepository(
-                CrowdinRetrofitService.getCrowdinDistributionApi(config.authConfig?.organizationName),
+                CrowdinRetrofitService.getCrowdinDistributionApi(),
                 XmlReader(StringResourceParser()),
                 config.distributionHash,
                 config.filePaths)
@@ -323,7 +322,7 @@ object Crowdin {
     private fun loadMapping() {
         if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             val mappingRepository = MappingRepository(
-                    CrowdinRetrofitService.getCrowdinDistributionApi(config.authConfig?.organizationName),
+                    CrowdinRetrofitService.getCrowdinDistributionApi(),
                     XmlReader(StringResourceParser()),
                     dataManager!!,
                     config.distributionHash,
