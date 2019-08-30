@@ -26,24 +26,29 @@ Add this code in your ``Application`` class.
 ```kotlin
 Crowdin.init(applicationContext,
         CrowdinConfig.Builder()
-                .withDistributionHash(your_distributionHash)    // required
-                .withFilePaths(your_file_path)                  // required
-                .withNetworkType(NetworkType.WIFI)              // optional
-                .withRealTimeUpdates()                          // optional
-                .withScreenshotEnabled()                        // optional
-                .withSourceLanguage(source_language)            // optional
-                .withUpdateInterval(interval_in_milisec)        // optional
+                .withDistributionHash(your_distribution_hash)                           // required
+                .withFilePaths(your_file_path)                                          // required
+                .withNetworkType(network_type)                                          // optional
+                .withRealTimeUpdates()                                                  // optional
+                .withScreenshotEnabled()                                                // optional
+                .withSourceLanguage(source_language)                                    // optional
+                .withUpdateInterval(interval_in_milisec)                                // optional
+                .withAuthConfig(AuthConfig(client_id, client_secret, organization_name))// optional
                 .build())
 ```
-`distributionHash` - when distribution added you will get your unique hash.
+`your_distribution_hash` - when distribution added you will get your unique hash.
 
-`filePaths` - files from Crowdin project, translations from which will be sent to the application. Example: `"strings.xml", "arrays.xml", "plurals.xml"`
+`your_file_path` - files from Crowdin project, translations from which will be sent to the application. Example: `"strings.xml", "arrays.xml", "plurals.xml"`
 
-`networkType` - optional. NetworkType.ALL, NetworkType.CELLULAR, NetworkType.WIFI;
+`network_type` - optional. NetworkType.ALL, NetworkType.CELLULAR, NetworkType.WIFI;
 
 `source_language` - source language in your Crowdin project. Example - "en". Required for real time/screenshot functionalities.
 
 `interval_in_milisec` - interval updates in millisec.
+
+`client_id`, `client_secret` - crowdin OAuth.
+
+`organization_name` - add this parameter only if you have own domain.
 
 ### 4. Inject into Context
 
@@ -68,6 +73,7 @@ Crowdin.init(applicationContext,
                  ... 
                  .withRealTimeUpdates()
                  .withSourceLanguage(source_language)
+                 .withAuthConfig(AuthConfig(client_id, client_secret, organization_name))
                  ...)
 ```
 
@@ -101,6 +107,7 @@ Crowdin.init(applicationContext,
                 ...
                 .withScreenshotEnabled()                           
                 .withSourceLanguage(source_language)
+                .withAuthConfig(AuthConfig(client_id, client_secret, organization_name))
                 ...)
                 
 // Using system buttons to take screenshot automatically will upload them to crowdin.
@@ -149,10 +156,11 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.5"
     implementation "com.squareup.okhttp3:logging-interceptor:4.0.1"
     // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.31"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.41"
 }
 ```
 
+Library supports API from version 14+.
 
 2. You can provide new Strings
 
