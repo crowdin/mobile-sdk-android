@@ -103,7 +103,7 @@ object Crowdin {
      * @param resources class for accessing an application's resources.
      */
     @JvmStatic
-    internal fun updateMenuItemsText(@MenuRes menuRes: Int, menu: Menu, resources: Resources) {
+    fun updateMenuItemsText(@MenuRes menuRes: Int, menu: Menu, resources: Resources) {
         TextUtils.updateMenuItemsText(menuRes, menu, resources)
     }
 
