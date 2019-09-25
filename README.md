@@ -272,7 +272,7 @@ If you've found an error in these samples, please [contact](https://crowdin.com/
 <pre>
 Copyright © 2019 Crowdin
 
-The Crowdin Android SDK for is licensed under the MIT License. 
+The Crowdin Android SDK is licensed under the MIT License.
 See the LICENSE.md file distributed with this work for additional 
 information regarding copyright ownership.
 </pre>
