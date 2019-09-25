@@ -13,7 +13,6 @@ Crowdin Android SDK delivers all new translations from Crowdin project to the ap
   * [Real-time updates](#real-time-updates)
   * [Screenshots](#screenshots)
 * [Notes](#notes)
-* [Additionally](#additionally)
 * [Limitations](#limitations)
 * [Contribution](#contribution)
 * [Seeking Assistance](#seeking-assistance)
@@ -234,8 +233,7 @@ toolbar.setTitle(R.string.title);
 super.attachBaseContext(Crowdin.wrapContext(SomeLib.wrap(newBase)));
 ```
 
-## Additionally
-1. You can register/unregister observer for data changes by adding this lines:
+8. You can register/unregister observer for data changes by adding this lines:
 ```kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
     // Observe data loading.
@@ -243,7 +241,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 }
 ```
 
-2. ShakeDetector for triggering force upload from crowdin. It will try to download latest updates from release.
+9. ShakeDetector for triggering force upload from crowdin. It will try to download latest updates from release.
 ```kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
     // Simple device shake detector. Could be used for triggering force update.
