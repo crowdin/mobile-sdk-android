@@ -108,7 +108,6 @@ override fun attachBaseContext(newBase: Context) {
 
 Now all strings in your app will be overridden by new strings provided to Crowdin.
 
-
 ## Features
 ### Real-time updates
 
@@ -174,7 +173,6 @@ Crowdin.sendScreenshot(activity!!, object : ScreenshotCallback {
    }
 })
 ```
-
 
 ## Notes
 1. You can provide new Strings
@@ -252,7 +250,6 @@ On each shake event it will trigger this method: `Crowdin.forceUpdate(this)`
 You can call this method from your app. 
 Also there are other public methods in `Crowdin` class. You can find details in `kotlin doc` files. 
 
-
 ## Limitations
 1. Plurals are supported from SDK version 24.
 2. TabItem text added via xml won't be updated. There is workaround: you can store tabItem titles in your string-array and add tabs dynamically.
@@ -266,9 +263,8 @@ We are happy to accept contributions to the Crowdin Android SDK. To contribute p
 4. Ensure that there are unit tests for your code.
 5. Submit a pull request with your patch on Github.
 
-
 ## Seeking Assistance
-If you find any problems or would like to suggest a feature, please feel free to file an issue on Github at [Issues Page](/issues).
+If you find any problems or would like to suggest a feature, please feel free to file an issue on Github at [Issues Page](https://github.com/crowdin/mobile-sdk-android/issues).
 
 If you've found an error in these samples, please [contact](https://crowdin.com/contacts) our Support Team.
 
