@@ -19,12 +19,11 @@ internal data class UploadScreenshotResponse(var data: Data? = null)
 
 internal data class Data(var id: Int? = null)
 
-internal data class DistributionInfoResponse(var success: Boolean,
-                                             var data: DistributionData,
-                                             var version: String) {
+internal data class DistributionInfoResponse(var data: DistributionData) {
 
     internal data class DistributionData(var project: ProjectData,
-                                         var user: UserData) {
+                                         var user: UserData,
+                                         var wsUrl: String) {
 
         internal data class ProjectData(var id: String,
                                         var wsHash: String)

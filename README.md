@@ -26,24 +26,29 @@ Add this code in your ``Application`` class.
 ```kotlin
 Crowdin.init(applicationContext,
         CrowdinConfig.Builder()
-                .withDistributionHash(your_distributionHash)    // required
-                .withFilePaths(your_file_path) .                // required
-                .withNetworkType(NetworkType.WIFI)              // optional
-                .withRealTimeUpdates(true)                      // optional
-                .withScreenshotEnabled(true)                    // optional
-                .withSourceLanguage(source_language)            // optional
-                .withUpdateInterval(interval_in_milisec)        // optional
+                .withDistributionHash(your_distribution_hash)                           // required
+                .withFilePaths(your_file_path)                                          // required
+                .withNetworkType(network_type)                                          // optional
+                .withRealTimeUpdates()                                                  // optional
+                .withScreenshotEnabled()                                                // optional
+                .withSourceLanguage(source_language)                                    // optional
+                .withUpdateInterval(interval_in_milisec)                                // optional
+                .withAuthConfig(AuthConfig(client_id, client_secret, organization_name))// optional
                 .build())
 ```
-`distributionHash` - when distribution added you will get your unique hash.
+`your_distribution_hash` - when distribution added you will get your unique hash.
 
-`filePaths` - files from Crowdin project, translations from which will be sent to the application. Example: `"strings.xml", "arrays.xml", "plurals.xml"`
+`your_file_path` - files from Crowdin project, translations from which will be sent to the application. Example: `"strings.xml", "arrays.xml", "plurals.xml"`
 
-`networkType` - optional. NetworkType.ALL, NetworkType.CELLULAR, NetworkType.WIFI;
+`network_type` - optional. NetworkType.ALL, NetworkType.CELLULAR, NetworkType.WIFI;
 
 `source_language` - source language in your Crowdin project. Example - "en". Required for real time/screenshot functionalities.
 
 `interval_in_milisec` - interval updates in millisec.
+
+`client_id`, `client_secret` - crowdin OAuth.
+
+`organization_name` - add this parameter only if you have own domain.
 
 ### 4. Inject into Context
 
@@ -65,21 +70,24 @@ Now all strings in your app will be overridden by new strings provided to Crowdi
 ```kotlin
 Crowdin.init(applicationContext,
         CrowdinConfig.Builder()
-                 ... , 
-                 .withRealTimeUpdates(true)
+                 ... 
+                 .withRealTimeUpdates()
                  .withSourceLanguage(source_language)
+                 .withAuthConfig(AuthConfig(client_id, client_secret, organization_name))
                  ...)
 ```
 
 2. Crowdin Authorization is required for Real-Time updates. To create connection use this method:  
 Activity/Fragment:
 ```kotlin
-override fun onCreate(savedInstanceState: Bundle?) {...
+override fun onCreate(savedInstanceState: Bundle?) {
+    ...
     // Crowdin Auth. required for screenshot/realtime update functionality.
-    Crowdin.connectRealTimeUpdates(this)
+    Crowdin.authorize(activity)
 }
 ```
-In case you are not authorized you will be prompted to login in crowdin platform. Otherwise connection will be created.
+It will redirect to Crowdin OAuth form and after authorization download all required data automatically.
+After loading finished `real-time updates` feature ready for use.
 
 You can disconnect via:
 ```kotlin
@@ -94,34 +102,19 @@ override fun onDestroy() {
 
 1. Add the following code in Application class:
 ```kotlin
-Crowdin.init(applicationContext, ... ,
+Crowdin.init(applicationContext,
         CrowdinConfig.Builder()
                 ...
-                .withScreenshotEnabled(true)                           
-                .withSourceLanguage("en")
-                .build())
+                .withScreenshotEnabled()                           
+                .withSourceLanguage(source_language)
+                .withAuthConfig(AuthConfig(client_id, client_secret, organization_name))
+                ...)
                 
 // Using system buttons to take screenshot automatically will upload them to crowdin.
 Crowdin.registerScreenShotContentObserver(this)
 ```
 
-In case you are not authorized you can start auth process from your code by call this method:
-
-`CrowdinWebActivity.launchActivityForResult(activity)`
-
-It will open login webView.
-Additionally you can handle result if needed.
-```kotlin
-override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-   when (requestCode) {
-       CrowdinWebActivity.REQUEST_CODE -> {
-           if (resultCode == Activity.RESULT_OK) {
-               // Auth. success, can proceed with screenshot functionality.
-           }
-       }
-   }
-}
-```
+2. Auth required. Step #2 from `Real-time updates`
 
 After auth success you can use system buttons to capture screenshots or do it programmatically, with callback if needed:
 ```kotlin
@@ -141,7 +134,7 @@ Crowdin.sendScreenshot(activity!!, object : ScreenshotCallback {
 
 Additional info:
 
-1. SKD uses `androidx` version of libraries. In case your project still not migrated to androidx you can add this lines in the `gradle.properties` file:
+1. SKD uses `androidx` version of libraries. In case your project still not migrated to `androidx` you can add this lines in the `gradle.properties` file:
 ```groovy
 android.enableJetifier=true
 android.useAndroidX=true
@@ -151,24 +144,23 @@ It might require additional changes in your code.
 List of SDK dependencies:
 ```groovy
 dependencies {
+
     implementation "androidx.appcompat:appcompat:1.0.2"
-    
     // Scheduled updates.
-    implementation "androidx.work:work-runtime-ktx:2.0.1"
-    
+    implementation "androidx.work:work-runtime-ktx:2.0.1"    
     // Support for material components
     implementation "com.google.android.material:material:1.0.0"
-    
     // Networking
     implementation "com.squareup.retrofit2:retrofit:2.6.0"
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
     implementation "com.google.code.gson:gson:2.8.5"
-    implementation "com.squareup.okhttp3:logging-interceptor:3.11.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.0.1"
     // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.31"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.41"
 }
 ```
 
+Library supports API from version 14+.
 
 2. You can provide new Strings
 

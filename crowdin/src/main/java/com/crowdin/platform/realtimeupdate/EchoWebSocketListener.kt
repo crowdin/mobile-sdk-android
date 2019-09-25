@@ -41,22 +41,26 @@ internal class EchoWebSocketListener(private var mappingData: LanguageData,
         viewTransformerManager.setOnViewsChangeListener(object : ViewsChangeListener {
             override fun onChange(pair: Pair<TextView, TextMetaData>) {
                 ThreadUtils.runInBackgroundPool(Runnable {
-                    dataHolderMap.clear()
-                    saveMatchedTextViewWithMappingId(mappingData)
-                    val mappingValue = getMappingValueForKey(pair.second, mappingData)
-                    mappingValue?.let {
-                        subscribeView(webSocket, project, user, it)
-                    }
+                    resubscribeView(pair, webSocket, project, user)
                 }, false)
             }
         })
     }
 
-    override fun onMessage(webSocket: WebSocket?, text: String?) {
+    private fun resubscribeView(pair: Pair<TextView, TextMetaData>, webSocket: WebSocket, project: DistributionInfoResponse.DistributionData.ProjectData, user: DistributionInfoResponse.DistributionData.UserData) {
+        dataHolderMap.clear()
+        saveMatchedTextViewWithMappingId(mappingData)
+        val mappingValue = getMappingValueForKey(pair.second, mappingData)
+        mappingValue?.let {
+            subscribeView(webSocket, project, user, it)
+        }
+    }
+
+    override fun onMessage(webSocket: WebSocket, text: String) {
         handleMessage(text)
     }
 
-    override fun onClosing(webSocket: WebSocket, code: Int, reason: String?) {
+    override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
         dataHolderMap.clear()
         webSocket.close(NORMAL_CLOSURE_STATUS, null)
         output("Closing : $code / $reason")

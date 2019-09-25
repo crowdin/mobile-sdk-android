@@ -11,7 +11,7 @@ import java.util.*
 internal class MemoryLocalRepository : LocalRepository {
 
     private val stringsData = LinkedHashMap<String, LanguageData>()
-    private val generalData = mutableMapOf<String, Any>()
+    private val generalData = mutableMapOf<String, Any?>()
 
     override fun saveLanguageData(languageData: LanguageData) {
         when (val data = stringsData[languageData.language]) {
@@ -126,7 +126,7 @@ internal class MemoryLocalRepository : LocalRepository {
         return textMetaData
     }
 
-    override fun saveData(type: String, data: Any) {
+    override fun saveData(type: String, data: Any?) {
         generalData[type] = data
     }
 
@@ -142,12 +142,16 @@ internal class MemoryLocalRepository : LocalRepository {
         languageData?.plurals?.forEach { pluralData ->
             val pluralName = pluralData.name
             pluralData.quantity.forEach {
-                if (it.value == text ||
-                        (pluralData.formatArgs.isNotEmpty()
-                                && it.value == String.format(text, pluralData.formatArgs))) {
-                    searchResultData.pluralName = pluralName
-                    searchResultData.pluralQuantity = pluralData.number
-                    searchResultData.pluralFormatArgs = pluralData.formatArgs
+                try {
+                    if (it.value == text ||
+                            (pluralData.formatArgs.isNotEmpty()
+                                    && it.value == String.format(text, pluralData.formatArgs))) {
+                        searchResultData.pluralName = pluralName
+                        searchResultData.pluralQuantity = pluralData.number
+                        searchResultData.pluralFormatArgs = pluralData.formatArgs
+                        return
+                    }
+                } catch (ex: IllegalFormatConversionException) {
                     return
                 }
             }

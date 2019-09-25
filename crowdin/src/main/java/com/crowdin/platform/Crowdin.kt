@@ -6,11 +6,12 @@ import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.view.Menu
 import androidx.annotation.MenuRes
-import com.crowdin.platform.auth.CrowdinWebActivity
+import com.crowdin.platform.auth.AuthActivity
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.TextMetaDataProvider
 import com.crowdin.platform.data.local.LocalStringRepositoryFactory
+import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.parser.StringResourceParser
 import com.crowdin.platform.data.parser.XmlReader
@@ -50,7 +51,6 @@ object Crowdin {
     fun init(context: Context, config: CrowdinConfig) {
         this.config = config
         FeatureFlags.registerConfig(config)
-        initCrowdinApi()
         initStringDataManager(context, config)
         initViewTransformer()
         initFeatureManagers()
@@ -68,7 +68,6 @@ object Crowdin {
 
     internal fun initForUpdate(context: Context) {
         this.config = RecurringManager.getConfig(context)
-        initCrowdinApi()
         initStringDataManager(context, config)
         forceUpdate(context)
     }
@@ -211,15 +210,21 @@ object Crowdin {
     }
 
     /**
-     * Connect to Crowdin platform for receiving realtime updates.
+     * Auth to Crowdin platform. Create connection for realtime updates if feature turned on.
      */
     @JvmStatic
-    fun connectRealTimeUpdates(activity: Activity) {
-        realTimeUpdateManager?.let {
-            when {
-                dataManager!!.isAuthorized() -> createConnection()
-                else -> CrowdinWebActivity.launchActivityForResult(activity,
-                        CrowdinWebActivity.EVENT_REAL_TIME_UPDATES)
+    fun authorize(activity: Activity) {
+        dataManager?.let {
+            if (it.isAuthorized()) {
+                if (FeatureFlags.isRealTimeUpdateEnabled) {
+                    createConnection()
+                }
+            } else {
+                var type: String? = null
+                if (FeatureFlags.isRealTimeUpdateEnabled) {
+                    type = AuthActivity.EVENT_REAL_TIME_UPDATES
+                }
+                AuthActivity.launchActivity(activity, type)
             }
         }
     }
@@ -258,48 +263,40 @@ object Crowdin {
         shakeDetectorManager?.unregisterShakeDetector()
     }
 
-    internal fun saveAuthInfo(authInfo: AuthInfo) {
+    internal fun saveAuthInfo(authInfo: AuthInfo?) {
         dataManager?.saveData(DataManager.AUTH_INFO, authInfo)
     }
 
-    internal fun getDistributionInfo(userAgent: String,
-                                     cookies: String,
-                                     xCsrfToken: String,
-                                     callback: DistributionInfoCallback) {
-        distributionInfoManager?.getDistributionInfo(userAgent, cookies, xCsrfToken, callback)
-    }
-
-    private fun initCrowdinApi() {
-        CrowdinRetrofitService.instance.init()
+    internal fun getDistributionInfo(callback: DistributionInfoCallback) {
+        distributionInfoManager?.getDistributionInfo(callback)
     }
 
     private fun initFeatureManagers() {
         if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             distributionInfoManager = DistributionInfoManager(
-                    CrowdinRetrofitService.instance.getCrowdinApi(),
+                    CrowdinRetrofitService.getCrowdinApi(dataManager!!, config.authConfig?.organizationName),
                     dataManager!!,
-                    Crowdin.config.distributionHash)
+                    config.distributionHash)
         }
 
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             realTimeUpdateManager = RealTimeUpdateManager(
-                    Crowdin.config.distributionHash,
-                    Crowdin.config.sourceLanguage,
+                    config.sourceLanguage,
                     dataManager,
                     viewTransformerManager)
         }
 
         if (FeatureFlags.isScreenshotEnabled) {
             screenshotManager = ScreenshotManager(
-                    CrowdinRetrofitService.instance.getTmpCrowdinApi(),
+                    CrowdinRetrofitService.getCrowdinApi(dataManager!!, config.authConfig?.organizationName),
                     dataManager!!,
-                    Crowdin.config.sourceLanguage)
+                    config.sourceLanguage)
         }
     }
 
     private fun initStringDataManager(context: Context, config: CrowdinConfig) {
         val remoteRepository = StringDataRemoteRepository(
-                CrowdinRetrofitService.instance.getCrowdinDistributionApi(),
+                CrowdinRetrofitService.getCrowdinDistributionApi(),
                 XmlReader(StringResourceParser()),
                 config.distributionHash,
                 config.filePaths)
@@ -325,7 +322,7 @@ object Crowdin {
     private fun loadMapping() {
         if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             val mappingRepository = MappingRepository(
-                    CrowdinRetrofitService.instance.getCrowdinDistributionApi(),
+                    CrowdinRetrofitService.getCrowdinDistributionApi(),
                     XmlReader(StringResourceParser()),
                     dataManager!!,
                     config.distributionHash,
@@ -334,4 +331,6 @@ object Crowdin {
             mappingRepository.fetchData()
         }
     }
+
+    fun getAuthConfig(): AuthConfig? = config.authConfig
 }

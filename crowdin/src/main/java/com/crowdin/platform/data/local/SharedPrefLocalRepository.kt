@@ -70,17 +70,24 @@ internal class SharedPrefLocalRepository internal constructor(context: Context) 
 
     override fun getTextData(text: String): TextMetaData = memoryLocalRepository.getTextData(text)
 
-    override fun saveData(type: String, data: Any) {
+    override fun saveData(type: String, data: Any?) {
         memoryLocalRepository.saveData(type, data)
-        val json = Gson().toJson(data)
-        sharedPreferences.edit().putString(type, json).apply()
+        if (data == null) {
+            sharedPreferences.edit().remove(type).apply()
+        } else {
+            val json = Gson().toJson(data)
+            sharedPreferences.edit().putString(type, json).apply()
+        }
     }
 
     override fun getData(type: String, classType: Type): Any? {
         val data = memoryLocalRepository.getData(type, classType::class.java)
-        return data ?: run {
+        if (data == null) {
             val info = sharedPreferences.getString(type, null)
-            return Gson().fromJson(info, classType)
+            info?.let { return Gson().fromJson(info, classType) }
+            return null
+        } else {
+            return data
         }
     }
 

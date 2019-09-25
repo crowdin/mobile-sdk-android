@@ -104,7 +104,7 @@ internal interface LocalRepository {
      * @param type of data.
      * @param data to be stored.
      */
-    fun saveData(type: String, data: Any)
+    fun saveData(type: String, data: Any?)
 
     /**
      * Retrieve any data object from locale storage.

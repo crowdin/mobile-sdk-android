@@ -41,7 +41,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         Crowdin.registerDataLoadingObserver(this)
 
         // Crowdin Auth. required for screenshot/realtime update functionality.
-        Crowdin.connectRealTimeUpdates(this)
+        Crowdin.authorize(this)
 
         // Simple device shake detector. Could be used for triggering force update.
         Crowdin.registerShakeDetector(this)

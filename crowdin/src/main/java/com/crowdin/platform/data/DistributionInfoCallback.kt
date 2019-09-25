@@ -3,9 +3,9 @@ package com.crowdin.platform.data
 internal interface DistributionInfoCallback {
 
     /**
-     * Distribution info loaded successfully.
+     * Distribution info response received.
      */
-    fun onSuccess()
+    fun onResponse()
 
     /**
      * Unexpected error during distribution info loading.
