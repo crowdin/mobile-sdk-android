@@ -1,21 +1,66 @@
-## Crowdin 1.0
-Crowdin SDK delivers all new translations from Crowdin project to the application immediately. So there is no need to update this application via Google Play Store to get the new version with the localization.
+[<p align="center"><img src="https://support.crowdin.com/assets/logos/crowdin-dark-symbol.png" data-canonical-src="https://support.crowdin.com/assets/logos/crowdin-dark-symbol.png" width="200" height="200" align="center"/></p>](https://crowdin.com)
 
-### 1. Add dependency.
+# Crowdin Android SDK
+
+Crowdin Android SDK delivers all new translations from Crowdin project to the application immediately. So there is no need to update this application via Google Play Store to get the new version with the localization.
+
+
+## Table of Contents
+* [Requirements](#requirements)
+* [Dependencies](#dependencies)
+* [Installation](#installation)
+* [Features](#features)
+  * [Real-time updates](#real-time-updates)
+  * [Screenshots](#screenshots)
+* [Notes](#notes)
+* [Additionally](#additionally)
+* [Limitations](#limitations)
+* [Contribution](#contribution)
+* [Seeking Assistance](#seeking-assistance)
+* [License](#license)
+
+## Requirements
+
+* Android SDK version 16+
+
+## Dependencies
+
+* `com.android.tools.build:gradle:3.5.0`
+* `org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.41`
+* `androidx.appcompat:appcompat:1.0.2`
+* `androidx.work:work-runtime-ktx:2.0.1`
+* `com.google.android.material:material:1.0.0`
+* `com.squareup.retrofit2:retrofit:2.6.0`
+* `com.squareup.retrofit2:converter-gson:2.6.0`
+* `com.google.code.gson:gson:2.8.5`
+* `com.squareup.okhttp3:logging-interceptor:4.0.1`
+* `org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.41`
+
+## Installation
+
+### 1. Add dependency
 
 - add SDK as a library module to your project.
 
-### 2. Update your gradle configuration.
+### 2. Update your gradle configuration
 
-setting.gradle:
+`setting.gradle`:
 ```groovy
 include ':crowdin'
 ```
 
-app build.gradle:
+app `build.gradle`:
 ```groovy
 implementation project(":crowdin")
 ```
+
+SKD uses `androidx` version of libraries. In case your project still not migrated to `androidx` you can add this lines in the `gradle.properties` file:
+```groovy
+android.enableJetifier=true
+android.useAndroidX=true
+```
+It might require additional changes in your code. 
+
 Note:
 maven: implementation 'TODO.Coming soon'
 
@@ -25,17 +70,18 @@ Add this code in your ``Application`` class.
 
 ```kotlin
 Crowdin.init(applicationContext,
-        CrowdinConfig.Builder()
-                .withDistributionHash(your_distribution_hash)                           // required
-                .withFilePaths(your_file_path)                                          // required
-                .withNetworkType(network_type)                                          // optional
-                .withRealTimeUpdates()                                                  // optional
-                .withScreenshotEnabled()                                                // optional
-                .withSourceLanguage(source_language)                                    // optional
-                .withUpdateInterval(interval_in_milisec)                                // optional
-                .withAuthConfig(AuthConfig(client_id, client_secret, organization_name))// optional
-                .build())
+    CrowdinConfig.Builder()
+        .withDistributionHash(your_distribution_hash)                           // required
+        .withFilePaths(your_file_path)                                          // required
+        .withNetworkType(network_type)                                          // optional
+        .withRealTimeUpdates()                                                  // optional
+        .withScreenshotEnabled()                                                // optional
+        .withSourceLanguage(source_language)                                    // optional
+        .withUpdateInterval(interval_in_milisec)                                // optional
+        .withAuthConfig(AuthConfig(client_id, client_secret, organization_name))// optional
+        .build())
 ```
+
 `your_distribution_hash` - when distribution added you will get your unique hash.
 
 `your_file_path` - files from Crowdin project, translations from which will be sent to the application. Example: `"strings.xml", "arrays.xml", "plurals.xml"`
@@ -64,7 +110,8 @@ override fun attachBaseContext(newBase: Context) {
 Now all strings in your app will be overridden by new strings provided to Crowdin.
 
 
-## Real-time updates
+## Features
+### Real-time updates
 
 1. Add the following code in Application class:
 ```kotlin
@@ -98,7 +145,7 @@ override fun onDestroy() {
 }
 ```
 
-## Screenshots
+### Screenshots
 
 1. Add the following code in Application class:
 ```kotlin
@@ -130,39 +177,8 @@ Crowdin.sendScreenshot(activity!!, object : ScreenshotCallback {
 ```
 
 
-## Notes:
-
-Additional info:
-
-1. SKD uses `androidx` version of libraries. In case your project still not migrated to `androidx` you can add this lines in the `gradle.properties` file:
-```groovy
-android.enableJetifier=true
-android.useAndroidX=true
-```
-It might require additional changes in your code. 
-
-List of SDK dependencies:
-```groovy
-dependencies {
-
-    implementation "androidx.appcompat:appcompat:1.0.2"
-    // Scheduled updates.
-    implementation "androidx.work:work-runtime-ktx:2.0.1"    
-    // Support for material components
-    implementation "com.google.android.material:material:1.0.0"
-    // Networking
-    implementation "com.squareup.retrofit2:retrofit:2.6.0"
-    implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
-    implementation "com.google.code.gson:gson:2.8.5"
-    implementation "com.squareup.okhttp3:logging-interceptor:4.0.1"
-    // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.41"
-}
-```
-
-Library supports API from version 14+.
-
-2. You can provide new Strings
+## Notes
+1. You can provide new Strings
 
 Load your Strings in any way / any time / any place and just call this:
 ```java
@@ -170,15 +186,15 @@ Crowdin.setStrings(language, newStrings);
 // e.g. language="en" newStrings=map of (key-value)s
 ```
 
-3. Please note that Crowdin works with current locale, so if you change locale with
+2. Please note that Crowdin works with current locale, so if you change locale with
 ```java
 Locale.setDefault(newLocale);
 ```
 Crowdin will start using strings of the new locale.
 
-4. For displaying a string, Crowdin tries to find that in dynamic strings, and will use bundled version as fallback. In the other words, Only the new provided strings will be overridden and for the rest the bundled version will be used.
+3. For displaying a string, Crowdin tries to find that in dynamic strings, and will use bundled version as fallback. In the other words, Only the new provided strings will be overridden and for the rest the bundled version will be used.
 
-5. To translate menu items you need to update your `onCreateOptionsMenu` method:
+4. To translate menu items you need to update your `onCreateOptionsMenu` method:
 ```kotlin
 override fun onCreateOptionsMenu(menu: Menu): Boolean {
     menuInflater.inflateWithCrowdin(R.menu.activity_menu, menu, resources)
@@ -194,14 +210,14 @@ public boolean onCreateOptionsMenu(Menu menu) {
 }
 ```
 
-6. In case you have custom views that uses `TypedArray` and `stylable` attributes, you will need to use such approach: 
+5. In case you have custom views that uses `TypedArray` and `stylable` attributes, you will need to use such approach: 
 ```kotlin
 val textId = typedArray.getResourceId(R.styleable.sample_item, 0)
 textView.setText(textId)
 ```
 instead of `typedArray.getString(R.styleable.sample_item)`
 
-7. Activity title defined via AndroidManifest won't be translated.
+6. Activity title defined via AndroidManifest won't be translated.
 ```xml
 <activity
     android:name=".activities.SampleActivity"
@@ -213,7 +229,7 @@ You can simply update your `toolbar` inside of activity or fragment:
 toolbar.setTitle(R.string.title);
 ```
 
-8. In case your project already overrides `attachBaseContext`:
+7. In case your project already overrides `attachBaseContext`:
 ```java
 super.attachBaseContext(Crowdin.wrapContext(SomeLib.wrap(newBase)));
 ```
@@ -239,25 +255,30 @@ You can call this method from your app.
 Also there are other public methods in `Crowdin` class. You can find details in `kotlin doc` files. 
 
 
-## Limitations:
+## Limitations
 1. Plurals are supported from SDK version 24.
 2. TabItem text added via xml won't be updated. There is workaround: you can store tabItem titles in your string-array and add tabs dynamically.
 3. `PreferenceScreen` defined via XML not supported.
 
+## Contribution
+We are happy to accept contributions to the Crowdin Android SDK. To contribute please do the following:
+1. Fork the repository on GitHub.
+2. Decide which code you want to submit. A submission should be a set of changes that addresses one issue in the issue tracker. Please file one change per issue, and address one issue per change. If you want to make a change that doesn't have a corresponding issue in the issue tracker, please file a new ticket!
+3. Ensure that your code adheres to standard conventions, as used in the rest of the library.
+4. Ensure that there are unit tests for your code.
+5. Submit a pull request with your patch on Github.
+
+
+## Seeking Assistance
+If you find any problems or would like to suggest a feature, please feel free to file an issue on Github at [Issues Page](/issues).
+
+If you've found an error in these samples, please [contact](https://crowdin.com/contacts) our Support Team.
 
 ## License
 <pre>
-Copyright 2019 Crowdin
+Copyright © 2019 Crowdin
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+The Crowdin Android SDK for is licensed under the MIT License. 
+See the LICENSE.md file distributed with this work for additional 
+information regarding copyright ownership.
 </pre>
