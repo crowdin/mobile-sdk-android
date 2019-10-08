@@ -1,5 +1,6 @@
 package com.crowdin.platform.data.remote
 
+import com.crowdin.platform.Crowdin
 import com.crowdin.platform.Session
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -43,7 +44,7 @@ internal class SessionInterceptor(private val session: Session) : Interceptor {
 
     private fun refreshToken(): Boolean {
         return try {
-            session.refreshToken()
+            session.refreshToken(Crowdin.getAuthConfig())
         } catch (th: Throwable) {
             false
         }

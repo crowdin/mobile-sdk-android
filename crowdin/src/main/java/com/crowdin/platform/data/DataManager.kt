@@ -8,15 +8,14 @@ import com.crowdin.platform.data.model.*
 import com.crowdin.platform.data.remote.Connectivity
 import com.crowdin.platform.data.remote.NetworkType
 import com.crowdin.platform.data.remote.RemoteRepository
-import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.util.FeatureFlags
 import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
 
-internal class DataManager(private val remoteRepository: RemoteRepository,
-                           private val localRepository: LocalRepository,
-                           private val dataChangeObserver: LocalDataChangeObserver)
+internal open class DataManager(private val remoteRepository: RemoteRepository,
+                                private val localRepository: LocalRepository,
+                                private val dataChangeObserver: LocalDataChangeObserver)
     : TextMetaDataProvider {
 
     companion object {
@@ -127,7 +126,7 @@ internal class DataManager(private val remoteRepository: RemoteRepository,
     fun getMapping(sourceLanguage: String): LanguageData? =
             localRepository.getLanguageData(sourceLanguage)
 
-    fun saveData(type: String, data: Any?) {
+    open fun saveData(type: String, data: Any?) {
         localRepository.saveData(type, data)
     }
 
@@ -135,27 +134,22 @@ internal class DataManager(private val remoteRepository: RemoteRepository,
         return localRepository.getData(type, classType)
     }
 
-    fun isAuthorized(): Boolean {
+    open fun isAuthorized(): Boolean {
         val authInfo = getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?
         return authInfo != null
     }
 
-    fun isDistributionDataAvailable(): Boolean {
-        val data = getData(DISTRIBUTION_DATA, DistributionInfoResponse.DistributionData::class.java) as DistributionInfoResponse.DistributionData?
-        return data != null
-    }
-
-    fun isTokenExpired(): Boolean {
+    open fun isTokenExpired(): Boolean {
         val authInfo = getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?
         return authInfo?.isExpired() ?: true
     }
 
-    fun getAccessToken(): String? {
+    open fun getAccessToken(): String? {
         val authInfo = getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?
         return authInfo?.accessToken
     }
 
-    fun getRefreshToken(): String? {
+    open fun getRefreshToken(): String? {
         val authInfo = getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?
         return authInfo?.refreshToken
     }

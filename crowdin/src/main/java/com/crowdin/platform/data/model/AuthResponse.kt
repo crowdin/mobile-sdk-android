@@ -2,7 +2,7 @@ package com.crowdin.platform.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class AuthResponse(@SerializedName("token_type")
+internal data class AuthResponse(@SerializedName("token_type")
                         val tokenType: String,
                         @SerializedName("expires_in")
                         val expiresIn: Int,

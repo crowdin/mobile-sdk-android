@@ -1,5 +1,6 @@
 package com.crowdin.platform
 
+import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.model.AuthResponse
 
 internal interface Session {
@@ -10,7 +11,7 @@ internal interface Session {
 
     fun getAccessToken(): String?
 
-    fun refreshToken(): Boolean
+    fun refreshToken(authConfig: AuthConfig?): Boolean
 
     /**
      * Executed on background thread.

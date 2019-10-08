@@ -1,7 +1,7 @@
 package com.crowdin.platform
 
-import android.util.Log
 import com.crowdin.platform.data.DataManager
+import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.AuthResponse
 import com.crowdin.platform.data.model.RefreshToken
@@ -16,11 +16,10 @@ internal class SessionImpl(private val dataManager: DataManager,
 
     override fun getAccessToken(): String? = dataManager.getAccessToken()
 
-    override fun refreshToken(): Boolean {
+    override fun refreshToken(authConfig: AuthConfig?): Boolean {
         val refreshToken = dataManager.getRefreshToken()
         refreshToken ?: return false
 
-        val authConfig = Crowdin.getAuthConfig()
         val clientId = authConfig?.clientId ?: ""
         val clientSecret = authConfig?.clientSecret ?: ""
         val domain = authConfig?.organizationName
@@ -36,7 +35,6 @@ internal class SessionImpl(private val dataManager: DataManager,
 
     override fun invalidate() {
         dataManager.saveData(DataManager.AUTH_INFO, null)
-        Log.e(SessionImpl::class.java.simpleName, "Token expired. Refresh silent failed.")
     }
 
     override fun saveToken(authResponse: AuthResponse) {
