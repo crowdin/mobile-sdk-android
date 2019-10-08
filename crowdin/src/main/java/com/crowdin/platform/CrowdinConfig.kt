@@ -82,22 +82,40 @@ class CrowdinConfig private constructor() {
 
             config.distributionHash = distributionHash
 
-            requireNotNull(filePaths) { "Crowdin: `filePaths` cannot be null" }
+            require(filePaths != null) { "Crowdin: `filePaths` cannot be null" }
+            require(isFilePathValid()) { "Crowdin: `filePaths` cannot be empty" }
 
             config.filePaths = filePaths
             config.networkType = networkType
             config.isRealTimeUpdateEnabled = isRealTimeUpdateEnabled
             config.isScreenshotEnabled = isScreenshotEnabled
 
-            require(!((isRealTimeUpdateEnabled || isScreenshotEnabled) && sourceLanguage.isEmpty())) {
-                "Crowdin: `sourceLanguage` cannot be empty"
+            if (isRealTimeUpdateEnabled || isScreenshotEnabled) {
+                require(sourceLanguage.isNotEmpty()) {
+                    "Crowdin: `sourceLanguage` cannot be empty"
+                }
             }
 
             config.sourceLanguage = sourceLanguage
             config.updateInterval = updateInterval
+
+            authConfig?.let {
+                require(it.clientId.trim().isNotEmpty() && it.clientSecret.trim().isNotEmpty()) {
+                    "Crowdin: `AuthConfig` values cannot be empty"
+                }
+            }
             config.authConfig = authConfig
 
             return config
+        }
+
+        private fun isFilePathValid(): Boolean {
+            filePaths?.forEach {
+                if (it.trim().isEmpty()) {
+                    return false
+                }
+            }
+            return true
         }
     }
 }
