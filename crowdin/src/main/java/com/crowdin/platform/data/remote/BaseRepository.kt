@@ -13,7 +13,7 @@ internal abstract class BaseRepository : RemoteRepository {
         const val LOCALE = "%locale%"
         const val LOCALE_WITH_UNDERSCORE = "%locale_with_underscore%"
         const val ANDROID_CODE = "%android_code%"
-        val listExportPattern = listOf<String>(
+        val listExportPattern = listOf(
                 LANGUAGE_NAME,
                 TWO_LETTER_CODE,
                 THREE_LETTER_CODE,
@@ -35,26 +35,25 @@ internal abstract class BaseRepository : RemoteRepository {
 
         var containsExportPattern = false
 
-        for (index in 0 until listExportPattern.size) {
-            val item = listExportPattern[index]
-            if (path.contains(item)) {
+        for (element in listExportPattern) {
+            if (path.contains(element)) {
                 containsExportPattern = true
                 break
             }
         }
 
         if (!containsExportPattern) {
-            if (path.startsWith("/")) {
-                return "/$language$path"
+            return if (path.startsWith("/")) {
+                "/$language$path"
             } else {
-                return "/$language/$path"
+                "/$language/$path"
             }
         }
 
         when {
-            path.contains(LANGUAGE_NAME) -> path = path.replace(LANGUAGE_NAME, "$languageName")
-            path.contains(TWO_LETTER_CODE) -> path = path.replace(TWO_LETTER_CODE, "$language")
-            path.contains(THREE_LETTER_CODE) -> path = path.replace(THREE_LETTER_CODE, "$languageThreeLetterCode")
+            path.contains(LANGUAGE_NAME) -> path = path.replace(LANGUAGE_NAME, languageName)
+            path.contains(TWO_LETTER_CODE) -> path = path.replace(TWO_LETTER_CODE, language)
+            path.contains(THREE_LETTER_CODE) -> path = path.replace(THREE_LETTER_CODE, languageThreeLetterCode)
             path.contains(LOCALE) -> path = path.replace(LOCALE, "$language-$country")
             path.contains(LOCALE_WITH_UNDERSCORE) -> path = path.replace(LOCALE_WITH_UNDERSCORE, locale.toString())
             path.contains(ANDROID_CODE) -> path = path.replace(ANDROID_CODE, "$language-r$country")
