@@ -13,9 +13,9 @@ import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
 
-internal open class DataManager(private val remoteRepository: RemoteRepository,
-                                private val localRepository: LocalRepository,
-                                private val dataChangeObserver: LocalDataChangeObserver)
+internal class DataManager(private val remoteRepository: RemoteRepository,
+                           private val localRepository: LocalRepository,
+                           private val dataChangeObserver: LocalDataChangeObserver)
     : TextMetaDataProvider {
 
     companion object {
@@ -126,7 +126,7 @@ internal open class DataManager(private val remoteRepository: RemoteRepository,
     fun getMapping(sourceLanguage: String): LanguageData? =
             localRepository.getLanguageData(sourceLanguage)
 
-    open fun saveData(type: String, data: Any?) {
+    fun saveData(type: String, data: Any?) {
         localRepository.saveData(type, data)
     }
 
@@ -134,22 +134,22 @@ internal open class DataManager(private val remoteRepository: RemoteRepository,
         return localRepository.getData(type, classType)
     }
 
-    open fun isAuthorized(): Boolean {
+    fun isAuthorized(): Boolean {
         val authInfo = getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?
         return authInfo != null
     }
 
-    open fun isTokenExpired(): Boolean {
+    fun isTokenExpired(): Boolean {
         val authInfo = getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?
         return authInfo?.isExpired() ?: true
     }
 
-    open fun getAccessToken(): String? {
+    fun getAccessToken(): String? {
         val authInfo = getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?
         return authInfo?.accessToken
     }
 
-    open fun getRefreshToken(): String? {
+    fun getRefreshToken(): String? {
         val authInfo = getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?
         return authInfo?.refreshToken
     }
