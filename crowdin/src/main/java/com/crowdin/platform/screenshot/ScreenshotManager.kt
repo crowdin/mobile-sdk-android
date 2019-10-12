@@ -18,6 +18,7 @@ import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 
+// TODO: tests
 internal class ScreenshotManager(private var crowdinApi: CrowdinApi,
                                  private var dataManager: DataManager,
                                  private var sourceLanguage: String) {

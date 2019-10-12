@@ -33,7 +33,7 @@ class StringDataRemoteRepositoryTest {
     fun whenFetchData_shouldTriggerApiCall() {
         // Given
         val stringDataRemoteRepository = givenStringDataRemoteRepository()
-        provideMockResponse()
+        givenMockResponse()
 
         // When
         stringDataRemoteRepository.fetchData()
@@ -46,7 +46,7 @@ class StringDataRemoteRepositoryTest {
     fun whenFetchDataSuccess_shouldParseResponseAndCloseReader() {
         // Given
         val stringDataRemoteRepository = givenStringDataRemoteRepository()
-        provideMockResponse()
+        givenMockResponse()
 
         // When
         stringDataRemoteRepository.fetchData()
@@ -60,7 +60,7 @@ class StringDataRemoteRepositoryTest {
     fun whenFetchWithCallbackAndResponseSuccess_shouldCallSuccessMethod() {
         // Given
         val stringDataRemoteRepository = givenStringDataRemoteRepository()
-        provideMockResponse()
+        givenMockResponse()
 
         // When
         stringDataRemoteRepository.fetchData(mockCallback)
@@ -73,7 +73,7 @@ class StringDataRemoteRepositoryTest {
     fun whenFetchWithCallbackAndResponseFailure_shouldCallFailureMethod() {
         // Given
         val stringDataRemoteRepository = givenStringDataRemoteRepository()
-        provideMockResponse(false)
+        givenMockResponse(false)
 
         // When
         stringDataRemoteRepository.fetchData(mockCallback)
@@ -86,7 +86,7 @@ class StringDataRemoteRepositoryTest {
     fun whenFetchWithCallbackAndResponseNotCode200_shouldCallFailureMethod() {
         // Given
         val stringDataRemoteRepository = givenStringDataRemoteRepository()
-        provideMockResponse(successCode = 204)
+        givenMockResponse(successCode = 204)
 
         // When
         stringDataRemoteRepository.fetchData(mockCallback)
@@ -98,7 +98,7 @@ class StringDataRemoteRepositoryTest {
     private fun givenStringDataRemoteRepository(): StringDataRemoteRepository =
             StringDataRemoteRepository(mockDistributionApi, mockReader, "hash", arrayOf("string.xml"))
 
-    private fun provideMockResponse(success: Boolean = true, successCode: Int = 200) {
+    private fun givenMockResponse(success: Boolean = true, successCode: Int = 200) {
         val mockedCall = mock(Call::class.java) as Call<ResponseBody>
         `when`(mockDistributionApi.getResourceFile(any(), any(), any())).thenReturn(mockedCall)
 
