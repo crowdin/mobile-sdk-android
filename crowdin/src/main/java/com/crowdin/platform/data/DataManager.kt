@@ -13,7 +13,6 @@ import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
 
-// TODO: add tests
 internal class DataManager(private val remoteRepository: RemoteRepository,
                            private val localRepository: LocalRepository,
                            private val dataChangeObserver: LocalDataChangeObserver)
