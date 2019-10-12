@@ -5,9 +5,7 @@ import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.StringDataRemoteRepository
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
-import okhttp3.MediaType
 import okhttp3.ResponseBody
-import okio.BufferedSource
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.*
@@ -112,19 +110,5 @@ class StringDataRemoteRepositoryTest {
             val callback = it.getArgument(0, Callback::class.java) as Callback<ResponseBody>
             callback.onResponse(mockedCall, response)
         }.`when`<Call<ResponseBody>>(mockedCall).enqueue(any())
-    }
-
-    class StubResponseBody : ResponseBody() {
-        override fun contentLength(): Long {
-            return 100
-        }
-
-        override fun contentType(): MediaType? {
-            return null
-        }
-
-        override fun source(): BufferedSource {
-            return mock(BufferedSource::class.java)
-        }
     }
 }

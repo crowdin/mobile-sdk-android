@@ -11,7 +11,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.net.HttpURLConnection
 
-// TODO: tests copy of stringdata remote repos
 internal class MappingRepository(private val crowdinDistributionApi: CrowdinDistributionApi,
                                  private val reader: Reader,
                                  private val dataManager: DataManager,
