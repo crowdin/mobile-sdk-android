@@ -5,6 +5,7 @@ import com.crowdin.platform.data.model.TextMetaData
 
 // TODO: add test
 internal fun getMappingValueForKey(textMetaData: TextMetaData, mappingData: LanguageData): String? {
+
     val resources = mappingData.resources
     val arrays = mappingData.arrays
     val plurals = mappingData.plurals
