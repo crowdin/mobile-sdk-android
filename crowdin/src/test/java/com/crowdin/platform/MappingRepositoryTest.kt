@@ -9,7 +9,7 @@ import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import okhttp3.ResponseBody
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
+import org.mockito.Mockito.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,11 +23,11 @@ class MappingRepositoryTest {
 
     @Before
     fun setUp() {
-        mockDistributionApi = Mockito.mock(CrowdinDistributionApi::class.java)
-        mockReader = Mockito.mock(Reader::class.java)
-        mockDataManager = Mockito.mock(DataManager::class.java)
-        Mockito.`when`(mockReader.parseInput(any())).thenReturn(LanguageData())
-        mockCallback = Mockito.mock(LanguageDataCallback::class.java)
+        mockDistributionApi = mock(CrowdinDistributionApi::class.java)
+        mockReader = mock(Reader::class.java)
+        mockDataManager = mock(DataManager::class.java)
+        `when`(mockReader.parseInput(any())).thenReturn(LanguageData())
+        mockCallback = mock(LanguageDataCallback::class.java)
     }
 
     @Test
@@ -40,7 +40,7 @@ class MappingRepositoryTest {
         mappingRepository.fetchData()
 
         // Then
-        Mockito.verify(mockDistributionApi).getMappingFile(any(), any(), any())
+        verify(mockDistributionApi).getMappingFile(any(), any(), any())
     }
 
     @Test
@@ -53,8 +53,8 @@ class MappingRepositoryTest {
         mappingRepository.fetchData()
 
         // Then
-        Mockito.verify(mockReader).parseInput(any())
-        Mockito.verify(mockReader).close()
+        verify(mockReader).parseInput(any())
+        verify(mockReader).close()
     }
 
     @Test
@@ -67,7 +67,7 @@ class MappingRepositoryTest {
         mappingRepository.fetchData(mockCallback)
 
         // Then
-        Mockito.verify(mockCallback).onDataLoaded(any())
+        verify(mockCallback).onDataLoaded(any())
     }
 
     @Test
@@ -80,7 +80,7 @@ class MappingRepositoryTest {
         mappingRepository.fetchData(mockCallback)
 
         // Then
-        Mockito.verify(mockDataManager).saveMapping(any())
+        verify(mockDataManager).saveMapping(any())
     }
 
     @Test
@@ -93,7 +93,7 @@ class MappingRepositoryTest {
         mappingRepository.fetchData(mockCallback)
 
         // Then
-        Mockito.verify(mockCallback).onFailure(any())
+        verify(mockCallback).onFailure(any())
     }
 
     @Test
@@ -106,7 +106,7 @@ class MappingRepositoryTest {
         mappingRepository.fetchData(mockCallback)
 
         // Then
-        Mockito.verify(mockCallback).onFailure(any())
+        verify(mockCallback).onFailure(any())
     }
 
     private fun givenMappingRepository(): MappingRepository =
@@ -119,8 +119,8 @@ class MappingRepositoryTest {
                     "en")
 
     private fun givenMockResponse(success: Boolean = true, successCode: Int = 200) {
-        val mockedCall = Mockito.mock(Call::class.java) as Call<ResponseBody>
-        Mockito.`when`(mockDistributionApi.getMappingFile(any(), any(), any())).thenReturn(mockedCall)
+        val mockedCall = mock(Call::class.java) as Call<ResponseBody>
+        `when`(mockDistributionApi.getMappingFile(any(), any(), any())).thenReturn(mockedCall)
 
         val response = if (success) {
             Response.success<ResponseBody>(successCode, StubResponseBody())
@@ -128,7 +128,7 @@ class MappingRepositoryTest {
             Response.error<ResponseBody>(403, StubResponseBody())
         }
 
-        Mockito.doAnswer {
+        doAnswer {
             val callback = it.getArgument(0, Callback::class.java) as Callback<ResponseBody>
             callback.onResponse(mockedCall, response)
         }.`when`<Call<ResponseBody>>(mockedCall).enqueue(any())
