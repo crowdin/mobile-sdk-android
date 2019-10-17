@@ -11,6 +11,8 @@ buildscript {
 }
 
 allprojects {
+    apply plugin: 'jacoco'
+
     repositories {
         google()
         jcenter()
@@ -25,4 +27,18 @@ ext {
     compileSdkVersion = 29
     minSdkVersion = 16
     targetSdkVersion = 29
+}
+
+task codeCoverageReport(type: JacocoReport) {
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+    reports {
+        xml {
+            destination file("$buildDir/outputs/reports/checkstyle_report.xml")
+        }
+    }
+}
+
+codeCoverageReport.dependsOn {
+    subprojects*.test
 }
