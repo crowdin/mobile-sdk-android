@@ -1,0 +1,27 @@
+parameters:
+  name: ''
+  vmImage: ''
+
+jobs:
+  - job: ${{ parameters.name }}
+    pool:
+      vmImage: ${{ parameters.vmImage }}
+    strategy:
+      maxParallel: 2
+      matrix:
+        JDK8:
+          jdkVersionOption: '1.8'
+        JDK11:
+          jdkVersionOption: '1.11'
+    steps:
+      - task: Gradle@2
+        inputs:
+          workingDirectory: ''
+          gradleWrapperFile: 'gradlew'
+          gradleOptions: '-Xmx3072m'
+          javaHomeOption: 'JDKVersion'
+          jdkVersionOption: $(jdkVersionOption)
+          jdkArchitectureOption: 'x64'
+          publishJUnitResults: true
+          testResultsFiles: '**/TEST-*.xml'
+          tasks: 'build'

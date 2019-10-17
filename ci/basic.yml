@@ -1,0 +1,50 @@
+trigger:
+  branches:
+    include:
+      - refs/heads/*
+    exclude:
+      - refs/tags/*
+      - README.md
+      - LICENSE
+
+jobs:
+  - job: Build
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - task: Gradle@2
+        inputs:
+          workingDirectory: ''
+          gradleWrapperFile: 'gradlew'
+          gradleOptions: '-Xmx3072m'
+          javaHomeOption: 'JDKVersion'
+          jdkVersionOption: '1.11'
+          jdkArchitectureOption: 'x64'
+          publishJUnitResults: false
+          tasks: 'build'
+
+  - job: Test
+    dependsOn:
+      - Build
+    condition: succeeded()
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - task: Gradle@2
+        inputs:
+          workingDirectory: ''
+          gradleWrapperFile: 'gradlew'
+          gradleOptions: '-Xmx3072m'
+          javaHomeOption: 'JDKVersion'
+          jdkVersionOption: '1.11'
+          jdkArchitectureOption: 'x64'
+          publishJUnitResults: true
+          testResultsFiles: '**/TEST-*.xml'
+          tasks: 'build'
+      - script: |
+          ./gradlew check
+          ./gradlew codeCoverageReport
+        displayName: 'Generating code coverage report'
+      - bash: |
+          bash <(curl -s https://codecov.io/bash) -t $(CODECOV_TOKEN)
+        displayName: 'Upload coverage to codecov.io'
