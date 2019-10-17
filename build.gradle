@@ -33,9 +33,10 @@ task codeCoverageReport(type: JacocoReport) {
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
 
     reports {
-        xml {
-            destination file("$buildDir/outputs/reports/checkstyle_report.xml")
-        }
+        xml.enabled true
+        xml.destination file("${buildDir}/reports/jacoco/report.xml")
+        html.enabled false
+        csv.enabled false
     }
 }
 

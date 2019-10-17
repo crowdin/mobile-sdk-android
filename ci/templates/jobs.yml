@@ -15,6 +15,7 @@ jobs:
           jdkVersionOption: '1.11'
     steps:
       - task: Gradle@2
+        displayName: 'Running tests'
         inputs:
           workingDirectory: ''
           gradleWrapperFile: 'gradlew'
