@@ -13,6 +13,7 @@ jobs:
       vmImage: ubuntu-latest
     steps:
       - task: Gradle@2
+        displayName: 'Gradle build'
         inputs:
           workingDirectory: ''
           gradleWrapperFile: 'gradlew'
@@ -31,6 +32,7 @@ jobs:
       vmImage: ubuntu-latest
     steps:
       - task: Gradle@2
+        displayName: 'Running tests'
         inputs:
           workingDirectory: ''
           gradleWrapperFile: 'gradlew'
