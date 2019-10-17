@@ -1,0 +1,14 @@
+trigger:
+  branches:
+    include:
+      - refs/heads/*
+    exclude:
+      - refs/tags/*
+      - README.md
+      - LICENSE
+
+jobs:
+  - template: templates/jobs.yml
+    parameters:
+      name: Linux
+      vmImage: 'ubuntu-latest'
