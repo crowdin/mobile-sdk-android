@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply from: '../jacoco.gradle'
 
 android {
     compileSdkVersion 29
@@ -17,7 +18,9 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
+            testCoverageEnabled = true
         }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

@@ -45,7 +45,7 @@ jobs:
           tasks: 'build'
       - script: |
           ./gradlew check
-          ./gradlew codeCoverageReport
+          ./gradlew test
         displayName: 'Generating code coverage report'
       - bash: |
           bash <(curl -s https://codecov.io/bash) -t $(CODECOV_TOKEN)

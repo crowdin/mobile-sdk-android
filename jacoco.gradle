@@ -1,0 +1,45 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "0.8.4"
+    reportsDir = file("$buildDir/customJacocoReportDir")
+}
+
+project.afterEvaluate {
+    // Grab all build types
+    def buildTypes = android.buildTypes.collect { type -> type.name }
+    buildTypes.each { buildTypeName ->
+        def sourceName, sourcePath
+        sourceName = sourcePath = "${buildTypeName}"
+        def testTaskName = "test${sourceName.capitalize()}UnitTest"
+
+        // Create coverage task of form 'testFlavorTypeCoverage' depending on 'testFlavorTypeUnitTest'
+        task "${testTaskName}Coverage"(type: JacocoReport, dependsOn: "$testTaskName") {
+            group = "Reporting"
+            description = "Generate Jacoco coverage reports on the ${sourceName.capitalize()} build."
+
+            classDirectories = fileTree(
+                    dir: "${project.buildDir}/intermediates/classes/${sourcePath}",
+                    excludes: ['**/R.class',
+                               '**/R$*.class',
+                               '**/*$ViewInjector*.*',
+                               '**/*$ViewBinder*.*',
+                               '**/BuildConfig.*',
+                               '**/Manifest*.*']
+            )
+
+            def coverageSourceDirs = [
+                    "src/main/java",
+                    "src/$buildTypeName/java"
+            ]
+            additionalSourceDirs = files(coverageSourceDirs)
+            sourceDirectories = files(coverageSourceDirs)
+            executionData = files("${project.buildDir}/jacoco/${testTaskName}.exec")
+
+            reports {
+                xml.enabled = true
+                html.enabled = true
+            }
+        }
+    }
+}
