@@ -44,9 +44,9 @@ jobs:
           testResultsFiles: '**/TEST-*.xml'
           tasks: 'build'
       - script: |
-          ./gradlew check
           ./gradlew jacocoTestReport
+          ./gradlew connectedCheck
         displayName: 'Generating code coverage report'
       - bash: |
-          bash <(curl -s https://codecov.io/bash) -t $(CODECOV_TOKEN)
+          bash <(curl -s https://codecov.io/bash)
         displayName: 'Upload coverage to codecov.io'
