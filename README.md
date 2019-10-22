@@ -17,6 +17,12 @@ The SDK provides:
 [![GitHub contributors](https://img.shields.io/github/contributors/crowdin/mobile-sdk-android)](https://github.com/crowdin/mobile-sdk-android/graphs/contributors)
 [![GitHub](https://img.shields.io/github/license/crowdin/mobile-sdk-android)](https://github.com/crowdin/mobile-sdk-android/blob/master/LICENSE)
 
+
+[![Azure DevOps builds (branch)](https://img.shields.io/azure-devops/build/crowdin/mobile-sdk-android/12/master?logo=azure-pipelines)](https://dev.azure.com/crowdin/mobile-sdk-android/_build/latest?definitionId=12&branchName=master)
+[![codecov](https://codecov.io/gh/crowdin/mobile-sdk-android/branch/master/graph/badge.svg)](https://codecov.io/gh/crowdin/mobile-sdk-android)
+[![Azure DevOps tests (branch)](https://img.shields.io/azure-devops/tests/crowdin/mobile-sdk-android/13/master)](https://dev.azure.com/crowdin/mobile-sdk-android/_build/latest?definitionId=12&branchName=master)
+
+
 ## Table of Contents
 * [Requirements](#requirements)
 * [Installation](#installation)
