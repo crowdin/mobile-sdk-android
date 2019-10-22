@@ -1,5 +1,9 @@
 apply plugin: 'jacoco'
 
+jacoco {
+    toolVersion = "0.8.5"
+}
+
 /**
  * The correct path of the report is $rootProjectDir/app/build/reports/jacoco/index.html
  * to run this task use: ./gradlew clean jacocoTestReport
