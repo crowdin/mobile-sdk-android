@@ -11,7 +11,7 @@ internal class NamedThreadPoolFactory(private val threadPrefix: String) : Thread
 
     override fun newThread(r: Runnable): Thread {
         val result = defaultFactory.newThread(r)
-        result.name = String.format("%s-%s", threadPrefix, Integer.toString(counter.getAndIncrement()))
+        result.name = String.format("%s-%s", threadPrefix, counter.getAndIncrement().toString())
         result.priority = ThreadUtils.DEFAULT_BACKGROUND_PRIORITY
         return result
     }
