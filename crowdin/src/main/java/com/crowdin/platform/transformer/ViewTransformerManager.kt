@@ -1,7 +1,6 @@
 package com.crowdin.platform.transformer
 
 import android.util.AttributeSet
-import android.util.Pair
 import android.view.View
 import android.widget.TextView
 import com.crowdin.platform.data.model.TextMetaData
