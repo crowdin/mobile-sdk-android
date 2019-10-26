@@ -9,12 +9,15 @@ class NamedThreadPoolFactoryTest {
 
     @Test
     fun newThreadTest() {
+        // Given
         val prefix = "test"
         val factory = NamedThreadPoolFactory(prefix)
         val runnable = Runnable { }
 
+        // When
         val thread = factory.newThread(runnable)
 
+        // Then
         assertThat(thread.name, `is`("test-0"))
         assertThat(thread.priority, `is`(4))
     }

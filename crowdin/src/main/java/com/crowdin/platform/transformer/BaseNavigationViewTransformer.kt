@@ -10,7 +10,7 @@ import com.crowdin.platform.util.TextUtils
  */
 internal abstract class BaseNavigationViewTransformer : BaseTransformer() {
 
-    protected abstract fun getMenu(view: View): Menu
+    abstract fun getMenu(view: View): Menu
 
     override fun transform(view: View, attrs: AttributeSet): View {
         if (!viewType.isInstance(view)) {
