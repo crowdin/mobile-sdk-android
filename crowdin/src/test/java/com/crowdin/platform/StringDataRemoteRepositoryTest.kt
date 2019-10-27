@@ -23,7 +23,7 @@ class StringDataRemoteRepositoryTest {
     fun setUp() {
         mockDistributionApi = mock(CrowdinDistributionApi::class.java)
         mockReader = mock(Reader::class.java)
-        `when`(mockReader.parseInput(any())).thenReturn(LanguageData())
+        `when`(mockReader.parseInput(any(), eq(null))).thenReturn(LanguageData())
         mockCallback = mock(LanguageDataCallback::class.java)
     }
 
@@ -50,7 +50,7 @@ class StringDataRemoteRepositoryTest {
         stringDataRemoteRepository.fetchData()
 
         // Then
-        verify(mockReader).parseInput(any())
+        verify(mockReader).parseInput(any(), any())
         verify(mockReader).close()
     }
 
