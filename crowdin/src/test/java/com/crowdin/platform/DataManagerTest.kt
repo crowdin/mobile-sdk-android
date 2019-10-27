@@ -322,6 +322,35 @@ class DataManagerTest {
         verify(mockLocalRepository).getData("auth_info", AuthInfo::class.java)
     }
 
+    @Test
+    fun addLoadingStateListenerTest() {
+        // Given
+        val dataManager = givenDataManager()
+        val loadingStateListener = mock(LoadingStateListener::class.java)
+
+        // When
+        dataManager.addLoadingStateListener(loadingStateListener)
+
+        // Then
+        val result = dataManager.removeLoadingStateListener(loadingStateListener)
+        assertThat(result, `is`(true))
+    }
+
+    @Test
+    fun removeLoadingStateListener_nullListenersTest() {
+        // Given
+        val dataManager = givenDataManager()
+        val loadingStateListener0 = mock(LoadingStateListener::class.java)
+        val loadingStateListener1 = mock(LoadingStateListener::class.java)
+        dataManager.addLoadingStateListener(loadingStateListener0)
+
+        // When
+        val result = dataManager.removeLoadingStateListener(loadingStateListener1)
+
+        // Then
+        assertThat(result, `is`(false))
+    }
+
     private fun givenDataManager(): DataManager =
             DataManager(mockRemoteRepository, mockLocalRepository, mockLocalDataChangeObserver)
 }
