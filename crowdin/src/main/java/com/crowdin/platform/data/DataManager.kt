@@ -99,8 +99,8 @@ internal class DataManager(private val remoteRepository: RemoteRepository,
         loadingStateListeners?.add(listener)
     }
 
-    fun removeLoadingStateListener(listener: LoadingStateListener) {
-        loadingStateListeners?.remove(listener)
+    fun removeLoadingStateListener(listener: LoadingStateListener): Boolean {
+        return loadingStateListeners?.remove(listener) ?: false
     }
 
     private fun sendOnFailure(throwable: Throwable) {
