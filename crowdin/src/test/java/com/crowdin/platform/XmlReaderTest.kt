@@ -1,10 +1,17 @@
 package com.crowdin.platform
 
+import com.crowdin.platform.data.model.ArrayData
+import com.crowdin.platform.data.model.PluralData
+import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.parser.Parser
 import com.crowdin.platform.data.parser.XmlReader
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
+import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserFactory
+import java.io.InputStream
 
 class XmlReaderTest {
 
@@ -19,5 +26,40 @@ class XmlReaderTest {
 
         // Then
         verify(parser).clearData()
+    }
+
+    @Test
+    fun parseInput_nullParserTest() {
+        // Given
+        val parser = mock(Parser::class.java)
+        val xmlReader = XmlReader(parser)
+        val xmlPullParserFactory = mock(XmlPullParserFactory::class.java)
+
+        // When
+        val result = xmlReader.parseInput(mock(InputStream::class.java), xmlPullParserFactory)
+
+        // Then
+        assertThat(result.language, `is`(""))
+        assertThat(result.resources, `is`(emptyList<StringData>()))
+        assertThat(result.arrays, `is`(emptyList<ArrayData>()))
+        assertThat(result.plurals, `is`(emptyList<PluralData>()))
+    }
+
+
+    @Test
+    fun parseInput_PullParserTest() {
+        // Given
+        val parser = mock(Parser::class.java)
+        val xmlReader = XmlReader(parser)
+        val xmlPullParserFactory = mock(XmlPullParserFactory::class.java)
+        val xmlPullParser = spy(XmlPullParser::class.java)
+        `when`(xmlPullParserFactory.newPullParser()).thenReturn(xmlPullParser)
+        `when`(xmlPullParser.eventType).thenReturn(1)
+
+        // When
+        xmlReader.parseInput(mock(InputStream::class.java), xmlPullParserFactory)
+
+        // Then
+        verify(parser).getLanguageData()
     }
 }

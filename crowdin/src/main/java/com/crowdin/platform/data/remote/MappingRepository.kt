@@ -6,6 +6,7 @@ import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import okhttp3.ResponseBody
+import org.xmlpull.v1.XmlPullParserFactory
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -39,7 +40,8 @@ internal class MappingRepository(private val crowdinDistributionApi: CrowdinDist
                         when {
                             response.code() == HttpURLConnection.HTTP_OK && body != null -> {
                                 response.headers()[HEADER_ETAG]?.let { eTag -> eTagMap.put(filePath, eTag) }
-                                val languageData = reader.parseInput(body.byteStream())
+                                val languageData =
+                                        reader.parseInput(body.byteStream(), XmlPullParserFactory.newInstance())
                                 languageData.language = sourceLanguage
                                 reader.close()
                                 dataManager.saveMapping(languageData)
