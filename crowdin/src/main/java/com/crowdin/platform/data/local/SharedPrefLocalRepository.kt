@@ -10,14 +10,14 @@ import java.lang.reflect.Type
  * A LocalRepository which saves/loads the strings in Shared Preferences.
  * it also keeps the strings in memory by using MemoryLocalRepository internally for faster access.
  */
-internal class SharedPrefLocalRepository internal constructor(context: Context) : LocalRepository {
+internal class SharedPrefLocalRepository internal constructor(context: Context,
+                                                              private val memoryLocalRepository: MemoryLocalRepository) : LocalRepository {
 
     companion object {
         private const val SHARED_PREF_NAME = "com.crowdin.platform.string.repository"
     }
 
     private lateinit var sharedPreferences: SharedPreferences
-    private val memoryLocalRepository = MemoryLocalRepository()
 
     init {
         initSharedPreferences(context)
