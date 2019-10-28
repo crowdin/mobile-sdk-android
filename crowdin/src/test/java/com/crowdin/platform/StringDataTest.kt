@@ -27,4 +27,15 @@ class StringDataTest {
         // Then
         assertThat(actualStringData, `is`(expectedStringData))
     }
+
+    @Test
+    fun stringDataTest() {
+        val builder = StringBuilder("testBuilder")
+        val stringData1 = StringData("key", "value",
+                arrayOf("test arg"), builder)
+        val stringData2 = StringData("key", "value",
+                arrayOf("test arg"), builder)
+
+        assertThat(stringData1.hashCode(), `is`(stringData2.hashCode()))
+    }
 }

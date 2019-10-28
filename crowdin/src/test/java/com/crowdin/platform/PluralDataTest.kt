@@ -27,4 +27,14 @@ class PluralDataTest {
         // Then
         assertThat(actualPluralData, `is`(expectedPluralData))
     }
+
+    @Test
+    fun pluralDataTest() {
+        val pluralData1 = PluralData("actualKey", mutableMapOf(Pair("key0", "value0")),
+                0, arrayOf("test0"))
+        val pluralData2 = PluralData("actualKey", mutableMapOf(Pair("key0", "value0")),
+                0, arrayOf("test0"))
+
+        assertThat(pluralData1.hashCode(), `is`(pluralData2.hashCode()))
+    }
 }
