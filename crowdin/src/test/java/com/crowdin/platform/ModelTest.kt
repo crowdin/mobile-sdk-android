@@ -1,6 +1,7 @@
 package com.crowdin.platform
 
 import com.crowdin.platform.data.model.*
+import com.crowdin.platform.data.parser.MenuItemStrings
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
@@ -170,5 +171,16 @@ class ModelTest {
 
         assertThat(textMetaData1, `is`(textMetaData2))
         assertThat(textMetaData1.hashCode(), `is`(textMetaData2.hashCode()))
+    }
+
+    @Test
+    fun menuItemStingsTest() {
+        val menuItemStrings = MenuItemStrings(2, 5)
+        val menuItemStrings1 = MenuItemStrings(2, 5)
+
+        assertThat(menuItemStrings, `is`(menuItemStrings1))
+        assertThat(menuItemStrings.hashCode(), `is`(menuItemStrings1.hashCode()))
+        assertThat(menuItemStrings.title, `is`(2))
+        assertThat(menuItemStrings.titleCondensed, `is`(5))
     }
 }
