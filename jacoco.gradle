@@ -24,7 +24,28 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
             '**/BuildConfig.*',
             '**/Manifest*.*',
             '**/*Test*.*',
-            'android/**/*.*'
+            'android/**/*.*',
+            '**/auth**',
+            '**/*CrowdinContextWrapper*.*',
+            '**/*CrowdinLayoutInflater*.*',
+            '**/*CrowdinResources*.*',
+            '**/*Attributes*.*',
+            '**/*ThreadUtils*.*',
+            '**/*Extensions*.*',
+            '**/*ScreenshotService*.*',
+            '**/*Connectivity*.*',
+            '**/*CrowdinNetworkModels*.*',
+            '**/*XmlParserUtils*.*',
+            '**/*BaseNavigationViewTransformer*.*',
+            '**/*BaseToolbarTransformer*.*',
+            '**/*BaseTransformer*.*',
+            '**/*BottomNavigationViewTransformer*.*',
+            '**/*NavigationViewTransformer*.*',
+            '**/*SpinnerTransformer*.*',
+            '**/*SupportToolbarTransformer*.*',
+            '**/*TextViewTransformer*.*',
+            '**/*ToolbarTransformer*.*',
+            '**/*ScreenshotUtils*.*'
     ]
 
     def javaDebugTree = fileTree(dir: "${buildDir}/intermediates/javac/debug", excludes: fileFilter)
