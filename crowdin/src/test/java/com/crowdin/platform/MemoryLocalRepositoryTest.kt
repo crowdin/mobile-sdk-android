@@ -3,6 +3,7 @@ package com.crowdin.platform
 import com.crowdin.platform.data.local.MemoryLocalRepository
 import com.crowdin.platform.data.model.*
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import java.util.*
@@ -15,6 +16,22 @@ class MemoryLocalRepositoryTest {
         val memoryLocalRepository = MemoryLocalRepository()
         val expectedLanguageData = givenLanguageData("EN")
         memoryLocalRepository.saveLanguageData(expectedLanguageData)
+
+        // When
+        val actualLanguageData = memoryLocalRepository.getLanguageData("EN")
+
+        // Then
+        assertThat(actualLanguageData, `is`(expectedLanguageData))
+    }
+
+    @Test
+    fun whenUpdateSavedLanguageData_shouldReturnSameData() {
+        // Given
+        val memoryLocalRepository = MemoryLocalRepository()
+        val expectedLanguageData = givenLanguageData("EN")
+        val updateData = givenLanguageData("EN")
+        memoryLocalRepository.saveLanguageData(expectedLanguageData)
+        memoryLocalRepository.saveLanguageData(updateData)
 
         // When
         val actualLanguageData = memoryLocalRepository.getLanguageData("EN")
@@ -39,6 +56,19 @@ class MemoryLocalRepositoryTest {
     }
 
     @Test
+    fun whenGetUnknownString_shouldReturnNull() {
+        // Given
+        val memoryLocalRepository = MemoryLocalRepository()
+        memoryLocalRepository.setString("EN", "test key", "Test value")
+
+        // When
+        val actualValue = memoryLocalRepository.getString("EN", "randomKey")
+
+        // Then
+        assertThat(actualValue, nullValue())
+    }
+
+    @Test
     fun whenSetStringData_shouldReturnSameString() {
         // Given
         val memoryLocalRepository = MemoryLocalRepository()
@@ -59,16 +89,33 @@ class MemoryLocalRepositoryTest {
         // Given
         val locale = Locale.getDefault().toString()
         val memoryLocalRepository = MemoryLocalRepository()
-        val key = "test key"
-        val expectedArray = arrayOf("array0", "array1")
-        val arrayData = ArrayData(key, expectedArray)
+        val array = arrayOf("array0", "array1")
+        val arrayData = ArrayData("arrayKey", array)
+        val arrayData1 = ArrayData("arrayKey1", array)
 
         // When
         memoryLocalRepository.setArrayData(locale, arrayData)
+        memoryLocalRepository.setArrayData(locale, arrayData)
+        memoryLocalRepository.setArrayData(locale, arrayData1)
+        val actualValue = memoryLocalRepository.getStringArray("arrayKey")
 
         // Then
-        val actualValue = memoryLocalRepository.getStringArray(key)
-        assertThat(actualValue, `is`(expectedArray))
+        assertThat(actualValue, `is`(array))
+    }
+
+    @Test
+    fun whenGetUnknownArrayData_shouldReturnNull() {
+        // Given
+        val locale = Locale.getDefault().toString()
+        val memoryLocalRepository = MemoryLocalRepository()
+        val arrayData = ArrayData("test key", arrayOf("array0", "array1"))
+        memoryLocalRepository.setArrayData(locale, arrayData)
+
+        // When
+        val actualValue = memoryLocalRepository.getStringArray("randomKey")
+
+        // Then
+        assertThat(actualValue, nullValue())
     }
 
     @Test
@@ -76,18 +123,43 @@ class MemoryLocalRepositoryTest {
         // Given
         val locale = Locale.getDefault().toString()
         val memoryLocalRepository = MemoryLocalRepository()
-        val resourceKey = "test key"
-        val quantityKey = "key0"
+        val resourceKey0 = "test key"
+        val resourceKey1 = "test key1"
+        val quantityKey0 = "key0"
+        val quantityKey1 = "key1"
+        val expectedPlural = mutableMapOf(Pair(quantityKey0, "value0"))
+        val expectedPlural1 = mutableMapOf(Pair(quantityKey1, "value1"))
+        val pluralData = PluralData(resourceKey0, expectedPlural)
+        val pluralData1 = PluralData(resourceKey1, expectedPlural1)
         val expectedValue = "value0"
-        val expectedPlural = mutableMapOf(Pair(quantityKey, "value0"))
-        val pluralData = PluralData(resourceKey, expectedPlural)
+        val expectedValue1 = "value1"
 
         // When
         memoryLocalRepository.setPluralData(locale, pluralData)
+        memoryLocalRepository.setPluralData(locale, pluralData1)
+        memoryLocalRepository.setPluralData(locale, pluralData1)
 
         // Then
-        val actualValue = memoryLocalRepository.getStringPlural(resourceKey, quantityKey)
-        assertThat(actualValue, `is`(expectedValue))
+        val value1 = memoryLocalRepository.getStringPlural(resourceKey0, quantityKey0)
+        assertThat(value1, `is`(expectedValue))
+        val value2 = memoryLocalRepository.getStringPlural(resourceKey1, quantityKey1)
+        assertThat(value2, `is`(expectedValue1))
+    }
+
+    @Test
+    fun whenGetUnknownPluralData_shouldReturnNull() {
+        // Given
+        val locale = Locale.getDefault().toString()
+        val memoryLocalRepository = MemoryLocalRepository()
+        val expectedPlural = mutableMapOf(Pair("key0", "value0"))
+        val pluralData = PluralData("test key0", expectedPlural)
+        memoryLocalRepository.setPluralData(locale, pluralData)
+
+        // When
+        val value = memoryLocalRepository.getStringPlural("randomKey", "randomKey")
+
+        // Then
+        assertThat(value, nullValue())
     }
 
     @Test
