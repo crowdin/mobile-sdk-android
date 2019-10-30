@@ -34,6 +34,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
             '**/*Extensions*.*',
             '**/*ScreenshotService*.*',
             '**/*Connectivity*.*',
+            '**/*NetworkType*.*',
             '**/api**',
             '**/*XmlParserUtils*.*',
             '**/*BaseNavigationViewTransformer*.*',
