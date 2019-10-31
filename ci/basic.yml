@@ -48,5 +48,5 @@ jobs:
           ./gradlew connectedCheck
         displayName: 'Generating code coverage report'
       - bash: |
-          bash <(curl -s https://codecov.io/bash)
+          bash <(curl -s https://codecov.io/bash) -t $(CODECOV_TOKEN)
         displayName: 'Upload coverage to codecov.io'
