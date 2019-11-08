@@ -203,7 +203,6 @@ class ViewTransformerManagerTest {
 
     private fun initCrowdin() {
         val config = CrowdinConfig.Builder()
-                .withFilePaths("test")
                 .withDistributionHash("test")
                 .build()
         val sharedPrefs = mock(SharedPreferences::class.java)!!

@@ -20,7 +20,6 @@ class LocalStringRepositoryFactoryTest {
         // Given
         val context = givenContext()
         val config = CrowdinConfig.Builder()
-                .withFilePaths("testFilePath")
                 .withDistributionHash("testHash")
                 .build()
 
@@ -38,7 +37,6 @@ class LocalStringRepositoryFactoryTest {
         val context = givenContext()
         val config = CrowdinConfig.Builder()
                 .persist(false)
-                .withFilePaths("testFilePath")
                 .withDistributionHash("testHash")
                 .build()
 

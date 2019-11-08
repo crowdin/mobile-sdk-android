@@ -17,7 +17,6 @@ class RecurringManagerTest {
     fun whenSetPeriodicUpdates_shouldUpdatePref() {
         // Given
         val config = CrowdinConfig.Builder()
-                .withFilePaths("test")
                 .withDistributionHash("test")
                 .build()
         val json = Gson().toJson(config)

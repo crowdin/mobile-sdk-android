@@ -10,13 +10,20 @@ internal interface CrowdinDistributionApi {
 
     @GET("/{distributionHash}/content{filePath}")
     fun getResourceFile(
-            @Header("if-none-match") eTag: String,
-            @Path("distributionHash") distributionHash: String,
-            @Path("filePath") filePath: String): Call<ResponseBody>
+        @Header("if-none-match") eTag: String,
+        @Path("distributionHash") distributionHash: String,
+        @Path("filePath") filePath: String
+    ): Call<ResponseBody>
+
+    @GET("/{distributionHash}/manifest.json")
+    fun getResourceManifest(
+        @Path("distributionHash") distributionHash: String
+    ): Call<ResponseBody>
 
     @GET("/{distributionHash}/mapping{filePath}")
     fun getMappingFile(
-            @Header("if-none-match") eTag: String,
-            @Path("distributionHash") distributionHash: String,
-            @Path("filePath") filePath: String): Call<ResponseBody>
+        @Header("if-none-match") eTag: String,
+        @Path("distributionHash") distributionHash: String,
+        @Path("filePath") filePath: String
+    ): Call<ResponseBody>
 }

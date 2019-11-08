@@ -94,7 +94,7 @@ class StringDataRemoteRepositoryTest {
     }
 
     private fun givenStringDataRemoteRepository(): StringDataRemoteRepository =
-            StringDataRemoteRepository(mockDistributionApi, mockReader, "hash", arrayOf("string.xml"))
+            StringDataRemoteRepository(mockDistributionApi, mockReader, "hash")
 
     private fun givenMockResponse(success: Boolean = true, successCode: Int = 200) {
         val mockedCall = mock(Call::class.java) as Call<ResponseBody>

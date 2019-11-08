@@ -24,24 +24,6 @@ class CrowdinConfigTest {
     }
 
     @Test
-    fun whenFilePathsEmpty_shouldThrowException() {
-        // Given
-        val filePaths: Array<out String> = arrayOf("test", "   ", "", "test")
-
-        // When
-        try {
-            CrowdinConfig.Builder()
-                    .withDistributionHash("distributionHash")
-                    .withFilePaths(*filePaths)
-                    .build()
-            Assert.fail("SDK initialization with empty `filePaths` not valid.")
-        } catch (exception: IllegalArgumentException) {
-            // Then
-            // exception expected
-        }
-    }
-
-    @Test
     fun whenSourceLanguageEmptyWithRealTimeEnabled_shouldThrowException() {
         // Given
         val sourceLanguage = ""
@@ -50,7 +32,6 @@ class CrowdinConfigTest {
         try {
             CrowdinConfig.Builder()
                     .withDistributionHash("distributionHash")
-                    .withFilePaths("filePath")
                     .withRealTimeUpdates()
                     .withSourceLanguage(sourceLanguage)
                     .build()
@@ -70,7 +51,6 @@ class CrowdinConfigTest {
         try {
             CrowdinConfig.Builder()
                     .withDistributionHash("distributionHash")
-                    .withFilePaths("filePath")
                     .withScreenshotEnabled()
                     .withSourceLanguage(sourceLanguage)
                     .build()
@@ -90,7 +70,6 @@ class CrowdinConfigTest {
         try {
             CrowdinConfig.Builder()
                     .withDistributionHash("distributionHash")
-                    .withFilePaths("filePath")
                     .withAuthConfig(authConfig)
                     .build()
             Assert.fail("SDK initialization with empty `AuthConfig` values - not valid.")
