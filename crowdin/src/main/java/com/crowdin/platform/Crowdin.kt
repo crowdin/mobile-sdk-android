@@ -298,8 +298,7 @@ object Crowdin {
         val remoteRepository = StringDataRemoteRepository(
                 CrowdinRetrofitService.getCrowdinDistributionApi(),
                 XmlReader(StringResourceParser()),
-                config.distributionHash,
-                config.filePaths)
+                config.distributionHash)
         val localRepository = LocalStringRepositoryFactory.createLocalRepository(context, config)
 
         dataManager = DataManager(remoteRepository, localRepository, object : LocalDataChangeObserver {
@@ -326,7 +325,6 @@ object Crowdin {
                     XmlReader(StringResourceParser()),
                     dataManager!!,
                     config.distributionHash,
-                    config.filePaths,
                     config.sourceLanguage)
             mappingRepository.fetchData()
         }

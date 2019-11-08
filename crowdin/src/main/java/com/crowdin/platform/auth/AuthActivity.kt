@@ -62,11 +62,11 @@ internal class AuthActivity : AppCompatActivity() {
 
         if (authAttemptCounter != AUTH_ATTEMPT_THRESHOLD) {
             val builder = Uri.Builder()
-                    .scheme("https")
-                    .authority("accounts.crowdin.com")
-                    .appendPath("oauth")
-                    .appendPath("authorize")
-                    .encodedQuery("client_id=$clientId&response_type=code&scope=project.screenshot&redirect_uri=crowdintest://")
+                .scheme("https")
+                .authority("accounts.crowdin.com")
+                .appendPath("oauth")
+                .appendPath("authorize")
+                .encodedQuery("client_id=$clientId&response_type=code&scope=project.screenshot&redirect_uri=crowdintest://")
 
             domain?.let { builder.appendQueryParameter(DOMAIN, it) }
             val url = builder.build().toString()
@@ -83,8 +83,12 @@ internal class AuthActivity : AppCompatActivity() {
             statusTextView.text = getString(R.string.loading)
             ThreadUtils.runInBackgroundPool(Runnable {
                 val apiService = CrowdinRetrofitService.getCrowdinAuthApi()
-                val response = apiService.getToken(TokenRequest(GRANT_TYPE,
-                        clientId, clientSecret, REDIRECT_URI, code), domain).execute()
+                val response = apiService.getToken(
+                    TokenRequest(
+                        GRANT_TYPE,
+                        clientId, clientSecret, REDIRECT_URI, code
+                    ), domain
+                ).execute()
                 if (response.isSuccessful && response.body() != null) {
                     Crowdin.saveAuthInfo(AuthInfo(response.body()!!))
                     getDistributionInfo(event)
@@ -114,7 +118,10 @@ internal class AuthActivity : AppCompatActivity() {
             override fun onError(throwable: Throwable) {
                 Crowdin.saveAuthInfo(null)
                 finish()
-                Log.d(AuthActivity::class.java.simpleName, "Get info, onFailure:${throwable.localizedMessage}")
+                Log.d(
+                    AuthActivity::class.java.simpleName,
+                    "Get info, onFailure:${throwable.localizedMessage}"
+                )
             }
         })
     }

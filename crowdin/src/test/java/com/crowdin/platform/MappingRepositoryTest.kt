@@ -115,7 +115,6 @@ class MappingRepositoryTest {
                     mockReader,
                     mockDataManager,
                     "hash",
-                    arrayOf("string.xml"),
                     "en")
 
     private fun givenMockResponse(success: Boolean = true, successCode: Int = 200) {

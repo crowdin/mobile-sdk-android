@@ -10,7 +10,6 @@ class CrowdinConfig private constructor() {
 
     var isPersist: Boolean = true
     var distributionHash: String = ""
-    var filePaths: Array<out String>? = null
     var networkType: NetworkType = NetworkType.ALL
     var isRealTimeUpdateEnabled: Boolean = false
     var isScreenshotEnabled: Boolean = false
@@ -22,7 +21,6 @@ class CrowdinConfig private constructor() {
 
         private var isPersist: Boolean = true
         private var distributionHash: String = ""
-        private var filePaths: Array<out String>? = null
         private var networkType: NetworkType = NetworkType.ALL
         private var isRealTimeUpdateEnabled: Boolean = false
         private var isScreenshotEnabled: Boolean = false
@@ -37,11 +35,6 @@ class CrowdinConfig private constructor() {
 
         fun withDistributionHash(distributionHash: String): Builder {
             this.distributionHash = distributionHash
-            return this
-        }
-
-        fun withFilePaths(vararg filePaths: String): Builder {
-            this.filePaths = filePaths
             return this
         }
 
@@ -82,10 +75,6 @@ class CrowdinConfig private constructor() {
 
             config.distributionHash = distributionHash
 
-            require(filePaths != null) { "Crowdin: `filePaths` cannot be null" }
-            require(isFilePathValid()) { "Crowdin: `filePaths` cannot be empty" }
-
-            config.filePaths = filePaths
             config.networkType = networkType
             config.isRealTimeUpdateEnabled = isRealTimeUpdateEnabled
             config.isScreenshotEnabled = isScreenshotEnabled
@@ -107,15 +96,6 @@ class CrowdinConfig private constructor() {
             config.authConfig = authConfig
 
             return config
-        }
-
-        private fun isFilePathValid(): Boolean {
-            filePaths?.forEach {
-                if (it.trim().isEmpty()) {
-                    return false
-                }
-            }
-            return true
         }
     }
 }
