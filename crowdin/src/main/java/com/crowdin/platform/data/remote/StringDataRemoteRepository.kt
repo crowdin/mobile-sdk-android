@@ -36,7 +36,7 @@ internal class StringDataRemoteRepository(
                         response.code() == HttpURLConnection.HTTP_OK && body != null -> {
                             try {
                                 val manifest =
-                                    Gson().fromJson(body.charStream(), ManifestData::class.java)
+                                    Gson().fromJson(body.string(), ManifestData::class.java)
                                 manifest.files.forEach {
                                     val filePath = validateFilePath(it)
                                     val eTag = eTagMap[filePath]
