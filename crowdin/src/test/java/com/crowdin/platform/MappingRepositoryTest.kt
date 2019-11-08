@@ -31,9 +31,23 @@ class MappingRepositoryTest {
     }
 
     @Test
-    fun whenFetchData_shouldTriggerApiCall() {
+    fun whenFetchData_shouldRequestManifestApiCall() {
         // Given
         val mappingRepository = givenMappingRepository()
+        givenMockManifestResponse()
+
+        // When
+        mappingRepository.fetchData()
+
+        // Then
+        verify(mockDistributionApi).getResourceManifest(any())
+    }
+
+    @Test
+    fun whenFetchManifestSuccess_shouldTriggerFilePathApiCall() {
+        // Given
+        val mappingRepository = givenMappingRepository()
+        givenMockManifestResponse()
         givenMockResponse()
 
         // When
@@ -47,6 +61,7 @@ class MappingRepositoryTest {
     fun whenFetchDataSuccess_shouldParseResponseAndCloseReader() {
         // Given
         val mappingRepository = givenMappingRepository()
+        givenMockManifestResponse()
         givenMockResponse()
 
         // When
@@ -61,6 +76,7 @@ class MappingRepositoryTest {
     fun whenFetchWithCallbackAndResponseSuccess_shouldCallSuccessMethod() {
         // Given
         val mappingRepository = givenMappingRepository()
+        givenMockManifestResponse()
         givenMockResponse()
 
         // When
@@ -74,6 +90,7 @@ class MappingRepositoryTest {
     fun whenFetchDataSuccess_shouldStoreResult() {
         // Given
         val mappingRepository = givenMappingRepository()
+        givenMockManifestResponse()
         givenMockResponse()
 
         // When
@@ -87,6 +104,7 @@ class MappingRepositoryTest {
     fun whenFetchWithCallbackAndResponseFailure_shouldCallFailureMethod() {
         // Given
         val mappingRepository = givenMappingRepository()
+        givenMockManifestResponse()
         givenMockResponse(false)
 
         // When
@@ -100,6 +118,7 @@ class MappingRepositoryTest {
     fun whenFetchWithCallbackAndResponseNotCode200_shouldCallFailureMethod() {
         // Given
         val mappingRepository = givenMappingRepository()
+        givenMockManifestResponse()
         givenMockResponse(successCode = 204)
 
         // When
@@ -116,6 +135,25 @@ class MappingRepositoryTest {
                     mockDataManager,
                     "hash",
                     "en")
+
+    private fun givenMockManifestResponse(success: Boolean = true, successCode: Int = 200) {
+        val mockedCall = mock(Call::class.java) as Call<ResponseBody>
+        `when`(mockDistributionApi.getResourceManifest(any())).thenReturn(mockedCall)
+        val responseBody = mock(StubResponseBody::class.java)
+        val json = "{\"files\":[\"\\/strings.xml\"]}"
+        `when`(responseBody.string()).thenReturn(json)
+
+        val response = if (success) {
+            Response.success<ResponseBody>(successCode, responseBody)
+        } else {
+            Response.error<ResponseBody>(403, StubResponseBody())
+        }
+
+        doAnswer {
+            val callback = it.getArgument(0, Callback::class.java) as Callback<ResponseBody>
+            callback.onResponse(mockedCall, response)
+        }.`when`<Call<ResponseBody>>(mockedCall).enqueue(any())
+    }
 
     private fun givenMockResponse(success: Boolean = true, successCode: Int = 200) {
         val mockedCall = mock(Call::class.java) as Call<ResponseBody>

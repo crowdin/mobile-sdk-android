@@ -28,9 +28,23 @@ class StringDataRemoteRepositoryTest {
     }
 
     @Test
+    fun whenFetchData_shouldRequestManifestApiCall() {
+        // Given
+        val mappingRepository = givenStringDataRemoteRepository()
+        givenMockManifestResponse()
+
+        // When
+        mappingRepository.fetchData()
+
+        // Then
+        verify(mockDistributionApi).getResourceManifest(any())
+    }
+
+    @Test
     fun whenFetchData_shouldTriggerApiCall() {
         // Given
         val stringDataRemoteRepository = givenStringDataRemoteRepository()
+        givenMockManifestResponse()
         givenMockResponse()
 
         // When
@@ -44,6 +58,7 @@ class StringDataRemoteRepositoryTest {
     fun whenFetchDataSuccess_shouldParseResponseAndCloseReader() {
         // Given
         val stringDataRemoteRepository = givenStringDataRemoteRepository()
+        givenMockManifestResponse()
         givenMockResponse()
 
         // When
@@ -58,6 +73,7 @@ class StringDataRemoteRepositoryTest {
     fun whenFetchWithCallbackAndResponseSuccess_shouldCallSuccessMethod() {
         // Given
         val stringDataRemoteRepository = givenStringDataRemoteRepository()
+        givenMockManifestResponse()
         givenMockResponse()
 
         // When
@@ -71,6 +87,7 @@ class StringDataRemoteRepositoryTest {
     fun whenFetchWithCallbackAndResponseFailure_shouldCallFailureMethod() {
         // Given
         val stringDataRemoteRepository = givenStringDataRemoteRepository()
+        givenMockManifestResponse()
         givenMockResponse(false)
 
         // When
@@ -84,6 +101,7 @@ class StringDataRemoteRepositoryTest {
     fun whenFetchWithCallbackAndResponseNotCode200_shouldCallFailureMethod() {
         // Given
         val stringDataRemoteRepository = givenStringDataRemoteRepository()
+        givenMockManifestResponse()
         givenMockResponse(successCode = 204)
 
         // When
@@ -95,6 +113,25 @@ class StringDataRemoteRepositoryTest {
 
     private fun givenStringDataRemoteRepository(): StringDataRemoteRepository =
             StringDataRemoteRepository(mockDistributionApi, mockReader, "hash")
+
+    private fun givenMockManifestResponse(success: Boolean = true, successCode: Int = 200) {
+        val mockedCall = mock(Call::class.java) as Call<ResponseBody>
+        `when`(mockDistributionApi.getResourceManifest(any())).thenReturn(mockedCall)
+        val responseBody = mock(StubResponseBody::class.java)
+        val json = "{\"files\":[\"\\/strings.xml\"]}"
+        `when`(responseBody.string()).thenReturn(json)
+
+        val response = if (success) {
+            Response.success<ResponseBody>(successCode, responseBody)
+        } else {
+            Response.error<ResponseBody>(403, StubResponseBody())
+        }
+
+        doAnswer {
+            val callback = it.getArgument(0, Callback::class.java) as Callback<ResponseBody>
+            callback.onResponse(mockedCall, response)
+        }.`when`<Call<ResponseBody>>(mockedCall).enqueue(any())
+    }
 
     private fun givenMockResponse(success: Boolean = true, successCode: Int = 200) {
         val mockedCall = mock(Call::class.java) as Call<ResponseBody>
