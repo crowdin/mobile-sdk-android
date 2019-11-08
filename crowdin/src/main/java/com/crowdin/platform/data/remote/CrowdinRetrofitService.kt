@@ -55,25 +55,29 @@ internal object CrowdinRetrofitService {
 
     private fun getCrowdinRetrofit(okHttpClient: OkHttpClient, url: String): Retrofit {
         return Retrofit.Builder()
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(url)
-                .build()
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(url)
+            .build()
     }
 
     fun getCrowdinDistributionApi(): CrowdinDistributionApi {
         return crowdinDistributionApi
-                ?: getCrowdinRetrofit(getHttpClient(), BASE_DISTRIBUTION_URL).create(CrowdinDistributionApi::class.java)
+            ?: getCrowdinRetrofit(getHttpClient(), BASE_DISTRIBUTION_URL).create(
+                CrowdinDistributionApi::class.java
+            )
     }
 
     fun getCrowdinApi(dataManager: DataManager, organizationName: String?): CrowdinApi {
         var baseUrl = BASE_API_URL
         organizationName?.let { baseUrl = "https://${organizationName}.crowdin.com/" }
         return crowdinApi
-                ?: getCrowdinRetrofit(getInterceptableHttpClient(SessionImpl(dataManager, getCrowdinAuthApi())),
-                        baseUrl).create(CrowdinApi::class.java)
+            ?: getCrowdinRetrofit(
+                getInterceptableHttpClient(SessionImpl(dataManager, getCrowdinAuthApi())),
+                baseUrl
+            ).create(CrowdinApi::class.java)
     }
 
     fun getCrowdinAuthApi(): AuthApi = authApi
-            ?: getCrowdinRetrofit(getHttpClient(), AUTH_API_URL).create(AuthApi::class.java)
+        ?: getCrowdinRetrofit(getHttpClient(), AUTH_API_URL).create(AuthApi::class.java)
 }

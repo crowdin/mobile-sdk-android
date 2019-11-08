@@ -10,8 +10,10 @@ import java.lang.reflect.Type
  * A LocalRepository which saves/loads the strings in Shared Preferences.
  * it also keeps the strings in memory by using MemoryLocalRepository internally for faster access.
  */
-internal class SharedPrefLocalRepository internal constructor(context: Context,
-                                                              private val memoryLocalRepository: MemoryLocalRepository) : LocalRepository {
+internal class SharedPrefLocalRepository internal constructor(
+    context: Context,
+    private val memoryLocalRepository: MemoryLocalRepository
+) : LocalRepository {
 
     companion object {
         private const val SHARED_PREF_NAME = "com.crowdin.platform.string.repository"
@@ -55,16 +57,16 @@ internal class SharedPrefLocalRepository internal constructor(context: Context,
     }
 
     override fun getString(language: String, key: String): String? =
-            memoryLocalRepository.getString(language, key)
+        memoryLocalRepository.getString(language, key)
 
     override fun getLanguageData(language: String): LanguageData? =
-            memoryLocalRepository.getLanguageData(language)
+        memoryLocalRepository.getLanguageData(language)
 
     override fun getStringArray(key: String): Array<String>? =
-            memoryLocalRepository.getStringArray(key)
+        memoryLocalRepository.getStringArray(key)
 
     override fun getStringPlural(resourceKey: String, quantityKey: String): String? =
-            memoryLocalRepository.getStringPlural(resourceKey, quantityKey)
+        memoryLocalRepository.getStringPlural(resourceKey, quantityKey)
 
     override fun isExist(language: String): Boolean = memoryLocalRepository.isExist(language)
 
@@ -115,10 +117,10 @@ internal class SharedPrefLocalRepository internal constructor(context: Context,
     private fun saveData(languageData: LanguageData) {
         val json = Gson().toJson(languageData)
         sharedPreferences.edit()
-                .putString(languageData.language, json)
-                .apply()
+            .putString(languageData.language, json)
+            .apply()
     }
 
     private fun deserializeKeyValues(content: String): LanguageData =
-            Gson().fromJson(content, LanguageData::class.java)
+        Gson().fromJson(content, LanguageData::class.java)
 }

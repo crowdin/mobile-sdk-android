@@ -16,7 +16,11 @@ class SlideshowFragment : Fragment() {
         fun newInstance(): SlideshowFragment = SlideshowFragment()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_slideshow, container, false)
     }
 

@@ -9,8 +9,12 @@ import org.xmlpull.v1.XmlPullParser
 internal interface Parser {
 
     fun onStartTag(parser: XmlPullParser)
+
     fun onText(parser: XmlPullParser)
+
     fun onEndTag(parser: XmlPullParser)
+
     fun getLanguageData(): LanguageData
+
     fun clearData()
 }

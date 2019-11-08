@@ -7,9 +7,11 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
 
-internal class RealTimeUpdateManager(private val sourceLanguage: String,
-                                     private val dataManager: DataManager?,
-                                     private val viewTransformerManager: ViewTransformerManager) {
+internal class RealTimeUpdateManager(
+    private val sourceLanguage: String,
+    private val dataManager: DataManager?,
+    private val viewTransformerManager: ViewTransformerManager
+) {
 
     companion object {
         const val NORMAL_CLOSURE_STATUS = 0x3E9
@@ -20,8 +22,10 @@ internal class RealTimeUpdateManager(private val sourceLanguage: String,
 
     fun openConnection() {
         dataManager ?: return
-        val distributionData = dataManager.getData(DataManager.DISTRIBUTION_DATA,
-                DistributionInfoResponse.DistributionData::class.java) as DistributionInfoResponse.DistributionData?
+        val distributionData = dataManager.getData(
+            DataManager.DISTRIBUTION_DATA,
+            DistributionInfoResponse.DistributionData::class.java
+        ) as DistributionInfoResponse.DistributionData?
         distributionData ?: return
 
         createConnection(distributionData)
@@ -36,8 +40,8 @@ internal class RealTimeUpdateManager(private val sourceLanguage: String,
         val mappingData = dataManager?.getMapping(sourceLanguage) ?: return
         val client = OkHttpClient().newBuilder().build()
         val request = Request.Builder()
-                .url(distributionData.wsUrl)
-                .build()
+            .url(distributionData.wsUrl)
+            .build()
 
         val listener = EchoWebSocketListener(mappingData, distributionData, viewTransformerManager)
         socket = client.newWebSocket(request, listener)

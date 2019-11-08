@@ -11,7 +11,10 @@ internal interface Reader {
      *
      * @param byteStream stream to be parsed.
      */
-    fun parseInput(byteStream: InputStream, xmlPullParserFactory: XmlPullParserFactory?): LanguageData
+    fun parseInput(
+        byteStream: InputStream,
+        xmlPullParserFactory: XmlPullParserFactory?
+    ): LanguageData
 
     /**
      * Close reader and clear all data.

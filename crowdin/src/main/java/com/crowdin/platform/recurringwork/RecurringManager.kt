@@ -25,9 +25,10 @@ internal object RecurringManager {
         saveConfig(context, config)
 
         val constraints = Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build()
-        downloadRequest = PeriodicWorkRequestBuilder<DownloadWorker>(config.updateInterval, TimeUnit.MILLISECONDS)
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        downloadRequest =
+            PeriodicWorkRequestBuilder<DownloadWorker>(config.updateInterval, TimeUnit.MILLISECONDS)
                 .setConstraints(constraints)
                 .build()
         WorkManager.getInstance().enqueue(downloadRequest)
@@ -68,7 +69,10 @@ internal object RecurringManager {
 
     internal fun getConfig(context: Context): CrowdinConfig {
         val sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
-        return Gson().fromJson(sharedPreferences.getString(CROWDIN_CONFIG, ""), CrowdinConfig::class.java)
+        return Gson().fromJson(
+            sharedPreferences.getString(CROWDIN_CONFIG, ""),
+            CrowdinConfig::class.java
+        )
     }
 
     private fun saveRecurringState(context: Context, state: String) {
@@ -77,6 +81,7 @@ internal object RecurringManager {
     }
 
     private fun getRecurringState(context: Context): String? {
-        return context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE).getString(WORK_STATE, "")
+        return context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
+            .getString(WORK_STATE, "")
     }
 }

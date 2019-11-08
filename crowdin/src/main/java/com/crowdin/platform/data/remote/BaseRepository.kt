@@ -14,12 +14,12 @@ internal abstract class BaseRepository : RemoteRepository {
         const val LOCALE_WITH_UNDERSCORE = "%locale_with_underscore%"
         const val ANDROID_CODE = "%android_code%"
         val listExportPattern = listOf(
-                LANGUAGE_NAME,
-                TWO_LETTER_CODE,
-                THREE_LETTER_CODE,
-                LOCALE,
-                LOCALE_WITH_UNDERSCORE,
-                ANDROID_CODE
+            LANGUAGE_NAME,
+            TWO_LETTER_CODE,
+            THREE_LETTER_CODE,
+            LOCALE,
+            LOCALE_WITH_UNDERSCORE,
+            ANDROID_CODE
         )
     }
 
@@ -53,9 +53,11 @@ internal abstract class BaseRepository : RemoteRepository {
         when {
             path.contains(LANGUAGE_NAME) -> path = path.replace(LANGUAGE_NAME, languageName)
             path.contains(TWO_LETTER_CODE) -> path = path.replace(TWO_LETTER_CODE, language)
-            path.contains(THREE_LETTER_CODE) -> path = path.replace(THREE_LETTER_CODE, languageThreeLetterCode)
+            path.contains(THREE_LETTER_CODE) -> path =
+                path.replace(THREE_LETTER_CODE, languageThreeLetterCode)
             path.contains(LOCALE) -> path = path.replace(LOCALE, "$language-$country")
-            path.contains(LOCALE_WITH_UNDERSCORE) -> path = path.replace(LOCALE_WITH_UNDERSCORE, locale.toString())
+            path.contains(LOCALE_WITH_UNDERSCORE) -> path =
+                path.replace(LOCALE_WITH_UNDERSCORE, locale.toString())
             path.contains(ANDROID_CODE) -> path = path.replace(ANDROID_CODE, "$language-r$country")
         }
 

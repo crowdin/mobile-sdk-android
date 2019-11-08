@@ -28,7 +28,10 @@ internal object XmlParserUtils {
     }
 
     @Throws(XmlPullParserException::class, IOException::class)
-    private fun parseMenu(xmlPullParser: XmlPullParser, attributeSet: AttributeSet): SparseArray<MenuItemStrings> {
+    private fun parseMenu(
+        xmlPullParser: XmlPullParser,
+        attributeSet: AttributeSet
+    ): SparseArray<MenuItemStrings> {
         var eventType = xmlPullParser.eventType
         var tagName: String
 
@@ -91,7 +94,8 @@ internal object XmlParserUtils {
                     if (menuItemStrings == null) {
                         menuItemStrings = MenuItemStrings()
                     }
-                    menuItemStrings.titleCondensed = attributeSet.getAttributeResourceValue(index, 0)
+                    menuItemStrings.titleCondensed =
+                        attributeSet.getAttributeResourceValue(index, 0)
                 }
             }
         }

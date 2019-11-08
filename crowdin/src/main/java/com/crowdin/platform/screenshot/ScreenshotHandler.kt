@@ -15,14 +15,17 @@ internal class ScreenshotHandler : Handler() {
         when (msg.what) {
             MSG_SCREENSHOT -> {
                 val filePath = msg.obj.toString()
+
                 Crowdin.sendScreenshot(filePath, object : ScreenshotCallback {
                     override fun onSuccess() {
                         Log.d(ScreenshotHandler::class.java.simpleName, "Screenshot uploaded")
                     }
 
                     override fun onFailure(throwable: Throwable) {
-                        Log.d(ScreenshotHandler::class.java.simpleName,
-                                "Screenshot uploading error: ${throwable.localizedMessage}")
+                        Log.d(
+                            ScreenshotHandler::class.java.simpleName,
+                            "Screenshot uploading error: ${throwable.localizedMessage}"
+                        )
                     }
                 })
             }

@@ -18,9 +18,11 @@ import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 
-internal class ScreenshotManager(private var crowdinApi: CrowdinApi,
-                                 private var dataManager: DataManager,
-                                 private var sourceLanguage: String) {
+internal class ScreenshotManager(
+    private var crowdinApi: CrowdinApi,
+    private var dataManager: DataManager,
+    private var sourceLanguage: String
+) {
 
     companion object {
         private const val MEDIA_TYPE_IMG = "image/png"
@@ -32,8 +34,11 @@ internal class ScreenshotManager(private var crowdinApi: CrowdinApi,
 
     fun sendScreenshot(bitmap: Bitmap, viewDataList: MutableList<ViewData>) {
         val mappingData = dataManager.getMapping(sourceLanguage) ?: return
-        val distributionData = dataManager.getData(DataManager.DISTRIBUTION_DATA,
-                DistributionInfoResponse.DistributionData::class.java)
+        val distributionData = dataManager.getData(
+            DataManager.DISTRIBUTION_DATA,
+            DistributionInfoResponse.DistributionData::class.java
+        )
+
         if (distributionData == null) {
             screenshotCallback?.onFailure(Throwable("Could not send screenshot: not authorized"))
             return
@@ -49,9 +54,10 @@ internal class ScreenshotManager(private var crowdinApi: CrowdinApi,
         contentObserver = ScreenshotService(context, ScreenshotHandler())
         contentObserver?.let {
             context.contentResolver.registerContentObserver(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    true,
-                    it)
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                true,
+                it
+            )
         }
     }
 
@@ -67,65 +73,98 @@ internal class ScreenshotManager(private var crowdinApi: CrowdinApi,
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, IMG_QUALITY, stream)
         val byteArray = stream.toByteArray()
-        val requestBody = byteArray.toRequestBody(MEDIA_TYPE_IMG.toMediaTypeOrNull(), 0, byteArray.size)
+        val requestBody =
+            byteArray.toRequestBody(MEDIA_TYPE_IMG.toMediaTypeOrNull(), 0, byteArray.size)
         bitmap.recycle()
 
-        crowdinApi.uploadScreenshot(requestBody).enqueue(object : Callback<UploadScreenshotResponse> {
+        crowdinApi.uploadScreenshot(requestBody)
+            .enqueue(object : Callback<UploadScreenshotResponse> {
 
-            override fun onResponse(call: Call<UploadScreenshotResponse>, response: Response<UploadScreenshotResponse>) {
-                val responseBody = response.body()
-                if (response.code() == HttpURLConnection.HTTP_CREATED) {
-                    responseBody?.let {
-                        it.data?.id?.let { screenshotId -> createScreenshot(screenshotId, tags, projectId) }
+                override fun onResponse(
+                    call: Call<UploadScreenshotResponse>,
+                    response: Response<UploadScreenshotResponse>
+                ) {
+                    val responseBody = response.body()
+                    if (response.code() == HttpURLConnection.HTTP_CREATED) {
+                        responseBody?.let {
+                            it.data?.id?.let { screenshotId ->
+                                createScreenshot(
+                                    screenshotId,
+                                    tags,
+                                    projectId
+                                )
+                            }
+                        }
                     }
                 }
-            }
 
-            override fun onFailure(call: Call<UploadScreenshotResponse>, throwable: Throwable) {
-                screenshotCallback?.onFailure(throwable)
-            }
-        })
+                override fun onFailure(call: Call<UploadScreenshotResponse>, throwable: Throwable) {
+                    screenshotCallback?.onFailure(throwable)
+                }
+            })
     }
 
     private fun createScreenshot(screenshotId: Int, tags: MutableList<TagData>, projectId: String) {
-        val requestBody = CreateScreenshotRequestBody(screenshotId, System.currentTimeMillis().toString())
-        crowdinApi.createScreenshot(projectId, requestBody).enqueue(object : Callback<CreateScreenshotResponse> {
+        val requestBody =
+            CreateScreenshotRequestBody(screenshotId, System.currentTimeMillis().toString())
+        crowdinApi.createScreenshot(projectId, requestBody)
+            .enqueue(object : Callback<CreateScreenshotResponse> {
 
-            override fun onResponse(call: Call<CreateScreenshotResponse>, response: Response<CreateScreenshotResponse>) {
-                val responseBody = response.body()
-                if (response.code() == HttpURLConnection.HTTP_CREATED) {
-                    responseBody?.let {
-                        it.data.id?.let { screenshotId -> createTag(screenshotId, tags, projectId) }
+                override fun onResponse(
+                    call: Call<CreateScreenshotResponse>,
+                    response: Response<CreateScreenshotResponse>
+                ) {
+                    val responseBody = response.body()
+                    if (response.code() == HttpURLConnection.HTTP_CREATED) {
+                        responseBody?.let {
+                            it.data.id?.let { screenshotId ->
+                                createTag(
+                                    screenshotId,
+                                    tags,
+                                    projectId
+                                )
+                            }
+                        }
                     }
                 }
-            }
 
-            override fun onFailure(call: Call<CreateScreenshotResponse>, throwable: Throwable) {
-                screenshotCallback?.onFailure(throwable)
-            }
-        })
+                override fun onFailure(call: Call<CreateScreenshotResponse>, throwable: Throwable) {
+                    screenshotCallback?.onFailure(throwable)
+                }
+            })
     }
 
     private fun createTag(screenshotId: Int, tags: MutableList<TagData>, projectId: String) {
-        crowdinApi.createTag(projectId, screenshotId, tags).enqueue(object : Callback<ResponseBody> {
+        crowdinApi.createTag(projectId, screenshotId, tags)
+            .enqueue(object : Callback<ResponseBody> {
 
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                screenshotCallback?.onSuccess()
-            }
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    screenshotCallback?.onSuccess()
+                }
 
-            override fun onFailure(call: Call<ResponseBody>, throwable: Throwable) {
-                screenshotCallback?.onFailure(throwable)
-            }
-        })
+                override fun onFailure(call: Call<ResponseBody>, throwable: Throwable) {
+                    screenshotCallback?.onFailure(throwable)
+                }
+            })
     }
 
-    private fun getMappingIds(mappingData: LanguageData, viewDataList: List<ViewData>): MutableList<TagData> {
+    private fun getMappingIds(
+        mappingData: LanguageData,
+        viewDataList: List<ViewData>
+    ): MutableList<TagData> {
         val list = mutableListOf<TagData>()
         for (viewData in viewDataList) {
             val mappingValue = getMappingValueForKey(viewData.textMetaData, mappingData)
             mappingValue?.let {
-                list.add(TagData(it.toInt(),
-                        TagData.Position(viewData.x, viewData.y, viewData.width, viewData.height)))
+                list.add(
+                    TagData(
+                        it.toInt(),
+                        TagData.Position(viewData.x, viewData.y, viewData.width, viewData.height)
+                    )
+                )
             }
         }
 

@@ -12,8 +12,8 @@ import com.crowdin.platform.util.TextUtils
 /**
  * A transformer which transforms Toolbar(from support library): it transforms the text set as title.
  */
-internal class SupportToolbarTransformer(textMetaDataProvider: TextMetaDataProvider)
-    : BaseToolbarTransformer(textMetaDataProvider) {
+internal class SupportToolbarTransformer(textMetaDataProvider: TextMetaDataProvider) :
+    BaseToolbarTransformer(textMetaDataProvider) {
 
     override val viewType = Toolbar::class.java
 

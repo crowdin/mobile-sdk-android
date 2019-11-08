@@ -81,15 +81,14 @@ internal class MemoryLocalRepository : LocalRepository {
                 return it.stringValue
             }
         }
-
         return null
     }
 
     override fun getLanguageData(language: String): LanguageData? =
-            when {
-                !stringsData.containsKey(language) -> null
-                else -> stringsData[language]
-            }
+        when {
+            !stringsData.containsKey(language) -> null
+            else -> stringsData[language]
+        }
 
     override fun getStringArray(key: String): Array<String>? {
         stringsData[Locale.getDefault().toString()]?.arrays?.forEach { array ->
@@ -97,7 +96,6 @@ internal class MemoryLocalRepository : LocalRepository {
                 return array.values
             }
         }
-
         return null
     }
 
@@ -132,20 +130,29 @@ internal class MemoryLocalRepository : LocalRepository {
 
     override fun getData(type: String, classType: Type): Any? = generalData[type]
 
-    private fun searchInResources(languageData: LanguageData?, text: String, searchResultData: TextMetaData) {
+    private fun searchInResources(
+        languageData: LanguageData?,
+        text: String,
+        searchResultData: TextMetaData
+    ) {
         searchInStrings(languageData, text, searchResultData)
         searchInArrays(languageData, text, searchResultData)
         searchInPlurals(languageData, text, searchResultData)
     }
 
-    private fun searchInPlurals(languageData: LanguageData?, text: String, searchResultData: TextMetaData) {
+    private fun searchInPlurals(
+        languageData: LanguageData?,
+        text: String,
+        searchResultData: TextMetaData
+    ) {
         languageData?.plurals?.forEach { pluralData ->
             val pluralName = pluralData.name
             pluralData.quantity.forEach {
                 try {
                     if (it.value == text ||
-                            (pluralData.formatArgs.isNotEmpty()
-                                    && it.value == String.format(text, pluralData.formatArgs))) {
+                        (pluralData.formatArgs.isNotEmpty()
+                                && it.value == String.format(text, pluralData.formatArgs))
+                    ) {
                         searchResultData.pluralName = pluralName
                         searchResultData.pluralQuantity = pluralData.number
                         searchResultData.pluralFormatArgs = pluralData.formatArgs
@@ -158,7 +165,11 @@ internal class MemoryLocalRepository : LocalRepository {
         }
     }
 
-    private fun searchInArrays(languageData: LanguageData?, text: String, textMetaData: TextMetaData) {
+    private fun searchInArrays(
+        languageData: LanguageData?,
+        text: String,
+        textMetaData: TextMetaData
+    ) {
         languageData?.arrays?.forEach { arrayData ->
             val arrayName = arrayData.name
             arrayData.values?.forEachIndexed { index, item ->
@@ -171,7 +182,11 @@ internal class MemoryLocalRepository : LocalRepository {
         }
     }
 
-    private fun searchInStrings(languageData: LanguageData?, text: String, textMetaData: TextMetaData) {
+    private fun searchInStrings(
+        languageData: LanguageData?,
+        text: String,
+        textMetaData: TextMetaData
+    ) {
         languageData?.resources?.forEach {
             if (it.stringValue == text) {
                 textMetaData.textAttributeKey = it.stringKey
@@ -182,7 +197,10 @@ internal class MemoryLocalRepository : LocalRepository {
         }
     }
 
-    private fun getMatch(resources: MutableList<StringData>, newStringData: StringData): StringData? {
+    private fun getMatch(
+        resources: MutableList<StringData>,
+        newStringData: StringData
+    ): StringData? {
         resources.forEach {
             if (it.stringKey == newStringData.stringKey) {
                 return it

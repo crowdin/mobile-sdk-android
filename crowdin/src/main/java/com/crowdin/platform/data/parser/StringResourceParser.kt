@@ -67,8 +67,9 @@ internal class StringResourceParser : Parser {
             }
             else -> {
                 if ((isArrayStarted && isItemStarted) ||
-                        (isPluralStarted && isItemStarted) ||
-                        isStringStarted) {
+                    (isPluralStarted && isItemStarted) ||
+                    isStringStarted
+                ) {
                     content += "<${parser.name}>"
                     isInnerTagOpened = true
                 }
@@ -78,8 +79,9 @@ internal class StringResourceParser : Parser {
 
     override fun onText(parser: XmlPullParser) {
         if (isStringStarted ||
-                (isArrayStarted && isInnerTagOpened) ||
-                (isPluralStarted && isItemStarted && isInnerTagOpened)) {
+            (isArrayStarted && isInnerTagOpened) ||
+            (isPluralStarted && isItemStarted && isInnerTagOpened)
+        ) {
             content += parser.text
 
         } else if (isArrayStarted && isItemStarted) {

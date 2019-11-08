@@ -17,7 +17,8 @@ import java.lang.ref.WeakReference
  * A transformer which transforms TextView(or any view extends it like Button, EditText, ...):
  * it transforms "text" & "hint" attributes.
  */
-internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvider) : BaseTransformer() {
+internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvider) :
+    BaseTransformer() {
 
     override val viewType = TextView::class.java
 
@@ -25,6 +26,7 @@ internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvide
         if (!viewType.isInstance(view)) {
             return view
         }
+
         view as TextView
         val textMetaData = TextMetaData()
 
@@ -104,6 +106,7 @@ internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvide
                 if (textMetaData == null) {
                     textMetaData = TextMetaData()
                 }
+
                 textMetaData.parseResult(resultData)
                 addViewWithData(it, textMetaData)
                 listener?.onChange(Pair(it, textMetaData))

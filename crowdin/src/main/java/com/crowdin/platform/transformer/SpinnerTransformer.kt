@@ -21,14 +21,17 @@ internal class SpinnerTransformer : BaseTransformer() {
         if (!viewType.isInstance(view)) {
             return view
         }
+
         view as Spinner
         for (index in 0 until attrs.attributeCount) {
             when (attrs.getAttributeName(index)) {
                 Attributes.ATTRIBUTE_ENTRIES, Attributes.ATTRIBUTE_ANDROID_ENTRIES -> {
                     val value = attrs.getAttributeValue(index)
+
                     if (value != null && value.startsWith("@")) {
                         val resId = attrs.getAttributeResourceValue(index, 0)
                         setAdapter(view, resId)
+
                         if (FeatureFlags.isRealTimeUpdateEnabled) {
                             createdView[view] = resId
                         }
@@ -48,9 +51,12 @@ internal class SpinnerTransformer : BaseTransformer() {
     private fun setAdapter(view: Spinner, resId: Int) {
         val resources = view.context.resources
         val stringArray = resources.getStringArray(resId)
-        val adapter = ArrayAdapter(view.context,
-                android.R.layout.simple_spinner_item,
-                stringArray)
+        val adapter = ArrayAdapter(
+            view.context,
+            android.R.layout.simple_spinner_item,
+            stringArray
+        )
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         view.adapter = adapter
     }

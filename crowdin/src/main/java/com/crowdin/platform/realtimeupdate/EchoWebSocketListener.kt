@@ -22,10 +22,11 @@ import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-internal class EchoWebSocketListener(private var mappingData: LanguageData,
-                                     private var distributionData: DistributionInfoResponse.DistributionData,
-                                     private var viewTransformerManager: ViewTransformerManager)
-    : WebSocketListener() {
+internal class EchoWebSocketListener(
+    private var mappingData: LanguageData,
+    private var distributionData: DistributionInfoResponse.DistributionData,
+    private var viewTransformerManager: ViewTransformerManager
+) : WebSocketListener() {
 
     private var dataHolderMap = ConcurrentHashMap<WeakReference<TextView>, TextMetaData>()
 
@@ -47,7 +48,12 @@ internal class EchoWebSocketListener(private var mappingData: LanguageData,
         })
     }
 
-    private fun resubscribeView(pair: Pair<TextView, TextMetaData>, webSocket: WebSocket, project: DistributionInfoResponse.DistributionData.ProjectData, user: DistributionInfoResponse.DistributionData.UserData) {
+    private fun resubscribeView(
+        pair: Pair<TextView, TextMetaData>,
+        webSocket: WebSocket,
+        project: DistributionInfoResponse.DistributionData.ProjectData,
+        user: DistributionInfoResponse.DistributionData.UserData
+    ) {
         dataHolderMap.clear()
         saveMatchedTextViewWithMappingId(mappingData)
         val mappingValue = getMappingValueForKey(pair.second, mappingData)
@@ -66,7 +72,11 @@ internal class EchoWebSocketListener(private var mappingData: LanguageData,
         output("Closing : $code / $reason")
     }
 
-    override fun onFailure(webSocket: WebSocket, throwable: Throwable, response: okhttp3.Response?) {
+    override fun onFailure(
+        webSocket: WebSocket,
+        throwable: Throwable,
+        response: okhttp3.Response?
+    ) {
         output("Error : " + throwable.message)
     }
 
@@ -82,31 +92,43 @@ internal class EchoWebSocketListener(private var mappingData: LanguageData,
         }
     }
 
-    private fun subscribeViews(webSocket: WebSocket,
-                               project: DistributionInfoResponse.DistributionData.ProjectData,
-                               user: DistributionInfoResponse.DistributionData.UserData) {
+    private fun subscribeViews(
+        webSocket: WebSocket,
+        project: DistributionInfoResponse.DistributionData.ProjectData,
+        user: DistributionInfoResponse.DistributionData.UserData
+    ) {
         for (viewDataHolder in dataHolderMap) {
             val mappingValue = viewDataHolder.value.mappingValue
             subscribeView(webSocket, project, user, mappingValue)
         }
     }
 
-    private fun subscribeView(webSocket: WebSocket,
-                              project: DistributionInfoResponse.DistributionData.ProjectData,
-                              user: DistributionInfoResponse.DistributionData.UserData,
-                              mappingValue: String) {
-        webSocket.send(SubscribeUpdateEvent(project.wsHash,
+    private fun subscribeView(
+        webSocket: WebSocket,
+        project: DistributionInfoResponse.DistributionData.ProjectData,
+        user: DistributionInfoResponse.DistributionData.UserData,
+        mappingValue: String
+    ) {
+        webSocket.send(
+            SubscribeUpdateEvent(
+                project.wsHash,
                 project.id,
                 user.id,
                 Locale.getDefault().language,
-                mappingValue)
-                .toString())
+                mappingValue
+            )
+                .toString()
+        )
 
-        webSocket.send(SubscribeSuggestionEvent(project.wsHash,
+        webSocket.send(
+            SubscribeSuggestionEvent(
+                project.wsHash,
                 project.id,
                 Locale.getDefault().language,
-                mappingValue)
-                .toString())
+                mappingValue
+            )
+                .toString()
+        )
     }
 
     private fun handleMessage(message: String?) {
@@ -116,7 +138,8 @@ internal class EchoWebSocketListener(private var mappingData: LanguageData,
             val eventData = eventResponse.data
 
             if (event.contains(UPDATE_DRAFT)
-                    || event.contains(TOP_SUGGESTION)) {
+                || event.contains(TOP_SUGGESTION)
+            ) {
                 val mappingId = event.split(":").last()
                 for (mutableEntry in dataHolderMap) {
                     val textMetaData = mutableEntry.value
@@ -128,9 +151,11 @@ internal class EchoWebSocketListener(private var mappingData: LanguageData,
         }
     }
 
-    private fun updateMatchedView(eventData: EventResponse.EventData,
-                                  mutableEntry: MutableMap.MutableEntry<WeakReference<TextView>, TextMetaData>,
-                                  textMetaData: TextMetaData) {
+    private fun updateMatchedView(
+        eventData: EventResponse.EventData,
+        mutableEntry: MutableMap.MutableEntry<WeakReference<TextView>, TextMetaData>,
+        textMetaData: TextMetaData
+    ) {
         val text = eventData.text
         val view = mutableEntry.key.get()
 

@@ -13,10 +13,11 @@ import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
 
-internal class DataManager(private val remoteRepository: RemoteRepository,
-                           private val localRepository: LocalRepository,
-                           private val dataChangeObserver: LocalDataChangeObserver)
-    : TextMetaDataProvider {
+internal class DataManager(
+    private val remoteRepository: RemoteRepository,
+    private val localRepository: LocalRepository,
+    private val dataChangeObserver: LocalDataChangeObserver
+) : TextMetaDataProvider {
 
     companion object {
         private const val STATUS_OK = "ok"
@@ -57,6 +58,7 @@ internal class DataManager(private val remoteRepository: RemoteRepository,
                     if (FeatureFlags.isRealTimeUpdateEnabled) {
                         dataChangeObserver.onDataChanged()
                     }
+
                     sendOnDataChanged()
                 }
 
@@ -73,20 +75,32 @@ internal class DataManager(private val remoteRepository: RemoteRepository,
         var status: String = STATUS_OK
         when {
             !Connectivity.isOnline(context) -> status = "No internet connection"
-            !Connectivity.isNetworkAllowed(context, networkType) -> status = "Not allowed to load with current network type: ${networkType.name}"
+            !Connectivity.isNetworkAllowed(context, networkType) -> status =
+                "Not allowed to load with current network type: ${networkType.name}"
         }
 
         return status
     }
 
-    fun saveReserveResources(stringData: StringData? = null,
-                             arrayData: ArrayData? = null,
-                             pluralData: PluralData? = null) {
+    fun saveReserveResources(
+        stringData: StringData? = null,
+        arrayData: ArrayData? = null,
+        pluralData: PluralData? = null
+    ) {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             when {
-                stringData != null -> localRepository.setStringData(Locale.getDefault().language + SUF_COPY, stringData)
-                arrayData != null -> localRepository.setArrayData(Locale.getDefault().language + SUF_COPY, arrayData)
-                pluralData != null -> localRepository.setPluralData(Locale.getDefault().language + SUF_COPY, pluralData)
+                stringData != null -> localRepository.setStringData(
+                    Locale.getDefault().language + SUF_COPY,
+                    stringData
+                )
+                arrayData != null -> localRepository.setArrayData(
+                    Locale.getDefault().language + SUF_COPY,
+                    arrayData
+                )
+                pluralData != null -> localRepository.setPluralData(
+                    Locale.getDefault().language + SUF_COPY,
+                    pluralData
+                )
             }
         }
     }
@@ -124,7 +138,7 @@ internal class DataManager(private val remoteRepository: RemoteRepository,
     }
 
     fun getMapping(sourceLanguage: String): LanguageData? =
-            localRepository.getLanguageData(sourceLanguage)
+        localRepository.getLanguageData(sourceLanguage)
 
     fun saveData(type: String, data: Any?) {
         localRepository.saveData(type, data)

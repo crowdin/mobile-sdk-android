@@ -89,6 +89,7 @@ internal class AuthActivity : AppCompatActivity() {
                         clientId, clientSecret, REDIRECT_URI, code
                     ), domain
                 ).execute()
+
                 if (response.isSuccessful && response.body() != null) {
                     Crowdin.saveAuthInfo(AuthInfo(response.body()!!))
                     getDistributionInfo(event)
@@ -112,6 +113,7 @@ internal class AuthActivity : AppCompatActivity() {
                 if (event == EVENT_REAL_TIME_UPDATES) {
                     Crowdin.createConnection()
                 }
+
                 finish()
             }
 
