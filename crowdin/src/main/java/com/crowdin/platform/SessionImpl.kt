@@ -7,8 +7,10 @@ import com.crowdin.platform.data.model.AuthResponse
 import com.crowdin.platform.data.model.RefreshToken
 import com.crowdin.platform.data.remote.api.AuthApi
 
-internal class SessionImpl(private val dataManager: DataManager,
-                           private val authApi: AuthApi) : Session {
+internal class SessionImpl(
+    private val dataManager: DataManager,
+    private val authApi: AuthApi
+) : Session {
 
     override fun isAuthorized(): Boolean = dataManager.isAuthorized()
 
@@ -25,8 +27,9 @@ internal class SessionImpl(private val dataManager: DataManager,
         val domain = authConfig?.organizationName
 
         val response = authApi.getToken(
-                RefreshToken("refresh_token", clientId, clientSecret, refreshToken), domain)
-                .execute()
+            RefreshToken("refresh_token", clientId, clientSecret, refreshToken), domain
+        ).execute()
+
         val authResponse = response.body()
         authResponse?.let { saveToken(it) }
 

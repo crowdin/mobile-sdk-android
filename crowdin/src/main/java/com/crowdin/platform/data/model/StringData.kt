@@ -1,10 +1,11 @@
 package com.crowdin.platform.data.model
 
 internal data class StringData(
-        var stringKey: String = "",
-        var stringValue: String = "",
-        var formatArgs: Array<out Any?> = arrayOf(),
-        var default: StringBuilder = StringBuilder()) {
+    var stringKey: String = "",
+    var stringValue: String = "",
+    var formatArgs: Array<out Any?> = arrayOf(),
+    var default: StringBuilder = StringBuilder()
+) {
 
     fun updateResources(newStringData: StringData) {
         stringKey = newStringData.stringKey

@@ -23,7 +23,11 @@ class GalleryFragment : Fragment(), LoadingStateListener {
         fun newInstance(): GalleryFragment = GalleryFragment()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_gallery, container, false)
     }
 
@@ -35,7 +39,8 @@ class GalleryFragment : Fragment(), LoadingStateListener {
         adapter = SampleAdapter(array)
         recyclerView.adapter = adapter
 
-        view.findViewById<TextView>(R.id.textView3).setOnClickListener { Crowdin.sendScreenshot(activity!!) }
+        view.findViewById<TextView>(R.id.textView3)
+            .setOnClickListener { Crowdin.sendScreenshot(activity!!) }
         Crowdin.registerDataLoadingObserver(this)
     }
 

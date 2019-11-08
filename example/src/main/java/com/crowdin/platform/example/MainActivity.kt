@@ -15,7 +15,8 @@ import com.crowdin.platform.example.fragments.*
 import com.crowdin.platform.util.inflateWithCrowdin
 import com.google.android.material.navigation.NavigationView
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, LoadingStateListener {
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
+    LoadingStateListener {
 
     private lateinit var navigationView: NavigationView
     private lateinit var drawerLayout: DrawerLayout
@@ -27,8 +28,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         setSupportActionBar(toolbar)
 
         drawerLayout = findViewById(R.id.drawer_layout)
-        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        val toggle = ActionBarDrawerToggle(
+            this, drawerLayout, toolbar,
+            R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         replaceFragment(HomeFragment.newInstance())
@@ -53,7 +56,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     override fun onFailure(throwable: Throwable) {
-        Log.d(MainActivity::class.java.simpleName, "LoadingStateListener: onFailure ${throwable.localizedMessage}")
+        Log.d(
+            MainActivity::class.java.simpleName,
+            "LoadingStateListener: onFailure ${throwable.localizedMessage}"
+        )
     }
 
     override fun onDestroy() {
@@ -74,11 +80,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     override fun onBackPressed() =
-            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                drawerLayout.closeDrawer(GravityCompat.START)
-            } else {
-                super.onBackPressed()
-            }
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
 
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
         val fragment: Fragment?
@@ -128,5 +134,5 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private fun replaceFragment(fragment: Fragment) =
-            supportFragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit()
 }

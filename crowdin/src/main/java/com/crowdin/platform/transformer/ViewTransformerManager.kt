@@ -22,7 +22,7 @@ internal class ViewTransformerManager {
      * @param transformer to be added to transformers list.
      */
     fun registerTransformer(transformer: Transformer) =
-            transformers.add(Pair(transformer.viewType, transformer))
+        transformers.add(Pair(transformer.viewType, transformer))
 
     /**
      * Transforms a view.
@@ -137,5 +137,5 @@ internal interface ViewsChangeListener {
     /**
      * View created or text has changed.
      */
-    fun onChange(pair: kotlin.Pair<TextView, TextMetaData>) {}
+    fun onChange(pair: Pair<TextView, TextMetaData>) {}
 }

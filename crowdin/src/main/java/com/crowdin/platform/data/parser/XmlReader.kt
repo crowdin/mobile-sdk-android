@@ -11,7 +11,10 @@ internal class XmlReader(private var parser: Parser) : Reader {
         parser.clearData()
     }
 
-    override fun parseInput(byteStream: InputStream, xmlPullParserFactory: XmlPullParserFactory?): LanguageData {
+    override fun parseInput(
+        byteStream: InputStream,
+        xmlPullParserFactory: XmlPullParserFactory?
+    ): LanguageData {
         try {
             val xmlPullParser = xmlPullParserFactory!!.newPullParser()
             xmlPullParser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)

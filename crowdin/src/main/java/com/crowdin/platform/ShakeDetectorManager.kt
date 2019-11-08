@@ -23,8 +23,13 @@ internal class ShakeDetectorManager {
                 Log.d(ShakeDetectorManager::class.java.simpleName, "Shake: force update")
             }
         }
+
         shakeDetector.setOnShakeListener(shakeListener)
-        sensorManager?.registerListener(shakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI)
+        sensorManager?.registerListener(
+            shakeDetector,
+            mAccelerometer,
+            SensorManager.SENSOR_DELAY_UI
+        )
     }
 
     fun unregisterShakeDetector() {

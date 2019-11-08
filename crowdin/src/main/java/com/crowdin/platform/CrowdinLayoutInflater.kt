@@ -16,10 +16,11 @@ import com.crowdin.platform.transformer.ViewTransformerManager
  * Transformations can consist of transforming the texts applied on XML layout resources, so that it checks if
  * the string attribute set as a string resource it transforms the text and apply it to the view again.
  */
-internal class CrowdinLayoutInflater constructor(original: LayoutInflater,
-                                                 newContext: Context,
-                                                 private val viewTransformerManager: ViewTransformerManager)
-    : LayoutInflater(original, newContext) {
+internal class CrowdinLayoutInflater constructor(
+    original: LayoutInflater,
+    newContext: Context,
+    private val viewTransformerManager: ViewTransformerManager
+) : LayoutInflater(original, newContext) {
 
     companion object {
         private val sClassPrefixList = arrayOf("android.widget.", "android.webkit.", "android.app.")
@@ -89,9 +90,15 @@ internal class CrowdinLayoutInflater constructor(original: LayoutInflater,
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private inner class PrivateWrapperFactory2(
-            val factory2: Factory2?) : Factory2 {
+        val factory2: Factory2?
+    ) : Factory2 {
 
-        override fun onCreateView(parent: View?, name: String, context: Context, attrs: AttributeSet): View? {
+        override fun onCreateView(
+            parent: View?,
+            name: String,
+            context: Context,
+            attrs: AttributeSet
+        ): View? {
             var view = factory2?.onCreateView(parent, name, context, attrs)
             view = createCustomViewInternal(view, name, attrs)
             return applyChange(view, attrs)

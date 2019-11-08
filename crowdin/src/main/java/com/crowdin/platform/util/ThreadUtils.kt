@@ -21,12 +21,13 @@ internal object ThreadUtils {
             // one more thread than cores, but also gives us an extra thread when we've created a thread pool that doesn't
             // represent the actual number of cores.
             sLocalWorkPool = ThreadPoolExecutor(
-                    NUMBER_OF_CORES / 2,
-                    NUMBER_OF_CORES + 1,
-                    15L,
-                    TimeUnit.SECONDS,
-                    LinkedBlockingDeque<Runnable>(),
-                    NamedThreadPoolFactory("LocalWorkThreadPool"))
+                NUMBER_OF_CORES / 2,
+                NUMBER_OF_CORES + 1,
+                15L,
+                TimeUnit.SECONDS,
+                LinkedBlockingDeque<Runnable>(),
+                NamedThreadPoolFactory("LocalWorkThreadPool")
+            )
         }
     }
 

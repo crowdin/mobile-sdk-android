@@ -7,8 +7,8 @@ import com.crowdin.platform.CrowdinConfig
 internal object LocalStringRepositoryFactory {
 
     fun createLocalRepository(context: Context, config: CrowdinConfig): LocalRepository =
-            when {
-                config.isPersist -> SharedPrefLocalRepository(context, MemoryLocalRepository())
-                else -> MemoryLocalRepository()
-            }
+        when {
+            config.isPersist -> SharedPrefLocalRepository(context, MemoryLocalRepository())
+            else -> MemoryLocalRepository()
+        }
 }

@@ -80,8 +80,11 @@ object Crowdin {
      */
     @JvmStatic
     fun wrapContext(base: Context): Context =
-            if (dataManager == null) base
-            else CrowdinContextWrapper.wrap(base, dataManager, viewTransformerManager)
+        if (dataManager == null) {
+            base
+        } else {
+            CrowdinContextWrapper.wrap(base, dataManager, viewTransformerManager)
+        }
 
     /**
      * Set a single string for a language.
@@ -274,38 +277,49 @@ object Crowdin {
     private fun initFeatureManagers() {
         if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             distributionInfoManager = DistributionInfoManager(
-                    CrowdinRetrofitService.getCrowdinApi(dataManager!!, config.authConfig?.organizationName),
+                CrowdinRetrofitService.getCrowdinApi(
                     dataManager!!,
-                    config.distributionHash)
+                    config.authConfig?.organizationName
+                ),
+                dataManager!!,
+                config.distributionHash
+            )
         }
 
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             realTimeUpdateManager = RealTimeUpdateManager(
-                    config.sourceLanguage,
-                    dataManager,
-                    viewTransformerManager)
+                config.sourceLanguage,
+                dataManager,
+                viewTransformerManager
+            )
         }
 
         if (FeatureFlags.isScreenshotEnabled) {
             screenshotManager = ScreenshotManager(
-                    CrowdinRetrofitService.getCrowdinApi(dataManager!!, config.authConfig?.organizationName),
+                CrowdinRetrofitService.getCrowdinApi(
                     dataManager!!,
-                    config.sourceLanguage)
+                    config.authConfig?.organizationName
+                ),
+                dataManager!!,
+                config.sourceLanguage
+            )
         }
     }
 
     private fun initStringDataManager(context: Context, config: CrowdinConfig) {
         val remoteRepository = StringDataRemoteRepository(
-                CrowdinRetrofitService.getCrowdinDistributionApi(),
-                XmlReader(StringResourceParser()),
-                config.distributionHash)
+            CrowdinRetrofitService.getCrowdinDistributionApi(),
+            XmlReader(StringResourceParser()),
+            config.distributionHash
+        )
         val localRepository = LocalStringRepositoryFactory.createLocalRepository(context, config)
 
-        dataManager = DataManager(remoteRepository, localRepository, object : LocalDataChangeObserver {
-            override fun onDataChanged() {
-                viewTransformerManager.invalidate()
-            }
-        })
+        dataManager =
+            DataManager(remoteRepository, localRepository, object : LocalDataChangeObserver {
+                override fun onDataChanged() {
+                    viewTransformerManager.invalidate()
+                }
+            })
     }
 
     private fun initViewTransformer() {
@@ -321,11 +335,12 @@ object Crowdin {
     private fun loadMapping() {
         if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             val mappingRepository = MappingRepository(
-                    CrowdinRetrofitService.getCrowdinDistributionApi(),
-                    XmlReader(StringResourceParser()),
-                    dataManager!!,
-                    config.distributionHash,
-                    config.sourceLanguage)
+                CrowdinRetrofitService.getCrowdinDistributionApi(),
+                XmlReader(StringResourceParser()),
+                dataManager!!,
+                config.distributionHash,
+                config.sourceLanguage
+            )
             mappingRepository.fetchData()
         }
     }

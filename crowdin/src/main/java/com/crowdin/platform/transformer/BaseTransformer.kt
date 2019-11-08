@@ -47,15 +47,19 @@ internal abstract class BaseTransformer : Transformer {
             view.getLocationInWindow(location)
 
             if (location[0] >= view.rootView.x &&
-                    location[0] <= view.rootView.width &&
-                    location[1] >= view.rootView.y &&
-                    location[1] <= view.rootView.height) {
-
-                listViewData.add(ViewData(textMetaData,
+                location[0] <= view.rootView.width &&
+                location[1] >= view.rootView.y &&
+                location[1] <= view.rootView.height
+            ) {
+                listViewData.add(
+                    ViewData(
+                        textMetaData,
                         location[0],
                         location[1],
                         view.width,
-                        view.height))
+                        view.height
+                    )
+                )
             }
         }
 
@@ -84,8 +88,11 @@ internal abstract class BaseTransformer : Transformer {
 
     private fun invalidateArrayItem(view: TextView, textMetaData: TextMetaData) {
         if (textMetaData.isArrayItem) {
-            val id = view.context.resources.getIdentifier(textMetaData.arrayName,
-                    TYPE_ARRAYS, view.context.packageName)
+            val id = view.context.resources.getIdentifier(
+                textMetaData.arrayName,
+                TYPE_ARRAYS, view.context.packageName
+            )
+
             if (id != UNKNOWN_ID) {
                 view.text = view.context.resources.getStringArray(id)[textMetaData.arrayIndex]
             }
@@ -98,11 +105,20 @@ internal abstract class BaseTransformer : Transformer {
             val pluralQuantity = textMetaData.pluralQuantity
             val pluralFormatArgs = textMetaData.pluralFormatArgs
 
-            val id = view.context.resources.getIdentifier(pluralName, TYPE_PLURALS, view.context.packageName)
+            val id = view.context.resources.getIdentifier(
+                pluralName,
+                TYPE_PLURALS,
+                view.context.packageName
+            )
+
             if (id != UNKNOWN_ID) {
                 when {
                     pluralFormatArgs.isNotEmpty() ->
-                        view.text = view.context.resources.getQuantityString(id, pluralQuantity, *pluralFormatArgs)
+                        view.text = view.context.resources.getQuantityString(
+                            id,
+                            pluralQuantity,
+                            *pluralFormatArgs
+                        )
                     else -> view.text = view.context.resources.getQuantityText(id, pluralQuantity)
                 }
             }
@@ -111,12 +127,17 @@ internal abstract class BaseTransformer : Transformer {
 
     private fun invalidateSimpleText(view: TextView, textMetaData: TextMetaData) {
         if (textMetaData.hasAttributeKey) {
-            val id = view.context.resources.getIdentifier(textMetaData.textAttributeKey,
-                    TYPE_STRING, view.context.packageName)
+            val id = view.context.resources.getIdentifier(
+                textMetaData.textAttributeKey,
+                TYPE_STRING, view.context.packageName
+            )
+
             if (id != UNKNOWN_ID) {
                 when {
-                    textMetaData.stringDefault.isNotEmpty() -> view.text = view.context.resources.getText(id, textMetaData.stringDefault)
-                    textMetaData.stringsFormatArgs.isNotEmpty() -> view.text = view.context.resources.getString(id, *textMetaData.stringsFormatArgs)
+                    textMetaData.stringDefault.isNotEmpty() -> view.text =
+                        view.context.resources.getText(id, textMetaData.stringDefault)
+                    textMetaData.stringsFormatArgs.isNotEmpty() -> view.text =
+                        view.context.resources.getString(id, *textMetaData.stringsFormatArgs)
                     else -> view.text = view.context.resources.getText(id)
                 }
             }
@@ -125,8 +146,11 @@ internal abstract class BaseTransformer : Transformer {
 
     private fun invalidateHint(view: TextView, textMetaData: TextMetaData) {
         if (textMetaData.hintAttributeKey.isNotEmpty()) {
-            val id = view.context.resources.getIdentifier(textMetaData.hintAttributeKey,
-                    TYPE_STRING, view.context.packageName)
+            val id = view.context.resources.getIdentifier(
+                textMetaData.hintAttributeKey,
+                TYPE_STRING, view.context.packageName
+            )
+
             if (id != UNKNOWN_ID) {
                 view.hint = view.context.resources.getText(id)
             }
@@ -135,8 +159,11 @@ internal abstract class BaseTransformer : Transformer {
 
     private fun invalidateTextOn(view: TextView, textMetaData: TextMetaData) {
         if (textMetaData.textOnAttributeKey.isNotEmpty()) {
-            val id = view.context.resources.getIdentifier(textMetaData.textOnAttributeKey,
-                    TYPE_STRING, view.context.packageName)
+            val id = view.context.resources.getIdentifier(
+                textMetaData.textOnAttributeKey,
+                TYPE_STRING, view.context.packageName
+            )
+
             if (id != UNKNOWN_ID) {
                 when (view) {
                     is Switch -> view.textOn = view.context.resources.getText(id)
@@ -148,8 +175,11 @@ internal abstract class BaseTransformer : Transformer {
 
     private fun invalidateTextOff(view: TextView, textMetaData: TextMetaData) {
         if (textMetaData.textOffAttributeKey.isNotEmpty()) {
-            val id = view.context.resources.getIdentifier(textMetaData.textOffAttributeKey,
-                    TYPE_STRING, view.context.packageName)
+            val id = view.context.resources.getIdentifier(
+                textMetaData.textOffAttributeKey,
+                TYPE_STRING, view.context.packageName
+            )
+
             if (id != UNKNOWN_ID) {
                 when (view) {
                     is Switch -> view.textOff = view.context.resources.getText(id)

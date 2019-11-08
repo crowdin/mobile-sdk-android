@@ -7,13 +7,18 @@ import androidx.recyclerview.widget.RecyclerView
 
 import com.crowdin.platform.example.R
 
-internal class SampleAdapter(private var dataArray: Array<String>) : RecyclerView.Adapter<SampleAdapter.SampleViewHolder>() {
+internal class SampleAdapter(private var dataArray: Array<String>) :
+    RecyclerView.Adapter<SampleAdapter.SampleViewHolder>() {
 
-    internal inner class SampleViewHolder(internal val textView: TextView) : RecyclerView.ViewHolder(textView)
+    internal inner class SampleViewHolder(internal val textView: TextView) :
+        RecyclerView.ViewHolder(textView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SampleViewHolder {
-        val textView = LayoutInflater.from(parent.context).inflate(R.layout.item_row,
-                parent, false) as TextView
+        val textView = LayoutInflater.from(parent.context).inflate(
+            R.layout.item_row,
+            parent, false
+        ) as TextView
+
         return SampleViewHolder(textView)
     }
 

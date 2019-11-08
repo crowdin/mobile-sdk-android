@@ -72,7 +72,7 @@ internal class MappingRepository(
         languageDataCallback: LanguageDataCallback?
     ) {
         crowdinDistributionApi.getMappingFile(eTag ?: HEADER_ETAG_EMPTY, distributionHash, filePath)
-            .enqueue(object : Callback<ResponseBody> {
+                .enqueue(object : Callback<ResponseBody> {
 
                 override fun onResponse(
                     call: Call<ResponseBody>,

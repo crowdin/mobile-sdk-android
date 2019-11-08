@@ -3,11 +3,13 @@ package com.crowdin.platform.realtimeupdate
 internal const val UPDATE_DRAFT = "update-draft"
 internal const val TOP_SUGGESTION = "top-suggestion"
 
-internal class SubscribeUpdateEvent(private var wsHash: String,
-                                    private var projectId: String,
-                                    private var userId: String,
-                                    private var language: String,
-                                    private var mappingId: String) {
+internal class SubscribeUpdateEvent(
+    private var wsHash: String,
+    private var projectId: String,
+    private var userId: String,
+    private var language: String,
+    private var mappingId: String
+) {
 
     override fun toString(): String {
         return "{" +
@@ -17,10 +19,12 @@ internal class SubscribeUpdateEvent(private var wsHash: String,
     }
 }
 
-internal class SubscribeSuggestionEvent(private var wsHash: String,
-                                        private var projectId: String,
-                                        private var language: String,
-                                        private var mappingId: String) {
+internal class SubscribeSuggestionEvent(
+    private var wsHash: String,
+    private var projectId: String,
+    private var language: String,
+    private var mappingId: String
+) {
 
     override fun toString(): String {
         return "{" +

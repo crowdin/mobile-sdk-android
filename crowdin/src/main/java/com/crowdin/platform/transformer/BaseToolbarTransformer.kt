@@ -8,8 +8,8 @@ import android.widget.TextView
 import com.crowdin.platform.data.TextMetaDataProvider
 import com.crowdin.platform.data.model.TextMetaData
 
-internal abstract class BaseToolbarTransformer(val textMetaDataProvider: TextMetaDataProvider)
-    : BaseTransformer() {
+internal abstract class BaseToolbarTransformer(val textMetaDataProvider: TextMetaDataProvider) :
+    BaseTransformer() {
 
     fun findChildView(parent: ViewGroup): TextView? {
         var textView: TextView? = null
@@ -48,6 +48,7 @@ internal abstract class BaseToolbarTransformer(val textMetaDataProvider: TextMet
                 if (textMetaData == null) {
                     textMetaData = TextMetaData()
                 }
+
                 textMetaData.parseResult(resultData)
 
                 addViewWithData(textView, textMetaData)

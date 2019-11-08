@@ -12,13 +12,17 @@ internal interface CrowdinApi {
     fun uploadScreenshot(@Body requestBody: RequestBody): Call<UploadScreenshotResponse>
 
     @POST("api/v2/projects/{projectId}/screenshots")
-    fun createScreenshot(@Path("projectId") projectId: String,
-                         @Body requestBody: CreateScreenshotRequestBody): Call<CreateScreenshotResponse>
+    fun createScreenshot(
+        @Path("projectId") projectId: String,
+        @Body requestBody: CreateScreenshotRequestBody
+    ): Call<CreateScreenshotResponse>
 
     @POST("api/v2/projects/{projectId}/screenshots/{screenshotId}/tags")
-    fun createTag(@Path("projectId") projectId: String,
-                  @Path("screenshotId") screenshotId: Int,
-                  @Body tags: MutableList<TagData>): Call<ResponseBody>
+    fun createTag(
+        @Path("projectId") projectId: String,
+        @Path("screenshotId") screenshotId: Int,
+        @Body tags: MutableList<TagData>
+    ): Call<ResponseBody>
 
     @GET("/api/v2/distributions/metadata")
     fun getInfo(@Query("hash") distributionHash: String): Call<DistributionInfoResponse>

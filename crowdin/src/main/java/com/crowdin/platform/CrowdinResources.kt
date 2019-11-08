@@ -15,11 +15,15 @@ import java.util.*
  * For getting strings and texts, it checks the strings repository first and if there's a new string
  * that will be returned, otherwise it will fallback to the original resource strings.
  */
-internal class CrowdinResources(res: Resources,
-                                private val dataManager: DataManager) :
-        Resources(res.assets,
-                res.displayMetrics,
-                res.configuration) {
+internal class CrowdinResources(
+    res: Resources,
+    private val dataManager: DataManager
+) :
+    Resources(
+        res.assets,
+        res.displayMetrics,
+        res.configuration
+    ) {
 
     @Throws(NotFoundException::class)
     override fun getString(id: Int): String {
@@ -35,11 +39,12 @@ internal class CrowdinResources(res: Resources,
         val entryName = getResourceEntryName(id)
         val string = getStringFromRepository(id)
         val formattedString =
-                if (string == null) {
-                    super.getString(id, *formatArgs)
-                } else {
-                    String.format(string, *formatArgs)
-                }
+            if (string == null) {
+                super.getString(id, *formatArgs)
+            } else {
+                String.format(string, *formatArgs)
+            }
+
         saveStringDataToCopy(entryName, formattedString, formatArgs)
 
         return formattedString
@@ -86,35 +91,43 @@ internal class CrowdinResources(res: Resources,
     override fun getQuantityString(id: Int, quantity: Int, vararg formatArgs: Any?): String {
         val plural = getPluralFromRepository(id, quantity)
         val formattedPlural =
-                if (plural == null) {
-                    super.getQuantityString(id, quantity, *formatArgs)
-                } else {
-                    String.format(plural, *formatArgs)
-                }
+            if (plural == null) {
+                super.getQuantityString(id, quantity, *formatArgs)
+            } else {
+                String.format(plural, *formatArgs)
+            }
+
         savePluralToCopy(id, quantity, formattedPlural.toString(), formatArgs)
 
         return formattedPlural
     }
 
-    private fun saveStringDataToCopy(entryName: String,
-                                     string: String,
-                                     formatArgs: Array<out Any?> = arrayOf(),
-                                     default: CharSequence = "") {
+    private fun saveStringDataToCopy(
+        entryName: String,
+        string: String,
+        formatArgs: Array<out Any?> = arrayOf(),
+        default: CharSequence = ""
+    ) {
         dataManager.saveReserveResources(
-                StringData(entryName,
-                        string,
-                        formatArgs,
-                        StringBuilder(default)))
+            StringData(
+                entryName,
+                string,
+                formatArgs,
+                StringBuilder(default)
+            )
+        )
     }
 
     private fun saveStringArrayDataToCopy(key: String, resultText: Array<String>) {
         dataManager.saveReserveResources(arrayData = ArrayData(key, resultText))
     }
 
-    private fun savePluralToCopy(id: Int,
-                                 quantity: Int,
-                                 defaultText: String,
-                                 formatArgs: Array<out Any?> = arrayOf()) {
+    private fun savePluralToCopy(
+        id: Int,
+        quantity: Int,
+        defaultText: String,
+        formatArgs: Array<out Any?> = arrayOf()
+    ) {
         val entryName = getResourceEntryName(id)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val rule = PluralRules.forLocale(Locale.getDefault())
@@ -122,22 +135,23 @@ internal class CrowdinResources(res: Resources,
             val quantityMap = mutableMapOf<String, String>()
             quantityMap[ruleName] = defaultText
             val pluralData = PluralData(
-                    entryName,
-                    quantityMap,
-                    quantity,
-                    formatArgs)
+                entryName,
+                quantityMap,
+                quantity,
+                formatArgs
+            )
 
             dataManager.saveReserveResources(pluralData = pluralData)
         }
     }
 
     private fun getStringFromRepository(id: Int): String? =
-            try {
-                val entryName = getResourceEntryName(id)
-                dataManager.getString(Locale.getDefault().toString(), entryName)
-            } catch (ex: NotFoundException) {
-                null
-            }
+        try {
+            val entryName = getResourceEntryName(id)
+            dataManager.getString(Locale.getDefault().toString(), entryName)
+        } catch (ex: NotFoundException) {
+            null
+        }
 
     private fun getStringArrayFromRepository(id: Int): Array<String>? {
         val entryName = getResourceEntryName(id)
@@ -145,19 +159,19 @@ internal class CrowdinResources(res: Resources,
     }
 
     private fun getPluralFromRepository(id: Int, quantity: Int): String? =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                val entryName = getResourceEntryName(id)
-                val rule = PluralRules.forLocale(Locale.getDefault())
-                val ruleName = rule.select(quantity.toDouble())
-                dataManager.getStringPlural(entryName, ruleName)
-            } else {
-                null
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val entryName = getResourceEntryName(id)
+            val rule = PluralRules.forLocale(Locale.getDefault())
+            val ruleName = rule.select(quantity.toDouble())
+            dataManager.getStringPlural(entryName, ruleName)
+        } else {
+            null
+        }
 }
 
 fun String.fromHtml(): CharSequence =
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            Html.fromHtml(this)
-        } else {
-            Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT)
-        }
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+        Html.fromHtml(this)
+    } else {
+        Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT)
+    }
