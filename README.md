@@ -14,16 +14,15 @@ For more about Crowdin Android SDK see the [documentation](https://support.crowd
 
 ## Status
 
-[![GitHub issues](https://img.shields.io/github/issues/crowdin/mobile-sdk-android)](https://github.com/crowdin/mobile-sdk-android/issues)
-[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/crowdin/mobile-sdk-android)](https://github.com/crowdin/mobile-sdk-android/graphs/commit-activity)
-[![GitHub last commit](https://img.shields.io/github/last-commit/crowdin/mobile-sdk-android)](https://github.com/crowdin/mobile-sdk-android/commits/master)
-[![GitHub contributors](https://img.shields.io/github/contributors/crowdin/mobile-sdk-android)](https://github.com/crowdin/mobile-sdk-android/graphs/contributors)
-[![GitHub](https://img.shields.io/github/license/crowdin/mobile-sdk-android)](https://github.com/crowdin/mobile-sdk-android/blob/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/issues)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/graphs/commit-activity)
+[![GitHub last commit](https://img.shields.io/github/last-commit/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/commits/master)
+[![GitHub contributors](https://img.shields.io/github/contributors/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/graphs/contributors)
+[![GitHub](https://img.shields.io/github/license/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/blob/master/LICENSE)
 
-
-[![Azure DevOps builds (branch)](https://img.shields.io/azure-devops/build/crowdin/mobile-sdk-android/12/master?logo=azure-pipelines)](https://dev.azure.com/crowdin/mobile-sdk-android/_build/latest?definitionId=12&branchName=master)
+[![Azure DevOps builds (branch)](https://img.shields.io/azure-devops/build/crowdin/mobile-sdk-android/12/master?logo=azure-pipelines&cacheSeconds=800)](https://dev.azure.com/crowdin/mobile-sdk-android/_build/latest?definitionId=12&branchName=master)
 [![codecov](https://codecov.io/gh/crowdin/mobile-sdk-android/branch/master/graph/badge.svg)](https://codecov.io/gh/crowdin/mobile-sdk-android)
-[![Azure DevOps tests (branch)](https://img.shields.io/azure-devops/tests/crowdin/mobile-sdk-android/13/master)](https://dev.azure.com/crowdin/mobile-sdk-android/_build/latest?definitionId=12&branchName=master)
+[![Azure DevOps tests (branch)](https://img.shields.io/azure-devops/tests/crowdin/mobile-sdk-android/13/master?cacheSeconds=800)](https://dev.azure.com/crowdin/mobile-sdk-android/_build/latest?definitionId=12&branchName=master)
 
 
 ## Table of Contents
