@@ -114,7 +114,6 @@ For more about Crowdin Android SDK see the [documentation](https://support.crowd
        Crowdin.init(applicationContext,
            CrowdinConfig.Builder()
                .withDistributionHash(your_distribution_hash)                            // required
-               .withFilePaths(your_file_path)                                           // required
                .withNetworkType(network_type)                                           // optional
                .withRealTimeUpdates()                                                   // optional
                .withScreenshotEnabled()                                                 // optional
@@ -137,7 +136,6 @@ For more about Crowdin Android SDK see the [documentation](https://support.crowd
       Crowdin.init(this,
           new CrowdinConfig.Builder()
               .withDistributionHash(your_distribution_hash)                            // required
-              .withFilePaths(your_file_paths)                                          // required
               .withNetworkType(network_type)                                           // optional
               .withRealTimeUpdates()                                                   // optional
               .withScreenshotEnabled()                                                 // optional
@@ -150,8 +148,6 @@ For more about Crowdin Android SDK see the [documentation](https://support.crowd
    </details>
 
    `your_distribution_hash` - when distribution added you will get your unique hash.
-
-   `your_file_path` - files from Crowdin project, translations from which will be sent to the application. Example: `"strings.xml", "arrays.xml", "plurals.xml"`
 
    `network_type` - optional. NetworkType.ALL, NetworkType.CELLULAR, NetworkType.WIFI;
 
