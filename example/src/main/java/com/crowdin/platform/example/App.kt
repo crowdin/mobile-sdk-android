@@ -22,19 +22,21 @@ class App : Application() {
         val clientId = "test-sdk"
         val clientSecret = "79MG6E8DZfEeomalfnoKx7dA0CVuwtPC3jQTB3ts"
 
-        Crowdin.init(applicationContext,
-                CrowdinConfig.Builder()
-                        .withDistributionHash(distributionHash)          // required
-                        .withNetworkType(NetworkType.ALL)                // optional
-                        .withRealTimeUpdates()                           // optional
-                        .withScreenshotEnabled()                         // optional
-                        .withSourceLanguage("en")          // optional
-                        .withUpdateInterval(fifteenMinutes)              // optional
-                        // enterprise
+        Crowdin.init(
+            applicationContext,
+            CrowdinConfig.Builder()
+                .withDistributionHash(distributionHash)          // required
+                .withNetworkType(NetworkType.ALL)                // optional
+                .withRealTimeUpdates()                           // optional
+                .withScreenshotEnabled()                         // optional
+                .withSourceLanguage("en")          // optional
+                .withUpdateInterval(fifteenMinutes)              // optional
+                // enterprise
 //                        .withAuthConfig(AuthConfig(clientId, clientSecret, "serhiy"))
-                        // default
-                        .withAuthConfig(AuthConfig(clientId, clientSecret))
-                        .build())
+                // default
+                .withAuthConfig(AuthConfig(clientId, clientSecret))
+                .build()
+        )
 
         // Using system buttons to take screenshot automatically will upload them to crowdin.
         Crowdin.registerScreenShotContentObserver(this)
