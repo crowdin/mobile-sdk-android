@@ -97,7 +97,7 @@ internal class CrowdinResources(
                 String.format(plural, *formatArgs)
             }
 
-        savePluralToCopy(id, quantity, formattedPlural.toString(), formatArgs)
+        savePluralToCopy(id, quantity, formattedPlural, formatArgs)
 
         return formattedPlural
     }
