@@ -23,7 +23,9 @@ jobs:
           jdkArchitectureOption: 'x64'
           publishJUnitResults: false
           tasks: 'build'
-
+      - script: |
+          ./gradlew ktlint
+        displayName: 'Validate code style'
   - job: Test
     dependsOn:
       - Build
