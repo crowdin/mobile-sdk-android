@@ -2,11 +2,11 @@ package com.crowdin.platform.data.remote
 
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.Session
+import java.io.IOException
+import java.net.HttpURLConnection
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import java.io.IOException
-import java.net.HttpURLConnection
 
 internal class SessionInterceptor(private val session: Session) : Interceptor {
 

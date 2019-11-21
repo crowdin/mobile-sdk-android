@@ -7,12 +7,12 @@ import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.google.gson.Gson
+import java.net.HttpURLConnection
 import okhttp3.ResponseBody
 import org.xmlpull.v1.XmlPullParserFactory
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.net.HttpURLConnection
 
 internal class MappingRepository(
     private val crowdinDistributionApi: CrowdinDistributionApi,
@@ -53,7 +53,6 @@ internal class MappingRepository(
                                         languageDataCallback
                                     )
                                 }
-
                             } catch (throwable: Throwable) {
                                 languageDataCallback?.onFailure(throwable)
                             }
@@ -68,7 +67,9 @@ internal class MappingRepository(
     }
 
     private fun requestData(
-        eTag: String?, distributionHash: String, filePath: String,
+        eTag: String?,
+        distributionHash: String,
+        filePath: String,
         languageDataCallback: LanguageDataCallback?
     ) {
         crowdinDistributionApi.getMappingFile(eTag ?: HEADER_ETAG_EMPTY, distributionHash, filePath)

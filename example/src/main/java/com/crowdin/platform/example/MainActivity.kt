@@ -11,7 +11,13 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.LoadingStateListener
-import com.crowdin.platform.example.fragments.*
+import com.crowdin.platform.example.fragments.CameraFragment
+import com.crowdin.platform.example.fragments.GalleryFragment
+import com.crowdin.platform.example.fragments.HomeFragment
+import com.crowdin.platform.example.fragments.SendFragment
+import com.crowdin.platform.example.fragments.ShareFragment
+import com.crowdin.platform.example.fragments.SlideshowFragment
+import com.crowdin.platform.example.fragments.ToolsFragment
 import com.crowdin.platform.util.inflateWithCrowdin
 import com.google.android.material.navigation.NavigationView
 

@@ -11,15 +11,17 @@ class StringDataTest {
     fun updateStringDataTest() {
         // Given
         val actualStringData = StringData(
-                "key",
-                "value",
-                arrayOf("test arg"),
-                StringBuilder("testBuilder"))
+            "key",
+            "value",
+            arrayOf("test arg"),
+            StringBuilder("testBuilder")
+        )
         val expectedStringData = StringData(
-                "expectedKey",
-                "expectedValue",
-                arrayOf("expected arg"),
-                StringBuilder("expected Builder"))
+            "expectedKey",
+            "expectedValue",
+            arrayOf("expected arg"),
+            StringBuilder("expected Builder")
+        )
 
         // When
         actualStringData.updateResources(expectedStringData)
@@ -31,10 +33,14 @@ class StringDataTest {
     @Test
     fun stringDataTest() {
         val builder = StringBuilder("testBuilder")
-        val stringData1 = StringData("key", "value",
-                arrayOf("test arg"), builder)
-        val stringData2 = StringData("key", "value",
-                arrayOf("test arg"), builder)
+        val stringData1 = StringData(
+            "key", "value",
+            arrayOf("test arg"), builder
+        )
+        val stringData2 = StringData(
+            "key", "value",
+            arrayOf("test arg"), builder
+        )
 
         assertThat(stringData1.hashCode(), `is`(stringData2.hashCode()))
     }

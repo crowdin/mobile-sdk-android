@@ -83,13 +83,11 @@ internal class StringResourceParser : Parser {
             (isPluralStarted && isItemStarted && isInnerTagOpened)
         ) {
             content += parser.text
-
         } else if (isArrayStarted && isItemStarted) {
             when (arrayData?.values) {
                 null -> arrayData?.values = arrayOf(parser.text)
                 else -> arrayData?.values = arrayData?.values?.plus(parser.text)
             }
-
         } else if (isPluralStarted && isItemStarted) {
             content += parser.text
         }
@@ -123,7 +121,6 @@ internal class StringResourceParser : Parser {
                     if (isArrayStarted) {
                         val array = arrayData?.values
                         array?.set(array.size - 1, array[array.size - 1] + content)
-
                     } else if (isPluralStarted) {
                         val quantityValues = pluralData?.quantity
                         quantityValues?.set(quantityItemKey, content)

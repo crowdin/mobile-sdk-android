@@ -24,7 +24,13 @@ import com.crowdin.platform.recurringwork.RecurringManager
 import com.crowdin.platform.screenshot.ScreenshotCallback
 import com.crowdin.platform.screenshot.ScreenshotManager
 import com.crowdin.platform.screenshot.ScreenshotUtils
-import com.crowdin.platform.transformer.*
+import com.crowdin.platform.transformer.BottomNavigationViewTransformer
+import com.crowdin.platform.transformer.NavigationViewTransformer
+import com.crowdin.platform.transformer.SpinnerTransformer
+import com.crowdin.platform.transformer.SupportToolbarTransformer
+import com.crowdin.platform.transformer.TextViewTransformer
+import com.crowdin.platform.transformer.ToolbarTransformer
+import com.crowdin.platform.transformer.ViewTransformerManager
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.TextUtils
 
@@ -45,7 +51,7 @@ object Crowdin {
      * Initialize Crowdin with the specified configuration.
      *
      * @param context of the application.
-     * @param config  of the Crowdin.
+     * @param config of the Crowdin.
      */
     @JvmStatic
     fun init(context: Context, config: CrowdinConfig) {
@@ -90,8 +96,8 @@ object Crowdin {
      * Set a single string for a language.
      *
      * @param language the string is for.
-     * @param key      the string key.
-     * @param value    the string value.
+     * @param key the string key.
+     * @param value the string value.
      */
     @JvmStatic
     fun setString(language: String, key: String, value: String) {
@@ -101,8 +107,8 @@ object Crowdin {
     /**
      * Tries to update title for all items defined in menu xml file.
      *
-     * @param menuRes    the id of menu file.
-     * @param menu      the options menu in which you place your items.
+     * @param menuRes the id of menu file.
+     * @param menu the options menu in which you place your items.
      * @param resources class for accessing an application's resources.
      */
     @JvmStatic
@@ -130,8 +136,8 @@ object Crowdin {
      * Send screenshot of current screen to the crowdin platform.
      * Will attach tags (keys and position) related to UI components from the screen.
      *
-     * @param activity              required for accessing current window.
-     * @param screenshotCallback    optional, will provide status of screenshot creating process.
+     * @param activity required for accessing current window.
+     * @param screenshotCallback optional, will provide status of screenshot creating process.
      */
     @JvmStatic
     @JvmOverloads
@@ -149,8 +155,8 @@ object Crowdin {
      * Send screenshot of current screen to the crowdin platform.
      * Will attach tags (keys and position) related to UI components from the screen.
      *
-     * @param filePath              path to created screenshot file.
-     * @param screenshotCallback    optional, will provide status of screenshot creating process.
+     * @param filePath path to created screenshot file.
+     * @param screenshotCallback optional, will provide status of screenshot creating process.
      */
     @JvmStatic
     @JvmOverloads

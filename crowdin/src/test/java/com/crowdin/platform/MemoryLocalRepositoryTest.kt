@@ -1,12 +1,17 @@
 package com.crowdin.platform
 
 import com.crowdin.platform.data.local.MemoryLocalRepository
-import com.crowdin.platform.data.model.*
+import com.crowdin.platform.data.model.ArrayData
+import com.crowdin.platform.data.model.AuthInfo
+import com.crowdin.platform.data.model.AuthResponse
+import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.PluralData
+import com.crowdin.platform.data.model.StringData
+import java.util.Locale
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
-import java.util.*
 
 class MemoryLocalRepositoryTest {
 
@@ -179,14 +184,18 @@ class MemoryLocalRepositoryTest {
     fun saveDataTest() {
         // Given
         val memoryLocalRepository = MemoryLocalRepository()
-        val expectedAuthInfo = AuthInfo(AuthResponse(
-                "", 0, "", ""))
+        val expectedAuthInfo = AuthInfo(
+            AuthResponse(
+                "", 0, "", ""
+            )
+        )
 
         // When
         memoryLocalRepository.saveData("auth_info", expectedAuthInfo)
 
         // Then
-        val actualAuthInfo = memoryLocalRepository.getData("auth_info", AuthInfo::class.java) as AuthInfo
+        val actualAuthInfo =
+            memoryLocalRepository.getData("auth_info", AuthInfo::class.java) as AuthInfo
         assertThat(actualAuthInfo, `is`(expectedAuthInfo))
     }
 
@@ -245,16 +254,19 @@ class MemoryLocalRepositoryTest {
     private fun givenLanguageData(locale: String): LanguageData {
         val languageData = LanguageData(locale)
         val listOfStringData = mutableListOf(
-                StringData("String0", "string0"),
-                StringData("String1", "string1"))
+            StringData("String0", "string0"),
+            StringData("String1", "string1")
+        )
         val listOfArrayData = mutableListOf(
-                ArrayData("Array0", arrayOf("array0:0", "array0:1")),
-                ArrayData("Array1", arrayOf("array1:0", "array1:1")),
-                ArrayData("Array2", arrayOf("array2:0", "array2:1")))
+            ArrayData("Array0", arrayOf("array0:0", "array0:1")),
+            ArrayData("Array1", arrayOf("array1:0", "array1:1")),
+            ArrayData("Array2", arrayOf("array2:0", "array2:1"))
+        )
         val listOfPluralData = mutableListOf(
-                PluralData("Plural0", mutableMapOf(Pair("pluralKey0", "pluralValue0")), 0),
-                PluralData("Plural1", mutableMapOf(Pair("pluralKey1", "pluralValue1")), 1),
-                PluralData("Plural2", mutableMapOf(Pair("pluralKey2", "pluralValue2")), 2))
+            PluralData("Plural0", mutableMapOf(Pair("pluralKey0", "pluralValue0")), 0),
+            PluralData("Plural1", mutableMapOf(Pair("pluralKey1", "pluralValue1")), 1),
+            PluralData("Plural2", mutableMapOf(Pair("pluralKey2", "pluralValue2")), 2)
+        )
         languageData.resources = listOfStringData
         languageData.arrays = listOfArrayData
         languageData.plurals = listOfPluralData

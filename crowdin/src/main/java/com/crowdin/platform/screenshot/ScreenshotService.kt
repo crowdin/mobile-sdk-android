@@ -53,7 +53,6 @@ internal class ScreenshotService(
                 }
                 sendMessage(data)
             }
-
         } catch (tr: Throwable) {
             sendMessage(String.format("Error: %s", tr.message))
         }

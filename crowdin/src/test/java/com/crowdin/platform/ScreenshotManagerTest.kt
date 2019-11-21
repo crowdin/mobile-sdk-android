@@ -3,13 +3,22 @@ package com.crowdin.platform
 import android.graphics.Bitmap
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.model.LanguageData
-import com.crowdin.platform.data.remote.api.*
+import com.crowdin.platform.data.remote.api.CreateScreenshotResponse
+import com.crowdin.platform.data.remote.api.CrowdinApi
+import com.crowdin.platform.data.remote.api.Data
+import com.crowdin.platform.data.remote.api.DistributionInfoResponse
+import com.crowdin.platform.data.remote.api.UploadScreenshotResponse
 import com.crowdin.platform.screenshot.ScreenshotCallback
 import com.crowdin.platform.screenshot.ScreenshotManager
 import okhttp3.ResponseBody
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.doAnswer
+import org.mockito.Mockito.inOrder
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoInteractions
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -51,7 +60,10 @@ class ScreenshotManagerTest {
         screenshotManager.sendScreenshot(mock(Bitmap::class.java), mutableListOf())
 
         // Then
-        verify(mockDataManager).getData("distribution_data", DistributionInfoResponse.DistributionData::class.java)
+        verify(mockDataManager).getData(
+            "distribution_data",
+            DistributionInfoResponse.DistributionData::class.java
+        )
         verifyNoInteractions(mockCrowdinApi)
     }
 
@@ -118,22 +130,29 @@ class ScreenshotManagerTest {
     }
 
     private fun givenDistributionData() =
-            DistributionInfoResponse.DistributionData(
-                    DistributionInfoResponse.DistributionData.ProjectData("projectIdTest", "testWsHash"),
-                    DistributionInfoResponse.DistributionData.UserData("userIdTest"),
-                    "wsUrlTest")
+        DistributionInfoResponse.DistributionData(
+            DistributionInfoResponse.DistributionData.ProjectData("projectIdTest", "testWsHash"),
+            DistributionInfoResponse.DistributionData.UserData("userIdTest"),
+            "wsUrlTest"
+        )
 
     private fun givenUploadScreenshotMockResponse(success: Boolean = true, successCode: Int = 201) {
         val mockedCall = mock(Call::class.java) as Call<UploadScreenshotResponse>
         `when`(mockCrowdinApi.uploadScreenshot(any())).thenReturn(mockedCall)
         doAnswer {
-            val callback = it.getArgument(0, Callback::class.java) as Callback<UploadScreenshotResponse>
+            val callback =
+                it.getArgument(0, Callback::class.java) as Callback<UploadScreenshotResponse>
             if (success) {
-                callback.onResponse(mockedCall, Response.success<UploadScreenshotResponse>(successCode, UploadScreenshotResponse(Data(10))))
+                callback.onResponse(
+                    mockedCall,
+                    Response.success<UploadScreenshotResponse>(
+                        successCode,
+                        UploadScreenshotResponse(Data(10))
+                    )
+                )
             } else {
                 callback.onFailure(mockedCall, Throwable())
             }
-
         }.`when`<Call<UploadScreenshotResponse>>(mockedCall).enqueue(any())
     }
 
@@ -141,27 +160,41 @@ class ScreenshotManagerTest {
         val mockedCall = mock(Call::class.java) as Call<CreateScreenshotResponse>
         `when`(mockCrowdinApi.createScreenshot(any(), any())).thenReturn(mockedCall)
         doAnswer {
-            val callback = it.getArgument(0, Callback::class.java) as Callback<CreateScreenshotResponse>
+            val callback =
+                it.getArgument(0, Callback::class.java) as Callback<CreateScreenshotResponse>
             if (success) {
-                callback.onResponse(mockedCall, Response.success<CreateScreenshotResponse>(successCode, CreateScreenshotResponse(Data(10))))
+                callback.onResponse(
+                    mockedCall,
+                    Response.success<CreateScreenshotResponse>(
+                        successCode,
+                        CreateScreenshotResponse(Data(10))
+                    )
+                )
             } else {
                 callback.onFailure(mockedCall, Throwable())
             }
-
         }.`when`<Call<CreateScreenshotResponse>>(mockedCall).enqueue(any())
     }
 
     private fun givenCreateTagMockResponse(success: Boolean = true, successCode: Int = 201) {
         val mockedCall = mock(Call::class.java) as Call<ResponseBody>
-        `when`(mockCrowdinApi.createTag("projectIdTest", 10, mutableListOf())).thenReturn(mockedCall)
+        `when`(
+            mockCrowdinApi.createTag(
+                "projectIdTest",
+                10,
+                mutableListOf()
+            )
+        ).thenReturn(mockedCall)
         doAnswer {
             val callback = it.getArgument(0, Callback::class.java) as Callback<ResponseBody>
             if (success) {
-                callback.onResponse(mockedCall, Response.success<ResponseBody>(successCode, mock(ResponseBody::class.java)))
+                callback.onResponse(
+                    mockedCall,
+                    Response.success<ResponseBody>(successCode, mock(ResponseBody::class.java))
+                )
             } else {
                 callback.onFailure(mockedCall, Throwable())
             }
-
         }.`when`<Call<ResponseBody>>(mockedCall).enqueue(any())
     }
 }

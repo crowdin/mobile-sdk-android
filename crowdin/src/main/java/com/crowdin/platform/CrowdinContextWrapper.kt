@@ -3,7 +3,6 @@ package com.crowdin.platform
 import android.content.Context
 import android.content.ContextWrapper
 import android.view.LayoutInflater
-
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.transformer.ViewTransformerManager
 
@@ -35,7 +34,8 @@ internal class CrowdinContextWrapper private constructor(
     companion object {
 
         fun wrap(
-            context: Context, dataManager: DataManager?,
+            context: Context,
+            dataManager: DataManager?,
             viewTransformerManager: ViewTransformerManager
         ): Context {
             return if (dataManager == null) context else CrowdinContextWrapper(

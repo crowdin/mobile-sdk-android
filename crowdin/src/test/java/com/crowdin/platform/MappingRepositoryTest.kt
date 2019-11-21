@@ -9,7 +9,10 @@ import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import okhttp3.ResponseBody
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.doAnswer
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -129,12 +132,13 @@ class MappingRepositoryTest {
     }
 
     private fun givenMappingRepository(): MappingRepository =
-            MappingRepository(
-                    mockDistributionApi,
-                    mockReader,
-                    mockDataManager,
-                    "hash",
-                    "en")
+        MappingRepository(
+            mockDistributionApi,
+            mockReader,
+            mockDataManager,
+            "hash",
+            "en"
+        )
 
     private fun givenMockManifestResponse(success: Boolean = true, successCode: Int = 200) {
         val mockedCall = mock(Call::class.java) as Call<ResponseBody>

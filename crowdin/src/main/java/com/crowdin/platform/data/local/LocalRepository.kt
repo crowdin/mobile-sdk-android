@@ -1,6 +1,10 @@
 package com.crowdin.platform.data.local
 
-import com.crowdin.platform.data.model.*
+import com.crowdin.platform.data.model.ArrayData
+import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.PluralData
+import com.crowdin.platform.data.model.StringData
+import com.crowdin.platform.data.model.TextMetaData
 import java.lang.reflect.Type
 
 /**
@@ -19,23 +23,23 @@ internal interface LocalRepository {
      * Set a single string(key, value) for a specific language.
      *
      * @param language the string belongs to.
-     * @param key      the key of the string which is the string resource id.
-     * @param value    the new string.
+     * @param key the key of the string which is the string resource id.
+     * @param value the new string.
      */
     fun setString(language: String, key: String, value: String)
 
     /**
      * Set a string data for a specific language.
      *
-     * @param language      the string belongs to.
-     * @param stringData    the new string data.
+     * @param language the string belongs to.
+     * @param stringData the new string data.
      */
     fun setStringData(language: String, stringData: StringData)
 
     /**
      * Set a string array data for a specific language.
      *
-     * @param language  the string belongs to.
+     * @param language the string belongs to.
      * @param arrayData the new string array data.
      */
     fun setArrayData(language: String, arrayData: ArrayData)
@@ -43,8 +47,8 @@ internal interface LocalRepository {
     /**
      * Set a plural data for a specific language.
      *
-     * @param language      the string belongs to.
-     * @param pluralData    the new plural data.
+     * @param language the string belongs to.
+     * @param pluralData the new plural data.
      */
     fun setPluralData(language: String, pluralData: PluralData)
 
@@ -52,7 +56,7 @@ internal interface LocalRepository {
      * Get a string for a language & key.
      *
      * @param language the language of the string.
-     * @param key      the string resource id.
+     * @param key the string resource id.
      * @return the string if exists, otherwise NULL.
      */
     fun getString(language: String, key: String): String?

@@ -9,13 +9,17 @@ import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
 import com.google.gson.Gson
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 
 class SharedPrefLocalRepositoryTest {
 
@@ -89,7 +93,6 @@ class SharedPrefLocalRepositoryTest {
         verify(editor).putString(expectedLanguage, expectedJson)
     }
 
-
     @Test
     fun setArrayDataTest() {
         // Given
@@ -129,7 +132,8 @@ class SharedPrefLocalRepositoryTest {
     @Test
     fun getStringTest() {
         // Given
-        val sharedPrefLocalRepository = SharedPrefLocalRepository(context, mockMemoryLocalRepository)
+        val sharedPrefLocalRepository =
+            SharedPrefLocalRepository(context, mockMemoryLocalRepository)
         val expectedLanguage = "EN"
         val expectedKey = "key"
 
@@ -143,7 +147,8 @@ class SharedPrefLocalRepositoryTest {
     @Test
     fun getLanguageDataTest() {
         // Given
-        val sharedPrefLocalRepository = SharedPrefLocalRepository(context, mockMemoryLocalRepository)
+        val sharedPrefLocalRepository =
+            SharedPrefLocalRepository(context, mockMemoryLocalRepository)
         val expectedLanguage = "EN"
 
         // When
@@ -156,7 +161,8 @@ class SharedPrefLocalRepositoryTest {
     @Test
     fun getStringArrayTest() {
         // Given
-        val sharedPrefLocalRepository = SharedPrefLocalRepository(context, mockMemoryLocalRepository)
+        val sharedPrefLocalRepository =
+            SharedPrefLocalRepository(context, mockMemoryLocalRepository)
         val expectedKey = "key"
 
         // When
@@ -169,7 +175,8 @@ class SharedPrefLocalRepositoryTest {
     @Test
     fun getStringPluralTest() {
         // Given
-        val sharedPrefLocalRepository = SharedPrefLocalRepository(context, mockMemoryLocalRepository)
+        val sharedPrefLocalRepository =
+            SharedPrefLocalRepository(context, mockMemoryLocalRepository)
         val expectedResourceKey = "resourceKey"
         val expectedQuantityKey = "quantityKey"
 
@@ -183,7 +190,8 @@ class SharedPrefLocalRepositoryTest {
     @Test
     fun isExistTest() {
         // Given
-        val sharedPrefLocalRepository = SharedPrefLocalRepository(context, mockMemoryLocalRepository)
+        val sharedPrefLocalRepository =
+            SharedPrefLocalRepository(context, mockMemoryLocalRepository)
         val expectedLanguage = "EN"
 
         // When
@@ -196,7 +204,8 @@ class SharedPrefLocalRepositoryTest {
     @Test
     fun getTextDataTest() {
         // Given
-        val sharedPrefLocalRepository = SharedPrefLocalRepository(context, mockMemoryLocalRepository)
+        val sharedPrefLocalRepository =
+            SharedPrefLocalRepository(context, mockMemoryLocalRepository)
         val expectedText = "text"
 
         // When
@@ -209,7 +218,8 @@ class SharedPrefLocalRepositoryTest {
     @Test
     fun saveDataTest() {
         // Given
-        val sharedPrefLocalRepository = SharedPrefLocalRepository(context, mockMemoryLocalRepository)
+        val sharedPrefLocalRepository =
+            SharedPrefLocalRepository(context, mockMemoryLocalRepository)
         val expectedType = "type"
         val data = StringData()
 
@@ -223,7 +233,8 @@ class SharedPrefLocalRepositoryTest {
     @Test
     fun saveData_removeOldTest() {
         // Given
-        val sharedPrefLocalRepository = SharedPrefLocalRepository(context, mockMemoryLocalRepository)
+        val sharedPrefLocalRepository =
+            SharedPrefLocalRepository(context, mockMemoryLocalRepository)
         val expectedType = "type"
         val data = null
 
@@ -240,7 +251,8 @@ class SharedPrefLocalRepositoryTest {
         // Given
         val stringData = StringData()
         `when`(mockMemoryLocalRepository.getData(any(), any())).thenReturn(stringData)
-        val sharedPrefLocalRepository = SharedPrefLocalRepository(context, mockMemoryLocalRepository)
+        val sharedPrefLocalRepository =
+            SharedPrefLocalRepository(context, mockMemoryLocalRepository)
 
         // When
         val result = sharedPrefLocalRepository.getData("stringData", StringData::class.java)
@@ -256,7 +268,8 @@ class SharedPrefLocalRepositoryTest {
         val stringData = null
         `when`(mockMemoryLocalRepository.getData(any(), any())).thenReturn(stringData)
         `when`(sharedPrefs.getString(any(), any())).thenReturn(null)
-        val sharedPrefLocalRepository = SharedPrefLocalRepository(context, mockMemoryLocalRepository)
+        val sharedPrefLocalRepository =
+            SharedPrefLocalRepository(context, mockMemoryLocalRepository)
         val expectedType = "stringData"
 
         // When

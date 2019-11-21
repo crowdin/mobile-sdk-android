@@ -7,7 +7,9 @@ import com.crowdin.platform.transformer.ViewTransformerManager
 import okhttp3.Response
 import okhttp3.WebSocket
 import org.junit.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.spy
+import org.mockito.Mockito.verify
 
 class EchoWebSocketListenerTest {
 
@@ -18,7 +20,8 @@ class EchoWebSocketListenerTest {
         val mockDistributionData = mock(DistributionInfoResponse.DistributionData::class.java)
         val mockViewTransformerManager = spy(ViewTransformerManager::class.java)
         val echoWebSocketListener = EchoWebSocketListener(
-                mockMappingData, mockDistributionData, mockViewTransformerManager)
+            mockMappingData, mockDistributionData, mockViewTransformerManager
+        )
 
         // When
         echoWebSocketListener.onOpen(mock(WebSocket::class.java), mock(Response::class.java))
@@ -34,7 +37,8 @@ class EchoWebSocketListenerTest {
         val mockDistributionData = mock(DistributionInfoResponse.DistributionData::class.java)
         val mockViewTransformerManager = spy(ViewTransformerManager::class.java)
         val echoWebSocketListener = EchoWebSocketListener(
-                mockMappingData, mockDistributionData, mockViewTransformerManager)
+            mockMappingData, mockDistributionData, mockViewTransformerManager
+        )
         val mockSocket = mock(WebSocket::class.java)
         val expectedReason = "test"
 

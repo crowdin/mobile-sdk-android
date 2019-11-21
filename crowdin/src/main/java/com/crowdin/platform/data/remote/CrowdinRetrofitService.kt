@@ -74,7 +74,7 @@ internal object CrowdinRetrofitService {
 
     fun getCrowdinApi(dataManager: DataManager, organizationName: String?): CrowdinApi {
         var baseUrl = BASE_API_URL
-        organizationName?.let { baseUrl = "https://${organizationName}.crowdin.com/" }
+        organizationName?.let { baseUrl = "https://$organizationName.crowdin.com/" }
         return crowdinApi
             ?: getCrowdinRetrofit(
                 getInterceptableHttpClient(SessionImpl(dataManager, getCrowdinAuthApi())),

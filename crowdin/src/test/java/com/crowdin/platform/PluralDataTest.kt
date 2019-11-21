@@ -11,15 +11,17 @@ class PluralDataTest {
     fun updatePluralDataTest() {
         // Given
         val actualPluralData = PluralData(
-                "actualKey",
-                mutableMapOf(Pair("key0", "value0")),
-                0,
-                arrayOf("test0"))
+            "actualKey",
+            mutableMapOf(Pair("key0", "value0")),
+            0,
+            arrayOf("test0")
+        )
         val expectedPluralData = PluralData(
-                "expectedKey",
-                mutableMapOf(Pair("key1", "value1")),
-                1,
-                arrayOf("test1"))
+            "expectedKey",
+            mutableMapOf(Pair("key1", "value1")),
+            1,
+            arrayOf("test1")
+        )
 
         // When
         actualPluralData.updateResources(expectedPluralData)
@@ -30,10 +32,14 @@ class PluralDataTest {
 
     @Test
     fun pluralDataTest() {
-        val pluralData1 = PluralData("actualKey", mutableMapOf(Pair("key0", "value0")),
-                0, arrayOf("test0"))
-        val pluralData2 = PluralData("actualKey", mutableMapOf(Pair("key0", "value0")),
-                0, arrayOf("test0"))
+        val pluralData1 = PluralData(
+            "actualKey", mutableMapOf(Pair("key0", "value0")),
+            0, arrayOf("test0")
+        )
+        val pluralData2 = PluralData(
+            "actualKey", mutableMapOf(Pair("key0", "value0")),
+            0, arrayOf("test0")
+        )
 
         assertThat(pluralData1.hashCode(), `is`(pluralData2.hashCode()))
     }

@@ -8,7 +8,7 @@ import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
-import java.util.*
+import java.util.Locale
 
 /**
  * This is the wrapped resources which will be provided by Crowdin.

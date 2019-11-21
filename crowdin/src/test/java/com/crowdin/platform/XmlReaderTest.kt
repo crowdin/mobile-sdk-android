@@ -5,13 +5,16 @@ import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.parser.Parser
 import com.crowdin.platform.data.parser.XmlReader
+import java.io.InputStream
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.spy
+import org.mockito.Mockito.verify
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
-import java.io.InputStream
 
 class XmlReaderTest {
 
@@ -44,7 +47,6 @@ class XmlReaderTest {
         assertThat(result.arrays, `is`(emptyList<ArrayData>()))
         assertThat(result.plurals, `is`(emptyList<PluralData>()))
     }
-
 
     @Test
     fun parseInput_PullParserTest() {
