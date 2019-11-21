@@ -11,7 +11,7 @@ internal interface RemoteRepository {
     /**
      * Save [LanguageData] for a specific language.
      *
-     * @param languageDataCallback  delivers data back to caller.
+     * @param languageDataCallback delivers data back to caller.
      */
     fun fetchData(languageDataCallback: LanguageDataCallback? = null)
 }

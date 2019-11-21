@@ -5,13 +5,13 @@ import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.google.gson.Gson
+import java.net.HttpURLConnection
+import java.util.Locale
 import okhttp3.ResponseBody
 import org.xmlpull.v1.XmlPullParserFactory
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.net.HttpURLConnection
-import java.util.*
 
 internal class StringDataRemoteRepository(
     private val crowdinDistributionApi: CrowdinDistributionApi,
@@ -47,7 +47,6 @@ internal class StringDataRemoteRepository(
                                         languageDataCallback
                                     )
                                 }
-
                             } catch (throwable: Throwable) {
                                 languageDataCallback?.onFailure(throwable)
                             }

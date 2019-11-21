@@ -1,9 +1,14 @@
 package com.crowdin.platform.data.local
 
 import com.crowdin.platform.data.DataManager
-import com.crowdin.platform.data.model.*
+import com.crowdin.platform.data.model.ArrayData
+import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.PluralData
+import com.crowdin.platform.data.model.StringData
+import com.crowdin.platform.data.model.TextMetaData
 import java.lang.reflect.Type
-import java.util.*
+import java.util.IllegalFormatConversionException
+import java.util.Locale
 
 /**
  * A LocalRepository which keeps the stringsData ONLY in memory.
@@ -150,8 +155,10 @@ internal class MemoryLocalRepository : LocalRepository {
             pluralData.quantity.forEach {
                 try {
                     if (it.value == text ||
-                        (pluralData.formatArgs.isNotEmpty()
-                                && it.value == String.format(text, pluralData.formatArgs))
+                        (pluralData.formatArgs.isNotEmpty() && it.value == String.format(
+                            text,
+                            pluralData.formatArgs
+                        ))
                     ) {
                         searchResultData.pluralName = pluralName
                         searchResultData.pluralQuantity = pluralData.number

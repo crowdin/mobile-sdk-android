@@ -11,7 +11,10 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 
 class SessionInterceptorTest {
 
@@ -64,7 +67,6 @@ class SessionInterceptorTest {
         // Then
         verify(session).invalidate()
     }
-
 
     @Test
     fun intercept_whenAuthError_shouldTryToRefreshToken() {
@@ -122,13 +124,15 @@ class SessionInterceptorTest {
 
     private fun initCrowdin() {
         val config = CrowdinConfig.Builder()
-                .withDistributionHash("test")
-                .build()
+            .withDistributionHash("test")
+            .build()
         val sharedPrefs = mock(SharedPreferences::class.java)!!
         val context = mock(Context::class.java)
         `when`(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPrefs)
         val connectivityManager = mock(ConnectivityManager::class.java)
-        `when`(context.getSystemService(Context.CONNECTIVITY_SERVICE)).thenReturn(connectivityManager)
+        `when`(context.getSystemService(Context.CONNECTIVITY_SERVICE)).thenReturn(
+            connectivityManager
+        )
 
         Crowdin.init(context, config)
     }

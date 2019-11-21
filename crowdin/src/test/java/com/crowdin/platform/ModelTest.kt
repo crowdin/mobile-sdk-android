@@ -1,6 +1,12 @@
 package com.crowdin.platform
 
-import com.crowdin.platform.data.model.*
+import com.crowdin.platform.data.model.AuthConfig
+import com.crowdin.platform.data.model.AuthInfo
+import com.crowdin.platform.data.model.AuthResponse
+import com.crowdin.platform.data.model.RefreshToken
+import com.crowdin.platform.data.model.TextMetaData
+import com.crowdin.platform.data.model.TokenRequest
+import com.crowdin.platform.data.model.ViewData
 import com.crowdin.platform.data.parser.MenuItemStrings
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat

@@ -2,16 +2,23 @@ package com.crowdin.platform
 
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.local.LocalRepository
-import com.crowdin.platform.data.model.*
+import com.crowdin.platform.data.model.ArrayData
+import com.crowdin.platform.data.model.AuthInfo
+import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.PluralData
+import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.remote.RemoteRepository
 import com.crowdin.platform.util.FeatureFlags
+import java.lang.reflect.Type
+import java.util.Locale
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.*
-import java.lang.reflect.Type
-import java.util.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoInteractions
 
 class DataManagerTest {
 
@@ -352,5 +359,5 @@ class DataManagerTest {
     }
 
     private fun givenDataManager(): DataManager =
-            DataManager(mockRemoteRepository, mockLocalRepository, mockLocalDataChangeObserver)
+        DataManager(mockRemoteRepository, mockLocalRepository, mockLocalDataChangeObserver)
 }

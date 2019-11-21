@@ -72,8 +72,9 @@ class StringResourceParserTest {
         val stringResourceParser = StringResourceParser()
         val expectedKey = "pluralKey"
         val expectedQuantity = mutableMapOf(
-                Pair("key0", "value0"),
-                Pair("key1", "value1"))
+            Pair("key0", "value0"),
+            Pair("key1", "value1")
+        )
         val expectedPluralData = PluralData(expectedKey, expectedQuantity)
         val parser = mock(XmlPullParser::class.java)
 
@@ -136,9 +137,11 @@ class StringResourceParserTest {
         assertThat(languageData.plurals.size, `is`(0))
     }
 
-    private fun parserArrayItem(stringResourceParser: StringResourceParser,
-                                parser: XmlPullParser,
-                                text: String) {
+    private fun parserArrayItem(
+        stringResourceParser: StringResourceParser,
+        parser: XmlPullParser,
+        text: String
+    ) {
         // start array item tag
         `when`(parser.name).thenReturn("item")
         stringResourceParser.onStartTag(parser)
@@ -178,10 +181,12 @@ class StringResourceParserTest {
         stringResourceParser.onEndTag(parser)
     }
 
-    private fun parserPluralItem(stringResourceParser: StringResourceParser,
-                                 parser: XmlPullParser,
-                                 quantityKey: String,
-                                 text: String) {
+    private fun parserPluralItem(
+        stringResourceParser: StringResourceParser,
+        parser: XmlPullParser,
+        quantityKey: String,
+        text: String
+    ) {
         // start plural item tag
         `when`(parser.name).thenReturn("item")
         `when`(parser.getAttributeValue(0)).thenReturn(quantityKey)

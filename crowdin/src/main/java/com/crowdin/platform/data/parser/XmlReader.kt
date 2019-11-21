@@ -1,9 +1,9 @@
 package com.crowdin.platform.data.parser
 
 import com.crowdin.platform.data.model.LanguageData
+import java.io.InputStream
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
-import java.io.InputStream
 
 internal class XmlReader(private var parser: Parser) : Reader {
 
@@ -23,7 +23,6 @@ internal class XmlReader(private var parser: Parser) : Reader {
             if (xmlPullParser != null) {
                 return parseXml(xmlPullParser, parser)
             }
-
         } catch (e: Exception) {
             return LanguageData()
         }

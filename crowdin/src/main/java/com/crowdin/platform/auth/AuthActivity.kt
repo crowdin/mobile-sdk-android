@@ -100,7 +100,6 @@ internal class AuthActivity : AppCompatActivity() {
                     }
                 }
             }, false)
-
         } else {
             Toast.makeText(this, "Not authorized.", Toast.LENGTH_LONG).show()
             finish()

@@ -1,8 +1,8 @@
 package com.crowdin.platform.data.parser
 
 import com.crowdin.platform.data.model.LanguageData
-import org.xmlpull.v1.XmlPullParserFactory
 import java.io.InputStream
+import org.xmlpull.v1.XmlPullParserFactory
 
 internal interface Reader {
 

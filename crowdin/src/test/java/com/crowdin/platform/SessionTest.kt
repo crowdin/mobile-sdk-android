@@ -9,7 +9,9 @@ import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 import retrofit2.Call
 import retrofit2.Response
 
@@ -128,10 +130,10 @@ class SessionTest {
 
     private fun provideAuthResponse(): AuthResponse {
         return AuthResponse(
-                "token",
-                11,
-                "access_token",
-                "refresh_token"
+            "token",
+            11,
+            "access_token",
+            "refresh_token"
         )
     }
 }

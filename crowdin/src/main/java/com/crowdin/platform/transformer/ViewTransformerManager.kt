@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.TextView
 import com.crowdin.platform.data.model.TextMetaData
 import com.crowdin.platform.data.model.ViewData
-import java.util.*
+import java.util.ArrayList
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -29,7 +29,7 @@ internal class ViewTransformerManager {
      * it tries to find proper transformers for view, and if exists, it will apply them on view,
      * and return the final result as a new view.
      *
-     * @param view  to be transformed.
+     * @param view to be transformed.
      * @param attrs attributes of the view.
      * @return the transformed view.
      */
@@ -95,7 +95,7 @@ internal interface Transformer {
     /**
      * Apply transformation to a view.
      *
-     * @param view  to be transformed.
+     * @param view to be transformed.
      * @param attrs attributes of the view.
      * @return the transformed view.
      */

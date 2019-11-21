@@ -1,7 +1,6 @@
 package com.crowdin.platform.data.local
 
 import android.content.Context
-
 import com.crowdin.platform.CrowdinConfig
 
 internal object LocalStringRepositoryFactory {

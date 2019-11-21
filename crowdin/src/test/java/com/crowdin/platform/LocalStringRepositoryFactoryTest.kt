@@ -20,12 +20,12 @@ class LocalStringRepositoryFactoryTest {
         // Given
         val context = givenContext()
         val config = CrowdinConfig.Builder()
-                .withDistributionHash("testHash")
-                .build()
+            .withDistributionHash("testHash")
+            .build()
 
         // When
         val repository =
-                LocalStringRepositoryFactory.createLocalRepository(context, config)
+            LocalStringRepositoryFactory.createLocalRepository(context, config)
 
         // Then
         assertThat(repository, instanceOf(SharedPrefLocalRepository::class.java))
@@ -36,13 +36,13 @@ class LocalStringRepositoryFactoryTest {
         // Given
         val context = givenContext()
         val config = CrowdinConfig.Builder()
-                .persist(false)
-                .withDistributionHash("testHash")
-                .build()
+            .persist(false)
+            .withDistributionHash("testHash")
+            .build()
 
         // When
         val repository =
-                LocalStringRepositoryFactory.createLocalRepository(context, config)
+            LocalStringRepositoryFactory.createLocalRepository(context, config)
 
         // Then
         assertThat(repository, instanceOf(MemoryLocalRepository::class.java))

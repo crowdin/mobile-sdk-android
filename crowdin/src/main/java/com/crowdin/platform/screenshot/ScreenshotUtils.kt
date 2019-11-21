@@ -19,12 +19,13 @@ object ScreenshotUtils {
                 val locationOfViewInWindow = IntArray(2)
                 root.getLocationInWindow(locationOfViewInWindow)
                 try {
-                    PixelCopy.request(window, Rect(
-                        locationOfViewInWindow[0],
-                        locationOfViewInWindow[1],
-                        locationOfViewInWindow[0] + root.width,
-                        locationOfViewInWindow[1] + root.height
-                    ),
+                    PixelCopy.request(
+                        window, Rect(
+                            locationOfViewInWindow[0],
+                            locationOfViewInWindow[1],
+                            locationOfViewInWindow[0] + root.width,
+                            locationOfViewInWindow[1] + root.height
+                        ),
                         bitmap,
                         { copyResult ->
                             if (copyResult == PixelCopy.SUCCESS) {

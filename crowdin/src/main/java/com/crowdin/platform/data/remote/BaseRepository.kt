@@ -1,6 +1,6 @@
 package com.crowdin.platform.data.remote
 
-import java.util.*
+import java.util.Locale
 
 internal abstract class BaseRepository : RemoteRepository {
 

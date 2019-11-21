@@ -1,10 +1,14 @@
 package com.crowdin.platform.recurringwork
 
 import android.content.Context
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.crowdin.platform.CrowdinConfig
 import com.google.gson.Gson
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 internal object RecurringManager {

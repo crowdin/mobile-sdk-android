@@ -8,15 +8,20 @@ import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.getMappingValueForKey
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.ViewData
-import com.crowdin.platform.data.remote.api.*
+import com.crowdin.platform.data.remote.api.CreateScreenshotRequestBody
+import com.crowdin.platform.data.remote.api.CreateScreenshotResponse
+import com.crowdin.platform.data.remote.api.CrowdinApi
+import com.crowdin.platform.data.remote.api.DistributionInfoResponse
+import com.crowdin.platform.data.remote.api.TagData
+import com.crowdin.platform.data.remote.api.UploadScreenshotResponse
+import java.io.ByteArrayOutputStream
+import java.net.HttpURLConnection
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.ByteArrayOutputStream
-import java.net.HttpURLConnection
 
 internal class ScreenshotManager(
     private var crowdinApi: CrowdinApi,

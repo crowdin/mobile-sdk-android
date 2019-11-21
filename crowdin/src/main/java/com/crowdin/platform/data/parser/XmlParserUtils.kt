@@ -6,9 +6,9 @@ import android.util.Pair
 import android.util.SparseArray
 import android.util.Xml
 import com.crowdin.platform.transformer.Attributes
+import java.io.IOException
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
-import java.io.IOException
 
 internal object XmlParserUtils {
 

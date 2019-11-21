@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import com.crowdin.platform.util.FeatureFlags
-import java.util.*
+import java.util.WeakHashMap
 
 /**
  * A transformer which transforms Spinner: it transforms the entries attribute

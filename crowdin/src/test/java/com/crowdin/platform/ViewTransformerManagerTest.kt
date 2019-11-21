@@ -7,13 +7,22 @@ import android.util.AttributeSet
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toolbar
-import com.crowdin.platform.transformer.*
+import com.crowdin.platform.transformer.BottomNavigationViewTransformer
+import com.crowdin.platform.transformer.NavigationViewTransformer
+import com.crowdin.platform.transformer.SpinnerTransformer
+import com.crowdin.platform.transformer.SupportToolbarTransformer
+import com.crowdin.platform.transformer.TextViewTransformer
+import com.crowdin.platform.transformer.ToolbarTransformer
+import com.crowdin.platform.transformer.ViewTransformerManager
+import com.crowdin.platform.transformer.ViewsChangeListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 
 class ViewTransformerManagerTest {
 
@@ -203,13 +212,20 @@ class ViewTransformerManagerTest {
 
     private fun initCrowdin() {
         val config = CrowdinConfig.Builder()
-                .withDistributionHash("test")
-                .build()
+            .withDistributionHash("test")
+            .build()
         val sharedPrefs = mock(SharedPreferences::class.java)!!
         val context = mock(Context::class.java)
-        `when`(context.getSharedPreferences(ArgumentMatchers.anyString(), ArgumentMatchers.anyInt())).thenReturn(sharedPrefs)
+        `when`(
+            context.getSharedPreferences(
+                ArgumentMatchers.anyString(),
+                ArgumentMatchers.anyInt()
+            )
+        ).thenReturn(sharedPrefs)
         val connectivityManager = mock(ConnectivityManager::class.java)
-        `when`(context.getSystemService(Context.CONNECTIVITY_SERVICE)).thenReturn(connectivityManager)
+        `when`(context.getSystemService(Context.CONNECTIVITY_SERVICE)).thenReturn(
+            connectivityManager
+        )
 
         Crowdin.init(context, config)
     }

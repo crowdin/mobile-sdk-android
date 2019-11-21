@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-
 import com.crowdin.platform.example.R
 
 internal class SampleAdapter(private var dataArray: Array<String>) :

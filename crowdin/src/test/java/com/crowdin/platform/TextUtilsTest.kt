@@ -4,7 +4,6 @@ import android.content.res.Resources
 import android.util.AttributeSet
 import com.crowdin.platform.util.TextUtils
 import org.hamcrest.core.Is.`is`
-
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -20,7 +19,6 @@ class TextUtilsTest {
     fun setUp() {
         mockAttributeSet = mock(AttributeSet::class.java)
         mockResources = mock(Resources::class.java)
-
     }
 
     @Test
@@ -31,9 +29,9 @@ class TextUtilsTest {
 
         // When
         val actual = TextUtils.getTextForAttribute(
-                mockAttributeSet,
-                index,
-                mockResources
+            mockAttributeSet,
+            index,
+            mockResources
         )
 
         // Then
@@ -50,9 +48,9 @@ class TextUtilsTest {
 
         // When
         val actual = TextUtils.getTextForAttribute(
-                mockAttributeSet,
-                index,
-                mockResources
+            mockAttributeSet,
+            index,
+            mockResources
         )
 
         // Then
@@ -65,14 +63,19 @@ class TextUtilsTest {
         val index = 0
         val attributeValue = "@testValue"
         `when`(mockAttributeSet.getAttributeValue(index)).thenReturn(attributeValue)
-        `when`(mockAttributeSet.getAttributeResourceValue(index, 0)).thenThrow(Resources.NotFoundException())
+        `when`(
+            mockAttributeSet.getAttributeResourceValue(
+                index,
+                0
+            )
+        ).thenThrow(Resources.NotFoundException())
         val expected: CharSequence? = null
 
         // When
         val actual = TextUtils.getTextForAttribute(
-                mockAttributeSet,
-                index,
-                mockResources
+            mockAttributeSet,
+            index,
+            mockResources
         )
 
         // Then
@@ -91,9 +94,9 @@ class TextUtilsTest {
 
         // When
         val actual = TextUtils.getTextForAttribute(
-                mockAttributeSet,
-                index,
-                mockResources
+            mockAttributeSet,
+            index,
+            mockResources
         )
 
         // Then
@@ -108,9 +111,9 @@ class TextUtilsTest {
 
         // When
         val actual = TextUtils.getTextAttributeKey(
-                mockResources,
-                mockAttributeSet,
-                index
+            mockResources,
+            mockAttributeSet,
+            index
         )
 
         // Then
@@ -127,9 +130,9 @@ class TextUtilsTest {
 
         // When
         val actual = TextUtils.getTextAttributeKey(
-                mockResources,
-                mockAttributeSet,
-                index
+            mockResources,
+            mockAttributeSet,
+            index
         )
 
         // Then
@@ -142,14 +145,19 @@ class TextUtilsTest {
         val index = 0
         val attributeValue = "@testValue"
         `when`(mockAttributeSet.getAttributeValue(index)).thenReturn(attributeValue)
-        `when`(mockAttributeSet.getAttributeResourceValue(index, 0)).thenThrow(Resources.NotFoundException())
+        `when`(
+            mockAttributeSet.getAttributeResourceValue(
+                index,
+                0
+            )
+        ).thenThrow(Resources.NotFoundException())
         val expected: CharSequence? = null
 
         // When
         val actual = TextUtils.getTextAttributeKey(
-                mockResources,
-                mockAttributeSet,
-                index
+            mockResources,
+            mockAttributeSet,
+            index
         )
 
         // Then
@@ -168,9 +176,9 @@ class TextUtilsTest {
 
         // When
         val actual = TextUtils.getTextAttributeKey(
-                mockResources,
-                mockAttributeSet,
-                index
+            mockResources,
+            mockAttributeSet,
+            index
         )
 
         // Then

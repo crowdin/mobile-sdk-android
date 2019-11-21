@@ -16,11 +16,11 @@ import com.crowdin.platform.transformer.ViewTransformerManager
 import com.crowdin.platform.transformer.ViewsChangeListener
 import com.crowdin.platform.util.ThreadUtils
 import com.google.gson.Gson
+import java.lang.ref.WeakReference
+import java.util.Locale
+import java.util.concurrent.ConcurrentHashMap
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import java.lang.ref.WeakReference
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 internal class EchoWebSocketListener(
     private var mappingData: LanguageData,
@@ -137,9 +137,7 @@ internal class EchoWebSocketListener(
             val event = eventResponse.event
             val eventData = eventResponse.data
 
-            if (event.contains(UPDATE_DRAFT)
-                || event.contains(TOP_SUGGESTION)
-            ) {
+            if (event.contains(UPDATE_DRAFT) || event.contains(TOP_SUGGESTION)) {
                 val mappingId = event.split(":").last()
                 for (mutableEntry in dataHolderMap) {
                     val textMetaData = mutableEntry.value
