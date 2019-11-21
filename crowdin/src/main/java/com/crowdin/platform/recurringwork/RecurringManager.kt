@@ -31,7 +31,7 @@ internal object RecurringManager {
             PeriodicWorkRequestBuilder<DownloadWorker>(config.updateInterval, TimeUnit.MILLISECONDS)
                 .setConstraints(constraints)
                 .build()
-        WorkManager.getInstance().enqueue(downloadRequest)
+        WorkManager.getInstance(context).enqueue(downloadRequest)
         saveRecurringState(context, WORK_STARTED)
         saveJobId(context, downloadRequest.id)
     }
@@ -39,7 +39,7 @@ internal object RecurringManager {
     fun cancel(context: Context) {
         val jobId = getJobId(context)
         if (jobId != null) {
-            WorkManager.getInstance().cancelWorkById(jobId)
+            WorkManager.getInstance(context).cancelWorkById(jobId)
             saveRecurringState(context, WORK_CANCELED)
         }
     }

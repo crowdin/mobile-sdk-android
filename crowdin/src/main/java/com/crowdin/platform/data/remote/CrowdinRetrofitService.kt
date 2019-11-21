@@ -29,7 +29,9 @@ internal object CrowdinRetrofitService {
         return if (okHttpClient == null) {
             val builder = OkHttpClient.Builder()
             if (BuildConfig.DEBUG) {
-                builder.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                builder.addInterceptor(HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                })
             }
             okHttpClient = builder.build()
             okHttpClient!!
@@ -42,7 +44,9 @@ internal object CrowdinRetrofitService {
         return if (interceptableOkHttpClient == null) {
             val builder = OkHttpClient.Builder()
             if (BuildConfig.DEBUG) {
-                builder.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                builder.addInterceptor(HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                })
             }
             builder.addInterceptor(SessionInterceptor(session))
 
