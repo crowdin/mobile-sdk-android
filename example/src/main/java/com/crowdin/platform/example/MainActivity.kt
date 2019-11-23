@@ -21,11 +21,24 @@ import com.crowdin.platform.example.fragments.ToolsFragment
 import com.crowdin.platform.util.inflateWithCrowdin
 import com.google.android.material.navigation.NavigationView
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
-    LoadingStateListener {
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var navigationView: NavigationView
     private lateinit var drawerLayout: DrawerLayout
+
+    private val dataLoadingObserver = object : LoadingStateListener {
+        override fun onDataChanged() {
+            Log.d(MainActivity::class.java.simpleName, "LoadingStateListener: onSuccess")
+        }
+
+        override fun onFailure(throwable: Throwable) {
+            Log.d(
+                MainActivity::class.java.simpleName,
+                "LoadingStateListener: onFailure ${throwable.localizedMessage}"
+            )
+        }
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +60,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         setTitle(R.string.home)
 
         // Observe data loading.
-        Crowdin.registerDataLoadingObserver(this)
+        Crowdin.registerDataLoadingObserver(dataLoadingObserver)
 
         // Crowdin Auth. required for screenshot/realtime update functionality.
         Crowdin.authorize(this)
@@ -56,22 +69,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         Crowdin.registerShakeDetector(this)
     }
 
-    override fun onDataChanged() {
-        Crowdin.updateMenuItemsText(R.menu.drawer_view, navigationView.menu, resources)
-        Log.d(MainActivity::class.java.simpleName, "LoadingStateListener: onSuccess")
-    }
-
-    override fun onFailure(throwable: Throwable) {
-        Log.d(
-            MainActivity::class.java.simpleName,
-            "LoadingStateListener: onFailure ${throwable.localizedMessage}"
-        )
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         // Remove data loading observer.
-        Crowdin.unregisterDataLoadingObserver(this)
+        Crowdin.unregisterDataLoadingObserver(dataLoadingObserver)
 
         // Close connection with crowdin.
         Crowdin.disconnectRealTimeUpdates()
@@ -81,6 +82,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Translate menu items
         menuInflater.inflateWithCrowdin(R.menu.activity_menu, menu, resources)
         return true
     }

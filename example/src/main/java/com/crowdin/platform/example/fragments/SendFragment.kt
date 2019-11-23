@@ -37,6 +37,7 @@ class SendFragment : Fragment() {
         textView3.text = text
 
         view.findViewById<TextView>(R.id.textView0).setOnClickListener {
+            // Screenshot functionality. Captures displayed views and sends it to Crowdin platform.
             Crowdin.sendScreenshot(activity!!)
         }
     }

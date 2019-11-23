@@ -32,7 +32,7 @@ class App : Application() {
                 .withSourceLanguage("en")          // optional
                 .withUpdateInterval(fifteenMinutes)              // optional
                 // enterprise
-//                        .withAuthConfig(AuthConfig(clientId, clientSecret, "serhiy"))
+//                .withAuthConfig(AuthConfig(clientId, clientSecret, "serhiy"))
                 // default
                 .withAuthConfig(AuthConfig(clientId, clientSecret))
                 .build()
