@@ -30,6 +30,7 @@ class ToolsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<TextView>(R.id.textView3).setOnClickListener {
+            // Screenshot functionality. Captures displayed views and sends it to Crowdin platform.
             Crowdin.sendScreenshot(activity!!)
         }
     }
@@ -47,6 +48,7 @@ class ToolsFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        // Translate menu items
         inflater.inflateWithCrowdin(R.menu.fragment_menu, menu, resources)
     }
 }

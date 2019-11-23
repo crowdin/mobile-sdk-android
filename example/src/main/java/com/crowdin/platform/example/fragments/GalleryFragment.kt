@@ -39,8 +39,12 @@ class GalleryFragment : Fragment(), LoadingStateListener {
         adapter = SampleAdapter(array)
         recyclerView.adapter = adapter
 
-        view.findViewById<TextView>(R.id.textView3)
-            .setOnClickListener { Crowdin.sendScreenshot(activity!!) }
+        view.findViewById<TextView>(R.id.textView3).setOnClickListener {
+            // Screenshot functionality. Captures displayed views and sends it to Crowdin platform.
+            Crowdin.sendScreenshot(activity!!)
+        }
+
+        // Observe data loading.
         Crowdin.registerDataLoadingObserver(this)
     }
 
@@ -56,6 +60,7 @@ class GalleryFragment : Fragment(), LoadingStateListener {
 
     override fun onDestroy() {
         super.onDestroy()
+        // Remove data loading observer.
         Crowdin.unregisterDataLoadingObserver(this)
     }
 }

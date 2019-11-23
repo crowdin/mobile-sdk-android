@@ -31,25 +31,32 @@ class HomeFragment : Fragment(), LoadingStateListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<TextView>(R.id.textView0).setOnClickListener {
+            // Screenshot functionality. Captures displayed views and sends it to Crowdin platform.
+            // observe progress via callback.
             Crowdin.sendScreenshot(activity!!, object : ScreenshotCallback {
                 override fun onSuccess() {
                     Log.d(TAG, "Screenshot uploaded")
                 }
 
                 override fun onFailure(throwable: Throwable) {
-                    Log.d(TAG, throwable.localizedMessage)
+                    Log.d(TAG, "Error: ${throwable.localizedMessage}")
                 }
             })
         }
 
         view.findViewById<Button>(R.id.load_data_btn).setOnClickListener {
-            context?.let { Crowdin.forceUpdate(context!!) }
+            context?.let {
+                // Initialize data reloading from the network.
+                // Status will be available via registered LoadingStateListener callback.
+                Crowdin.forceUpdate(context!!)
+            }
         }
 
         view.findViewById<TextView>(R.id.textView5).text = getString(R.string.text5, "str")
         view.findViewById<TextView>(R.id.textView6).text = getString(R.string.text6, "str", "str")
         view.findViewById<TextView>(R.id.textView7).text = getString(R.string.text7, "str", "str")
 
+        // Observe data loading.
         Crowdin.registerDataLoadingObserver(this)
     }
 
@@ -63,6 +70,7 @@ class HomeFragment : Fragment(), LoadingStateListener {
 
     override fun onDestroy() {
         super.onDestroy()
+        // Remove data loading observer.
         Crowdin.unregisterDataLoadingObserver(this)
     }
 }

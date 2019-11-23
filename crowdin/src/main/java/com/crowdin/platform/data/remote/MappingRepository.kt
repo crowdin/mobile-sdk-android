@@ -107,7 +107,7 @@ internal class MappingRepository(
 
                 override fun onFailure(call: Call<ResponseBody>, throwable: Throwable) {
                     languageDataCallback?.onFailure(throwable)
-                    Log.d(MappingRepository::class.java.simpleName, throwable.localizedMessage)
+                    Log.d(MappingRepository::class.java.simpleName, "Error: ${throwable.localizedMessage}")
                 }
             })
     }

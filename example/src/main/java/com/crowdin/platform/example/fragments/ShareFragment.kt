@@ -25,6 +25,7 @@ class ShareFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<TextView>(R.id.textView0).setOnClickListener {
+            // Screenshot functionality. Captures displayed views and sends it to Crowdin platform.
             Crowdin.sendScreenshot(activity!!)
         }
 
