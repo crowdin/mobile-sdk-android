@@ -3,14 +3,41 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply from: '../jacoco.gradle'
 
+ext {
+    versionCode = 1
+    versionName = "0.9.3"
+
+    bintrayRepo = 'mobile-sdk'
+    bintrayName = 'mobile-sdk-android'
+
+    publishedGroupId = 'com.crowdin.platform'
+    libraryName = 'CrowdinAndroidSdk'
+    artifact = 'mobile-sdk'
+
+    libraryDescription = "Crowdin Android SDK delivers all new translations from Crowdin project to the application immediately. So there is no need to update this application via Google Play Store to get the new version with the localization."
+
+    siteUrl = 'https://crowdin.com/'
+    gitUrl = 'https://github.com/crowdin/mobile-sdk-android'
+
+    libraryVersion = versionName
+
+    developerId = 'mykhailo-nester'
+    developerName = 'Mykhailo Nester'
+    developerEmail = 'nsmisha.dev@gmail.com'
+
+    licenseName = 'The MIT License'
+    licenseUrl = 'https://opensource.org/licenses/MIT'
+    allLicenses = ["MIT"]
+}
+
 android {
     compileSdkVersion 29
 
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0.0"
+        versionCode versionCode
+        versionName versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -89,3 +116,6 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
     main = "com.pinterest.ktlint.Main"
     args "-F", "src/**/*.kt"
 }
+
+apply from: 'install.gradle'
+apply from: 'bintray.gradle'
