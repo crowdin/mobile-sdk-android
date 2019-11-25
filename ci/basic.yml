@@ -52,25 +52,3 @@ jobs:
       - bash: |
           bash <(curl -s https://codecov.io/bash) -t $(CODECOV_TOKEN)
         displayName: 'Upload coverage to codecov.io'
-  - job: Bintray
-      dependsOn:
-        - Test
-      condition: succeeded()
-      pool:
-        vmImage: ubuntu-latest
-      steps:
-        - task: Gradle@2
-          displayName: 'Gradle build'
-          inputs:
-            workingDirectory: ''
-            gradleWrapperFile: 'gradlew'
-            gradleOptions: '-Xmx3072m'
-            javaHomeOption: 'JDKVersion'
-            jdkVersionOption: '1.11'
-            jdkArchitectureOption: 'x64'
-            publishJUnitResults: true
-            testResultsFiles: '**/TEST-*.xml'
-            tasks: 'build'
-        - script: |
-            ./gradlew bintrayUpload
-          displayName: 'Publish to bintray.com'
