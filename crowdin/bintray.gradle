@@ -6,6 +6,7 @@ version = libraryVersion
 publishing {
     publications {
         Publication(MavenPublication) {
+            artifact("$buildDir/outputs/aar/crowdin-release.aar")
 
             pom.withXml {
                 def dependenciesNode = asNode().getAt('dependencies')[0] ?: asNode().appendNode('dependencies')
