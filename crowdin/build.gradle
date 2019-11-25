@@ -117,5 +117,7 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
     args "-F", "src/**/*.kt"
 }
 
-apply from: 'install.gradle'
-apply from: 'bintray.gradle'
+if (project.rootProject.file('local.properties').exists()) {
+    apply from: 'install.gradle'
+    apply from: 'bintray.gradle'
+}
