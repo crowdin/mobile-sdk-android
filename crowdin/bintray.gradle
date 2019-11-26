@@ -3,10 +3,30 @@ apply plugin: 'com.jfrog.bintray'
 
 version = libraryVersion
 
+
+if (project.hasProperty("android")) { // Android libraries
+    task sourcesJar(type: Jar) {
+        archiveClassifier = 'sources'
+        from android.sourceSets.main.java.srcDirs
+    }
+} else { // Java libraries
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        archiveClassifier = 'sources'
+        from sourceSets.main.allSource
+    }
+}
+
+artifacts {
+    archives sourcesJar
+}
+
 publishing {
     publications {
         Publication(MavenPublication) {
             artifact("$buildDir/outputs/aar/crowdin-release.aar")
+            groupId
+            artifactId artifact
+            version this.version
 
             pom.withXml {
                 def dependenciesNode = asNode().getAt('dependencies')[0] ?: asNode().appendNode('dependencies')
@@ -33,6 +53,7 @@ bintray {
     user = properties.getProperty("bintray.user")
     key = properties.getProperty("bintray.apikey")
     publications = ['Publication']
+    configurations = ['archives']
 
     pkg {
         repo = bintrayRepo
@@ -46,6 +67,7 @@ bintray {
         userOrg = 'crowdin'
         licenses = ['MIT']
         vcsUrl = 'https://github.com/crowdin/mobile-sdk-android'
+        override = true
 
         version {
             desc = libraryDescription

@@ -5,7 +5,7 @@ apply from: '../jacoco.gradle'
 
 ext {
     versionCode = 1
-    versionName = "0.9.5"
+    versionName = "0.9.7"
 
     bintrayRepo = 'mobile-sdk'
     bintrayName = 'mobile-sdk-android'
