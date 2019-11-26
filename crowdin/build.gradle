@@ -5,7 +5,7 @@ apply from: '../jacoco.gradle'
 
 ext {
     versionCode = 1
-    versionName = "0.9.7"
+    versionName = "0.9.9"
 
     bintrayRepo = 'mobile-sdk'
     bintrayName = 'mobile-sdk-android'
@@ -117,7 +117,5 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
     args "-F", "src/**/*.kt"
 }
 
-if (project.rootProject.file('local.properties').exists()) {
-    apply from: 'install.gradle'
-    apply from: 'bintray.gradle'
-}
+apply from: 'install.gradle'
+apply from: 'bintray.gradle'
