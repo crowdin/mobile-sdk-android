@@ -45,26 +45,17 @@ For more about Crowdin Android SDK see the [documentation](https://support.crowd
 
 ## Installation
 
-1. Maven [TBA]
+1. JCenter 
+   
+   ```groovy
+   implementation 'com.crowdin.platform:mobile-sdk:1.0.0'
+   ```
+
 2. Download or clone this module.
 
 ## Setup
 
-1. Open Android Studio and go to **File > New > Import Module**. Point the exact path to crowdin module.
-
-2. Connect *crowdin* module in *setting.gradle* file. For this, use the following parameter: 
-
-   ```groovy
-   include ':crowdin'
-   ```
-
-3. Add dependency on module in *build.gradle* file:
-
-   ```groovy
-   implementation project(":crowdin")
-   ```
-
-4. Inject Crowdin translations by adding *override* method in *BaseActivity class* to inject Crowdin translations into the Context.
+1. Inject Crowdin translations by adding *override* method in *BaseActivity class* to inject Crowdin translations into the Context.
 
    Note: If you don’t have BaseActivity class add the code to all of your activities.
 
@@ -103,7 +94,7 @@ For more about Crowdin Android SDK see the [documentation](https://support.crowd
    It might require additional changes in your code. 
 
 
-5. Enable *Over-The-Air Content Delivery* in your Crowdin project so that application can pull translations from CDN vault. Add the following code to *Application class*:
+2. Enable *Over-The-Air Content Delivery* in your Crowdin project so that application can pull translations from CDN vault. Add the following code to *Application class*:
 
    <details>
    <summary>Kotlin</summary>
