@@ -1,11 +1,11 @@
 trigger:
   branches:
     include:
-      - refs/heads/*
+    - refs/heads/*
+  paths:
     exclude:
-      - refs/tags/*
-      - README.md
-      - LICENSE
+    - README.md
+    - LICENSE
 
 jobs:
   - job: Build
@@ -26,6 +26,7 @@ jobs:
       - script: |
           ./gradlew ktlint
         displayName: 'Validate code style'
+
   - job: Test
     dependsOn:
       - Build
@@ -52,10 +53,11 @@ jobs:
       - bash: |
           bash <(curl -s https://codecov.io/bash) -t $(CODECOV_TOKEN)
         displayName: 'Upload coverage to codecov.io'
+
   - job: Publish
     dependsOn:
       - Test
-    condition: succeeded()
+    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
     pool:
       vmImage: ubuntu-latest
     steps:
