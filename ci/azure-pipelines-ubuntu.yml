@@ -1,11 +1,13 @@
 trigger:
   branches:
     include:
-      - refs/heads/*
+    - refs/heads/*
     exclude:
-      - refs/tags/*
-      - README.md
-      - LICENSE
+    - refs/tags/*
+  paths:
+    exclude:
+    - README.md
+    - LICENSE
 
 jobs:
   - template: templates/jobs.yml
