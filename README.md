@@ -10,8 +10,6 @@ The SDK provides:
 * Real-time Preview – all the translations that are done via Editor can be shown in the application in real-time
 * Screenshots – all screenshots made in the application may be automatically sent to your Crowdin project with tagged source strings
 
-For more about Crowdin Android SDK see the [documentation](https://support.crowdin.com/enterprise/sdk-android/).
-
 ## Status
 
 [![Download](https://api.bintray.com/packages/crowdin/mobile-sdk/mobile-sdk-android/images/download.svg?version=1.0.0)](https://bintray.com/crowdin/mobile-sdk/mobile-sdk-android/1.0.0/link)
