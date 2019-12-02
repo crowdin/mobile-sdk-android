@@ -31,6 +31,8 @@ The SDK provides:
 * [Advanced Features](#advanced-features)
   * [Real-time Preview](#real-time-preview)
   * [Screenshots](#screenshots)
+* [Parameters](#parameters)
+* [File Export Patterns](#file-export-patterns)
 * [Notes](#notes)
 * [Limitations](#limitations)
 * [Contribution](#contribution)
@@ -52,6 +54,19 @@ The SDK provides:
 2. Download or clone this module.
 
 ## Setup
+
+To configure Android SDK integration you need to:
+
+- Set up Distribution in Crowdin.
+- Set up SDK and enable Over-The-Air Content Delivery feature using Android Studio.
+
+**Distribution** is a CDN vault that mirrors the translated content of your project and is required for integration with Android app.
+
+To manage distributions open the needed project and go to *Over-The-Air Content Delivery*. You can create as many distributions as you need and choose different files for each. You’ll need to click the *Release* button next to the necessary distribution every time you want to send new translations to the app.
+
+**Note!** Currently, Custom Languages, Dialects, and Language Mapping are not supported for Android SDK.
+
+To integrate SDK with your application you need to follow step by step instructions:
 
 1. Inject Crowdin translations by adding *override* method in *BaseActivity class* to inject Crowdin translations into the Context.
 
@@ -148,7 +163,6 @@ The SDK provides:
    `client_id`, `client_secret` - crowdin OAuth.
 
    `organization_name` - add this parameter only if you have own domain.
-
 
 ## Advanced Features
 
@@ -331,6 +345,58 @@ Enable if you want all the screenshots made in the application to be automatical
    };
    ```
    </details>
+
+## Parameters
+
+<table class="table table-bordered" style="font-size: 15px;">
+   <tr><td colspan="2"><b>Required for all features </b></td></tr>
+   <tr><td style="vertical-align:middle"> your_distribution_hash</td><td>Unique hash which you can get by going to <b>Over-The-Air Content Delivery</b> in your project settings. To see the distribution hash open the needed distribution, choose <b>Edit</b> and copy distribution hash</td></tr>
+   <tr><td colspan="2"><b>Required for advanced features</b></td></tr>
+   <tr><td style="vertical-align:middle">source_language</td><td>Source language in your Crowdin project (e.g. "en")</td></tr>
+   <tr><td style="vertical-align:middle">client_id; <br>client_secret</td><td>Crowdin authorization credentials. Open the project and go to <b>Over-The-Air Content Delivery</b>, choose the feature you need and click <b>Get Credentials</b></td></tr>
+   <tr><td colspan="2"><b>Optional</b></td></tr>
+   <tr><td style="vertical-align:middle">network_type</td><td>Network type to be used. You may select NetworkType.ALL, NetworkType.CELLULAR, or NetworkType.WIFI</td></tr>
+   <tr><td style="vertical-align:middle">interval_in_milisec</td><td>Update intervals in milliseconds</td></tr>
+  </table>
+
+## File Export Patterns
+
+You can set file export patterns and check existing ones using *File Settings*. The following placeholders are supported for Android integration:
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="vertical-align:middle">%language%</td>
+      <td>Language name (e.g. Ukrainian)</td>
+    </tr>
+    <tr>
+      <td style="vertical-align:middle">%two_letters_code%</td>
+      <td>Language code ISO 639-1 (e.g. uk)</td>
+    </tr>
+    <tr>
+      <td style="vertical-align:middle">%three_letters_code%</td>
+      <td>Language code ISO 639-2/T (e.g. ukr)</td>
+    </tr>
+    <tr>
+      <td style="vertical-align:middle">%locale%</td>
+      <td>Locale (e.g. uk-UA)</td>
+    </tr>
+    <tr>
+      <td style="vertical-align:middle">%locale_with_underscore%</td>
+      <td>Locale (e.g. uk_UA)</td>
+    </tr>
+      <tr>
+      <td style="vertical-align:middle">%android_code%</td>
+      <td>Android Locale identifier used to name "values-" directories</td>
+    </tr>
+   </tbody>
+</table>
 
 ## Notes
 1. You can provide new Strings
