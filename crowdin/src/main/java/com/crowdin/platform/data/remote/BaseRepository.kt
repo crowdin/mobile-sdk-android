@@ -25,12 +25,11 @@ internal abstract class BaseRepository : RemoteRepository {
 
     protected var eTagMap = mutableMapOf<String, String>()
 
-    protected fun validateFilePath(filePath: String): String {
+    protected fun validateFilePath(filePath: String, locale: Locale): String {
         var path = filePath
-        val locale = Locale.getDefault()
         val language = locale.language
         val languageThreeLetterCode = locale.isO3Language
-        val languageName = Locale.getDefault().getDisplayLanguage(Locale.ENGLISH)
+        val languageName = locale.getDisplayLanguage(Locale.ENGLISH)
         val country = locale.country
 
         var containsExportPattern = false

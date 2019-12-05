@@ -18,9 +18,9 @@ class App : Application() {
 //        val clientSecret = "Dw5TxCKvKQQRcPyAWEkTCZlxRGmcja6AFZNSld6U"
 
         // default
-        val distributionHash = "d5d8249cef350c21219d048106i"
-        val clientId = "test-sdk"
-        val clientSecret = "79MG6E8DZfEeomalfnoKx7dA0CVuwtPC3jQTB3ts"
+        val distributionHash = "27444fd9204fd35a4ade7e876j9"
+        val clientId = "nyjTPt1mCx6PLmgCUWvZ"
+        val clientSecret = "OumG8dVQudHsimUYVniLvacNtVAcp1yOIeXjVwJp"
 
         Crowdin.init(
             applicationContext,

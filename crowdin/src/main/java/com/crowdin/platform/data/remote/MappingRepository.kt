@@ -8,6 +8,7 @@ import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.google.gson.Gson
 import java.net.HttpURLConnection
+import java.util.Locale
 import okhttp3.ResponseBody
 import org.xmlpull.v1.XmlPullParserFactory
 import retrofit2.Call
@@ -41,10 +42,7 @@ internal class MappingRepository(
                                 val manifest =
                                     Gson().fromJson(body.string(), ManifestData::class.java)
                                 manifest.files.forEach {
-                                    val filePath = validateFilePath(it)
-                                        .split("/")
-                                        .takeLast(1)
-                                        .run { "/$sourceLanguage$it" }.toString()
+                                    val filePath = validateFilePath(it, Locale(sourceLanguage))
                                     val eTag = eTagMap[filePath]
                                     requestData(
                                         eTag,
@@ -107,7 +105,10 @@ internal class MappingRepository(
 
                 override fun onFailure(call: Call<ResponseBody>, throwable: Throwable) {
                     languageDataCallback?.onFailure(throwable)
-                    Log.d(MappingRepository::class.java.simpleName, "Error: ${throwable.localizedMessage}")
+                    Log.d(
+                        MappingRepository::class.java.simpleName,
+                        "Error: ${throwable.localizedMessage}"
+                    )
                 }
             })
     }
