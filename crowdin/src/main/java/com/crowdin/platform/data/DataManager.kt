@@ -3,6 +3,7 @@ package com.crowdin.platform.data
 import android.content.Context
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.LocalDataChangeObserver
+import com.crowdin.platform.Preferences
 import com.crowdin.platform.data.local.LocalRepository
 import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.AuthInfo
@@ -20,6 +21,7 @@ import java.util.Locale
 internal class DataManager(
     private val remoteRepository: RemoteRepository,
     private val localRepository: LocalRepository,
+    private val crowdinPreferences: Preferences,
     private val dataChangeObserver: LocalDataChangeObserver
 ) : TextMetaDataProvider {
 
@@ -28,29 +30,24 @@ internal class DataManager(
         const val SUF_COPY = "-copy"
         const val DISTRIBUTION_DATA = "distribution_data"
         const val AUTH_INFO = "auth_info"
+        const val DISTRIBUTION_HASH = "distribution_hash"
     }
 
     private var loadingStateListeners: ArrayList<LoadingStateListener>? = null
 
-    override fun provideTextMetaData(text: String): TextMetaData {
-        return localRepository.getTextData(text)
-    }
+    override fun provideTextMetaData(text: String): TextMetaData = localRepository.getTextData(text)
 
-    fun getString(language: String, stringKey: String): String? {
-        return localRepository.getString(language, stringKey)
-    }
+    fun getString(language: String, stringKey: String): String? =
+        localRepository.getString(language, stringKey)
 
     fun setString(language: String, key: String, value: String) {
         localRepository.setString(language, key, value)
     }
 
-    fun getStringArray(key: String): Array<String>? {
-        return localRepository.getStringArray(key)
-    }
+    fun getStringArray(key: String): Array<String>? = localRepository.getStringArray(key)
 
-    fun getStringPlural(resourceKey: String, quantityKey: String): String? {
-        return localRepository.getStringPlural(resourceKey, quantityKey)
-    }
+    fun getStringPlural(resourceKey: String, quantityKey: String): String? =
+        localRepository.getStringPlural(resourceKey, quantityKey)
 
     fun updateData(context: Context, networkType: NetworkType) {
         val status = validateData(context, networkType)
@@ -117,9 +114,8 @@ internal class DataManager(
         loadingStateListeners?.add(listener)
     }
 
-    fun removeLoadingStateListener(listener: LoadingStateListener): Boolean {
-        return loadingStateListeners?.remove(listener) ?: false
-    }
+    fun removeLoadingStateListener(listener: LoadingStateListener): Boolean =
+        loadingStateListeners?.remove(listener) ?: false
 
     private fun sendOnFailure(throwable: Throwable) {
         loadingStateListeners?.let { listeners ->
@@ -148,27 +144,23 @@ internal class DataManager(
         localRepository.saveData(type, data)
     }
 
-    fun getData(type: String, classType: Type): Any? {
-        return localRepository.getData(type, classType)
+    fun getData(type: String, classType: Type): Any? = localRepository.getData(type, classType)
+
+    fun isAuthorized(): Boolean =
+        (getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?) != null
+
+    fun isTokenExpired(): Boolean =
+        (getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?)?.isExpired() ?: true
+
+    fun getAccessToken(): String? =
+        (getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?)?.accessToken
+
+    fun getRefreshToken(): String? =
+        (getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?)?.refreshToken
+
+    fun saveDistributionHash(distributionHash: String) {
+        crowdinPreferences.setString(DISTRIBUTION_HASH, distributionHash)
     }
 
-    fun isAuthorized(): Boolean {
-        val authInfo = getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?
-        return authInfo != null
-    }
-
-    fun isTokenExpired(): Boolean {
-        val authInfo = getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?
-        return authInfo?.isExpired() ?: true
-    }
-
-    fun getAccessToken(): String? {
-        val authInfo = getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?
-        return authInfo?.accessToken
-    }
-
-    fun getRefreshToken(): String? {
-        val authInfo = getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?
-        return authInfo?.refreshToken
-    }
+    fun getDistributionHash(): String? = crowdinPreferences.getString(DISTRIBUTION_HASH)
 }
