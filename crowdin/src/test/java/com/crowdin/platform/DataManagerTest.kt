@@ -24,12 +24,14 @@ class DataManagerTest {
 
     private lateinit var mockLocalRepository: LocalRepository
     private lateinit var mockRemoteRepository: RemoteRepository
+    private lateinit var mockPreferences: Preferences
     private lateinit var mockLocalDataChangeObserver: LocalDataChangeObserver
 
     @Before
     fun setUp() {
         mockLocalRepository = mock(LocalRepository::class.java)
         mockRemoteRepository = mock(RemoteRepository::class.java)
+        mockPreferences = mock(Preferences::class.java)
         mockLocalDataChangeObserver = mock(LocalDataChangeObserver::class.java)
     }
 
@@ -358,6 +360,36 @@ class DataManagerTest {
         assertThat(result, `is`(false))
     }
 
+    @Test
+    fun saveDistributionHash() {
+        // Given
+        val dataManager = givenDataManager()
+        val hash = "test hash"
+
+        // When
+        dataManager.saveDistributionHash(hash)
+
+        // Then
+        verify(mockPreferences).setString("distribution_hash", hash)
+    }
+
+    @Test
+    fun getDistributionHash() {
+        // Given
+        val dataManager = givenDataManager()
+
+        // When
+        dataManager.getDistributionHash()
+
+        // Then
+        verify(mockPreferences).getString("distribution_hash")
+    }
+
     private fun givenDataManager(): DataManager =
-        DataManager(mockRemoteRepository, mockLocalRepository, mockLocalDataChangeObserver)
+        DataManager(
+            mockRemoteRepository,
+            mockLocalRepository,
+            mockPreferences,
+            mockLocalDataChangeObserver
+        )
 }

@@ -41,6 +41,7 @@ object Crowdin {
 
     private lateinit var viewTransformerManager: ViewTransformerManager
     private lateinit var config: CrowdinConfig
+    private lateinit var crowdinPreferences: Preferences
     private var dataManager: DataManager? = null
     private var realTimeUpdateManager: RealTimeUpdateManager? = null
     private var distributionInfoManager: DistributionInfoManager? = null
@@ -57,6 +58,7 @@ object Crowdin {
     fun init(context: Context, config: CrowdinConfig) {
         this.config = config
         FeatureFlags.registerConfig(config)
+        initPreferences(context)
         initStringDataManager(context, config)
         initViewTransformer()
         initFeatureManagers()
@@ -224,7 +226,10 @@ object Crowdin {
     @JvmStatic
     fun authorize(activity: Activity) {
         dataManager?.let {
-            if (it.isAuthorized()) {
+            val oldHash = it.getDistributionHash()
+            val newHash = config.distributionHash
+
+            if (it.isAuthorized() && (oldHash == null || oldHash == newHash)) {
                 if (FeatureFlags.isRealTimeUpdateEnabled) {
                     createConnection()
                 }
@@ -235,6 +240,8 @@ object Crowdin {
                 }
                 AuthActivity.launchActivity(activity, type)
             }
+
+            it.saveDistributionHash(newHash)
         }
     }
 
@@ -312,6 +319,10 @@ object Crowdin {
         }
     }
 
+    private fun initPreferences(context: Context) {
+        crowdinPreferences = CrowdinPreferences(context)
+    }
+
     private fun initStringDataManager(context: Context, config: CrowdinConfig) {
         val remoteRepository = StringDataRemoteRepository(
             CrowdinRetrofitService.getCrowdinDistributionApi(),
@@ -321,11 +332,15 @@ object Crowdin {
         val localRepository = LocalStringRepositoryFactory.createLocalRepository(context, config)
 
         dataManager =
-            DataManager(remoteRepository, localRepository, object : LocalDataChangeObserver {
-                override fun onDataChanged() {
-                    viewTransformerManager.invalidate()
-                }
-            })
+            DataManager(
+                remoteRepository,
+                localRepository,
+                crowdinPreferences,
+                object : LocalDataChangeObserver {
+                    override fun onDataChanged() {
+                        viewTransformerManager.invalidate()
+                    }
+                })
     }
 
     private fun initViewTransformer() {
