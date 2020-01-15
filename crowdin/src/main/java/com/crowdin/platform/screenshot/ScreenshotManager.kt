@@ -14,6 +14,7 @@ import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.data.remote.api.TagData
 import com.crowdin.platform.data.remote.api.UploadScreenshotResponse
+import com.crowdin.platform.util.parseToDateTimeFormat
 import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -37,7 +38,11 @@ internal class ScreenshotManager(
     private var screenshotCallback: ScreenshotCallback? = null
     private var contentObserver: ContentObserver? = null
 
-    fun sendScreenshot(bitmap: Bitmap, viewDataList: MutableList<ViewData>) {
+    fun sendScreenshot(
+        bitmap: Bitmap,
+        viewDataList: MutableList<ViewData>,
+        activityName: String? = null
+    ) {
         val mappingData = dataManager.getMapping(sourceLanguage) ?: return
         val distributionData = dataManager.getData(
             DataManager.DISTRIBUTION_DATA,
@@ -52,7 +57,7 @@ internal class ScreenshotManager(
         distributionData as DistributionInfoResponse.DistributionData
         val projectId = distributionData.project.id
         val tags = getMappingIds(mappingData, viewDataList)
-        uploadScreenshot(bitmap, tags, projectId)
+        uploadScreenshot(bitmap, tags, projectId, activityName)
     }
 
     fun registerScreenShotContentObserver(context: Context) {
@@ -74,7 +79,12 @@ internal class ScreenshotManager(
         this.screenshotCallback = screenshotCallback
     }
 
-    private fun uploadScreenshot(bitmap: Bitmap, tags: MutableList<TagData>, projectId: String) {
+    private fun uploadScreenshot(
+        bitmap: Bitmap,
+        tags: MutableList<TagData>,
+        projectId: String,
+        activityName: String?
+    ) {
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, IMG_QUALITY, stream)
         val byteArray = stream.toByteArray()
@@ -82,7 +92,9 @@ internal class ScreenshotManager(
             byteArray.toRequestBody(MEDIA_TYPE_IMG.toMediaTypeOrNull(), 0, byteArray.size)
         bitmap.recycle()
 
-        crowdinApi.uploadScreenshot(requestBody)
+        val prefix = activityName?.let { it + "_" } ?: ""
+        val fileName = "$prefix${System.currentTimeMillis().parseToDateTimeFormat()}.png"
+        crowdinApi.uploadScreenshot(fileName, requestBody)
             .enqueue(object : Callback<UploadScreenshotResponse> {
 
                 override fun onResponse(
@@ -91,13 +103,11 @@ internal class ScreenshotManager(
                 ) {
                     val responseBody = response.body()
                     if (response.code() == HttpURLConnection.HTTP_CREATED) {
-                        responseBody?.let {
-                            it.data?.id?.let { screenshotId ->
-                                createScreenshot(
-                                    screenshotId,
-                                    tags,
-                                    projectId
-                                )
+                        responseBody?.let { body ->
+                            body.data?.let { data ->
+                                data.id?.let {
+                                    createScreenshot(it, tags, projectId, data.fileName)
+                                }
                             }
                         }
                     }
@@ -109,9 +119,13 @@ internal class ScreenshotManager(
             })
     }
 
-    private fun createScreenshot(screenshotId: Int, tags: MutableList<TagData>, projectId: String) {
-        val requestBody =
-            CreateScreenshotRequestBody(screenshotId, System.currentTimeMillis().toString())
+    private fun createScreenshot(
+        screenshotId: Int,
+        tags: MutableList<TagData>,
+        projectId: String,
+        fileName: String
+    ) {
+        val requestBody = CreateScreenshotRequestBody(screenshotId, fileName)
         crowdinApi.createScreenshot(projectId, requestBody)
             .enqueue(object : Callback<CreateScreenshotResponse> {
 
@@ -123,11 +137,7 @@ internal class ScreenshotManager(
                     if (response.code() == HttpURLConnection.HTTP_CREATED) {
                         responseBody?.let {
                             it.data.id?.let { screenshotId ->
-                                createTag(
-                                    screenshotId,
-                                    tags,
-                                    projectId
-                                )
+                                createTag(screenshotId, tags, projectId)
                             }
                         }
                     }

@@ -84,7 +84,7 @@ class ScreenshotManagerTest {
 
         // Then
         val inOrder = inOrder(mockCrowdinApi)
-        inOrder.verify(mockCrowdinApi).uploadScreenshot(any())
+        inOrder.verify(mockCrowdinApi).uploadScreenshot(any(), any())
         inOrder.verify(mockCrowdinApi).createScreenshot(any(), any())
         inOrder.verify(mockCrowdinApi).createTag("projectIdTest", 10, mutableListOf())
     }
@@ -138,7 +138,7 @@ class ScreenshotManagerTest {
 
     private fun givenUploadScreenshotMockResponse(success: Boolean = true, successCode: Int = 201) {
         val mockedCall = mock(Call::class.java) as Call<UploadScreenshotResponse>
-        `when`(mockCrowdinApi.uploadScreenshot(any())).thenReturn(mockedCall)
+        `when`(mockCrowdinApi.uploadScreenshot(any(), any())).thenReturn(mockedCall)
         doAnswer {
             val callback =
                 it.getArgument(0, Callback::class.java) as Callback<UploadScreenshotResponse>
@@ -147,7 +147,7 @@ class ScreenshotManagerTest {
                     mockedCall,
                     Response.success<UploadScreenshotResponse>(
                         successCode,
-                        UploadScreenshotResponse(Data(10))
+                        UploadScreenshotResponse(Data(10, "test"))
                     )
                 )
             } else {
@@ -167,7 +167,7 @@ class ScreenshotManagerTest {
                     mockedCall,
                     Response.success<CreateScreenshotResponse>(
                         successCode,
-                        CreateScreenshotResponse(Data(10))
+                        CreateScreenshotResponse(Data(10, "test"))
                     )
                 )
             } else {

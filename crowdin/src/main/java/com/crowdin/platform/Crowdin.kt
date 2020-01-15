@@ -148,7 +148,11 @@ object Crowdin {
             val view = activity.window.decorView.rootView
             ScreenshotUtils.getBitmapFromView(view, activity) {
                 screenshotManager?.setScreenshotCallback(screenshotCallback)
-                screenshotManager?.sendScreenshot(it, viewTransformerManager.getViewData())
+                screenshotManager?.sendScreenshot(
+                    it,
+                    viewTransformerManager.getViewData(),
+                    activity.localClassName
+                )
             }
         }
     }
@@ -166,7 +170,10 @@ object Crowdin {
         screenshotManager?.let {
             val bitmap = BitmapFactory.decodeFile(filePath)
             screenshotManager?.setScreenshotCallback(screenshotCallback)
-            screenshotManager?.sendScreenshot(bitmap, viewTransformerManager.getViewData())
+            screenshotManager?.sendScreenshot(
+                bitmap,
+                viewTransformerManager.getViewData()
+            )
         }
     }
 
