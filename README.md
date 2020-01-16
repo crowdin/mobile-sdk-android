@@ -7,7 +7,7 @@ Crowdin Android SDK delivers all new translations from Crowdin project to the ap
 The SDK provides:
 
 * Over-The-Air Content Delivery – the localized files can be sent to the application from the project whenever needed
-* Real-time Preview – all the translations that are done via Editor can be shown in the application in real-time
+* Real-time Preview – all the translations that are done via Crowdin Editor can be shown in the application in real-time
 * Screenshots – all screenshots made in the application may be automatically sent to your Crowdin project with tagged source strings
 
 ## Status
@@ -65,13 +65,13 @@ To configure Android SDK integration you need to:
 
 To manage distributions open the needed project and go to *Over-The-Air Content Delivery*. You can create as many distributions as you need and choose different files for each. You’ll need to click the *Release* button next to the necessary distribution every time you want to send new translations to the app.
 
-**Note!** Currently, Custom Languages, Dialects, and Language Mapping are not supported for Android SDK.
+**Note:** currently, Custom Languages, Dialects, and Language Mapping are not supported for Android SDK.
 
 To integrate SDK with your application you need to follow step by step instructions:
 
-1. Inject Crowdin translations by adding *override* method in *BaseActivity class* to inject Crowdin translations into the Context.
+1. Inject Crowdin translations by adding *override* method in *BaseActivity* class to inject Crowdin translations into the Context.
 
-   Note: If you don’t have BaseActivity class add the code to all of your activities.
+   **Note:** If you don’t have *BaseActivity* class add the code to all of your activities.
 
    <details>
    <summary>Kotlin</summary>
@@ -107,8 +107,7 @@ To integrate SDK with your application you need to follow step by step instructi
    ```
    It might require additional changes in your code. 
 
-
-2. Enable *Over-The-Air Content Delivery* in your Crowdin project so that application can pull translations from CDN vault. Add the following code to *Application class*:
+2. Enable *Over-The-Air Content Delivery* in your Crowdin project so that application can pull translations from CDN vault. Add the following code to *App*/*Application* class:
 
    <details>
    <summary>Kotlin</summary>
@@ -155,15 +154,15 @@ To integrate SDK with your application you need to follow step by step instructi
 
    `your_distribution_hash` - when distribution added you will get your unique hash.
 
-   `network_type` - optional. NetworkType.ALL, NetworkType.CELLULAR, NetworkType.WIFI;
+   `network_type` - optional. Acceptable values are `NetworkType.ALL`, `NetworkType.CELLULAR`, `NetworkType.WIFI`;
 
-   `source_language` - source language in your Crowdin project. Example - "en". Required for real time/screenshot functionalities.
+   `source_language` - source language in your Crowdin project. Example - `"en"`. Required for Screenshots and Real-Time Preview features.
 
-   `interval_in_milisec` - interval updates in millisec.
+   `interval_in_milisec` - translations update interval in milliseconds.
 
-   `client_id`, `client_secret` - crowdin OAuth.
+   `client_id`, `client_secret` - Crowdin OAuth Client ID and Client Secret.
 
-   `organization_name` - add this parameter only if you have own domain.
+   `organization_name` - Organization domain name (for Crowdin Enterprise users only).
 
 ## Advanced Features
 
@@ -171,7 +170,7 @@ To integrate SDK with your application you need to follow step by step instructi
 
 This feature allows translators to see translations in the application in real-time. It can also be used by managers and QA team to preview translations before release.
 
-1. Add the following code to the *Application class*:
+1. Add the following code to the *Application* class:
 
    <details>
    <summary>Kotlin</summary>
@@ -179,7 +178,7 @@ This feature allows translators to see translations in the application in real-t
    ```kotlin
    Crowdin.init(applicationContext,
        CrowdinConfig.Builder()
-        ... 
+        ...
         .withRealTimeUpdates()
         .withSourceLanguage(source_language)
         .withAuthConfig(AuthConfig(client_id, client_secret, organization_name))
@@ -201,16 +200,14 @@ This feature allows translators to see translations in the application in real-t
    ```
    </details>
 
-2. Crowdin Authorization is required for Real-Time Preview. Create connection using *Activity/Fragment* method *inMainActivity class*:  
+2. Crowdin Authorization is required for Real-Time Preview feature. Create connection using *Activity/Fragment* method *inMainActivity* class:
 
    <details>
    <summary>Kotlin</summary>
 
    ```kotlin
    override fun onCreate(savedInstanceState: Bundle?) {
-       ...
-       // Crowdin Auth. required for screenshot/realtime preview functionality.
-       Crowdin.authorize(activity)
+       Crowdin.authorize(this)
    }
    ```
    </details>
@@ -227,14 +224,13 @@ This feature allows translators to see translations in the application in real-t
    ```
    </details>
 
-It will redirect to Crowdin OAuth form and after authorization download all required data automatically.
-After loading finished `real-time updates` feature ready for use.
+**Note:** tt will redirect to Crowdin OAuth form and after authorization download all required data automatically.
 
 You can disconnect via:
 ```kotlin
 override fun onDestroy() {
     super.onDestroy()
-    // Close connection with crowdin.
+    // Close connection with Crowdin.
     Crowdin.disconnectRealTimeUpdates()
 }
 ```
@@ -242,8 +238,9 @@ override fun onDestroy() {
 ### Screenshots
 
 Enable if you want all the screenshots made in the application to be automatically sent to your Crowdin project with tagged strings. This will provide additional context for translators.
+You can use system buttons to a take screenshot and automatically upload them to Crowdin or you can create your own handler (for example, clicking on some button in your application).
 
-1. Add the following code to the *Application class*:
+1. Add the following code to the *Application* class:
 
    <details>
    <summary>Kotlin</summary>
@@ -257,11 +254,10 @@ Enable if you want all the screenshots made in the application to be automatical
            .withAuthConfig(AuthConfig(client_id, client_secret, organization_name))
            ...)
 
-   // Using system buttons to take screenshot automatically will upload them to crowdin.
+   // Using system buttons to take screenshot automatically will upload them to Crowdin.
    Crowdin.registerScreenShotContentObserver(this)
    ```
    </details>
-
 
    <details>
    <summary>Java</summary>
@@ -275,19 +271,20 @@ Enable if you want all the screenshots made in the application to be automatical
            .withAuthConfig(AuthConfig(client_id, client_secret, organization_name))
            .build());
 
-   Crowdin.registerScreenShotContentObserver(this); // required for screenshots
+    // Using system buttons to take screenshot automatically will upload them to Crowdin.
+   Crowdin.registerScreenShotContentObserver(this);
    ```
    </details>
 
-2. Crowdin Authorization is required for screenshots. Create connection using *Activity/Fragment* method *inMainActivity class*:
+    **Note:** using `Crowdin.registerScreenShotContentObserver(this)` (system buttons handler) for sending screenshots to Crowdin requires Storage permission for your app.
+
+2. Crowdin Authorization is required for screenshots. Create connection using *Activity/Fragment* method in *MainActivity* class:
 
    <details>
    <summary>Kotlin</summary>
 
    ```kotlin
    override fun onCreate(savedInstanceState: Bundle?) {
-       ...
-       // Crowdin Auth. required for screenshot/realtime update functionality.
        Crowdin.authorize(activity)
    }
    ```
@@ -356,13 +353,13 @@ Enable if you want all the screenshots made in the application to be automatical
    <tr><td style="vertical-align:middle">source_language</td><td>Source language in your Crowdin project (e.g. "en")</td></tr>
    <tr><td style="vertical-align:middle">client_id; <br>client_secret</td><td>Crowdin authorization credentials. Open the project and go to <b>Over-The-Air Content Delivery</b>, choose the feature you need and click <b>Get Credentials</b></td></tr>
    <tr><td colspan="2"><b>Optional</b></td></tr>
-   <tr><td style="vertical-align:middle">network_type</td><td>Network type to be used. You may select NetworkType.ALL, NetworkType.CELLULAR, or NetworkType.WIFI</td></tr>
-   <tr><td style="vertical-align:middle">interval_in_milisec</td><td>Update intervals in milliseconds</td></tr>
+   <tr><td style="vertical-align:middle">network_type</td><td>Network type to be used. You may select <code>NetworkType.ALL</code>, <code>NetworkType.CELLULAR</code>, or <code>NetworkType.WIFI</code></td></tr>
+   <tr><td style="vertical-align:middle">interval_in_milisec</td><td>Translations update intervals in milliseconds. Allowed values - from 15 minutes. If not set - translations in an application will be updated once per application load.</td></tr>
   </table>
 
 ## File Export Patterns
 
-You can set file export patterns and check existing ones using *File Settings*. The following placeholders are supported for Android integration:
+You can set file export patterns and check existing ones using *File Settings*. The following placeholders are supported:
 
 <table class="table table-bordered">
   <thead>
@@ -433,21 +430,21 @@ You can set file export patterns and check existing ones using *File Settings*. 
    }
    ```
 
-5. In case you have custom views that uses `TypedArray` and `stylable` attributes, you will need to use such approach: 
+5. In case you have custom views that uses `TypedArray` and `stylable` attributes, you will need to use such approach:
    ```kotlin
    val textId = typedArray.getResourceId(R.styleable.sample_item, 0)
    textView.setText(textId)
    ```
    instead of `typedArray.getString(R.styleable.sample_item)`
 
-6. Activity title defined via AndroidManifest won't be translated.
+6. Activity title defined via *AndroidManifest* won't be translated.
    ```xml
    <activity
        android:name=".activities.SampleActivity"
        android:label="@string/title"/>
    ```
 
-   You can simply update your `toolbar` inside of activity or fragment: 
+   You can simply update your `toolbar` inside of activity or fragment:
    ```java
    toolbar.setTitle(R.string.title);
    ```
@@ -465,7 +462,7 @@ You can set file export patterns and check existing ones using *File Settings*. 
    }
    ```
 
-9. ShakeDetector for triggering force upload from crowdin. It will try to download latest updates from release.
+9. ShakeDetector for triggering force upload from Crowdin. It will try to download latest updates from release.
    ```kotlin
    override fun onCreate(savedInstanceState: Bundle?) {
        // Simple device shake detector. Could be used for triggering force update.
@@ -477,7 +474,7 @@ You can set file export patterns and check existing ones using *File Settings*. 
    Also there are other public methods in `Crowdin` class. You can find details in `kotlin doc` files. 
 
 ## Limitations
-1. Plurals are supported from SDK version 24.
+1. Plurals are supported from Android SDK version 24.
 2. TabItem text added via xml won't be updated. There is workaround: you can store tabItem titles in your string-array and add tabs dynamically.
 3. `PreferenceScreen` defined via XML not supported.
 
