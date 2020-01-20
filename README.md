@@ -12,7 +12,7 @@ The SDK provides:
 
 ## Status
 
-[![Download](https://api.bintray.com/packages/crowdin/mobile-sdk/mobile-sdk-android/images/download.svg?version=1.1.0)](https://bintray.com/crowdin/mobile-sdk/mobile-sdk-android/1.1.0/link)
+[![Download](https://api.bintray.com/packages/crowdin/mobile-sdk/mobile-sdk-android/images/download.svg?version=1.1.1)](https://bintray.com/crowdin/mobile-sdk/mobile-sdk-android/1.1.1/link)
 [![GitHub issues](https://img.shields.io/github/issues/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/issues)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/graphs/commit-activity)
 [![GitHub last commit](https://img.shields.io/github/last-commit/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/commits/master)
@@ -49,7 +49,7 @@ The SDK provides:
 1. JCenter 
    
    ```groovy
-   implementation 'com.crowdin.platform:mobile-sdk:1.1.0'
+   implementation 'com.crowdin.platform:mobile-sdk:1.1.1'
    ```
 
 2. Download or clone this module.
