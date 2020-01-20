@@ -21,7 +21,10 @@ internal data class TagData(
 
 internal data class UploadScreenshotResponse(var data: Data? = null)
 
-internal data class Data(var id: Int? = null)
+internal data class Data(
+    var id: Int? = null,
+    val fileName: String
+)
 
 internal data class DistributionInfoResponse(var data: DistributionData) {
 

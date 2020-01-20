@@ -11,30 +11,24 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         // Crowdin sdk initialization
-        val fifteenMinutes: Long = 60 * 15
-        // enterprise
-//        val distributionHash = "e-1782b33219e56d471a283b2ozt"
-//        val clientId = "XjNxVvoJh6XMf8NGnwuG"
-//        val clientSecret = "Dw5TxCKvKQQRcPyAWEkTCZlxRGmcja6AFZNSld6U"
-
-        // default
-        val distributionHash = "27444fd9204fd35a4ade7e876j9"
-        val clientId = "nyjTPt1mCx6PLmgCUWvZ"
-        val clientSecret = "OumG8dVQudHsimUYVniLvacNtVAcp1yOIeXjVwJp"
+        val distributionHash = "your_distribution_hash"
+        val networkType = NetworkType.WIFI                  //  ALL, CELLULAR, WIFI
+        val sourceLanguage = "source_language"
+        val intervalInMillisecond: Long = 18 * 60 * 1000    // 18 minutes
+        val clientId = "your_client_id"
+        val clientSecret = "your_client_secret"
+        val organizationName = "your_organization_name"     // for Crowdin Enterprise users only
 
         Crowdin.init(
             applicationContext,
             CrowdinConfig.Builder()
-                .withDistributionHash(distributionHash)          // required
-                .withNetworkType(NetworkType.ALL)                // optional
-                .withRealTimeUpdates()                           // optional
-                .withScreenshotEnabled()                         // optional
-                .withSourceLanguage("en")          // optional
-                .withUpdateInterval(fifteenMinutes)              // optional
-                // enterprise
-//                .withAuthConfig(AuthConfig(clientId, clientSecret, "serhiy"))
-                // default
-                .withAuthConfig(AuthConfig(clientId, clientSecret))
+                .withDistributionHash(distributionHash)                                 // required
+                .withNetworkType(networkType)                                           // optional
+                .withRealTimeUpdates()                                                  // optional
+                .withScreenshotEnabled()                                                // optional
+                .withSourceLanguage(sourceLanguage)                                     // optional
+                .withUpdateInterval(intervalInMillisecond)                              // optional
+                .withAuthConfig(AuthConfig(clientId, clientSecret, organizationName))   // optional
                 .build()
         )
 

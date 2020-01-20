@@ -5,16 +5,18 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Headers
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 internal interface CrowdinApi {
 
-    @Headers("Content-Type: image/png")
     @POST("api/v2/storages")
-    fun uploadScreenshot(@Body requestBody: RequestBody): Call<UploadScreenshotResponse>
+    fun uploadScreenshot(
+        @Header("Crowdin-API-FileName") fileName: String,
+        @Body requestBody: RequestBody
+    ): Call<UploadScreenshotResponse>
 
     @POST("api/v2/projects/{projectId}/screenshots")
     fun createScreenshot(
