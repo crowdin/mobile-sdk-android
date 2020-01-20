@@ -33,6 +33,7 @@ internal class ScreenshotManager(
     companion object {
         private const val MEDIA_TYPE_IMG = "image/png"
         private const val IMG_QUALITY = 100
+        private const val IMAGE_EXTENSION = ".png"
     }
 
     private var screenshotCallback: ScreenshotCallback? = null
@@ -93,7 +94,8 @@ internal class ScreenshotManager(
         bitmap.recycle()
 
         val prefix = activityName?.let { it + "_" } ?: ""
-        val fileName = "$prefix${System.currentTimeMillis().parseToDateTimeFormat()}.png"
+        val fileName =
+            "$prefix${System.currentTimeMillis().parseToDateTimeFormat()}$IMAGE_EXTENSION"
         crowdinApi.uploadScreenshot(fileName, requestBody)
             .enqueue(object : Callback<UploadScreenshotResponse> {
 
@@ -103,12 +105,8 @@ internal class ScreenshotManager(
                 ) {
                     val responseBody = response.body()
                     if (response.code() == HttpURLConnection.HTTP_CREATED) {
-                        responseBody?.let { body ->
-                            body.data?.let { data ->
-                                data.id?.let {
-                                    createScreenshot(it, tags, projectId, data.fileName)
-                                }
-                            }
+                        responseBody?.data?.let { data ->
+                            data.id?.let { createScreenshot(it, tags, projectId, data.fileName) }
                         }
                     }
                 }
@@ -135,10 +133,8 @@ internal class ScreenshotManager(
                 ) {
                     val responseBody = response.body()
                     if (response.code() == HttpURLConnection.HTTP_CREATED) {
-                        responseBody?.let {
-                            it.data.id?.let { screenshotId ->
-                                createTag(screenshotId, tags, projectId)
-                            }
+                        responseBody?.data?.id?.let { screenshotId ->
+                            createTag(screenshotId, tags, projectId)
                         }
                     }
                 }
