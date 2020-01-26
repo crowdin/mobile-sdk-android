@@ -62,7 +62,7 @@ internal class ScreenshotManager(
     }
 
     fun registerScreenShotContentObserver(context: Context) {
-        contentObserver = ScreenshotService(context, ScreenshotHandler())
+        contentObserver = ScreenshotService(context)
         contentObserver?.let {
             context.contentResolver.registerContentObserver(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,

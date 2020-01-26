@@ -1,27 +1,28 @@
 package com.crowdin.platform.screenshot
 
+import android.content.ContentUris
 import android.content.Context
 import android.database.ContentObserver
 import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Handler
-import android.os.Message
 import android.provider.MediaStore
 import android.text.TextUtils
-import com.crowdin.platform.screenshot.ScreenshotHandler.Companion.MSG_SCREENSHOT
+import android.util.Log
+import com.crowdin.platform.Crowdin
 
 /**
  * Creates a content observer.
- *
- * @param handler The handler to run [.onChange] on, or null if none.
  */
-internal class ScreenshotService(
-    private val context: Context,
-    private val handler: Handler
-) : ContentObserver(handler) {
+internal class ScreenshotService(private val context: Context) : ContentObserver(Handler()) {
 
     companion object {
         private const val TIME_GAP: Long = 0x4
     }
+
+    private var uploading = false
 
     override fun onChange(selfChange: Boolean) {
         val resolver = context.contentResolver
@@ -43,25 +44,44 @@ internal class ScreenshotService(
                 if (!cursor?.moveToLast()!!) {
                     return
                 }
-                val dataIdx = cursor.getColumnIndexOrThrow("_data")
-                val data = cursor.getString(dataIdx)
                 val mineTypeIdx = cursor.getColumnIndexOrThrow("mime_type")
                 val mineType = cursor.getString(mineTypeIdx)
 
                 if (TextUtils.isEmpty(mineType)) {
                     return
                 }
-                sendMessage(data)
+
+                val imageUri: Uri = ContentUris
+                    .withAppendedId(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        cursor.getInt(cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID)).toLong()
+                    )
+                val bitmap = BitmapFactory.decodeStream(resolver.openInputStream(imageUri))
+
+                if (!uploading) {
+                    uploading = true
+                    sendScreenshot(bitmap)
+                }
             }
         } catch (tr: Throwable) {
-            sendMessage(String.format("Error: %s", tr.message))
+            Log.d(ScreenshotService::class.java.simpleName, "Error: ${tr.message}")
         }
     }
 
-    private fun sendMessage(msg: String) {
-        val message = Message()
-        message.what = MSG_SCREENSHOT
-        message.obj = msg
-        handler.sendMessage(message)
+    private fun sendScreenshot(bitmap: Bitmap) {
+        Crowdin.sendScreenshot(bitmap, object : ScreenshotCallback {
+            override fun onSuccess() {
+                uploading = false
+                Log.d(ScreenshotService::class.java.simpleName, "Screenshot uploaded")
+            }
+
+            override fun onFailure(throwable: Throwable) {
+                uploading = false
+                Log.d(
+                    ScreenshotService::class.java.simpleName,
+                    "Screenshot uploading error: ${throwable.localizedMessage}"
+                )
+            }
+        })
     }
 }

@@ -1,12 +1,16 @@
 package com.crowdin.platform.auth
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.R
 import com.crowdin.platform.data.DistributionInfoCallback
@@ -26,6 +30,7 @@ internal class AuthActivity : AppCompatActivity() {
 
     companion object {
 
+        private const val PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1330
         private const val DOMAIN = "domain"
         private const val AUTH_ATTEMPT_THRESHOLD = 1
         private const val EVENT_TYPE = "type"
@@ -53,6 +58,16 @@ internal class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.auth_layout)
         statusTextView.text = getString(R.string.authorizing)
+
+        if (Crowdin.isAuthorized()) {
+            Crowdin.tryCreateRealTimeConnection()
+            requestPermission()
+        } else {
+            requestAuthorization()
+        }
+    }
+
+    private fun requestAuthorization() {
         event = intent.getStringExtra(EVENT_TYPE)
 
         val authConfig = Crowdin.getAuthConfig()
@@ -74,7 +89,18 @@ internal class AuthActivity : AppCompatActivity() {
             startActivity(browserIntent)
             authAttemptCounter++
         } else {
-            finish()
+            requestPermission()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE -> finish()
+            else -> finish()
         }
     }
 
@@ -96,13 +122,13 @@ internal class AuthActivity : AppCompatActivity() {
                 } else {
                     runOnUiThread {
                         Toast.makeText(this, "Not authenticated.", Toast.LENGTH_LONG).show()
-                        finish()
+                        requestPermission()
                     }
                 }
             }, false)
         } else {
             Toast.makeText(this, "Not authorized.", Toast.LENGTH_LONG).show()
-            finish()
+            requestPermission()
         }
     }
 
@@ -110,20 +136,33 @@ internal class AuthActivity : AppCompatActivity() {
         Crowdin.getDistributionInfo(object : DistributionInfoCallback {
             override fun onResponse() {
                 if (event == EVENT_REAL_TIME_UPDATES) {
-                    Crowdin.createConnection()
+                    Crowdin.tryCreateRealTimeConnection()
                 }
-
-                finish()
+                requestPermission()
             }
 
             override fun onError(throwable: Throwable) {
                 Crowdin.saveAuthInfo(null)
-                finish()
+                requestPermission()
                 Log.d(
                     AuthActivity::class.java.simpleName,
                     "Get info, onFailure:${throwable.localizedMessage}"
                 )
             }
         })
+    }
+
+    private fun requestPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
+            )
+        } else {
+            finish()
+        }
     }
 }
