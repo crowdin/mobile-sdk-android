@@ -3,7 +3,7 @@ package com.crowdin.platform
 import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.BitmapFactory
+import android.graphics.Bitmap
 import android.view.Menu
 import androidx.annotation.MenuRes
 import com.crowdin.platform.auth.AuthActivity
@@ -146,10 +146,10 @@ object Crowdin {
     fun sendScreenshot(activity: Activity, screenshotCallback: ScreenshotCallback? = null) {
         screenshotManager?.let {
             val view = activity.window.decorView.rootView
-            ScreenshotUtils.getBitmapFromView(view, activity) {
-                screenshotManager?.setScreenshotCallback(screenshotCallback)
-                screenshotManager?.sendScreenshot(
-                    it,
+            ScreenshotUtils.getBitmapFromView(view, activity) { bitmap ->
+                it.setScreenshotCallback(screenshotCallback)
+                it.sendScreenshot(
+                    bitmap,
                     viewTransformerManager.getViewData(),
                     activity.localClassName
                 )
@@ -161,14 +161,13 @@ object Crowdin {
      * Send screenshot of current screen to the crowdin platform.
      * Will attach tags (keys and position) related to UI components from the screen.
      *
-     * @param filePath path to created screenshot file.
+     * @param bitmap screenshot.
      * @param screenshotCallback optional, will provide status of screenshot creating process.
      */
     @JvmStatic
     @JvmOverloads
-    fun sendScreenshot(filePath: String, screenshotCallback: ScreenshotCallback? = null) {
+    fun sendScreenshot(bitmap: Bitmap, screenshotCallback: ScreenshotCallback? = null) {
         screenshotManager?.let {
-            val bitmap = BitmapFactory.decodeFile(filePath)
             screenshotManager?.setScreenshotCallback(screenshotCallback)
             screenshotManager?.sendScreenshot(
                 bitmap,
@@ -232,28 +231,29 @@ object Crowdin {
      */
     @JvmStatic
     fun authorize(activity: Activity) {
+        var type: String? = null
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
+            type = AuthActivity.EVENT_REAL_TIME_UPDATES
+        }
+        AuthActivity.launchActivity(activity, type)
+    }
+
+    internal fun isAuthorized(): Boolean {
         dataManager?.let {
             val oldHash = it.getDistributionHash()
             val newHash = config.distributionHash
-
-            if (it.isAuthorized() && (oldHash == null || oldHash == newHash)) {
-                if (FeatureFlags.isRealTimeUpdateEnabled) {
-                    createConnection()
-                }
-            } else {
-                var type: String? = null
-                if (FeatureFlags.isRealTimeUpdateEnabled) {
-                    type = AuthActivity.EVENT_REAL_TIME_UPDATES
-                }
-                AuthActivity.launchActivity(activity, type)
-            }
-
             it.saveDistributionHash(newHash)
+
+            return it.isAuthorized() && (oldHash == null || oldHash == newHash)
         }
+
+        return false
     }
 
-    internal fun createConnection() {
-        realTimeUpdateManager?.openConnection()
+    internal fun tryCreateRealTimeConnection() {
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
+            realTimeUpdateManager?.openConnection()
+        }
     }
 
     /**
