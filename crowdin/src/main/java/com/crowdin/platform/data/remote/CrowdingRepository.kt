@@ -1,8 +1,10 @@
 package com.crowdin.platform.data.remote
 
+import androidx.annotation.WorkerThread
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
+import com.crowdin.platform.util.ThreadUtils
 import com.google.gson.Gson
 import java.net.HttpURLConnection
 import okhttp3.ResponseBody
@@ -29,7 +31,9 @@ internal abstract class CrowdingRepository(
                             try {
                                 val manifest =
                                     Gson().fromJson(body.string(), ManifestData::class.java)
-                                onManifestDataReceived(manifest, languageDataCallback)
+                                ThreadUtils.runInBackgroundPool(Runnable {
+                                    onManifestDataReceived(manifest, languageDataCallback)
+                                }, true)
                             } catch (throwable: Throwable) {
                                 languageDataCallback?.onFailure(throwable)
                             }
@@ -43,6 +47,7 @@ internal abstract class CrowdingRepository(
             })
     }
 
+    @WorkerThread
     abstract fun onManifestDataReceived(
         manifest: ManifestData,
         languageDataCallback: LanguageDataCallback?

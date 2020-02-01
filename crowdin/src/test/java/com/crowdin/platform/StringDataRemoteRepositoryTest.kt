@@ -2,9 +2,11 @@ package com.crowdin.platform
 
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.StringDataRemoteRepository
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
+import com.google.gson.Gson
 import okhttp3.ResponseBody
 import org.junit.Before
 import org.junit.Test
@@ -33,11 +35,11 @@ class StringDataRemoteRepositoryTest {
     @Test
     fun whenFetchData_shouldRequestManifestApiCall() {
         // Given
-        val mappingRepository = givenStringDataRemoteRepository()
+        val repository = givenStringDataRemoteRepository()
         givenMockManifestResponse()
 
         // When
-        mappingRepository.fetchData()
+        repository.fetchData()
 
         // Then
         verify(mockDistributionApi).getResourceManifest(any())
@@ -46,12 +48,12 @@ class StringDataRemoteRepositoryTest {
     @Test
     fun whenFetchData_shouldTriggerApiCall() {
         // Given
-        val stringDataRemoteRepository = givenStringDataRemoteRepository()
-        givenMockManifestResponse()
+        val repository = givenStringDataRemoteRepository()
+        val manifestData = givenManifestData()
         givenMockResponse()
 
         // When
-        stringDataRemoteRepository.fetchData()
+        repository.onManifestDataReceived(manifestData, mockCallback)
 
         // Then
         verify(mockDistributionApi).getResourceFile(any(), any(), any())
@@ -60,12 +62,12 @@ class StringDataRemoteRepositoryTest {
     @Test
     fun whenFetchDataSuccess_shouldParseResponseAndCloseReader() {
         // Given
-        val stringDataRemoteRepository = givenStringDataRemoteRepository()
-        givenMockManifestResponse()
+        val repository = givenStringDataRemoteRepository()
+        val manifestData = givenManifestData()
         givenMockResponse()
 
         // When
-        stringDataRemoteRepository.fetchData()
+        repository.onManifestDataReceived(manifestData, mockCallback)
 
         // Then
         verify(mockReader).parseInput(any(), any())
@@ -73,28 +75,14 @@ class StringDataRemoteRepositoryTest {
     }
 
     @Test
-    fun whenFetchWithCallbackAndResponseSuccess_shouldCallSuccessMethod() {
-        // Given
-        val stringDataRemoteRepository = givenStringDataRemoteRepository()
-        givenMockManifestResponse()
-        givenMockResponse()
-
-        // When
-        stringDataRemoteRepository.fetchData(mockCallback)
-
-        // Then
-        verify(mockCallback).onDataLoaded(any())
-    }
-
-    @Test
     fun whenFetchWithCallbackAndResponseFailure_shouldCallFailureMethod() {
         // Given
-        val stringDataRemoteRepository = givenStringDataRemoteRepository()
-        givenMockManifestResponse()
+        val repository = givenStringDataRemoteRepository()
+        val manifestData = givenManifestData()
         givenMockResponse(false)
 
         // When
-        stringDataRemoteRepository.fetchData(mockCallback)
+        repository.onManifestDataReceived(manifestData, mockCallback)
 
         // Then
         verify(mockCallback).onFailure(any())
@@ -103,12 +91,12 @@ class StringDataRemoteRepositoryTest {
     @Test
     fun whenFetchWithCallbackAndResponseNotCode200_shouldCallFailureMethod() {
         // Given
-        val stringDataRemoteRepository = givenStringDataRemoteRepository()
-        givenMockManifestResponse()
+        val repository = givenStringDataRemoteRepository()
+        val manifestData = givenManifestData()
         givenMockResponse(successCode = 204)
 
         // When
-        stringDataRemoteRepository.fetchData(mockCallback)
+        repository.onManifestDataReceived(manifestData, mockCallback)
 
         // Then
         verify(mockCallback).onFailure(any())
@@ -145,10 +133,11 @@ class StringDataRemoteRepositoryTest {
         } else {
             Response.error<ResponseBody>(403, StubResponseBody())
         }
+        `when`(mockedCall.execute()).thenReturn(response)
+    }
 
-        doAnswer {
-            val callback = it.getArgument(0, Callback::class.java) as Callback<ResponseBody>
-            callback.onResponse(mockedCall, response)
-        }.`when`<Call<ResponseBody>>(mockedCall).enqueue(any())
+    private fun givenManifestData(): ManifestData {
+        val json = "{\"files\":[\"\\/strings.xml\"]}"
+        return Gson().fromJson<ManifestData>(json, ManifestData::class.java)
     }
 }

@@ -3,9 +3,11 @@ package com.crowdin.platform
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.MappingRepository
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
+import com.google.gson.Gson
 import okhttp3.ResponseBody
 import org.junit.Before
 import org.junit.Test
@@ -50,11 +52,11 @@ class MappingRepositoryTest {
     fun whenFetchManifestSuccess_shouldTriggerFilePathApiCall() {
         // Given
         val mappingRepository = givenMappingRepository()
-        givenMockManifestResponse()
+        val manifestData = givenManifestData()
         givenMockResponse()
 
         // When
-        mappingRepository.fetchData()
+        mappingRepository.onManifestDataReceived(manifestData, mockCallback)
 
         // Then
         verify(mockDistributionApi).getMappingFile(any(), any(), any())
@@ -64,11 +66,11 @@ class MappingRepositoryTest {
     fun whenFetchDataSuccess_shouldParseResponseAndCloseReader() {
         // Given
         val mappingRepository = givenMappingRepository()
-        givenMockManifestResponse()
+        val manifestData = givenManifestData()
         givenMockResponse()
 
         // When
-        mappingRepository.fetchData()
+        mappingRepository.onManifestDataReceived(manifestData, mockCallback)
 
         // Then
         verify(mockReader).parseInput(any(), any())
@@ -76,28 +78,14 @@ class MappingRepositoryTest {
     }
 
     @Test
-    fun whenFetchWithCallbackAndResponseSuccess_shouldCallSuccessMethod() {
-        // Given
-        val mappingRepository = givenMappingRepository()
-        givenMockManifestResponse()
-        givenMockResponse()
-
-        // When
-        mappingRepository.fetchData(mockCallback)
-
-        // Then
-        verify(mockCallback).onDataLoaded(any())
-    }
-
-    @Test
     fun whenFetchDataSuccess_shouldStoreResult() {
         // Given
         val mappingRepository = givenMappingRepository()
-        givenMockManifestResponse()
+        val manifestData = givenManifestData()
         givenMockResponse()
 
         // When
-        mappingRepository.fetchData(mockCallback)
+        mappingRepository.onManifestDataReceived(manifestData, mockCallback)
 
         // Then
         verify(mockDataManager).saveMapping(any())
@@ -107,11 +95,11 @@ class MappingRepositoryTest {
     fun whenFetchWithCallbackAndResponseFailure_shouldCallFailureMethod() {
         // Given
         val mappingRepository = givenMappingRepository()
-        givenMockManifestResponse()
+        val manifestData = givenManifestData()
         givenMockResponse(false)
 
         // When
-        mappingRepository.fetchData(mockCallback)
+        mappingRepository.onManifestDataReceived(manifestData, mockCallback)
 
         // Then
         verify(mockCallback).onFailure(any())
@@ -121,11 +109,11 @@ class MappingRepositoryTest {
     fun whenFetchWithCallbackAndResponseNotCode200_shouldCallFailureMethod() {
         // Given
         val mappingRepository = givenMappingRepository()
-        givenMockManifestResponse()
+        val manifestData = givenManifestData()
         givenMockResponse(successCode = 204)
 
         // When
-        mappingRepository.fetchData(mockCallback)
+        mappingRepository.onManifestDataReceived(manifestData, mockCallback)
 
         // Then
         verify(mockCallback).onFailure(any())
@@ -168,10 +156,11 @@ class MappingRepositoryTest {
         } else {
             Response.error<ResponseBody>(403, StubResponseBody())
         }
+        `when`(mockedCall.execute()).thenReturn(response)
+    }
 
-        doAnswer {
-            val callback = it.getArgument(0, Callback::class.java) as Callback<ResponseBody>
-            callback.onResponse(mockedCall, response)
-        }.`when`<Call<ResponseBody>>(mockedCall).enqueue(any())
+    private fun givenManifestData(): ManifestData {
+        val json = "{\"files\":[\"\\/strings.xml\"]}"
+        return Gson().fromJson<ManifestData>(json, ManifestData::class.java)
     }
 }

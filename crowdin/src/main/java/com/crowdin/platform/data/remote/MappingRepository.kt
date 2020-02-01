@@ -33,24 +33,22 @@ internal class MappingRepository(
         languageDataCallback: LanguageDataCallback?
     ) {
         // Combine all data before save to storage
-        ThreadUtils.runInBackgroundPool(Runnable {
-            val languageData = LanguageData(sourceLanguage)
+        val languageData = LanguageData(sourceLanguage)
 
-            manifest.files.forEach {
-                val filePath = validateFilePath(it, Locale(sourceLanguage))
-                val eTag = eTagMap[filePath]
+        manifest.files.forEach {
+            val filePath = validateFilePath(it, Locale(sourceLanguage))
+            val eTag = eTagMap[filePath]
 
-                val result = requestFileMapping(
-                    eTag,
-                    distributionHash,
-                    filePath,
-                    languageDataCallback
-                )
-                languageData.addNewResources(result)
-            }
+            val result = requestFileMapping(
+                eTag,
+                distributionHash,
+                filePath,
+                languageDataCallback
+            )
+            languageData.addNewResources(result)
+        }
 
-            dataManager.saveMapping(languageData)
-        }, true)
+        dataManager.saveMapping(languageData)
     }
 
     private fun requestFileMapping(
@@ -83,11 +81,6 @@ internal class MappingRepository(
                     "${Throwable("Unexpected http error code $code")}"
                 )
             }
-        }
-
-        result.errorBody()?.let {
-            languageDataCallback?.onFailure(Throwable("Unexpected http error code $code"))
-            Log.d(MappingRepository::class.java.simpleName, "Unexpected http error code $code")
         }
 
         return languageData

@@ -1,6 +1,5 @@
 package com.crowdin.platform.data.remote
 
-import android.util.Log
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.ManifestData
@@ -30,23 +29,21 @@ internal class StringDataRemoteRepository(
         languageDataCallback: LanguageDataCallback?
     ) {
         // Combine all data before save to storage
-        ThreadUtils.runInBackgroundPool(Runnable {
-            val languageData = LanguageData(Locale.getDefault().toString())
+        val languageData = LanguageData(Locale.getDefault().toString())
 
-            manifest.files.forEach {
-                val filePath = validateFilePath(it, Locale.getDefault())
-                val eTag = eTagMap[filePath]
-                val result = requestStringData(
-                    eTag,
-                    distributionHash,
-                    filePath,
-                    languageDataCallback
-                )
-                languageData.addNewResources(result)
-            }
+        manifest.files.forEach {
+            val filePath = validateFilePath(it, Locale.getDefault())
+            val eTag = eTagMap[filePath]
+            val result = requestStringData(
+                eTag,
+                distributionHash,
+                filePath,
+                languageDataCallback
+            )
+            languageData.addNewResources(result)
+        }
 
-            ThreadUtils.executeOnMain { languageDataCallback?.onDataLoaded(languageData) }
-        }, true)
+        ThreadUtils.executeOnMain { languageDataCallback?.onDataLoaded(languageData) }
     }
 
     private fun requestStringData(
@@ -73,10 +70,6 @@ internal class StringDataRemoteRepository(
             }
             code != HttpURLConnection.HTTP_NOT_MODIFIED ->
                 languageDataCallback?.onFailure(Throwable("Unexpected http error code $code"))
-        }
-        result.errorBody()?.let {
-            languageDataCallback?.onFailure(Throwable("Unexpected http error code $code"))
-            Log.d(MappingRepository::class.java.simpleName, "Unexpected http error code $code")
         }
 
         return languageData
