@@ -15,4 +15,10 @@ internal class LanguageData(var language: String) {
             languageData.plurals.isNotEmpty() -> plurals = languageData.plurals
         }
     }
+
+    fun addNewResources(languageData: LanguageData) {
+        resources.addAll(languageData.resources)
+        arrays.addAll(languageData.arrays)
+        plurals.addAll(languageData.plurals)
+    }
 }
