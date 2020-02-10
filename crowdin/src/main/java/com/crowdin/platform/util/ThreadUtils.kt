@@ -1,5 +1,6 @@
 package com.crowdin.platform.util
 
+import android.os.Handler
 import android.os.Looper
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.LinkedBlockingDeque
@@ -66,6 +67,12 @@ internal object ThreadUtils {
             runnable.run()
         } else {
             sLocalWorkPool?.execute(runnable)
+        }
+    }
+
+    fun executeOnMain(function: () -> Unit?) {
+        Handler(Looper.getMainLooper()).post {
+            function.invoke()
         }
     }
 }
