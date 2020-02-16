@@ -31,6 +31,7 @@ internal class DataManager(
         const val DISTRIBUTION_DATA = "distribution_data"
         const val AUTH_INFO = "auth_info"
         const val DISTRIBUTION_HASH = "distribution_hash"
+        const val MAPPING_SUF = "-mapping"
     }
 
     private var loadingStateListeners: ArrayList<LoadingStateListener>? = null
@@ -134,11 +135,12 @@ internal class DataManager(
     }
 
     fun saveMapping(languageData: LanguageData) {
+        languageData.language = languageData.language + MAPPING_SUF
         localRepository.saveLanguageData(languageData)
     }
 
     fun getMapping(sourceLanguage: String): LanguageData? =
-        localRepository.getLanguageData(sourceLanguage)
+        localRepository.getLanguageData(sourceLanguage + MAPPING_SUF)
 
     fun saveData(type: String, data: Any?) {
         localRepository.saveData(type, data)
