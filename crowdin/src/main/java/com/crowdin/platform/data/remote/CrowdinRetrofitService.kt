@@ -7,6 +7,7 @@ import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.remote.api.AuthApi
 import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
+import com.crowdin.platform.data.remote.interceptor.HeaderInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -28,6 +29,7 @@ internal object CrowdinRetrofitService {
     private fun getHttpClient(): OkHttpClient {
         return if (okHttpClient == null) {
             val builder = OkHttpClient.Builder()
+            builder.addInterceptor(HeaderInterceptor())
             if (BuildConfig.DEBUG) {
                 builder.addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BODY
@@ -43,6 +45,7 @@ internal object CrowdinRetrofitService {
     private fun getInterceptableHttpClient(session: Session): OkHttpClient {
         return if (interceptableOkHttpClient == null) {
             val builder = OkHttpClient.Builder()
+            builder.addInterceptor(HeaderInterceptor())
             if (BuildConfig.DEBUG) {
                 builder.addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BODY

@@ -4,8 +4,8 @@ apply plugin: 'kotlin-android-extensions'
 apply from: '../jacoco.gradle'
 
 ext {
-    versionCode = 3
-    versionName = "1.1.1"
+    libraryVersionCode = 3
+    libraryVersionName = "1.1.1"
 
     bintrayRepo = 'mobile-sdk'
     bintrayName = 'mobile-sdk-android'
@@ -19,7 +19,7 @@ ext {
     siteUrl = 'https://crowdin.com/'
     gitUrl = 'https://github.com/crowdin/mobile-sdk-android'
 
-    libraryVersion = versionName
+    libraryVersion = libraryVersionName
 
     developerId = 'mykhailo-nester'
     developerName = 'Mykhailo Nester'
@@ -36,8 +36,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode versionCode
-        versionName versionName
+        versionCode libraryVersionCode
+        versionName libraryVersionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
