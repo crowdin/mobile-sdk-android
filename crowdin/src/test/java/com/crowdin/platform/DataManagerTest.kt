@@ -195,13 +195,14 @@ class DataManagerTest {
         val dataManager = givenDataManager()
         val mockLanguageData = mock(LanguageData::class.java)
         val sourceLanguage = "EN"
-        `when`(mockLocalRepository.getLanguageData(sourceLanguage)).thenReturn(mockLanguageData)
+        val mappingLanguage = "EN-mapping"
+        `when`(mockLocalRepository.getLanguageData(mappingLanguage)).thenReturn(mockLanguageData)
 
         // When
         val result = dataManager.getMapping(sourceLanguage)
 
         // Then
-        verify(mockLocalRepository).getLanguageData(sourceLanguage)
+        verify(mockLocalRepository).getLanguageData(mappingLanguage)
         assertThat(result, `is`(mockLanguageData))
     }
 
