@@ -19,6 +19,7 @@ import com.crowdin.platform.data.remote.CrowdinRetrofitService
 import com.crowdin.platform.data.remote.DistributionInfoManager
 import com.crowdin.platform.data.remote.MappingRepository
 import com.crowdin.platform.data.remote.StringDataRemoteRepository
+import com.crowdin.platform.data.remote.TranslationDataRepository
 import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager
 import com.crowdin.platform.recurringwork.RecurringManager
 import com.crowdin.platform.screenshot.ScreenshotCallback
@@ -47,6 +48,7 @@ object Crowdin {
     private var distributionInfoManager: DistributionInfoManager? = null
     private var screenshotManager: ScreenshotManager? = null
     private var shakeDetectorManager: ShakeDetectorManager? = null
+    private var translationDataRepository: TranslationDataRepository? = null
 
     /**
      * Initialize Crowdin with the specified configuration.
@@ -62,13 +64,16 @@ object Crowdin {
         initStringDataManager(context, config)
         initViewTransformer()
         initFeatureManagers()
+        initTranslationDataManager()
 
         when {
             config.updateInterval >= RecurringManager.MIN_PERIODIC_INTERVAL_MILLIS ->
                 RecurringManager.setPeriodicUpdates(context, config)
             else -> {
                 RecurringManager.cancel(context)
-                forceUpdate(context)
+                if (!FeatureFlags.isRealTimeUpdateEnabled) {
+                    forceUpdate(context)
+                }
                 loadMapping()
             }
         }
@@ -373,5 +378,28 @@ object Crowdin {
         }
     }
 
-    fun getAuthConfig(): AuthConfig? = config.authConfig
+    internal fun getAuthConfig(): AuthConfig? = config.authConfig
+
+    private fun initTranslationDataManager() {
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
+            translationDataRepository = TranslationDataRepository(
+                CrowdinRetrofitService.getCrowdinDistributionApi(),
+                CrowdinRetrofitService.getCrowdinApi(
+                    dataManager!!,
+                    config.authConfig?.organizationName
+                ),
+                CrowdinRetrofitService.getCrowdinTranslationApi(),
+                XmlReader(StringResourceParser()),
+                dataManager!!,
+                config.distributionHash
+            )
+            loadTranslation()
+        }
+    }
+
+    internal fun loadTranslation() {
+        if (dataManager?.isAuthorized() == true) {
+            translationDataRepository?.fetchData()
+        }
+    }
 }

@@ -228,17 +228,22 @@ class DataManagerTest {
         val classType = Type::class.java
 
         // When
-        dataManager.getData(type, classType)
+        dataManager.getData<Type>(type, classType)
 
         // Then
-        verify(mockLocalRepository).getData(type, classType)
+        verify(mockLocalRepository).getData<Type>(type, classType)
     }
 
     @Test
     fun isAuthorizedSuccessTest() {
         // Given
         val dataManager = givenDataManager()
-        `when`(mockLocalRepository.getData(any(), any())).thenReturn(mock(AuthInfo::class.java))
+        `when`(
+            mockLocalRepository.getData<AuthInfo>(
+                any(),
+                any()
+            )
+        ).thenReturn(mock(AuthInfo::class.java))
         val expectedResult = true
 
         // When
@@ -246,14 +251,14 @@ class DataManagerTest {
 
         // Then
         assertThat(actualResult, `is`(expectedResult))
-        verify(mockLocalRepository).getData("auth_info", AuthInfo::class.java)
+        verify(mockLocalRepository).getData<AuthInfo>("auth_info", AuthInfo::class.java)
     }
 
     @Test
     fun isAuthorizedFailureTest() {
         // Given
         val dataManager = givenDataManager()
-        `when`(mockLocalRepository.getData(any(), any())).thenReturn(null)
+        `when`(mockLocalRepository.getData<AuthInfo>(any(), any())).thenReturn(null)
         val expectedResult = false
 
         // When
@@ -261,7 +266,7 @@ class DataManagerTest {
 
         // Then
         assertThat(actualResult, `is`(expectedResult))
-        verify(mockLocalRepository).getData("auth_info", AuthInfo::class.java)
+        verify(mockLocalRepository).getData<AuthInfo>("auth_info", AuthInfo::class.java)
     }
 
     @Test
@@ -269,7 +274,7 @@ class DataManagerTest {
         // Given
         val dataManager = givenDataManager()
         val mockAuthInfo = mock(AuthInfo::class.java)
-        `when`(mockLocalRepository.getData(any(), any())).thenReturn(mockAuthInfo)
+        `when`(mockLocalRepository.getData<AuthInfo>(any(), any())).thenReturn(mockAuthInfo)
         `when`(mockAuthInfo.isExpired()).thenReturn(true)
         val expectedResult = true
 
@@ -278,7 +283,7 @@ class DataManagerTest {
 
         // Then
         assertThat(actualResult, `is`(expectedResult))
-        verify(mockLocalRepository).getData("auth_info", AuthInfo::class.java)
+        verify(mockLocalRepository).getData<AuthInfo>("auth_info", AuthInfo::class.java)
     }
 
     @Test
@@ -286,7 +291,7 @@ class DataManagerTest {
         // Given
         val dataManager = givenDataManager()
         val mockAuthInfo = mock(AuthInfo::class.java)
-        `when`(mockLocalRepository.getData(any(), any())).thenReturn(mockAuthInfo)
+        `when`(mockLocalRepository.getData<AuthInfo>(any(), any())).thenReturn(mockAuthInfo)
         `when`(mockAuthInfo.isExpired()).thenReturn(false)
         val expectedResult = false
 
@@ -295,7 +300,7 @@ class DataManagerTest {
 
         // Then
         assertThat(actualResult, `is`(expectedResult))
-        verify(mockLocalRepository).getData("auth_info", AuthInfo::class.java)
+        verify(mockLocalRepository).getData<AuthInfo>("auth_info", AuthInfo::class.java)
     }
 
     @Test
@@ -303,7 +308,7 @@ class DataManagerTest {
         // Given
         val dataManager = givenDataManager()
         val mockAuthInfo = mock(AuthInfo::class.java)
-        `when`(mockLocalRepository.getData(any(), any())).thenReturn(mockAuthInfo)
+        `when`(mockLocalRepository.getData<AuthInfo>(any(), any())).thenReturn(mockAuthInfo)
         val expectedAccessToken = "access_token_test"
         `when`(mockAuthInfo.accessToken).thenReturn(expectedAccessToken)
 
@@ -312,7 +317,7 @@ class DataManagerTest {
 
         // Then
         assertThat(actualAccessToken, `is`(expectedAccessToken))
-        verify(mockLocalRepository).getData("auth_info", AuthInfo::class.java)
+        verify(mockLocalRepository).getData<AuthInfo>("auth_info", AuthInfo::class.java)
     }
 
     @Test
@@ -320,7 +325,7 @@ class DataManagerTest {
         // Given
         val dataManager = givenDataManager()
         val mockAuthInfo = mock(AuthInfo::class.java)
-        `when`(mockLocalRepository.getData(any(), any())).thenReturn(mockAuthInfo)
+        `when`(mockLocalRepository.getData<AuthInfo>(any(), any())).thenReturn(mockAuthInfo)
         val expectedRefreshToken = "refresh_token_test"
         `when`(mockAuthInfo.refreshToken).thenReturn(expectedRefreshToken)
 
@@ -329,7 +334,7 @@ class DataManagerTest {
 
         // Then
         assertThat(actualRefreshToken, `is`(expectedRefreshToken))
-        verify(mockLocalRepository).getData("auth_info", AuthInfo::class.java)
+        verify(mockLocalRepository).getData<AuthInfo>("auth_info", AuthInfo::class.java)
     }
 
     @Test

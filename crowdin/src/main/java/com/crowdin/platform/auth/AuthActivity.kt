@@ -81,7 +81,7 @@ internal class AuthActivity : AppCompatActivity() {
                 .authority("accounts.crowdin.com")
                 .appendPath("oauth")
                 .appendPath("authorize")
-                .encodedQuery("client_id=$clientId&response_type=code&scope=project.screenshot&redirect_uri=crowdintest://")
+                .encodedQuery("client_id=$clientId&response_type=code&scope=project&redirect_uri=crowdintest://")
 
             domain?.let { builder.appendQueryParameter(DOMAIN, it) }
             val url = builder.build().toString()
@@ -139,6 +139,7 @@ internal class AuthActivity : AppCompatActivity() {
                     Crowdin.tryCreateRealTimeConnection()
                 }
                 requestPermission()
+                Crowdin.loadTranslation()
             }
 
             override fun onError(throwable: Throwable) {

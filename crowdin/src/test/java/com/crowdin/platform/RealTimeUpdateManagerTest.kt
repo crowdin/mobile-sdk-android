@@ -45,7 +45,7 @@ class RealTimeUpdateManagerTest {
         realTimeUpdateManager.openConnection()
 
         // Then
-        verify(mockDataManager).getData(
+        verify(mockDataManager).getData<DistributionInfoResponse.DistributionData>(
             "distribution_data",
             DistributionInfoResponse.DistributionData::class.java
         )
@@ -58,7 +58,12 @@ class RealTimeUpdateManagerTest {
         val realTimeUpdateManager =
             RealTimeUpdateManager("EN", mockDataManager, mockViewTransformer)
         val distributionData = givenDistributionData()
-        `when`(mockDataManager.getData(any(), any())).thenReturn(distributionData)
+        `when`(
+            mockDataManager.getData<DistributionInfoResponse.DistributionData>(
+                any(),
+                any()
+            )
+        ).thenReturn(distributionData)
         `when`(mockDataManager.getMapping("EN")).thenReturn(LanguageData())
 
         // When

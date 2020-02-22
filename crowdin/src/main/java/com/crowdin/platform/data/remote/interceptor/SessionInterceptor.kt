@@ -1,4 +1,4 @@
-package com.crowdin.platform.data.remote
+package com.crowdin.platform.data.remote.interceptor
 
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.Session

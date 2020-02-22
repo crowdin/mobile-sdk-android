@@ -86,8 +86,8 @@ internal class SharedPrefLocalRepository internal constructor(
         }
     }
 
-    override fun getData(type: String, classType: Type): Any? {
-        val data = memoryLocalRepository.getData(type, classType::class.java)
+    override fun <T> getData(type: String, classType: Type): T? {
+        val data = memoryLocalRepository.getData<T>(type, classType::class.java)
         if (data == null) {
             val info = sharedPreferences.getString(type, null)
             info?.let { return Gson().fromJson(info, classType) }
