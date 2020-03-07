@@ -92,8 +92,7 @@ internal class TranslationDataRepository(
         eTagMap[file] = translation.etag
         var languageData = LanguageData()
 
-        val response = crowdinTranslationApi.getTranslationResource(translation.url).execute()
-        response.body()?.let {
+        crowdinTranslationApi.getTranslationResource(translation.url).execute().body()?.let {
             languageData = onStringDataReceived(it)
         }
 

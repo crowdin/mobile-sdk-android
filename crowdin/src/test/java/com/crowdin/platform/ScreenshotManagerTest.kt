@@ -160,7 +160,7 @@ class ScreenshotManagerTest {
             if (success) {
                 callback.onResponse(
                     mockedCall,
-                    Response.success<UploadScreenshotResponse>(
+                    Response.success(
                         successCode,
                         UploadScreenshotResponse(Data(10, "test"))
                     )
@@ -168,7 +168,7 @@ class ScreenshotManagerTest {
             } else {
                 callback.onFailure(mockedCall, Throwable())
             }
-        }.`when`<Call<UploadScreenshotResponse>>(mockedCall).enqueue(any())
+        }.`when`(mockedCall).enqueue(any())
     }
 
     private fun givenCreateScreenshotMockResponse(success: Boolean = true, successCode: Int = 201) {
@@ -180,7 +180,7 @@ class ScreenshotManagerTest {
             if (success) {
                 callback.onResponse(
                     mockedCall,
-                    Response.success<CreateScreenshotResponse>(
+                    Response.success(
                         successCode,
                         CreateScreenshotResponse(Data(10, "test"))
                     )
@@ -188,7 +188,7 @@ class ScreenshotManagerTest {
             } else {
                 callback.onFailure(mockedCall, Throwable())
             }
-        }.`when`<Call<CreateScreenshotResponse>>(mockedCall).enqueue(any())
+        }.`when`(mockedCall).enqueue(any())
     }
 
     private fun givenCreateTagMockResponse(success: Boolean = true, successCode: Int = 201) {
@@ -205,11 +205,11 @@ class ScreenshotManagerTest {
             if (success) {
                 callback.onResponse(
                     mockedCall,
-                    Response.success<ResponseBody>(successCode, mock(ResponseBody::class.java))
+                    Response.success(successCode, mock(ResponseBody::class.java))
                 )
             } else {
                 callback.onFailure(mockedCall, Throwable())
             }
-        }.`when`<Call<ResponseBody>>(mockedCall).enqueue(any())
+        }.`when`(mockedCall).enqueue(any())
     }
 }
