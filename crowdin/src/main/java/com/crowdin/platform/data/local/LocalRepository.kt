@@ -116,5 +116,5 @@ internal interface LocalRepository {
      * @param type of data.
      * @param classType of data.
      */
-    fun getData(type: String, classType: Type): Any?
+    fun <T> getData(type: String, classType: Type): T?
 }

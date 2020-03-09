@@ -92,7 +92,7 @@ class DistributionInfoManagerTest {
             if (success) {
                 callback.onResponse(
                     mockedCall,
-                    Response.success<DistributionInfoResponse>(
+                    Response.success(
                         successCode,
                         mock(DistributionInfoResponse::class.java)
                     )
@@ -100,6 +100,6 @@ class DistributionInfoManagerTest {
             } else {
                 callback.onFailure(mockedCall, Throwable())
             }
-        }.`when`<Call<DistributionInfoResponse>>(mockedCall).enqueue(any())
+        }.`when`(mockedCall).enqueue(any())
     }
 }

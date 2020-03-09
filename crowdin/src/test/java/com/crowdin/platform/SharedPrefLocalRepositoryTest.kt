@@ -250,12 +250,13 @@ class SharedPrefLocalRepositoryTest {
     fun getDataTest() {
         // Given
         val stringData = StringData()
-        `when`(mockMemoryLocalRepository.getData(any(), any())).thenReturn(stringData)
+        `when`(mockMemoryLocalRepository.getData<StringData>(any(), any())).thenReturn(stringData)
         val sharedPrefLocalRepository =
             SharedPrefLocalRepository(context, mockMemoryLocalRepository)
 
         // When
-        val result = sharedPrefLocalRepository.getData("stringData", StringData::class.java)
+        val result =
+            sharedPrefLocalRepository.getData<StringData>("stringData", StringData::class.java)
 
         // Then
         assertThat(result, instanceOf(StringData::class.java))
@@ -266,14 +267,15 @@ class SharedPrefLocalRepositoryTest {
     fun getData_nullDataTest() {
         // Given
         val stringData = null
-        `when`(mockMemoryLocalRepository.getData(any(), any())).thenReturn(stringData)
+        `when`(mockMemoryLocalRepository.getData<StringData>(any(), any())).thenReturn(stringData)
         `when`(sharedPrefs.getString(any(), any())).thenReturn(null)
         val sharedPrefLocalRepository =
             SharedPrefLocalRepository(context, mockMemoryLocalRepository)
         val expectedType = "stringData"
 
         // When
-        val result = sharedPrefLocalRepository.getData("stringData", StringData::class.java)
+        val result =
+            sharedPrefLocalRepository.getData<StringData>("stringData", StringData::class.java)
 
         // Then
         verify(sharedPrefs).getString(expectedType, null)

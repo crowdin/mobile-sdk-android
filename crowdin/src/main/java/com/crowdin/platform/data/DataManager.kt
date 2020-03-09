@@ -15,6 +15,7 @@ import com.crowdin.platform.data.remote.Connectivity
 import com.crowdin.platform.data.remote.NetworkType
 import com.crowdin.platform.data.remote.RemoteRepository
 import com.crowdin.platform.util.FeatureFlags
+import com.crowdin.platform.util.ThreadUtils
 import java.lang.reflect.Type
 import java.util.Locale
 
@@ -56,12 +57,7 @@ internal class DataManager(
             remoteRepository.fetchData(object : LanguageDataCallback {
 
                 override fun onDataLoaded(languageData: LanguageData) {
-                    localRepository.saveLanguageData(languageData)
-                    if (FeatureFlags.isRealTimeUpdateEnabled) {
-                        dataChangeObserver.onDataChanged()
-                    }
-
-                    sendOnDataChanged()
+                    refreshData(languageData)
                 }
 
                 override fun onFailure(throwable: Throwable) {
@@ -71,6 +67,15 @@ internal class DataManager(
         } else {
             sendOnFailure(Throwable(status))
         }
+    }
+
+    fun refreshData(languageData: LanguageData) {
+        localRepository.saveLanguageData(languageData)
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
+            dataChangeObserver.onDataChanged()
+        }
+
+        sendOnDataChanged()
     }
 
     private fun validateData(context: Context, networkType: NetworkType): String {
@@ -121,7 +126,9 @@ internal class DataManager(
     private fun sendOnFailure(throwable: Throwable) {
         loadingStateListeners?.let { listeners ->
             listeners.forEach {
-                it.onFailure(throwable)
+                ThreadUtils.executeOnMain {
+                    it.onFailure(throwable)
+                }
             }
         }
     }
@@ -146,7 +153,7 @@ internal class DataManager(
         localRepository.saveData(type, data)
     }
 
-    fun getData(type: String, classType: Type): Any? = localRepository.getData(type, classType)
+    fun <T> getData(type: String, classType: Type): T? = localRepository.getData(type, classType)
 
     fun isAuthorized(): Boolean =
         (getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?) != null

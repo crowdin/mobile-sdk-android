@@ -1,5 +1,8 @@
 package com.crowdin.platform.data.remote.api
 
+import com.crowdin.platform.data.model.BuildTranslationRequest
+import com.crowdin.platform.data.model.FileResponse
+import com.crowdin.platform.data.model.TranslationResponse
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -33,4 +36,15 @@ internal interface CrowdinApi {
 
     @GET("/api/v2/distributions/metadata")
     fun getInfo(@Query("hash") distributionHash: String): Call<DistributionInfoResponse>
+
+    @POST("/api/v2/projects/{projectId}/translations/builds/files/{fileId}")
+    fun getTranslation(
+        @Header("if-none-match") eTag: String,
+        @Path("projectId") projectId: String,
+        @Path("fileId") fileId: Long,
+        @Body body: BuildTranslationRequest
+    ): Call<TranslationResponse>
+
+    @GET("/api/v2/projects/{projectId}/files")
+    fun getFiles(@Path("projectId") projectId: String): Call<FileResponse>
 }

@@ -60,7 +60,7 @@ class ScreenshotManagerTest {
         screenshotManager.sendScreenshot(mock(Bitmap::class.java), mutableListOf())
 
         // Then
-        verify(mockDataManager).getData(
+        verify(mockDataManager).getData<DistributionInfoResponse.DistributionData>(
             "distribution_data",
             DistributionInfoResponse.DistributionData::class.java
         )
@@ -73,7 +73,12 @@ class ScreenshotManagerTest {
         val sourceLanguage = "EN"
         `when`(mockDataManager.getMapping(sourceLanguage)).thenReturn(LanguageData())
         val distributionData = givenDistributionData()
-        `when`(mockDataManager.getData(any(), any())).thenReturn(distributionData)
+        `when`(
+            mockDataManager.getData<DistributionInfoResponse.DistributionData>(
+                any(),
+                any()
+            )
+        ).thenReturn(distributionData)
         val screenshotManager = ScreenshotManager(mockCrowdinApi, mockDataManager, sourceLanguage)
         givenUploadScreenshotMockResponse()
         givenCreateScreenshotMockResponse()
@@ -95,7 +100,12 @@ class ScreenshotManagerTest {
         val sourceLanguage = "EN"
         `when`(mockDataManager.getMapping(sourceLanguage)).thenReturn(LanguageData())
         val distributionData = givenDistributionData()
-        `when`(mockDataManager.getData(any(), any())).thenReturn(distributionData)
+        `when`(
+            mockDataManager.getData<DistributionInfoResponse.DistributionData>(
+                any(),
+                any()
+            )
+        ).thenReturn(distributionData)
         val screenshotManager = ScreenshotManager(mockCrowdinApi, mockDataManager, sourceLanguage)
         givenUploadScreenshotMockResponse()
         givenCreateScreenshotMockResponse()
@@ -116,7 +126,12 @@ class ScreenshotManagerTest {
         val sourceLanguage = "EN"
         `when`(mockDataManager.getMapping(sourceLanguage)).thenReturn(LanguageData())
         val distributionData = givenDistributionData()
-        `when`(mockDataManager.getData(any(), any())).thenReturn(distributionData)
+        `when`(
+            mockDataManager.getData<DistributionInfoResponse.DistributionData>(
+                any(),
+                any()
+            )
+        ).thenReturn(distributionData)
         val screenshotManager = ScreenshotManager(mockCrowdinApi, mockDataManager, sourceLanguage)
         givenUploadScreenshotMockResponse(false)
         val mockCallback = mock(ScreenshotCallback::class.java)
@@ -145,7 +160,7 @@ class ScreenshotManagerTest {
             if (success) {
                 callback.onResponse(
                     mockedCall,
-                    Response.success<UploadScreenshotResponse>(
+                    Response.success(
                         successCode,
                         UploadScreenshotResponse(Data(10, "test"))
                     )
@@ -153,7 +168,7 @@ class ScreenshotManagerTest {
             } else {
                 callback.onFailure(mockedCall, Throwable())
             }
-        }.`when`<Call<UploadScreenshotResponse>>(mockedCall).enqueue(any())
+        }.`when`(mockedCall).enqueue(any())
     }
 
     private fun givenCreateScreenshotMockResponse(success: Boolean = true, successCode: Int = 201) {
@@ -165,7 +180,7 @@ class ScreenshotManagerTest {
             if (success) {
                 callback.onResponse(
                     mockedCall,
-                    Response.success<CreateScreenshotResponse>(
+                    Response.success(
                         successCode,
                         CreateScreenshotResponse(Data(10, "test"))
                     )
@@ -173,7 +188,7 @@ class ScreenshotManagerTest {
             } else {
                 callback.onFailure(mockedCall, Throwable())
             }
-        }.`when`<Call<CreateScreenshotResponse>>(mockedCall).enqueue(any())
+        }.`when`(mockedCall).enqueue(any())
     }
 
     private fun givenCreateTagMockResponse(success: Boolean = true, successCode: Int = 201) {
@@ -190,11 +205,11 @@ class ScreenshotManagerTest {
             if (success) {
                 callback.onResponse(
                     mockedCall,
-                    Response.success<ResponseBody>(successCode, mock(ResponseBody::class.java))
+                    Response.success(successCode, mock(ResponseBody::class.java))
                 )
             } else {
                 callback.onFailure(mockedCall, Throwable())
             }
-        }.`when`<Call<ResponseBody>>(mockedCall).enqueue(any())
+        }.`when`(mockedCall).enqueue(any())
     }
 }

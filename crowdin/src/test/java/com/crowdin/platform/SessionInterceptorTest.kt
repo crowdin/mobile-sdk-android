@@ -3,7 +3,7 @@ package com.crowdin.platform
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
-import com.crowdin.platform.data.remote.SessionInterceptor
+import com.crowdin.platform.data.remote.interceptor.SessionInterceptor
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response

@@ -45,7 +45,7 @@ internal class ScreenshotManager(
         activityName: String? = null
     ) {
         val mappingData = dataManager.getMapping(sourceLanguage) ?: return
-        val distributionData = dataManager.getData(
+        val distributionData = dataManager.getData<DistributionInfoResponse.DistributionData>(
             DataManager.DISTRIBUTION_DATA,
             DistributionInfoResponse.DistributionData::class.java
         )
@@ -55,7 +55,6 @@ internal class ScreenshotManager(
             return
         }
 
-        distributionData as DistributionInfoResponse.DistributionData
         val projectId = distributionData.project.id
         val tags = getMappingIds(mappingData, viewDataList)
         uploadScreenshot(bitmap, tags, projectId, activityName)

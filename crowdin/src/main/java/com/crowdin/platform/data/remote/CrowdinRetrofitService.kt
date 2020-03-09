@@ -7,7 +7,9 @@ import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.remote.api.AuthApi
 import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
+import com.crowdin.platform.data.remote.api.CrowdinTranslationApi
 import com.crowdin.platform.data.remote.interceptor.HeaderInterceptor
+import com.crowdin.platform.data.remote.interceptor.SessionInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -17,7 +19,7 @@ internal object CrowdinRetrofitService {
 
     private const val BASE_DISTRIBUTION_URL = "https://distributions.crowdin.net/"
     private const val AUTH_API_URL = "https://accounts.crowdin.com/"
-    private const val BASE_API_URL = "https://api.crowdin.com/"
+    private const val BASE_API_URL = "https://crowdin.com/"
 
     private var okHttpClient: OkHttpClient? = null
     private var interceptableOkHttpClient: OkHttpClient? = null
@@ -25,6 +27,7 @@ internal object CrowdinRetrofitService {
     private val crowdinDistributionApi: CrowdinDistributionApi? = null
     private val crowdinApi: CrowdinApi? = null
     private val authApi: AuthApi? = null
+    private val crowdinTranslationApi: CrowdinTranslationApi? = null
 
     private fun getHttpClient(): OkHttpClient {
         return if (okHttpClient == null) {
@@ -45,13 +48,13 @@ internal object CrowdinRetrofitService {
     private fun getInterceptableHttpClient(session: Session): OkHttpClient {
         return if (interceptableOkHttpClient == null) {
             val builder = OkHttpClient.Builder()
+            builder.addInterceptor(SessionInterceptor(session))
             builder.addInterceptor(HeaderInterceptor())
             if (BuildConfig.DEBUG) {
                 builder.addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BODY
                 })
             }
-            builder.addInterceptor(SessionInterceptor(session))
 
             interceptableOkHttpClient = builder.build()
             interceptableOkHttpClient!!
@@ -87,4 +90,10 @@ internal object CrowdinRetrofitService {
 
     fun getCrowdinAuthApi(): AuthApi = authApi
         ?: getCrowdinRetrofit(getHttpClient(), AUTH_API_URL).create(AuthApi::class.java)
+
+    fun getCrowdinTranslationApi(): CrowdinTranslationApi = crowdinTranslationApi
+        ?: getCrowdinRetrofit(
+            getHttpClient(),
+            BASE_API_URL
+        ).create(CrowdinTranslationApi::class.java)
 }

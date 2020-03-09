@@ -133,7 +133,7 @@ internal class MemoryLocalRepository : LocalRepository {
         generalData[type] = data
     }
 
-    override fun getData(type: String, classType: Type): Any? = generalData[type]
+    override fun <T> getData(type: String, classType: Type): T? = generalData[type] as T
 
     private fun searchInResources(
         languageData: LanguageData?,
