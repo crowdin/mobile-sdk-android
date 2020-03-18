@@ -31,6 +31,11 @@ internal abstract class BaseRepository : RemoteRepository {
         val languageThreeLetterCode = locale.isO3Language
         val languageName = locale.getDisplayLanguage(Locale.ENGLISH)
         val country = locale.country
+        val formattedCode = if (country == language.toUpperCase(locale)) {
+            language
+        } else {
+            "$language-$country"
+        }
 
         var containsExportPattern = false
 
@@ -43,9 +48,9 @@ internal abstract class BaseRepository : RemoteRepository {
 
         if (!containsExportPattern) {
             return if (path.startsWith("/")) {
-                "/$language$path"
+                "/$formattedCode$path"
             } else {
-                "/$language/$path"
+                "/$formattedCode/$path"
             }
         }
 
