@@ -40,6 +40,7 @@ import com.crowdin.platform.util.TextUtils
  */
 object Crowdin {
 
+    const val CROWDIN_TAG = "CrowdingSDK:"
     private lateinit var viewTransformerManager: ViewTransformerManager
     private lateinit var config: CrowdinConfig
     private lateinit var crowdinPreferences: Preferences

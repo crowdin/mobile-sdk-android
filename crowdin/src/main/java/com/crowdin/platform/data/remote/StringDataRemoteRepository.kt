@@ -1,5 +1,7 @@
 package com.crowdin.platform.data.remote
 
+import android.util.Log
+import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.ManifestData
@@ -67,6 +69,12 @@ internal class StringDataRemoteRepository(
                     filePath,
                     body
                 )
+            }
+            code == HttpURLConnection.HTTP_FORBIDDEN -> {
+                val errorMessage =
+                    "Translation file $filePath for locale ${Locale.getDefault()} not found in the distribution"
+                Log.i(Crowdin.CROWDIN_TAG, errorMessage)
+                languageDataCallback?.onFailure(Throwable(errorMessage))
             }
             code != HttpURLConnection.HTTP_NOT_MODIFIED ->
                 languageDataCallback?.onFailure(Throwable("Unexpected http error code $code"))
