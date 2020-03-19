@@ -71,7 +71,8 @@ internal class StringDataRemoteRepository(
                 )
             }
             code == HttpURLConnection.HTTP_FORBIDDEN -> {
-                val errorMessage = "Resource file, for locale - ${Locale.getDefault()}, not found"
+                val errorMessage =
+                    "Translation file $filePath for locale ${Locale.getDefault()} not found in the distribution"
                 Log.i(Crowdin.CROWDIN_TAG, errorMessage)
                 languageDataCallback?.onFailure(Throwable(errorMessage))
             }
