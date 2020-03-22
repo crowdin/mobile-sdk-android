@@ -31,7 +31,7 @@ internal abstract class BaseRepository : RemoteRepository {
         val languageThreeLetterCode = locale.isO3Language
         val languageName = locale.getDisplayLanguage(Locale.ENGLISH)
         val country = locale.country
-        val formattedCode = if (country == language.toUpperCase(locale)) {
+        val formattedCode = if (country.isEmpty() || country == language.toUpperCase(locale)) {
             language
         } else {
             "$language-$country"
