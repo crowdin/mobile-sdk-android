@@ -38,7 +38,7 @@ class StringDataRemoteRepositoryTest {
         repository.fetchData()
 
         // Then
-        verify(mockDistributionApi).getResourceManifest(any())
+        verify(mockDistributionApi).getResourceManifest(any(), any())
     }
 
     @Test
@@ -52,7 +52,7 @@ class StringDataRemoteRepositoryTest {
         repository.onManifestDataReceived(manifestData, mockCallback)
 
         // Then
-        verify(mockDistributionApi).getResourceFile(any(), any(), any())
+        verify(mockDistributionApi).getResourceFile(any(), any(), any(), any())
     }
 
     @Test
@@ -103,7 +103,9 @@ class StringDataRemoteRepositoryTest {
 
     private fun givenMockResponse(success: Boolean = true, successCode: Int = 200) {
         val mockedCall = mock(Call::class.java) as Call<ResponseBody>
-        `when`(mockDistributionApi.getResourceFile(any(), any(), any())).thenReturn(mockedCall)
+        `when`(mockDistributionApi.getResourceFile(any(), any(), any(), any())).thenReturn(
+            mockedCall
+        )
 
         val response = if (success) {
             Response.success<ResponseBody>(successCode, StubResponseBody())

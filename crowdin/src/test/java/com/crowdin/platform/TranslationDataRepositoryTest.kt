@@ -55,7 +55,7 @@ class TranslationDataRepositoryTest {
         repository.fetchData()
 
         // Then
-        verify(mockDistributionApi).getResourceManifest(any())
+        verify(mockDistributionApi).getResourceManifest(any(), any())
     }
 
     @Test

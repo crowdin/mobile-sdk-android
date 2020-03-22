@@ -41,7 +41,7 @@ class MappingRepositoryTest {
         mappingRepository.fetchData()
 
         // Then
-        verify(mockDistributionApi).getResourceManifest(any())
+        verify(mockDistributionApi).getResourceManifest(any(), any())
     }
 
     @Test
@@ -55,7 +55,7 @@ class MappingRepositoryTest {
         mappingRepository.onManifestDataReceived(manifestData, mockCallback)
 
         // Then
-        verify(mockDistributionApi).getMappingFile(any(), any(), any())
+        verify(mockDistributionApi).getMappingFile(any(), any(), any(), any())
     }
 
     @Test
@@ -126,7 +126,7 @@ class MappingRepositoryTest {
 
     private fun givenMockResponse(success: Boolean = true, successCode: Int = 200) {
         val mockedCall = mock(Call::class.java) as Call<ResponseBody>
-        `when`(mockDistributionApi.getMappingFile(any(), any(), any())).thenReturn(mockedCall)
+        `when`(mockDistributionApi.getMappingFile(any(), any(), any(), any())).thenReturn(mockedCall)
 
         val response = if (success) {
             Response.success<ResponseBody>(successCode, StubResponseBody())

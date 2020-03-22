@@ -58,7 +58,8 @@ internal class StringDataRemoteRepository(
         val result = crowdinDistributionApi.getResourceFile(
             eTag ?: HEADER_ETAG_EMPTY,
             distributionHash,
-            filePath
+            filePath,
+            System.currentTimeMillis().toString()
         ).execute()
         val body = result.body()
         val code = result.code()

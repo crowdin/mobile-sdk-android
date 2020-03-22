@@ -23,7 +23,7 @@ internal fun givenMockMappingFileResponse(
     successCode: Int = 200
 ) {
     val mockedCall = mock(Call::class.java) as Call<ResponseBody>
-    `when`(mockDistributionApi.getMappingFile(any(), any(), any())).thenReturn(mockedCall)
+    `when`(mockDistributionApi.getMappingFile(any(), any(), any(), any())).thenReturn(mockedCall)
 
     val response = if (success) {
         Response.success<ResponseBody>(successCode, StubResponseBody())
@@ -39,7 +39,7 @@ internal fun givenMockManifestResponse(
     successCode: Int = 200
 ) {
     val mockedCall = mock(Call::class.java) as Call<ResponseBody>
-    `when`(mockDistributionApi.getResourceManifest(any())).thenReturn(mockedCall)
+    `when`(mockDistributionApi.getResourceManifest(any(), any())).thenReturn(mockedCall)
     val responseBody = mock(StubResponseBody::class.java)
     val json = "{\"files\":[\"\\/strings.xml\"]}"
     `when`(responseBody.string()).thenReturn(json)
