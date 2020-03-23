@@ -19,15 +19,13 @@ internal interface CrowdinDistributionApi {
 
     @GET("/{distributionHash}/manifest.json")
     fun getResourceManifest(
-        @Path("distributionHash") distributionHash: String,
-        @Query("timestamp") timeStamp: String
+        @Path("distributionHash") distributionHash: String
     ): Call<ResponseBody>
 
     @GET("/{distributionHash}/mapping{filePath}")
     fun getMappingFile(
         @Header("if-none-match") eTag: String,
         @Path("distributionHash") distributionHash: String,
-        @Path("filePath") filePath: String,
-        @Query("timestamp") timeStamp: String
+        @Path("filePath") filePath: String
     ): Call<ResponseBody>
 }

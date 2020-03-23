@@ -38,7 +38,7 @@ class StringDataRemoteRepositoryTest {
         repository.fetchData()
 
         // Then
-        verify(mockDistributionApi).getResourceManifest(any(), any())
+        verify(mockDistributionApi).getResourceManifest(any())
     }
 
     @Test

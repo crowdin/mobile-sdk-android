@@ -61,8 +61,7 @@ internal class MappingRepository(
         val result = crowdinDistributionApi.getMappingFile(
             eTag ?: HEADER_ETAG_EMPTY,
             distributionHash,
-            filePath,
-            System.currentTimeMillis().toString()
+            filePath
         ).execute()
         val body = result.body()
         val code = result.code()
