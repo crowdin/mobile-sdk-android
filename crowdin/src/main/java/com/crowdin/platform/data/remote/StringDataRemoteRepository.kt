@@ -40,6 +40,7 @@ internal class StringDataRemoteRepository(
                 eTag,
                 distributionHash,
                 filePath,
+                manifest.timestamp,
                 languageDataCallback
             )
             languageData.addNewResources(result)
@@ -52,6 +53,7 @@ internal class StringDataRemoteRepository(
         eTag: String?,
         distributionHash: String,
         filePath: String,
+        timestamp: Long,
         languageDataCallback: LanguageDataCallback?
     ): LanguageData {
         var languageData = LanguageData()
@@ -59,7 +61,7 @@ internal class StringDataRemoteRepository(
             eTag ?: HEADER_ETAG_EMPTY,
             distributionHash,
             filePath,
-            System.currentTimeMillis().toString()
+            timestamp
         ).execute()
         val body = result.body()
         val code = result.code()

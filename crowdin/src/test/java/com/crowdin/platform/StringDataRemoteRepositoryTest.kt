@@ -8,6 +8,7 @@ import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import okhttp3.ResponseBody
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
@@ -52,7 +53,7 @@ class StringDataRemoteRepositoryTest {
         repository.onManifestDataReceived(manifestData, mockCallback)
 
         // Then
-        verify(mockDistributionApi).getResourceFile(any(), any(), any(), any())
+        verify(mockDistributionApi).getResourceFile(any(), any(), any(), ArgumentMatchers.anyLong())
     }
 
     @Test
@@ -103,7 +104,14 @@ class StringDataRemoteRepositoryTest {
 
     private fun givenMockResponse(success: Boolean = true, successCode: Int = 200) {
         val mockedCall = mock(Call::class.java) as Call<ResponseBody>
-        `when`(mockDistributionApi.getResourceFile(any(), any(), any(), any())).thenReturn(
+        `when`(
+            mockDistributionApi.getResourceFile(
+                any(),
+                any(),
+                any(),
+                ArgumentMatchers.anyLong()
+            )
+        ).thenReturn(
             mockedCall
         )
 

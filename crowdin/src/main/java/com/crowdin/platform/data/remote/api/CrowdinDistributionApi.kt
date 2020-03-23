@@ -14,7 +14,7 @@ internal interface CrowdinDistributionApi {
         @Header("if-none-match") eTag: String,
         @Path("distributionHash") distributionHash: String,
         @Path("filePath") filePath: String,
-        @Query("timestamp") timeStamp: String
+        @Query("timestamp") timeStamp: Long
     ): Call<ResponseBody>
 
     @GET("/{distributionHash}/manifest.json")
