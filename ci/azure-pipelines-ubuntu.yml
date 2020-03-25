@@ -8,6 +8,8 @@ trigger:
     exclude:
     - README.md
     - LICENSE
+    - CONTRIBUTING.md
+    - CODE_OF_CONDUCT.md
 
 jobs:
   - template: templates/jobs.yml
