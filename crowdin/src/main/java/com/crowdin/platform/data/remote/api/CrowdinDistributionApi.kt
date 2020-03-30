@@ -5,6 +5,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 internal interface CrowdinDistributionApi {
 
@@ -12,7 +13,8 @@ internal interface CrowdinDistributionApi {
     fun getResourceFile(
         @Header("if-none-match") eTag: String,
         @Path("distributionHash") distributionHash: String,
-        @Path("filePath") filePath: String
+        @Path("filePath") filePath: String,
+        @Query("timestamp") timeStamp: Long
     ): Call<ResponseBody>
 
     @GET("/{distributionHash}/manifest.json")
