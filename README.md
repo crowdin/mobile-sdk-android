@@ -118,7 +118,7 @@ To integrate SDK with your application you need to follow step by step instructi
            CrowdinConfig.Builder()
                .withDistributionHash(your_distribution_hash)
                .withNetworkType(network_type)                // optional
-               .withUpdateInterval(interval_in_millisec)     // optional
+               .withUpdateInterval(interval_in_seconds)      // optional
                .build())
    }
    ```
@@ -136,7 +136,7 @@ To integrate SDK with your application you need to follow step by step instructi
           new CrowdinConfig.Builder()
               .withDistributionHash(your_distribution_hash)
               .withNetworkType(network_type)                // optional
-              .withUpdateInterval(interval_in_millisec)     // optional
+              .withUpdateInterval(interval_in_seconds)      // optional
               .build());
    }
    ```
@@ -146,7 +146,7 @@ To integrate SDK with your application you need to follow step by step instructi
     |----------------------------|-------------------------------------------------------------|------------------------------------------------|
     | `withDistributionHash`     | Distribution Hash | `withDistributionHash("7a0c1...7uo3b")`
     | `withNetworkType`          | Network type to be used for translations download | Acceptable values are `NetworkType.ALL`, `NetworkType.CELLULAR`, `NetworkType.WIFI`
-    | `withUpdateInterval`       | Translations update interval in milliseconds. The minimum and the default value is 15 minutes. Translations will be updated every defined time interval once per application load | `withUpdateInterval(900000)`
+    | `withUpdateInterval`       | Translations update interval in seconds. The minimum and the default value is 15 minutes. Translations will be updated every defined time interval once per application load | `withUpdateInterval(900)`
 
 **Note!** The CDN feature does not update the localization files. if you want to add new translations to the localization files you need to do it yourself.
 
@@ -171,7 +171,7 @@ All the translations that are done in the Editor can be shown in your version of
                .withSourceLanguage(source_language)
                .withAuthConfig(AuthConfig(client_id, client_secret, organization_name))
                .withNetworkType(network_type)                                           // optional
-               .withUpdateInterval(interval_in_millisec)                                // optional
+               .withUpdateInterval(interval_in_seconds)                                 // optional
                .build())
    }
    ```
@@ -192,7 +192,7 @@ All the translations that are done in the Editor can be shown in your version of
               .withSourceLanguage(source_language)
               .withAuthConfig(AuthConfig(client_id, client_secret, organization_name))
               .withNetworkType(network_type)                                           // optional
-              .withUpdateInterval(interval_in_millisec)                                // optional
+              .withUpdateInterval(interval_in_seconds)                                 // optional
               .build());
    }
    ```
@@ -207,7 +207,7 @@ All the translations that are done in the Editor can be shown in your version of
     | `client_id`, `client_secret`   | Crowdin OAuth Client ID and Client Secret  | `"gpY2yC...cx3TYB"`, `"Xz95tfedd0A...TabEDx9T"`
     | `organization_name`            | An Organization domain name (for Crowdin Enterprise users only) | `"mycompany"`
     | `withNetworkType`              | Network type to be used for translations download | Acceptable values are `NetworkType.ALL`, `NetworkType.CELLULAR`, `NetworkType.WIFI`
-    | `withUpdateInterval`           | Translations update interval in milliseconds. The minimum and the default value is 15 minutes. Translations will be updated every defined time interval once per application load | `withUpdateInterval(900000)`
+    | `withUpdateInterval`           | Translations update interval in seconds. The minimum and the default value is 15 minutes. Translations will be updated every defined time interval once per application load | `withUpdateInterval(900)`
 
 2. Crowdin Authorization is required for Real-Time Preview feature. Create connection using *Activity/Fragment* method *inMainActivity* class:
 
@@ -288,7 +288,7 @@ You can take a screenshots and automatically upload them tagged to Crowdin in tw
               .withSourceLanguage(source_language)
               .withAuthConfig(AuthConfig(client_id, client_secret, organization_name))
               .withNetworkType(network_type)                                           // optional
-              .withUpdateInterval(interval_in_millisec)                                // optional
+              .withUpdateInterval(interval_in_seconds)                                 // optional
               .build());
    }
    ```
@@ -303,7 +303,7 @@ You can take a screenshots and automatically upload them tagged to Crowdin in tw
    | `client_id`, `client_secret`   | Crowdin OAuth Client ID and Client Secret  | `"gpY2yC...cx3TYB"`, `"Xz95tfedd0A...TabEDx9T"`
    | `organization_name`            | An Organization domain name (for Crowdin Enterprise users only) | `"mycompany"`
    | `withNetworkType`              | Network type to be used for translations download | Acceptable values are `NetworkType.ALL`, `NetworkType.CELLULAR`, `NetworkType.WIFI`
-   | `withUpdateInterval`           | Translations update interval in milliseconds. The minimum and the default value is 15 minutes. Translations will be updated every defined time interval once per application load | `withUpdateInterval(900000)`
+   | `withUpdateInterval`           | Translations update interval in seconds. The minimum and the default value is 15 minutes. Translations will be updated every defined time interval once per application load | `withUpdateInterval(900)`
 
     **Note!** Using `Crowdin.registerScreenShotContentObserver(this)` (system buttons handler) for sending screenshots to Crowdin requires Storage permission for your app.
 
