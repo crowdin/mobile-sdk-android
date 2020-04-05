@@ -15,6 +15,7 @@ import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.data.remote.api.CrowdinTranslationApi
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
+import com.crowdin.platform.util.getFormattedCode
 import java.util.Locale
 import okhttp3.ResponseBody
 import org.junit.Before
@@ -107,7 +108,7 @@ class TranslationDataRepositoryTest {
             "",
             "testId",
             0,
-            BuildTranslationRequest(Locale.getDefault().language)
+            BuildTranslationRequest(Locale.getDefault().getFormattedCode())
         )
     }
 
@@ -184,7 +185,7 @@ class TranslationDataRepositoryTest {
                 "",
                 "testId",
                 0,
-                BuildTranslationRequest(Locale.getDefault().language)
+                BuildTranslationRequest(Locale.getDefault().getFormattedCode())
             )
         ).thenReturn(mockedCall)
 
