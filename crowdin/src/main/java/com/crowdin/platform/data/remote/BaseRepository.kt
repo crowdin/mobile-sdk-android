@@ -1,5 +1,6 @@
 package com.crowdin.platform.data.remote
 
+import com.crowdin.platform.util.getFormattedCode
 import java.util.Locale
 
 internal abstract class BaseRepository : RemoteRepository {
@@ -31,12 +32,7 @@ internal abstract class BaseRepository : RemoteRepository {
         val languageThreeLetterCode = locale.isO3Language
         val languageName = locale.getDisplayLanguage(Locale.ENGLISH)
         val country = locale.country
-        val formattedCode = if (country.isEmpty() || country == language.toUpperCase(locale)) {
-            language
-        } else {
-            "$language-$country"
-        }
-
+        val formattedCode = locale.getFormattedCode()
         var containsExportPattern = false
 
         for (element in listExportPattern) {

@@ -13,6 +13,7 @@ import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.data.remote.api.CrowdinTranslationApi
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.util.ThreadUtils
+import com.crowdin.platform.util.getFormattedCode
 import java.util.Locale
 import okhttp3.ResponseBody
 import org.xmlpull.v1.XmlPullParserFactory
@@ -77,12 +78,12 @@ internal class TranslationDataRepository(
         file: String
     ): LanguageData {
         var languageData = LanguageData()
-
+        val formattedCode = Locale.getDefault().getFormattedCode()
         crowdinApi.getTranslation(
             eTag,
             projectId,
             stringId,
-            BuildTranslationRequest(Locale.getDefault().language)
+            BuildTranslationRequest(formattedCode)
         ).execute().body()?.let { languageData = onTranslationReceived(it.data, file) }
 
         return languageData

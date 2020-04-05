@@ -1,6 +1,7 @@
 package com.crowdin.platform.util
 
 import android.content.res.Resources
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import androidx.annotation.MenuRes
@@ -22,4 +23,16 @@ fun Long.parseToDateTimeFormat(): String {
     val cal = Calendar.getInstance(TimeZone.getDefault())
     cal.timeInMillis = this
     return monthDate.format(cal.time)
+}
+
+fun Locale.getFormattedCode(): String {
+    val formattedLanguageCode = "$language-$country"
+    val resultValue = if (isSupported(formattedLanguageCode)) {
+        formattedLanguageCode
+    } else {
+        language
+    }
+    Log.d(Crowdin.CROWDIN_TAG, "Result language:$resultValue, Language:$language, Country:$country")
+
+    return resultValue
 }
