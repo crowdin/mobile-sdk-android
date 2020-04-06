@@ -59,7 +59,7 @@ class CrowdinConfig private constructor() {
         }
 
         fun withUpdateInterval(updateInterval: Long): Builder {
-            this.updateInterval = updateInterval
+            this.updateInterval = updateInterval * 1000
             return this
         }
 

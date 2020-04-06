@@ -14,7 +14,7 @@ class App : Application() {
         val distributionHash = "your_distribution_hash"
         val networkType = NetworkType.WIFI                  //  ALL, CELLULAR, WIFI
         val sourceLanguage = "source_language"
-        val intervalInMillisecond: Long = 18 * 60 * 1000    // 18 minutes
+        val intervalInSeconds: Long = 18 * 60               // 18 minutes
         val clientId = "your_client_id"
         val clientSecret = "your_client_secret"
         val organizationName = "your_organization_name"     // for Crowdin Enterprise users only
@@ -27,7 +27,7 @@ class App : Application() {
                 .withRealTimeUpdates()                                                  // optional
                 .withScreenshotEnabled()                                                // optional
                 .withSourceLanguage(sourceLanguage)                                     // optional
-                .withUpdateInterval(intervalInMillisecond)                              // optional
+                .withUpdateInterval(intervalInSeconds)                                  // optional
                 .withAuthConfig(AuthConfig(clientId, clientSecret, organizationName))   // optional
                 .build()
         )
