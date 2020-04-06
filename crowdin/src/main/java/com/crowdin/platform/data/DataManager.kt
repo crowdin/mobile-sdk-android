@@ -16,6 +16,7 @@ import com.crowdin.platform.data.remote.NetworkType
 import com.crowdin.platform.data.remote.RemoteRepository
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.ThreadUtils
+import com.crowdin.platform.util.getFormattedCode
 import java.lang.reflect.Type
 import java.util.Locale
 
@@ -97,15 +98,15 @@ internal class DataManager(
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             when {
                 stringData != null -> localRepository.setStringData(
-                    Locale.getDefault().language + SUF_COPY,
+                    Locale.getDefault().getFormattedCode() + SUF_COPY,
                     stringData
                 )
                 arrayData != null -> localRepository.setArrayData(
-                    Locale.getDefault().language + SUF_COPY,
+                    Locale.getDefault().getFormattedCode() + SUF_COPY,
                     arrayData
                 )
                 pluralData != null -> localRepository.setPluralData(
-                    Locale.getDefault().language + SUF_COPY,
+                    Locale.getDefault().getFormattedCode() + SUF_COPY,
                     pluralData
                 )
             }
