@@ -1,5 +1,6 @@
 package com.crowdin.platform.data.remote
 
+import com.crowdin.platform.util.getFormattedCode
 import java.util.Locale
 
 internal abstract class BaseRepository : RemoteRepository {
@@ -31,7 +32,7 @@ internal abstract class BaseRepository : RemoteRepository {
         val languageThreeLetterCode = locale.isO3Language
         val languageName = locale.getDisplayLanguage(Locale.ENGLISH)
         val country = locale.country
-
+        val formattedCode = locale.getFormattedCode()
         var containsExportPattern = false
 
         for (element in listExportPattern) {
@@ -43,9 +44,9 @@ internal abstract class BaseRepository : RemoteRepository {
 
         if (!containsExportPattern) {
             return if (path.startsWith("/")) {
-                "/$language$path"
+                "/$formattedCode$path"
             } else {
-                "/$language/$path"
+                "/$formattedCode/$path"
             }
         }
 

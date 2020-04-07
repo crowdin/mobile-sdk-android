@@ -15,6 +15,7 @@ import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager.Companion.PLURA
 import com.crowdin.platform.transformer.ViewTransformerManager
 import com.crowdin.platform.transformer.ViewsChangeListener
 import com.crowdin.platform.util.ThreadUtils
+import com.crowdin.platform.util.getFormattedCode
 import com.google.gson.Gson
 import java.lang.ref.WeakReference
 import java.util.Locale
@@ -114,7 +115,7 @@ internal class EchoWebSocketListener(
                 project.wsHash,
                 project.id,
                 user.id,
-                Locale.getDefault().language,
+                Locale.getDefault().getFormattedCode(),
                 mappingValue
             )
                 .toString()
@@ -124,7 +125,7 @@ internal class EchoWebSocketListener(
             SubscribeSuggestionEvent(
                 project.wsHash,
                 project.id,
-                Locale.getDefault().language,
+                Locale.getDefault().getFormattedCode(),
                 mappingValue
             )
                 .toString()

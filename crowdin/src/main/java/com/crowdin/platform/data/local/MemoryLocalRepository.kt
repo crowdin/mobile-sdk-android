@@ -6,6 +6,7 @@ import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.model.TextMetaData
+import com.crowdin.platform.util.getFormattedCode
 import java.lang.reflect.Type
 import java.util.IllegalFormatConversionException
 import java.util.Locale
@@ -123,7 +124,7 @@ internal class MemoryLocalRepository : LocalRepository {
         val languageData = stringsData[Locale.getDefault().toString()]
         searchInResources(languageData, text, textMetaData)
 
-        val languageReserveData = stringsData[Locale.getDefault().language + DataManager.SUF_COPY]
+        val languageReserveData = stringsData[Locale.getDefault().getFormattedCode() + DataManager.SUF_COPY]
         searchInResources(languageReserveData, text, textMetaData)
 
         return textMetaData

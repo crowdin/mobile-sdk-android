@@ -9,6 +9,7 @@ import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.remote.RemoteRepository
 import com.crowdin.platform.util.FeatureFlags
+import com.crowdin.platform.util.getFormattedCode
 import java.lang.reflect.Type
 import java.util.Locale
 import org.hamcrest.CoreMatchers.`is`
@@ -131,7 +132,7 @@ class DataManagerTest {
         val dataManager = givenDataManager()
         val mockStringData = mock(StringData::class.java)
         Locale.setDefault(Locale.US)
-        val expectedLanguage = Locale.getDefault().language + "-copy"
+        val expectedLanguage = Locale.getDefault().getFormattedCode() + "-copy"
 
         // When
         dataManager.saveReserveResources(mockStringData)
@@ -149,7 +150,7 @@ class DataManagerTest {
         val dataManager = givenDataManager()
         val mockArrayData = mock(ArrayData::class.java)
         Locale.setDefault(Locale.US)
-        val expectedLanguage = Locale.getDefault().language + "-copy"
+        val expectedLanguage = Locale.getDefault().getFormattedCode() + "-copy"
 
         // When
         dataManager.saveReserveResources(arrayData = mockArrayData)
@@ -167,7 +168,7 @@ class DataManagerTest {
         val dataManager = givenDataManager()
         val mockPluralData = mock(PluralData::class.java)
         Locale.setDefault(Locale.US)
-        val expectedLanguage = Locale.getDefault().language + "-copy"
+        val expectedLanguage = Locale.getDefault().getFormattedCode() + "-copy"
 
         // When
         dataManager.saveReserveResources(pluralData = mockPluralData)
