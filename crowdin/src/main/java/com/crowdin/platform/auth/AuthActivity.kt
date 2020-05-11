@@ -96,14 +96,12 @@ internal class AuthActivity : AppCompatActivity() {
                     val uri = Uri.parse(url)
                     val code = uri.getQueryParameter("code") ?: ""
                     handleCode(code)
-
                 } else {
                     view.stopLoading()
                     finish()
                 }
                 return false
             }
-
         }
         webView.loadUrl(url)
     }
