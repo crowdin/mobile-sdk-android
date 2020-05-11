@@ -50,7 +50,7 @@ internal class TranslationDataRepository(
     }
 
     private fun onFilesReceived(files: List<String>, body: FileResponse, projectId: String) {
-        val languageData = LanguageData(Locale.getDefault().toString())
+        val languageData = LanguageData(Locale.getDefault().getFormattedCode())
 
         files.forEach { file ->
             body.data.forEach {

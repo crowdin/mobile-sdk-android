@@ -8,6 +8,7 @@ import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.ThreadUtils
+import com.crowdin.platform.util.getFormattedCode
 import java.net.HttpURLConnection
 import java.util.Locale
 import okhttp3.ResponseBody
@@ -31,7 +32,7 @@ internal class StringDataRemoteRepository(
         languageDataCallback: LanguageDataCallback?
     ) {
         // Combine all data before save to storage
-        val languageData = LanguageData(Locale.getDefault().toString())
+        val languageData = LanguageData(Locale.getDefault().getFormattedCode())
 
         manifest.files.forEach {
             val filePath = validateFilePath(it, Locale.getDefault())

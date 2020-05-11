@@ -40,6 +40,9 @@ internal class DataManager(
 
     override fun provideTextMetaData(text: String): TextMetaData = localRepository.getTextData(text)
 
+    fun getLanguageData(language: String): LanguageData? =
+        localRepository.getLanguageData(language)
+
     fun getString(language: String, stringKey: String): String? =
         localRepository.getString(language, stringKey)
 

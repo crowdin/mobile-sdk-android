@@ -8,6 +8,7 @@ import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
+import com.crowdin.platform.util.getFormattedCode
 import java.util.Locale
 
 /**
@@ -148,7 +149,7 @@ internal class CrowdinResources(
     private fun getStringFromRepository(id: Int): String? =
         try {
             val entryName = getResourceEntryName(id)
-            dataManager.getString(Locale.getDefault().toString(), entryName)
+            dataManager.getString(Locale.getDefault().getFormattedCode(), entryName)
         } catch (ex: NotFoundException) {
             null
         }

@@ -7,6 +7,10 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -23,7 +27,6 @@ import kotlinx.android.synthetic.main.auth_layout.*
 internal class AuthActivity : AppCompatActivity() {
 
     private var event: String? = null
-    private var authAttemptCounter = 0
     private lateinit var clientId: String
     private lateinit var clientSecret: String
     private var domain: String? = null
@@ -41,23 +44,19 @@ internal class AuthActivity : AppCompatActivity() {
         @JvmStatic
         @JvmOverloads
         fun launchActivity(activity: Activity, type: String? = null) {
+            if (Crowdin.isAuthorized()) {
+                return
+            }
+
             val intent = Intent(activity, AuthActivity::class.java)
             type?.let { intent.putExtra(EVENT_TYPE, type) }
             activity.startActivity(intent)
         }
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        val data = intent?.data
-        val code = data?.getQueryParameter("code") ?: ""
-        handleCode(code)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.auth_layout)
-        statusTextView.text = getString(R.string.authorizing)
 
         if (Crowdin.isAuthorized()) {
             Crowdin.tryCreateRealTimeConnection()
@@ -75,22 +74,38 @@ internal class AuthActivity : AppCompatActivity() {
         clientSecret = authConfig?.clientSecret ?: ""
         domain = authConfig?.organizationName
 
-        if (authAttemptCounter != AUTH_ATTEMPT_THRESHOLD) {
-            val builder = Uri.Builder()
-                .scheme("https")
-                .authority("accounts.crowdin.com")
-                .appendPath("oauth")
-                .appendPath("authorize")
-                .encodedQuery("client_id=$clientId&response_type=code&scope=project&redirect_uri=crowdintest://")
+        val builder = Uri.Builder()
+            .scheme("https")
+            .authority("accounts.crowdin.com")
+            .appendPath("oauth")
+            .appendPath("authorize")
+            .encodedQuery("client_id=$clientId&response_type=code&scope=project&redirect_uri=$REDIRECT_URI")
 
-            domain?.let { builder.appendQueryParameter(DOMAIN, it) }
-            val url = builder.build().toString()
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(browserIntent)
-            authAttemptCounter++
-        } else {
-            requestPermission()
+        domain?.let { builder.appendQueryParameter(DOMAIN, it) }
+        val url = builder.build().toString()
+
+        webView.webChromeClient = WebChromeClient()
+        webView.webViewClient = object : WebViewClient() {
+
+            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                view.loadUrl(url)
+
+                if (url.startsWith("http") || url.startsWith("https")) {
+                    return true
+                } else if (url.startsWith(REDIRECT_URI)) {
+                    val uri = Uri.parse(url)
+                    val code = uri.getQueryParameter("code") ?: ""
+                    handleCode(code)
+
+                } else {
+                    view.stopLoading()
+                    finish()
+                }
+                return false
+            }
+
         }
+        webView.loadUrl(url)
     }
 
     override fun onRequestPermissionsResult(
@@ -106,7 +121,7 @@ internal class AuthActivity : AppCompatActivity() {
 
     private fun handleCode(code: String) {
         if (code.isNotEmpty()) {
-            statusTextView.text = getString(R.string.loading)
+            progressView.visibility = View.VISIBLE
             ThreadUtils.runInBackgroundPool(Runnable {
                 val apiService = CrowdinRetrofitService.getCrowdinAuthApi()
                 val response = apiService.getToken(

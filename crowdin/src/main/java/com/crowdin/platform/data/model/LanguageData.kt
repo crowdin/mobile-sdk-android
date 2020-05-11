@@ -1,5 +1,7 @@
 package com.crowdin.platform.data.model
 
+import com.crowdin.platform.util.convertToJson
+
 internal class LanguageData(var language: String) {
 
     constructor() : this("")
@@ -20,5 +22,9 @@ internal class LanguageData(var language: String) {
         resources.addAll(languageData.resources)
         arrays.addAll(languageData.arrays)
         plurals.addAll(languageData.plurals)
+    }
+
+    override fun toString(): String {
+        return convertToJson(this)
     }
 }
