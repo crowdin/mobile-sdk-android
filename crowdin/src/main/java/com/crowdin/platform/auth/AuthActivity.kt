@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -88,19 +89,25 @@ internal class AuthActivity : AppCompatActivity() {
         webView.webViewClient = object : WebViewClient() {
 
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                view.loadUrl(url)
-
-                if (url.startsWith("http") || url.startsWith("https")) {
-                    return true
-                } else if (url.startsWith(REDIRECT_URI)) {
+                if (url.startsWith(REDIRECT_URI)) {
                     val uri = Uri.parse(url)
                     val code = uri.getQueryParameter("code") ?: ""
                     handleCode(code)
-                } else {
-                    view.stopLoading()
-                    finish()
                 }
+
                 return false
+            }
+
+            override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
+                progressView.visibility = View.VISIBLE
+                super.onPageStarted(view, url, favicon)
+            }
+
+            override fun onPageFinished(view: WebView, url: String) {
+                if (!url.startsWith(REDIRECT_URI)) {
+                    progressView.visibility = View.GONE
+                }
+                super.onPageFinished(view, url)
             }
         }
         webView.loadUrl(url)
