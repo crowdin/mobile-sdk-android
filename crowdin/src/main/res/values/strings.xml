@@ -2,4 +2,8 @@
 <resources>
     <string name="authorizing">Authorizing…</string>
     <string name="loading">Loading…</string>
+    <string name="auth_dialog_title">Crowdin SDK</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="auth_dialog_desc">Crowdin Authorization is required for Real-Time Preview and Screenshot features. You will be redirected to authorization page.</string>
 </resources>

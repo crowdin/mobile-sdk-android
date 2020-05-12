@@ -34,6 +34,7 @@ import com.crowdin.platform.transformer.ToolbarTransformer
 import com.crowdin.platform.transformer.ViewTransformerManager
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.TextUtils
+import com.crowdin.platform.util.createAuthDialog
 
 /**
  * Entry point for Crowdin. it will be used for setting new strings, wrapping activity context.
@@ -287,11 +288,13 @@ object Crowdin {
             return
         }
 
-        var type: String? = null
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
-            type = AuthActivity.EVENT_REAL_TIME_UPDATES
+        createAuthDialog(activity) {
+            var type: String? = null
+            if (FeatureFlags.isRealTimeUpdateEnabled) {
+                type = AuthActivity.EVENT_REAL_TIME_UPDATES
+            }
+            AuthActivity.launchActivity(activity, type)
         }
-        AuthActivity.launchActivity(activity, type)
     }
 
     internal fun isAuthorized(): Boolean {
