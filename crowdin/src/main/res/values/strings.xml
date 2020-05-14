@@ -5,5 +5,5 @@
     <string name="auth_dialog_title">Crowdin SDK</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
-    <string name="auth_dialog_desc">Crowdin Authorization is required for Real-Time Preview and Screenshot features. You will be redirected to authorization page.</string>
+    <string name="auth_dialog_desc">The Real-Time Preview and Screenshots features require Crowdin Authorization. You will now be redirected to the Crowdin login page.</string>
 </resources>

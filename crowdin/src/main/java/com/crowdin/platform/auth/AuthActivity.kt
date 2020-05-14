@@ -22,12 +22,12 @@ import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.TokenRequest
 import com.crowdin.platform.data.remote.CrowdinRetrofitService
+import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.ThreadUtils
 import kotlinx.android.synthetic.main.auth_layout.*
 
 internal class AuthActivity : AppCompatActivity() {
 
-    private var event: String? = null
     private lateinit var clientId: String
     private lateinit var clientSecret: String
     private var domain: String? = null
@@ -36,21 +36,12 @@ internal class AuthActivity : AppCompatActivity() {
 
         private const val PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1330
         private const val DOMAIN = "domain"
-        private const val AUTH_ATTEMPT_THRESHOLD = 1
-        private const val EVENT_TYPE = "type"
-        const val EVENT_REAL_TIME_UPDATES = "realtime_update"
         private const val GRANT_TYPE = "authorization_code"
         private const val REDIRECT_URI = "crowdintest://"
 
         @JvmStatic
-        @JvmOverloads
-        fun launchActivity(activity: Activity, type: String? = null) {
-            if (Crowdin.isAuthorized()) {
-                return
-            }
-
+        fun launchActivity(activity: Activity) {
             val intent = Intent(activity, AuthActivity::class.java)
-            type?.let { intent.putExtra(EVENT_TYPE, type) }
             activity.startActivity(intent)
         }
     }
@@ -68,8 +59,6 @@ internal class AuthActivity : AppCompatActivity() {
     }
 
     private fun requestAuthorization() {
-        event = intent.getStringExtra(EVENT_TYPE)
-
         val authConfig = Crowdin.getAuthConfig()
         clientId = authConfig?.clientId ?: ""
         clientSecret = authConfig?.clientSecret ?: ""
@@ -138,7 +127,7 @@ internal class AuthActivity : AppCompatActivity() {
 
                 if (response.isSuccessful && response.body() != null) {
                     Crowdin.saveAuthInfo(AuthInfo(response.body()!!))
-                    getDistributionInfo(event)
+                    getDistributionInfo()
                 } else {
                     runOnUiThread {
                         Toast.makeText(this, "Not authenticated.", Toast.LENGTH_LONG).show()
@@ -152,10 +141,10 @@ internal class AuthActivity : AppCompatActivity() {
         }
     }
 
-    private fun getDistributionInfo(event: String?) {
+    private fun getDistributionInfo() {
         Crowdin.getDistributionInfo(object : DistributionInfoCallback {
             override fun onResponse() {
-                if (event == EVENT_REAL_TIME_UPDATES) {
+                if (FeatureFlags.isRealTimeUpdateEnabled) {
                     Crowdin.tryCreateRealTimeConnection()
                 }
                 requestPermission()

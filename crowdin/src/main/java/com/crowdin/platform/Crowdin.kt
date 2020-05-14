@@ -288,12 +288,10 @@ object Crowdin {
             return
         }
 
-        createAuthDialog(activity) {
-            var type: String? = null
-            if (FeatureFlags.isRealTimeUpdateEnabled) {
-                type = AuthActivity.EVENT_REAL_TIME_UPDATES
-            }
-            AuthActivity.launchActivity(activity, type)
+        if (isAuthorized()) {
+            tryCreateRealTimeConnection()
+        } else {
+            createAuthDialog(activity) { AuthActivity.launchActivity(activity) }
         }
     }
 
