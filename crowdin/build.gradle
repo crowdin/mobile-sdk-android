@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 apply from: '../jacoco.gradle'
 
 ext {
-    libraryVersionCode = 5
+    libraryVersionCode = 6
     libraryVersionName = "1.1.4"
 
     bintrayRepo = 'mobile-sdk'
