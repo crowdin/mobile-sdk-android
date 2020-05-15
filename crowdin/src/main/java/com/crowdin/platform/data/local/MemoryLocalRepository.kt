@@ -97,7 +97,7 @@ internal class MemoryLocalRepository : LocalRepository {
         }
 
     override fun getStringArray(key: String): Array<String>? {
-        stringsData[Locale.getDefault().toString()]?.arrays?.forEach { array ->
+        stringsData[Locale.getDefault().getFormattedCode()]?.arrays?.forEach { array ->
             if (array.name == key) {
                 return array.values
             }
@@ -106,7 +106,7 @@ internal class MemoryLocalRepository : LocalRepository {
     }
 
     override fun getStringPlural(resourceKey: String, quantityKey: String): String? {
-        stringsData[Locale.getDefault().toString()]?.plurals?.forEach { pluralData ->
+        stringsData[Locale.getDefault().getFormattedCode()]?.plurals?.forEach { pluralData ->
             if (pluralData.name == resourceKey) {
                 return pluralData.quantity[quantityKey]
             }
@@ -121,10 +121,11 @@ internal class MemoryLocalRepository : LocalRepository {
     override fun getTextData(text: String): TextMetaData {
         val textMetaData = TextMetaData()
 
-        val languageData = stringsData[Locale.getDefault().toString()]
+        val languageData = stringsData[Locale.getDefault().getFormattedCode()]
         searchInResources(languageData, text, textMetaData)
 
-        val languageReserveData = stringsData[Locale.getDefault().getFormattedCode() + DataManager.SUF_COPY]
+        val languageReserveData =
+            stringsData[Locale.getDefault().getFormattedCode() + DataManager.SUF_COPY]
         searchInResources(languageReserveData, text, textMetaData)
 
         return textMetaData

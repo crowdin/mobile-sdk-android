@@ -34,6 +34,7 @@ import com.crowdin.platform.transformer.ToolbarTransformer
 import com.crowdin.platform.transformer.ViewTransformerManager
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.TextUtils
+import com.crowdin.platform.util.createAuthDialog
 
 /**
  * Entry point for Crowdin. it will be used for setting new strings, wrapping activity context.
@@ -103,13 +104,59 @@ object Crowdin {
     /**
      * Set a single string for a language.
      *
-     * @param language the string is for.
+     * @param language language code. For example en, en-GB, en-US etc.
+     *                  https://support.crowdin.com/api/language-codes/
      * @param key the string key.
      * @param value the string value.
      */
     @JvmStatic
     fun setString(language: String, key: String, value: String) {
         dataManager?.setString(language, key, value)
+    }
+
+    /**
+     * Get a single string for a language.
+     *
+     * @param language language code. For example en, en-GB, en-US etc.
+     *                  https://support.crowdin.com/api/language-codes/
+     * @param key the string key.
+     * @return resource or empty string.
+     */
+    @JvmStatic
+    fun getString(language: String, key: String): String {
+        return dataManager?.getString(language, key) ?: ""
+    }
+
+    /**
+     * Get a json string for a language data. Including strings/arrays/plurals.
+     *
+     * @param language language code. For example en, en-GB, en-US etc.
+     *                  https://support.crowdin.com/api/language-codes/
+     * @return json or empty string. Example:
+     *
+     *  {
+     *      "language":"de",
+     *      "strings":{
+     *          "stringKey0":"Text0",
+     *          "stringKey1":"Text1"
+     *      },
+     *      "arrays":{
+     *          "arrayKey0":[
+     *              "Monday",
+     *              "Wednesday"
+     *          ]
+     *      },
+     *      "plurals":{
+     *          "pluralsKey":{
+     *              "one":"Text0",
+     *              "other":"Text1"
+     *          }
+     *      }
+     *  }
+     */
+    @JvmStatic
+    fun getResources(language: String): String {
+        return dataManager?.getLanguageData(language).toString()
     }
 
     /**
@@ -237,11 +284,15 @@ object Crowdin {
      */
     @JvmStatic
     fun authorize(activity: Activity) {
-        var type: String? = null
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
-            type = AuthActivity.EVENT_REAL_TIME_UPDATES
+        if (!FeatureFlags.isRealTimeUpdateEnabled || !FeatureFlags.isScreenshotEnabled) {
+            return
         }
-        AuthActivity.launchActivity(activity, type)
+
+        if (isAuthorized()) {
+            tryCreateRealTimeConnection()
+        } else {
+            createAuthDialog(activity) { AuthActivity.launchActivity(activity) }
+        }
     }
 
     internal fun isAuthorized(): Boolean {

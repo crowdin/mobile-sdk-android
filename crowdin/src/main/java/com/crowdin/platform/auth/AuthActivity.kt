@@ -4,9 +4,14 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -17,13 +22,12 @@ import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.TokenRequest
 import com.crowdin.platform.data.remote.CrowdinRetrofitService
+import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.ThreadUtils
 import kotlinx.android.synthetic.main.auth_layout.*
 
 internal class AuthActivity : AppCompatActivity() {
 
-    private var event: String? = null
-    private var authAttemptCounter = 0
     private lateinit var clientId: String
     private lateinit var clientSecret: String
     private var domain: String? = null
@@ -32,32 +36,19 @@ internal class AuthActivity : AppCompatActivity() {
 
         private const val PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1330
         private const val DOMAIN = "domain"
-        private const val AUTH_ATTEMPT_THRESHOLD = 1
-        private const val EVENT_TYPE = "type"
-        const val EVENT_REAL_TIME_UPDATES = "realtime_update"
         private const val GRANT_TYPE = "authorization_code"
         private const val REDIRECT_URI = "crowdintest://"
 
         @JvmStatic
-        @JvmOverloads
-        fun launchActivity(activity: Activity, type: String? = null) {
+        fun launchActivity(activity: Activity) {
             val intent = Intent(activity, AuthActivity::class.java)
-            type?.let { intent.putExtra(EVENT_TYPE, type) }
             activity.startActivity(intent)
         }
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        val data = intent?.data
-        val code = data?.getQueryParameter("code") ?: ""
-        handleCode(code)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.auth_layout)
-        statusTextView.text = getString(R.string.authorizing)
 
         if (Crowdin.isAuthorized()) {
             Crowdin.tryCreateRealTimeConnection()
@@ -68,29 +59,47 @@ internal class AuthActivity : AppCompatActivity() {
     }
 
     private fun requestAuthorization() {
-        event = intent.getStringExtra(EVENT_TYPE)
-
         val authConfig = Crowdin.getAuthConfig()
         clientId = authConfig?.clientId ?: ""
         clientSecret = authConfig?.clientSecret ?: ""
         domain = authConfig?.organizationName
 
-        if (authAttemptCounter != AUTH_ATTEMPT_THRESHOLD) {
-            val builder = Uri.Builder()
-                .scheme("https")
-                .authority("accounts.crowdin.com")
-                .appendPath("oauth")
-                .appendPath("authorize")
-                .encodedQuery("client_id=$clientId&response_type=code&scope=project&redirect_uri=crowdintest://")
+        val builder = Uri.Builder()
+            .scheme("https")
+            .authority("accounts.crowdin.com")
+            .appendPath("oauth")
+            .appendPath("authorize")
+            .encodedQuery("client_id=$clientId&response_type=code&scope=project&redirect_uri=$REDIRECT_URI")
 
-            domain?.let { builder.appendQueryParameter(DOMAIN, it) }
-            val url = builder.build().toString()
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(browserIntent)
-            authAttemptCounter++
-        } else {
-            requestPermission()
+        domain?.let { builder.appendQueryParameter(DOMAIN, it) }
+        val url = builder.build().toString()
+
+        webView.webChromeClient = WebChromeClient()
+        webView.webViewClient = object : WebViewClient() {
+
+            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                if (url.startsWith(REDIRECT_URI)) {
+                    val uri = Uri.parse(url)
+                    val code = uri.getQueryParameter("code") ?: ""
+                    handleCode(code)
+                }
+
+                return false
+            }
+
+            override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
+                progressView.visibility = View.VISIBLE
+                super.onPageStarted(view, url, favicon)
+            }
+
+            override fun onPageFinished(view: WebView, url: String) {
+                if (!url.startsWith(REDIRECT_URI)) {
+                    progressView.visibility = View.GONE
+                }
+                super.onPageFinished(view, url)
+            }
         }
+        webView.loadUrl(url)
     }
 
     override fun onRequestPermissionsResult(
@@ -106,7 +115,7 @@ internal class AuthActivity : AppCompatActivity() {
 
     private fun handleCode(code: String) {
         if (code.isNotEmpty()) {
-            statusTextView.text = getString(R.string.loading)
+            progressView.visibility = View.VISIBLE
             ThreadUtils.runInBackgroundPool(Runnable {
                 val apiService = CrowdinRetrofitService.getCrowdinAuthApi()
                 val response = apiService.getToken(
@@ -118,7 +127,7 @@ internal class AuthActivity : AppCompatActivity() {
 
                 if (response.isSuccessful && response.body() != null) {
                     Crowdin.saveAuthInfo(AuthInfo(response.body()!!))
-                    getDistributionInfo(event)
+                    getDistributionInfo()
                 } else {
                     runOnUiThread {
                         Toast.makeText(this, "Not authenticated.", Toast.LENGTH_LONG).show()
@@ -132,10 +141,10 @@ internal class AuthActivity : AppCompatActivity() {
         }
     }
 
-    private fun getDistributionInfo(event: String?) {
+    private fun getDistributionInfo() {
         Crowdin.getDistributionInfo(object : DistributionInfoCallback {
             override fun onResponse() {
-                if (event == EVENT_REAL_TIME_UPDATES) {
+                if (FeatureFlags.isRealTimeUpdateEnabled) {
                     Crowdin.tryCreateRealTimeConnection()
                 }
                 requestPermission()

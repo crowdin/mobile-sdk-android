@@ -8,7 +8,7 @@
         <activity
             android:name=".auth.AuthActivity"
             android:launchMode="singleInstance"
-            android:theme="@style/Transparent">
+            android:theme="@style/AuthTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
