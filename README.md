@@ -14,8 +14,7 @@ The SDK provides:
 
 [![Download](https://api.bintray.com/packages/crowdin/mobile-sdk/mobile-sdk-android/images/download.svg?version=1.1.4)](https://bintray.com/crowdin/mobile-sdk/mobile-sdk-android/1.1.4/link)
 [![GitHub issues](https://img.shields.io/github/issues/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/issues)
-[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/graphs/commit-activity)
-[![GitHub last commit](https://img.shields.io/github/last-commit/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/commits/master)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/releases/latest)
 [![GitHub contributors](https://img.shields.io/github/contributors/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/graphs/contributors)
 [![GitHub](https://img.shields.io/github/license/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/blob/master/LICENSE)
 
