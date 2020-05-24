@@ -295,22 +295,12 @@ object Crowdin {
         }
     }
 
-    internal fun isAuthorized(): Boolean {
-        dataManager?.let {
-            val oldHash = it.getDistributionHash()
-            val newHash = config.distributionHash
-            it.saveDistributionHash(newHash)
-
-            return it.isAuthorized() && (oldHash == null || oldHash == newHash)
-        }
-
-        return false
-    }
-
-    internal fun tryCreateRealTimeConnection() {
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
-            realTimeUpdateManager?.openConnection()
-        }
+    /**
+     * Open realtime update connection.
+     */
+    @JvmStatic
+    fun connectRealTimeUpdates() {
+        tryCreateRealTimeConnection()
     }
 
     /**
@@ -318,10 +308,7 @@ object Crowdin {
      */
     @JvmStatic
     fun disconnectRealTimeUpdates() {
-        realTimeUpdateManager?.let {
-            it.closeConnection()
-            realTimeUpdateManager = null
-        }
+        realTimeUpdateManager?.closeConnection()
     }
 
     /**
@@ -341,6 +328,24 @@ object Crowdin {
     @JvmStatic
     fun unregisterShakeDetector() {
         shakeDetectorManager?.unregisterShakeDetector()
+    }
+
+    internal fun isAuthorized(): Boolean {
+        dataManager?.let {
+            val oldHash = it.getDistributionHash()
+            val newHash = config.distributionHash
+            it.saveDistributionHash(newHash)
+
+            return it.isAuthorized() && (oldHash == null || oldHash == newHash)
+        }
+
+        return false
+    }
+
+    internal fun tryCreateRealTimeConnection() {
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
+            realTimeUpdateManager?.openConnection()
+        }
     }
 
     internal fun saveAuthInfo(authInfo: AuthInfo?) {
