@@ -32,7 +32,7 @@ fun createAuthDialog(context: Context, positiveAction: (() -> Unit)) {
     // Initially view will be added to top-left corner
     params.gravity = Gravity.CENTER
 
-    //Add the view to the window
+    // Add the view to the window
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     windowManager.addView(floatingView, params)
 
