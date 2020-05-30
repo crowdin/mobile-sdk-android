@@ -339,6 +339,7 @@ object Crowdin {
      */
     fun logOut() {
         dataManager?.invalidateAuthData()
+        disconnectRealTimeUpdates()
     }
 
     fun isAuthorized(): Boolean {
