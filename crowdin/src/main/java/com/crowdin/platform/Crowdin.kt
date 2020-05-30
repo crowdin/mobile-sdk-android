@@ -102,6 +102,15 @@ object Crowdin {
         }
 
     /**
+     * Reload translations after configurations has changed.
+     */
+    fun onConfigurationChanged() {
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
+            loadTranslation()
+        }
+    }
+
+    /**
      * Set a single string for a language.
      *
      * @param language language code. For example en, en-GB, en-US etc.

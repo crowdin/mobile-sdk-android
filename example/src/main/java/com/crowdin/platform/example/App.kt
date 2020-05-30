@@ -1,6 +1,7 @@
 package com.crowdin.platform.example
 
 import android.app.Application
+import android.content.res.Configuration
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.CrowdinConfig
 import com.crowdin.platform.data.model.AuthConfig
@@ -34,5 +35,10 @@ class App : Application() {
 
         // Using system buttons to take screenshot automatically will upload them to crowdin.
         Crowdin.registerScreenShotContentObserver(this)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        Crowdin.onConfigurationChanged()
     }
 }
