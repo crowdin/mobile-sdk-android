@@ -5,4 +5,6 @@
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="auth_dialog_desc">The Real-Time Preview and Screenshots features require Crowdin Authorization. You will now be redirected to the Crowdin login page.</string>
+    <string name="auth_dialog_cancel">Cancel</string>
+    <string name="auth_dialog_ok">Ok</string>
 </resources>

@@ -326,20 +326,40 @@ object Crowdin {
      * Auth to Crowdin platform. Create connection for realtime updates if feature turned on.
      */
     @JvmStatic
-    fun authorize(activity: Activity) {
-        if (isAuthorized()) {
-            tryCreateRealTimeConnection()
-        } else if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
-            createAuthDialog(activity) { AuthActivity.launchActivity(activity) }
+    fun authorize(context: Context) {
+        if ((FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled)
+            && !isAuthorized()
+        ) {
+            createAuthDialog(context) { AuthActivity.launchActivity(context) }
         }
     }
 
     /**
-     * Open realtime update connection.
+     * Logs out from Crowdin platform.
      */
-    @JvmStatic
-    fun connectRealTimeUpdates() {
-        tryCreateRealTimeConnection()
+    fun logOut() {
+        dataManager?.invalidateAuthData()
+    }
+
+    fun isAuthorized(): Boolean {
+        dataManager?.let {
+            val oldHash = it.getDistributionHash()
+            val newHash = config.distributionHash
+            it.saveDistributionHash(newHash)
+
+            return it.isAuthorized() && (oldHash == null || oldHash == newHash)
+        }
+
+        return false
+    }
+
+    /**
+     * Create realtime update connection.
+     */
+    fun createRealTimeConnection() {
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
+            realTimeUpdateManager?.openConnection()
+        }
     }
 
     /**
@@ -349,6 +369,11 @@ object Crowdin {
     fun disconnectRealTimeUpdates() {
         realTimeUpdateManager?.closeConnection()
     }
+
+    /**
+     * Return `real-time` feature enable state. true - enabled, false - disabled.
+     */
+    fun isRealTimeUpdatesEnabled(): Boolean = realTimeUpdateManager?.isConnectionCreated ?: false
 
     /**
      * Register shake detector. Will trigger force update on shake event.
@@ -367,24 +392,6 @@ object Crowdin {
     @JvmStatic
     fun unregisterShakeDetector() {
         shakeDetectorManager?.unregisterShakeDetector()
-    }
-
-    internal fun isAuthorized(): Boolean {
-        dataManager?.let {
-            val oldHash = it.getDistributionHash()
-            val newHash = config.distributionHash
-            it.saveDistributionHash(newHash)
-
-            return it.isAuthorized() && (oldHash == null || oldHash == newHash)
-        }
-
-        return false
-    }
-
-    internal fun tryCreateRealTimeConnection() {
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
-            realTimeUpdateManager?.openConnection()
-        }
     }
 
     internal fun saveAuthInfo(authInfo: AuthInfo?) {

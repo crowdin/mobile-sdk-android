@@ -1,5 +1,6 @@
 package com.crowdin.platform.example
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -19,6 +20,9 @@ import com.crowdin.platform.example.fragments.ShareFragment
 import com.crowdin.platform.example.fragments.SlideshowFragment
 import com.crowdin.platform.example.fragments.ToolsFragment
 import com.crowdin.platform.util.inflateWithCrowdin
+import com.example.crowdin_controls.destroyCrowdinControl
+import com.example.crowdin_controls.initCrowdinControl
+import com.example.crowdin_controls.onActivityResult
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -62,11 +66,22 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         // Observe data loading.
         Crowdin.registerDataLoadingObserver(dataLoadingObserver)
 
-        // Crowdin Auth. required for screenshot/realtime update functionality.
-        Crowdin.authorize(this)
-
         // Simple device shake detector. Could be used for triggering force update.
         Crowdin.registerShakeDetector(this)
+
+//      Java
+//      CrowdinControlUtil.initCrowdinControl(this);
+
+        // Init Crowdin SDK overlay controls
+        initCrowdinControl(this)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        onActivityResult(this, requestCode)
+
+//      Java
+//      CrowdinControlUtil.onActivityResult(this, requestCode);
     }
 
     override fun onDestroy() {
@@ -74,11 +89,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         // Remove data loading observer.
         Crowdin.unregisterDataLoadingObserver(dataLoadingObserver)
 
-        // Close connection with crowdin.
-        Crowdin.disconnectRealTimeUpdates()
-
         // Remove shake detector listener.
         Crowdin.unregisterShakeDetector()
+
+        // Destroy crowdin overlay view.
+        destroyCrowdinControl(this)
+//      Java
+//      CrowdinControlUtil.destroyCrowdinControl(this);
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

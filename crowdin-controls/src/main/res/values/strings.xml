@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">
+
+    <string name="logged_out">Logged out</string>
+    <string name="logged_in">Logged in</string>
+    <string name="realtimepreview_off">Real-time off</string>
+    <string name="realtimepreview_on">Real-time on</string>
+</resources>

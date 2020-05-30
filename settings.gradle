@@ -1,1 +1,2 @@
+include ':crowdin-controls'
 include ':example', ':crowdin'
