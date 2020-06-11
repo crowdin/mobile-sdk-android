@@ -5,4 +5,6 @@
     <string name="logged_in">Logged in</string>
     <string name="realtimepreview_off">Real-time off</string>
     <string name="realtimepreview_on">Real-time on</string>
+    <string name="capture_screenshot">Capture screenshot</string>
+    <string name="force_reload">Force reload</string>
 </resources>

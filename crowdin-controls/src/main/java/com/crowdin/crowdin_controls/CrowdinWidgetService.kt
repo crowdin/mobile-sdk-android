@@ -1,9 +1,11 @@
-package com.example.crowdin_controls
+package com.crowdin.crowdin_controls
 
 import android.app.Activity
 import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.IBinder
@@ -13,12 +15,16 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import android.widget.ToggleButton
 import com.crowdin.platform.Crowdin
+import com.crowdin.platform.LoadingStateListener
+import com.crowdin.platform.screenshot.ScreenshotCallback
+import java.lang.ref.WeakReference
 
-class CrowdinWidgetService : Service() {
+class CrowdinWidgetService : Service(), LoadingStateListener {
 
     private lateinit var windowManager: WindowManager
     private lateinit var floatingView: View
@@ -71,29 +77,13 @@ class CrowdinWidgetService : Service() {
         }
 
         authBtn = floatingView.findViewById(R.id.authBtn)
-        authBtn.setOnClickListener {
-            collapseView()
-
-            if (Crowdin.isAuthorized()) {
-                Crowdin.logOut()
-            } else {
-                Crowdin.authorize(this)
-            }
-        }
-
         realTimeBtn = floatingView.findViewById(R.id.realTimeBtn)
-        realTimeBtn.setOnClickListener {
-            if (Crowdin.isRealTimeUpdatesEnabled()) {
-                Crowdin.disconnectRealTimeUpdates()
-            } else {
-                if (Crowdin.isAuthorized()) {
-                    Crowdin.createRealTimeConnection()
-                } else {
-                    Toast.makeText(this, "Authorization required", Toast.LENGTH_SHORT).show()
-                    realTimeBtn.isChecked = false
-                }
-            }
-        }
+        authBtn.setOnClickListener { updateAuthState() }
+        realTimeBtn.setOnClickListener { updateRealTimeConnection() }
+        floatingView.findViewById<Button>(R.id.screenshotBtn)
+            .setOnClickListener { captureScreenshot() }
+        floatingView.findViewById<Button>(R.id.forceReloadBtn)
+            .setOnClickListener { reloadData() }
 
         // Drag and move floating view using user's touch action.
         floatingView.findViewById<View>(R.id.root_container)
@@ -144,6 +134,56 @@ class CrowdinWidgetService : Service() {
             })
     }
 
+    override fun onDataChanged() {
+        showToast("Data reloaded")
+        Crowdin.unregisterDataLoadingObserver(this)
+    }
+
+    override fun onFailure(throwable: Throwable) {
+        showToast("Data reload failed")
+        Crowdin.unregisterDataLoadingObserver(this)
+    }
+
+    private fun updateAuthState() {
+        collapseView()
+
+        if (Crowdin.isAuthorized()) {
+            Crowdin.logOut()
+        } else {
+            Crowdin.authorize(this)
+        }
+    }
+
+    private fun updateRealTimeConnection() {
+        if (Crowdin.isRealTimeUpdatesEnabled()) {
+            Crowdin.disconnectRealTimeUpdates()
+        } else {
+            if (Crowdin.isAuthorized()) {
+                Crowdin.createRealTimeConnection()
+            } else {
+                showToast("Authorization required")
+                realTimeBtn.isChecked = false
+            }
+        }
+    }
+
+    private fun captureScreenshot() {
+        if (Crowdin.isAuthorized()) {
+            showToast("Screenshot uploading in progress")
+            sendBroadcast(Intent().apply {
+                action = BROADCAST_SCREENSHOT
+            })
+        } else {
+            showToast("Authorization required")
+        }
+    }
+
+    private fun reloadData() {
+        showToast("Data reload in progress")
+        Crowdin.registerDataLoadingObserver(this)
+        Crowdin.forceUpdate(this)
+    }
+
     private fun expandView() {
         updateState()
         collapsedView.visibility = View.GONE
@@ -175,12 +215,42 @@ class CrowdinWidgetService : Service() {
 
     companion object {
 
-        fun launchService(activity: Activity) {
-            activity.startService(Intent(activity, CrowdinWidgetService::class.java))
+        private const val BROADCAST_SCREENSHOT = "com.crowdin.crowdin_controls.broadcast.SCREENSHOT"
+        private lateinit var receiver: BroadcastReceiver
+
+        fun launchService(activity: WeakReference<Activity>) {
+            activity.get()?.startService(Intent(activity.get(), CrowdinWidgetService::class.java))
+
+            receiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    if (intent.action == BROADCAST_SCREENSHOT) {
+                        activity.get()?.let {
+                            Crowdin.sendScreenshot(it, object : ScreenshotCallback {
+                                override fun onSuccess() {
+                                    it.showToast("Screenshot uploaded")
+                                }
+
+                                override fun onFailure(throwable: Throwable) {
+                                    it.showToast("Screenshot upload failed")
+                                }
+                            })
+                        }
+                    }
+                }
+            }
+
+            activity.get()?.registerReceiver(receiver, IntentFilter().apply {
+                addAction(BROADCAST_SCREENSHOT)
+            })
         }
 
         fun destroyService(activity: Activity) {
             activity.stopService(Intent(activity, CrowdinWidgetService::class.java))
+            activity.unregisterReceiver(receiver)
         }
     }
+}
+
+fun Context.showToast(message: String) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }

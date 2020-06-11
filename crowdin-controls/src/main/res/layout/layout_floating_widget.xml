@@ -15,11 +15,14 @@
         android:visibility="visible">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginTop="8dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_settings_black_24dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_crowdin_logo_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
 
         <ImageView
@@ -75,5 +78,26 @@
             android:textOff="@string/realtimepreview_off"
             android:textOn="@string/realtimepreview_on"
             android:textSize="@dimen/text_size" />
+
+        <Button
+            android:id="@+id/screenshotBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:minHeight="48dp"
+            android:text="@string/capture_screenshot"
+            android:textAllCaps="false"
+            android:textSize="@dimen/text_size" />
+
+        <Button
+            android:id="@+id/forceReloadBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:minHeight="48dp"
+            android:text="@string/force_reload"
+            android:textAllCaps="false"
+            android:textSize="@dimen/text_size" />
+
     </LinearLayout>
 </FrameLayout>

@@ -1,10 +1,11 @@
-package com.example.crowdin_controls
+package com.crowdin.crowdin_controls
 
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import java.lang.ref.WeakReference
 
 const val DRAW_OVER_OTHER_APP_PERMISSION = 103
 
@@ -12,7 +13,7 @@ fun onActivityResult(activity: Activity, requestCode: Int) {
     if (requestCode == DRAW_OVER_OTHER_APP_PERMISSION) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (Settings.canDrawOverlays(activity)) {
-                CrowdinWidgetService.launchService(activity)
+                CrowdinWidgetService.launchService(WeakReference(activity))
             }
         }
     }
@@ -30,7 +31,7 @@ fun initCrowdinControl(activity: Activity) {
         )
         activity.startActivityForResult(intent, DRAW_OVER_OTHER_APP_PERMISSION)
     } else {
-        CrowdinWidgetService.launchService(activity)
+        CrowdinWidgetService.launchService(WeakReference(activity))
     }
 }
 

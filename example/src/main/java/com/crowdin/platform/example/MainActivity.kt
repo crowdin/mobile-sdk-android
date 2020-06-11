@@ -10,6 +10,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import com.crowdin.crowdin_controls.destroyCrowdinControl
+import com.crowdin.crowdin_controls.initCrowdinControl
+import com.crowdin.crowdin_controls.onActivityResult
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.example.fragments.CameraFragment
@@ -20,9 +23,6 @@ import com.crowdin.platform.example.fragments.ShareFragment
 import com.crowdin.platform.example.fragments.SlideshowFragment
 import com.crowdin.platform.example.fragments.ToolsFragment
 import com.crowdin.platform.util.inflateWithCrowdin
-import com.example.crowdin_controls.destroyCrowdinControl
-import com.example.crowdin_controls.initCrowdinControl
-import com.example.crowdin_controls.onActivityResult
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
