@@ -25,6 +25,7 @@ The SDK provides:
 ## Table of Contents
 * [Requirements](#requirements)
 * [Installation](#installation)
+* [Example Project](#example-project)
 * [Setup](#setup)
 * [Advanced Features](#advanced-features)
   * [Real-time Preview](#real-time-preview)
@@ -50,6 +51,12 @@ The SDK provides:
    ```
 
 2. Download or clone this module.
+
+## Example Project
+
+To discover how Android SDK is integrated into a real project see the [Example project](https://github.com/crowdin/mobile-sdk-android/tree/master/example). You can set up this project for yourself, run, and test. 
+
+To run the example project, first clone the repo and run project in the Example directory. 
 
 ## Setup
 
@@ -154,6 +161,8 @@ To integrate SDK with your application you need to follow step by step instructi
 
 All the translations that are done in the Editor can be shown in your version of the application in real-time. View the translations already made and the ones you're currently typing in.
 
+[<p align='center'><img src='https://github.com/crowdin/mobile-sdk-android/blob/docs/sdk_preview.gif' width='500'/></p>](#)
+
 1. Add the following code to the *Application* class:
 
    <details>
@@ -244,6 +253,8 @@ All the translations that are done in the Editor can be shown in your version of
 ### Screenshots
 
 Enable if you want all the screenshots made in the application to be automatically sent to your Crowdin project with tagged strings. This will provide additional context for translators.
+
+[<p align='center'><img src='https://github.com/crowdin/mobile-sdk-android/blob/docs/sdk_screenshots.gif' width='500'/></p>](#)
 
 You can take a screenshots and automatically upload them tagged to Crowdin in two ways: using **system buttons** or create **own handler** (for example, clicking on some button in your application).
 
