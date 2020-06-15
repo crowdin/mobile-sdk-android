@@ -35,6 +35,8 @@ import com.crowdin.platform.transformer.ViewTransformerManager
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.TextUtils
 import com.crowdin.platform.util.createAuthDialog
+import com.crowdin.platform.util.getFormattedCode
+import java.util.Locale
 
 /**
  * Entry point for Crowdin. it will be used for setting new strings, wrapping activity context.
@@ -164,7 +166,7 @@ object Crowdin {
      *  }
      */
     @JvmStatic
-    fun getResources(language: String): String {
+    fun getResources(language: String = Locale.getDefault().getFormattedCode()): String {
         return dataManager?.getLanguageData(language).toString()
     }
 
