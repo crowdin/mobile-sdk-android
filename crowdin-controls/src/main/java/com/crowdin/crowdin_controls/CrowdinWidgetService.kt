@@ -21,6 +21,7 @@ import android.widget.Toast
 import android.widget.ToggleButton
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.LoadingStateListener
+import com.crowdin.platform.data.remote.TranslationDownloadCallback
 import com.crowdin.platform.screenshot.ScreenshotCallback
 import java.lang.ref.WeakReference
 
@@ -140,7 +141,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
     }
 
     override fun onFailure(throwable: Throwable) {
-        showToast("Data reload failed")
+        showToast(throwable.message ?: "Data reload failed")
         Crowdin.unregisterDataLoadingObserver(this)
     }
 
@@ -180,8 +181,20 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
 
     private fun reloadData() {
         showToast("Data reload in progress")
-        Crowdin.registerDataLoadingObserver(this)
-        Crowdin.forceUpdate(this)
+        if (Crowdin.isRealTimeUpdatesEnabled()) {
+            Crowdin.downloadTranslation(object : TranslationDownloadCallback {
+                override fun onSuccess() {
+                    showToast("Data reloaded")
+                }
+
+                override fun onFailure(throwable: Throwable) {
+                    showToast(throwable.message ?: "Data reload failed")
+                }
+            })
+        } else {
+            Crowdin.registerDataLoadingObserver(this)
+            Crowdin.forceUpdate(this)
+        }
     }
 
     private fun expandView() {

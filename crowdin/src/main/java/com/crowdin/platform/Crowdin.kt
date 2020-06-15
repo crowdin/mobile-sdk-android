@@ -9,10 +9,12 @@ import androidx.annotation.MenuRes
 import com.crowdin.platform.auth.AuthActivity
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.DistributionInfoCallback
+import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.TextMetaDataProvider
 import com.crowdin.platform.data.local.LocalStringRepositoryFactory
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.model.AuthInfo
+import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.parser.StringResourceParser
 import com.crowdin.platform.data.parser.XmlReader
 import com.crowdin.platform.data.remote.CrowdinRetrofitService
@@ -20,6 +22,7 @@ import com.crowdin.platform.data.remote.DistributionInfoManager
 import com.crowdin.platform.data.remote.MappingRepository
 import com.crowdin.platform.data.remote.StringDataRemoteRepository
 import com.crowdin.platform.data.remote.TranslationDataRepository
+import com.crowdin.platform.data.remote.TranslationDownloadCallback
 import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager
 import com.crowdin.platform.recurringwork.RecurringManager
@@ -110,7 +113,7 @@ object Crowdin {
      */
     fun onConfigurationChanged() {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
-            loadTranslation()
+            downloadTranslation()
         }
     }
 
@@ -395,6 +398,23 @@ object Crowdin {
         shakeDetectorManager?.unregisterShakeDetector()
     }
 
+    /**
+     * Download latest translations from Crowdin.
+     */
+    fun downloadTranslation(callback: TranslationDownloadCallback? = null) {
+        if (FeatureFlags.isRealTimeUpdateEnabled && dataManager?.isAuthorized() == true) {
+            translationDataRepository?.fetchData(object : LanguageDataCallback {
+                override fun onDataLoaded(languageData: LanguageData) {
+                    callback?.onSuccess()
+                }
+
+                override fun onFailure(throwable: Throwable) {
+                    callback?.onFailure(throwable)
+                }
+            })
+        }
+    }
+
     internal fun saveAuthInfo(authInfo: AuthInfo?) {
         dataManager?.saveData(DataManager.AUTH_INFO, authInfo)
     }
@@ -491,13 +511,7 @@ object Crowdin {
                 config.distributionHash
             )
             translationDataRepository?.crowdinApi = getCrowdinApi()
-            loadTranslation()
-        }
-    }
-
-    internal fun loadTranslation() {
-        if (dataManager?.isAuthorized() == true) {
-            translationDataRepository?.fetchData()
+            downloadTranslation()
         }
     }
 

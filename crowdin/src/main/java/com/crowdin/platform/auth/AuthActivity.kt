@@ -146,7 +146,7 @@ internal class AuthActivity : AppCompatActivity() {
         Crowdin.getDistributionInfo(object : DistributionInfoCallback {
             override fun onResponse() {
                 requestPermission()
-                Crowdin.loadTranslation()
+                Crowdin.downloadTranslation()
             }
 
             override fun onError(throwable: Throwable) {
