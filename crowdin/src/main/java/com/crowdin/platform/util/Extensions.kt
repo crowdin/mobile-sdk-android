@@ -33,3 +33,15 @@ fun Locale.getFormattedCode(): String {
         language
     }
 }
+
+fun String.getLocaleForLanguageCode(): Locale {
+    var code = Locale.getDefault().language
+    return try {
+        val localeData = this.split("-").toTypedArray()
+        code = localeData[0]
+        val region = localeData[1]
+        Locale(code, region)
+    } catch (ex: Exception) {
+        Locale(code)
+    }
+}

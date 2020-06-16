@@ -35,6 +35,8 @@ import com.crowdin.platform.transformer.ViewTransformerManager
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.TextUtils
 import com.crowdin.platform.util.createAuthDialog
+import com.crowdin.platform.util.getFormattedCode
+import java.util.Locale
 
 /**
  * Entry point for Crowdin. it will be used for setting new strings, wrapping activity context.
@@ -102,6 +104,15 @@ object Crowdin {
         }
 
     /**
+     * Reload translations after configurations has changed.
+     */
+    fun onConfigurationChanged() {
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
+            loadTranslation()
+        }
+    }
+
+    /**
      * Set a single string for a language.
      *
      * @param language language code. For example en, en-GB, en-US etc.
@@ -155,7 +166,7 @@ object Crowdin {
      *  }
      */
     @JvmStatic
-    fun getResources(language: String): String {
+    fun getResources(language: String = Locale.getDefault().getFormattedCode()): String {
         return dataManager?.getLanguageData(language).toString()
     }
 
@@ -295,22 +306,12 @@ object Crowdin {
         }
     }
 
-    internal fun isAuthorized(): Boolean {
-        dataManager?.let {
-            val oldHash = it.getDistributionHash()
-            val newHash = config.distributionHash
-            it.saveDistributionHash(newHash)
-
-            return it.isAuthorized() && (oldHash == null || oldHash == newHash)
-        }
-
-        return false
-    }
-
-    internal fun tryCreateRealTimeConnection() {
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
-            realTimeUpdateManager?.openConnection()
-        }
+    /**
+     * Open realtime update connection.
+     */
+    @JvmStatic
+    fun connectRealTimeUpdates() {
+        tryCreateRealTimeConnection()
     }
 
     /**
@@ -318,10 +319,7 @@ object Crowdin {
      */
     @JvmStatic
     fun disconnectRealTimeUpdates() {
-        realTimeUpdateManager?.let {
-            it.closeConnection()
-            realTimeUpdateManager = null
-        }
+        realTimeUpdateManager?.closeConnection()
     }
 
     /**
@@ -341,6 +339,24 @@ object Crowdin {
     @JvmStatic
     fun unregisterShakeDetector() {
         shakeDetectorManager?.unregisterShakeDetector()
+    }
+
+    internal fun isAuthorized(): Boolean {
+        dataManager?.let {
+            val oldHash = it.getDistributionHash()
+            val newHash = config.distributionHash
+            it.saveDistributionHash(newHash)
+
+            return it.isAuthorized() && (oldHash == null || oldHash == newHash)
+        }
+
+        return false
+    }
+
+    internal fun tryCreateRealTimeConnection() {
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
+            realTimeUpdateManager?.openConnection()
+        }
     }
 
     internal fun saveAuthInfo(authInfo: AuthInfo?) {
