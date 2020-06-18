@@ -49,6 +49,19 @@ The SDK provides:
    ```groovy
    implementation 'com.crowdin.platform:mobile-sdk:1.1.4'
    ```
+   
+   For legacy Android project which use `andbase.jar`, it will cause the following error when build:
+   
+   `Duplicate class com.google.gson.DefaultDateTypeAdapter found in modules jetified-andbase.jar (andbase.jar) and jetified-gson-2.8.5.jar (com.google.code.gson:gson:2.8.5)`
+   
+   To resolve:
+   
+   ```groovy
+    implementation ('com.crowdin.platform:mobile-sdk:1.1.4') {
+        exclude group: 'com.google.code.gson', module: 'gson'
+    }
+   ```
+   
 
 2. Download or clone this module.
 
