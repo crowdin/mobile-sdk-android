@@ -44,7 +44,9 @@ The SDK provides:
 
 ## Installation
 
-1. JCenter
+You have two ways to install Crowdin Android SDK.
+
+- From JCenter
 
    ```groovy
    implementation 'com.crowdin.platform:mobile-sdk:1.1.4'
@@ -63,7 +65,7 @@ The SDK provides:
    ```
    
 
-2. Download or clone this module.
+- Manually download or clone this module.
 
 ## Example Project
 
