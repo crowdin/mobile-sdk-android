@@ -50,11 +50,11 @@ The SDK provides:
    implementation 'com.crowdin.platform:mobile-sdk:1.1.4'
    ```
    
-   For legacy Android project which use `andbase.jar`, it will cause the following error when build:
+   For Android project which already have [transitive dependency](https://docs.gradle.org/current/userguide/dependency_management_terminology.html#sub:terminology_transitive_dependency) of `com.google.code.gson`, after integration of Crowdin SDK, it will show you the following error during build time:
    
-   `Duplicate class com.google.gson.DefaultDateTypeAdapter found in modules jetified-andbase.jar (andbase.jar) and jetified-gson-2.8.5.jar (com.google.code.gson:gson:2.8.5)`
+   `Duplicate class com.google.gson.DefaultDateTypeAdapter found in modules xxx.jar (xxx.jar) and jetified-gson-2.8.5.jar (com.google.code.gson:gson:2.8.5)`
    
-   To resolve:
+   To resolve, either exclude `gson` from Crowdin or from your library is OK, but be sure to keep the newer one for backward-compatibility.
    
    ```groovy
     implementation ('com.crowdin.platform:mobile-sdk:1.1.4') {
