@@ -11,7 +11,6 @@ import com.crowdin.platform.util.ThreadUtils
 import java.net.HttpURLConnection
 import java.util.Locale
 import okhttp3.ResponseBody
-import org.xmlpull.v1.XmlPullParserFactory
 
 internal class MappingRepository(
     private val crowdinDistributionApi: CrowdinDistributionApi,
@@ -94,8 +93,7 @@ internal class MappingRepository(
     ): LanguageData {
         eTag?.let { eTagMap.put(filePath, eTag) }
 
-        val languageData = reader.parseInput(body.byteStream(), XmlPullParserFactory.newInstance())
-        reader.close()
+        val languageData = reader.parseInput(body.byteStream())
         ThreadUtils.executeOnMain { languageDataCallback?.onDataLoaded(languageData) }
 
         return languageData

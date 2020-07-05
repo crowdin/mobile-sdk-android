@@ -16,7 +16,6 @@ import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.getFormattedCode
 import java.util.Locale
 import okhttp3.ResponseBody
-import org.xmlpull.v1.XmlPullParserFactory
 
 internal class TranslationDataRepository(
     crowdinDistributionApi: CrowdinDistributionApi,
@@ -101,9 +100,6 @@ internal class TranslationDataRepository(
     }
 
     private fun onStringDataReceived(body: ResponseBody): LanguageData {
-        val languageData = reader.parseInput(body.byteStream(), XmlPullParserFactory.newInstance())
-        reader.close()
-
-        return languageData
+        return reader.parseInput(body.byteStream())
     }
 }

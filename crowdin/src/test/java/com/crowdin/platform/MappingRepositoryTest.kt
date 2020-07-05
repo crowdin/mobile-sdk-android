@@ -27,7 +27,7 @@ class MappingRepositoryTest {
         mockDistributionApi = mock(CrowdinDistributionApi::class.java)
         mockReader = mock(Reader::class.java)
         mockDataManager = mock(DataManager::class.java)
-        `when`(mockReader.parseInput(any(), eq(null))).thenReturn(LanguageData())
+        `when`(mockReader.parseInput(any())).thenReturn(LanguageData())
         mockCallback = mock(LanguageDataCallback::class.java)
     }
 
@@ -69,8 +69,7 @@ class MappingRepositoryTest {
         mappingRepository.onManifestDataReceived(manifestData, mockCallback)
 
         // Then
-        verify(mockReader).parseInput(any(), any())
-        verify(mockReader).close()
+        verify(mockReader).parseInput(any())
     }
 
     @Test
