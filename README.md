@@ -71,7 +71,7 @@ You have two ways to install Crowdin Android SDK.
 
 To discover how Android SDK is integrated into a real project see the [Example project](https://github.com/crowdin/mobile-sdk-android/tree/master/example). You can set up this project for yourself, run, and test. 
 
-To run the example project, first clone the repo and run project in the Example directory. 
+To run the example project, first clone the repo, fill in SDK configuration in the *App* class and run project in the Example directory. 
 
 ## Setup
 
@@ -84,6 +84,13 @@ To configure Android SDK integration you need to:
 **Distribution** is a CDN vault that mirrors the translated content of your project and is required for integration with Android app.
 
 To manage distributions open the needed project and go to *Over-The-Air Content Delivery*. You can create as many distributions as you need and choose different files for each. You’ll need to click the *Release* button next to the necessary distribution every time you want to send new translations to the app.
+
+**Notes:**
+- The CDN feature does not update the localization files. if you want to add new translations to the localization files you need to do it yourself.
+- Once SDK receives the translations, it's stored on the device as application files for further sessions to minimize requests the next time the app starts. Storage time can be configured using `withUpdateInterval` option.
+- CDN caches all the translation in release for up to 15 minutes and even when new translations are released in Crowdin, CDN may return it with a delay.
+
+---
 
 To integrate SDK with your application you need to follow step by step instructions:
 
@@ -168,8 +175,6 @@ To integrate SDK with your application you need to follow step by step instructi
     | `withDistributionHash`     | Distribution Hash | `withDistributionHash("7a0c1...7uo3b")`
     | `withNetworkType`          | Network type to be used for translations download | Acceptable values are `NetworkType.ALL`, `NetworkType.CELLULAR`, `NetworkType.WIFI`
     | `withUpdateInterval`       | Translations update interval in seconds. The minimum and the default value is 15 minutes. Translations will be updated every defined time interval once per application load | `withUpdateInterval(900)`
-
-**Note!** The CDN feature does not update the localization files. if you want to add new translations to the localization files you need to do it yourself.
 
 ## Advanced Features
 ### Real-time Preview
