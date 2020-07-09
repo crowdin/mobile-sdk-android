@@ -173,7 +173,7 @@ To integrate SDK with your application you need to follow step by step instructi
     | Config option              | Description                                                 | Example                                        |
     |----------------------------|-------------------------------------------------------------|------------------------------------------------|
     | `withDistributionHash`     | Distribution Hash | `withDistributionHash("7a0c1...7uo3b")`
-    | `withNetworkType`          | Network type to be used for translations download | Acceptable values are `NetworkType.ALL`, `NetworkType.CELLULAR`, `NetworkType.WIFI`
+    | `withNetworkType`          | Network type to be used for translations download | Acceptable values are:<br>- `NetworkType.ALL` (default)<br> - `NetworkType.CELLULAR`<br>- `NetworkType.WIFI`
     | `withUpdateInterval`       | Translations update interval in seconds. The minimum and the default value is 15 minutes. Translations will be updated every defined time interval once per application load | `withUpdateInterval(900)`
 
 ## Advanced Features
@@ -234,7 +234,7 @@ All the translations that are done in the Editor can be shown in your version of
     | `withAuthConfig`               | Crowdin authorization config | `withAuthConfig(AuthConfig("client_id", "client_secret", "organization_name"))`
     | `client_id`, `client_secret`   | Crowdin OAuth Client ID and Client Secret  | `"gpY2yC...cx3TYB"`, `"Xz95tfedd0A...TabEDx9T"`
     | `organization_name`            | An Organization domain name (for Crowdin Enterprise users only) | `"mycompany"`
-    | `withNetworkType`              | Network type to be used for translations download | Acceptable values are `NetworkType.ALL`, `NetworkType.CELLULAR`, `NetworkType.WIFI`
+    | `withNetworkType`              | Network type to be used for translations download | Acceptable values are:<br>- `NetworkType.ALL` (default)<br> - `NetworkType.CELLULAR`<br>- `NetworkType.WIFI`
     | `withUpdateInterval`           | Translations update interval in seconds. The minimum and the default value is 15 minutes. Translations will be updated every defined time interval once per application load | `withUpdateInterval(900)`
 
 2. Crowdin Authorization is required for Real-Time Preview feature. Create connection using *Activity/Fragment* method *inMainActivity* class:
@@ -332,7 +332,7 @@ You can take a screenshots and automatically upload them tagged to Crowdin in tw
    | `withAuthConfig`               | Crowdin authorization config | `withAuthConfig(AuthConfig("client_id", "client_secret", "organization_name"))`
    | `client_id`, `client_secret`   | Crowdin OAuth Client ID and Client Secret  | `"gpY2yC...cx3TYB"`, `"Xz95tfedd0A...TabEDx9T"`
    | `organization_name`            | An Organization domain name (for Crowdin Enterprise users only) | `"mycompany"`
-   | `withNetworkType`              | Network type to be used for translations download | Acceptable values are `NetworkType.ALL`, `NetworkType.CELLULAR`, `NetworkType.WIFI`
+   | `withNetworkType`              | Network type to be used for translations download | Acceptable values are:<br>- `NetworkType.ALL` (default)<br> - `NetworkType.CELLULAR`<br>- `NetworkType.WIFI`
    | `withUpdateInterval`           | Translations update interval in seconds. The minimum and the default value is 15 minutes. Translations will be updated every defined time interval once per application load | `withUpdateInterval(900)`
 
     **Note!** Using `Crowdin.registerScreenShotContentObserver(this)` (system buttons handler) for sending screenshots to Crowdin requires Storage permission for your app.
