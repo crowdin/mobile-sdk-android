@@ -24,7 +24,3 @@ internal class JsonReader : Reader {
         }
     }
 }
-
-data class Resources(
-    val map: Map<String, String>
-)
