@@ -68,12 +68,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         // Simple device shake detector. Could be used for triggering force update.
         Crowdin.registerShakeDetector(this)
-
-//      Java
-//      CrowdinControlUtil.initCrowdinControl(this);
-
-        // Init Crowdin SDK overlay controls
-        initCrowdinControl(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -91,11 +85,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         // Remove shake detector listener.
         Crowdin.unregisterShakeDetector()
-
-        // Destroy crowdin overlay view.
-        destroyCrowdinControl(this)
-//      Java
-//      CrowdinControlUtil.destroyCrowdinControl(this);
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

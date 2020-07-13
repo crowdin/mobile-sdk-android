@@ -62,8 +62,8 @@
             android:minHeight="0dp"
             android:padding="15dp"
             android:textAllCaps="false"
-            android:textOff="@string/logged_out"
-            android:textOn="@string/logged_in"
+            android:textOff="@string/log_in"
+            android:textOn="@string/log_out"
             android:textSize="@dimen/text_size" />
 
         <ToggleButton
@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:minWidth="0dp"
             android:minHeight="48dp"
-            android:text="@string/force_reload"
+            android:text="@string/reload_translations"
             android:textAllCaps="false"
             android:textSize="@dimen/text_size" />
 
