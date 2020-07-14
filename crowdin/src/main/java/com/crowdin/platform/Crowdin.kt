@@ -78,9 +78,9 @@ object Crowdin {
                 if (!FeatureFlags.isRealTimeUpdateEnabled) {
                     forceUpdate(context)
                 }
-                loadMapping()
             }
         }
+        loadMapping()
     }
 
     internal fun initForUpdate(context: Context) {
