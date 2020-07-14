@@ -5,18 +5,18 @@ import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.ManifestData
-import com.crowdin.platform.data.parser.Reader
+import com.crowdin.platform.data.parser.ReaderFactory
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.getFormattedCode
 import java.net.HttpURLConnection
 import java.util.Locale
 import okhttp3.ResponseBody
-import org.xmlpull.v1.XmlPullParserFactory
+
+private const val XML_EXTENSION = ".xml"
 
 internal class StringDataRemoteRepository(
     private val crowdinDistributionApi: CrowdinDistributionApi,
-    private val reader: Reader,
     private val distributionHash: String
 ) : CrowdingRepository(
     crowdinDistributionApi,
@@ -94,9 +94,12 @@ internal class StringDataRemoteRepository(
     ): LanguageData {
         eTag?.let { eTagMap.put(filePath, eTag) }
 
-        val languageData = reader.parseInput(body.byteStream(), XmlPullParserFactory.newInstance())
-        reader.close()
-
-        return languageData
+        val extension = if (filePath.contains(XML_EXTENSION)) {
+            ReaderFactory.ReaderType.XML
+        } else {
+            ReaderFactory.ReaderType.JSON
+        }
+        val reader = ReaderFactory.createReader(extension)
+        return reader.parseInput(body.byteStream())
     }
 }

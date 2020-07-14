@@ -42,7 +42,7 @@ class TranslationDataRepositoryTest {
         mockCrowdinTranslationApi = mock(CrowdinTranslationApi::class.java)
         mockReader = mock(Reader::class.java)
         mockDataManager = mock(DataManager::class.java)
-        `when`(mockReader.parseInput(any(), eq(null))).thenReturn(LanguageData())
+        `when`(mockReader.parseInput(any())).thenReturn(LanguageData())
         mockCallback = mock(LanguageDataCallback::class.java)
     }
 
@@ -127,8 +127,7 @@ class TranslationDataRepositoryTest {
 
         // Then
         verify(mockCrowdinTranslationApi).getTranslationResource("test_url")
-        verify(mockReader).parseInput(any(), any())
-        verify(mockReader).close()
+        verify(mockReader).parseInput(any())
     }
 
     private fun givenMockDistributionData() {

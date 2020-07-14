@@ -7,16 +7,9 @@ import org.xmlpull.v1.XmlPullParserFactory
 
 internal class XmlReader(private var parser: Parser) : Reader {
 
-    override fun close() {
-        parser.clearData()
-    }
-
-    override fun parseInput(
-        byteStream: InputStream,
-        xmlPullParserFactory: XmlPullParserFactory?
-    ): LanguageData {
+    override fun parseInput(byteStream: InputStream): LanguageData {
         try {
-            val xmlPullParser = xmlPullParserFactory!!.newPullParser()
+            val xmlPullParser = XmlPullParserFactory.newInstance().newPullParser()
             xmlPullParser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
             xmlPullParser.setInput(byteStream, null)
 
@@ -25,6 +18,8 @@ internal class XmlReader(private var parser: Parser) : Reader {
             }
         } catch (e: Exception) {
             return LanguageData()
+        } finally {
+            parser.clearData()
         }
 
         return LanguageData()

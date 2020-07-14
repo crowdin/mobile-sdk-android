@@ -1,9 +1,11 @@
 package com.crowdin.platform
 
+import java.io.InputStream
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import okio.BufferedSource
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 
 class StubResponseBody : ResponseBody() {
     override fun contentLength(): Long {
@@ -15,6 +17,8 @@ class StubResponseBody : ResponseBody() {
     }
 
     override fun source(): BufferedSource {
-        return Mockito.mock(BufferedSource::class.java)
+        val bufferedSource = mock(BufferedSource::class.java)
+        `when`(bufferedSource.inputStream()).thenReturn(mock(InputStream::class.java))
+        return bufferedSource
     }
 }

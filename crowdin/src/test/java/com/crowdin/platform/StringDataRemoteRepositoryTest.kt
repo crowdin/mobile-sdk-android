@@ -1,7 +1,6 @@
 package com.crowdin.platform
 
 import com.crowdin.platform.data.LanguageDataCallback
-import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.StringDataRemoteRepository
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
@@ -25,7 +24,6 @@ class StringDataRemoteRepositoryTest {
     fun setUp() {
         mockDistributionApi = mock(CrowdinDistributionApi::class.java)
         mockReader = mock(Reader::class.java)
-        `when`(mockReader.parseInput(any(), eq(null))).thenReturn(LanguageData())
         mockCallback = mock(LanguageDataCallback::class.java)
     }
 
@@ -57,21 +55,6 @@ class StringDataRemoteRepositoryTest {
     }
 
     @Test
-    fun whenFetchDataSuccess_shouldParseResponseAndCloseReader() {
-        // Given
-        val repository = givenStringDataRemoteRepository()
-        val manifestData = givenManifestData()
-        givenMockResponse()
-
-        // When
-        repository.onManifestDataReceived(manifestData, mockCallback)
-
-        // Then
-        verify(mockReader).parseInput(any(), any())
-        verify(mockReader).close()
-    }
-
-    @Test
     fun whenFetchWithCallbackAndResponseFailure_shouldCallFailureMethod() {
         // Given
         val repository = givenStringDataRemoteRepository()
@@ -100,7 +83,7 @@ class StringDataRemoteRepositoryTest {
     }
 
     private fun givenStringDataRemoteRepository(): StringDataRemoteRepository =
-        StringDataRemoteRepository(mockDistributionApi, mockReader, "hash")
+        StringDataRemoteRepository(mockDistributionApi, "hash")
 
     private fun givenMockResponse(success: Boolean = true, successCode: Int = 200) {
         val mockedCall = mock(Call::class.java) as Call<ResponseBody>
@@ -115,10 +98,11 @@ class StringDataRemoteRepositoryTest {
             mockedCall
         )
 
+        val stubResponse = StubResponseBody()
         val response = if (success) {
-            Response.success<ResponseBody>(successCode, StubResponseBody())
+            Response.success<ResponseBody>(successCode, stubResponse)
         } else {
-            Response.error(403, StubResponseBody())
+            Response.error(403, stubResponse)
         }
         `when`(mockedCall.execute()).thenReturn(response)
     }

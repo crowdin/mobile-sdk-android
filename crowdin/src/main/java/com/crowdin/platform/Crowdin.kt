@@ -406,7 +406,6 @@ object Crowdin {
     private fun initStringDataManager(context: Context, config: CrowdinConfig) {
         val remoteRepository = StringDataRemoteRepository(
             CrowdinRetrofitService.getCrowdinDistributionApi(),
-            XmlReader(StringResourceParser()),
             config.distributionHash
         )
         val localRepository = LocalStringRepositoryFactory.createLocalRepository(context, config)
