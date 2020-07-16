@@ -173,6 +173,7 @@ object Crowdin {
      *
      * @param languageCode language code. For example en, en-GB, en-US etc.
      *                  https://support.crowdin.com/api/language-codes/
+     * @param callback invoked when data received.
      *
      *  {
      *      "language":"de",
