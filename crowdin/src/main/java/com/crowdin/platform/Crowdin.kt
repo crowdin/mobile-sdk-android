@@ -139,10 +139,9 @@ object Crowdin {
     }
 
     /**
-     * Get a json string for a language data. Including strings/arrays/plurals.
+     * Get a json string for a default language data. Including strings/arrays/plurals.
+     * It will use device default locale language code.
      *
-     * @param language language code. For example en, en-GB, en-US etc.
-     *                  https://support.crowdin.com/api/language-codes/
      * @return json or empty string. Example:
      *
      *  {
@@ -166,8 +165,38 @@ object Crowdin {
      *  }
      */
     @JvmStatic
-    fun getResources(language: String = Locale.getDefault().getFormattedCode()): String {
-        return dataManager?.getLanguageData(language).toString()
+    fun getResources(): String =
+        dataManager?.getLanguageData(Locale.getDefault().getFormattedCode()).toString()
+
+    /**
+     * Get asynchronously a json string for a language data. Including strings/arrays/plurals.
+     *
+     * @param languageCode language code. For example en, en-GB, en-US etc.
+     *                  https://support.crowdin.com/api/language-codes/
+     *
+     *  {
+     *      "language":"de",
+     *      "strings":{
+     *          "stringKey0":"Text0",
+     *          "stringKey1":"Text1"
+     *      },
+     *      "arrays":{
+     *          "arrayKey0":[
+     *              "Monday",
+     *              "Wednesday"
+     *          ]
+     *      },
+     *      "plurals":{
+     *          "pluralsKey":{
+     *              "one":"Text0",
+     *              "other":"Text1"
+     *          }
+     *      }
+     *  }
+     */
+    @JvmStatic
+    fun getResourcesByLocale(languageCode: String, callback: ResourcesCallback) {
+        dataManager?.getResourcesByLocale(languageCode, callback) ?: callback.onDataReceived("")
     }
 
     /**

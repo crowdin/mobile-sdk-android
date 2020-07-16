@@ -29,7 +29,7 @@ internal class TranslationDataRepository(
     distributionHash
 ) {
 
-    override fun fetchData(languageDataCallback: LanguageDataCallback?) {
+    override fun fetchData(languageCode: String, languageDataCallback: LanguageDataCallback?) {
         getManifest(languageDataCallback)
     }
 

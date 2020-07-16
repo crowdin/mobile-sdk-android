@@ -4,6 +4,7 @@ import android.content.Context
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.LocalDataChangeObserver
 import com.crowdin.platform.Preferences
+import com.crowdin.platform.ResourcesCallback
 import com.crowdin.platform.data.local.LocalRepository
 import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.AuthInfo
@@ -58,7 +59,7 @@ internal class DataManager(
     fun updateData(context: Context, networkType: NetworkType) {
         val status = validateData(context, networkType)
         if (status == STATUS_OK) {
-            remoteRepository.fetchData(object : LanguageDataCallback {
+            remoteRepository.fetchData(languageDataCallback = object : LanguageDataCallback {
 
                 override fun onDataLoaded(languageData: LanguageData) {
                     refreshData(languageData)
@@ -176,4 +177,18 @@ internal class DataManager(
     }
 
     fun getDistributionHash(): String? = crowdinPreferences.getString(DISTRIBUTION_HASH)
+
+    fun getResourcesByLocale(languageCode: String, callback: ResourcesCallback) {
+        remoteRepository.fetchData(languageCode, object : LanguageDataCallback {
+
+            override fun onDataLoaded(languageData: LanguageData) {
+                callback.onDataReceived(languageData.toString())
+            }
+
+            override fun onFailure(throwable: Throwable) {
+                callback.onDataReceived("")
+                sendOnFailure(throwable)
+            }
+        })
+    }
 }

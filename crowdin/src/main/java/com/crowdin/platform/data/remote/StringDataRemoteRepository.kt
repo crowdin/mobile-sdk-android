@@ -9,6 +9,7 @@ import com.crowdin.platform.data.parser.ReaderFactory
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.getFormattedCode
+import com.crowdin.platform.util.getLocaleForLanguageCode
 import java.net.HttpURLConnection
 import java.util.Locale
 import okhttp3.ResponseBody
@@ -23,7 +24,10 @@ internal class StringDataRemoteRepository(
     distributionHash
 ) {
 
-    override fun fetchData(languageDataCallback: LanguageDataCallback?) {
+    private var preferredLanguageCode = Locale.getDefault().getFormattedCode()
+
+    override fun fetchData(languageCode: String, languageDataCallback: LanguageDataCallback?) {
+        preferredLanguageCode = languageCode
         getManifest(languageDataCallback)
     }
 
@@ -32,10 +36,14 @@ internal class StringDataRemoteRepository(
         languageDataCallback: LanguageDataCallback?
     ) {
         // Combine all data before save to storage
-        val languageData = LanguageData(Locale.getDefault().getFormattedCode())
-
+        val languageData = LanguageData(preferredLanguageCode)
+        val locale = preferredLanguageCode.getLocaleForLanguageCode()
         manifest.files.forEach {
-            val filePath = validateFilePath(it, Locale.getDefault())
+            val filePath = try {
+                validateFilePath(it, locale)
+            } catch (ex: Exception) {
+                validateFilePath(it, Locale.getDefault())
+            }
             val eTag = eTagMap[filePath]
             val result = requestStringData(
                 eTag,
@@ -76,7 +84,7 @@ internal class StringDataRemoteRepository(
             }
             code == HttpURLConnection.HTTP_FORBIDDEN -> {
                 val errorMessage =
-                    "Translation file $filePath for locale ${Locale.getDefault()} not found in the distribution"
+                    "Translation file $filePath for locale ${preferredLanguageCode.getLocaleForLanguageCode()} not found in the distribution"
                 Log.i(Crowdin.CROWDIN_TAG, errorMessage)
                 languageDataCallback?.onFailure(Throwable(errorMessage))
             }
