@@ -295,13 +295,9 @@ object Crowdin {
      */
     @JvmStatic
     fun authorize(activity: Activity) {
-        if (!FeatureFlags.isRealTimeUpdateEnabled || !FeatureFlags.isScreenshotEnabled) {
-            return
-        }
-
         if (isAuthorized()) {
             tryCreateRealTimeConnection()
-        } else {
+        } else if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             createAuthDialog(activity) { AuthActivity.launchActivity(activity) }
         }
     }
