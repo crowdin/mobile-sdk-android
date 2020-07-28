@@ -9,12 +9,10 @@ import com.crowdin.platform.data.parser.ReaderFactory
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.executeIO
-import com.crowdin.platform.util.getFormattedCode
-import com.crowdin.platform.util.getLocaleForLanguageCode
-import java.net.HttpURLConnection
-import java.util.Locale
 import okhttp3.ResponseBody
 import retrofit2.Response
+import java.net.HttpURLConnection
+import java.util.Locale
 
 private const val XML_EXTENSION = ".xml"
 
@@ -37,37 +35,35 @@ internal class StringDataRemoteRepository(
         manifest: ManifestData?,
         languageDataCallback: LanguageDataCallback?
     ) {
-        // Combine all data before save to storage
-        val languageData =
-            LanguageData(preferredLanguageCode ?: Locale.getDefault().getFormattedCode())
-        manifest?.files?.forEach {
-            if (preferredLanguageCode == null) {
-                preferredLanguageCode = if (containsExportPattern(it)) {
-                    "${Locale.getDefault().language}-${Locale.getDefault().country}"
-                } else {
-                    Locale.getDefault().getFormattedCode()
-                }
+        val supportedLanguages = manifest?.languages
+        if (preferredLanguageCode == null) {
+            preferredLanguageCode = getMatchedCode(supportedLanguages) ?: return
+        } else {
+            if (supportedLanguages?.contains(preferredLanguageCode!!) == false) {
+                return
             }
-
-            val locale = preferredLanguageCode!!.getLocaleForLanguageCode()
-
-            val filePath = try {
-                validateFilePath(it, locale)
-            } catch (ex: Exception) {
-                validateFilePath(it, Locale.getDefault())
-            }
-            val eTag = eTagMap[filePath]
-            val result = requestStringData(
-                eTag,
-                distributionHash,
-                filePath,
-                manifest.timestamp,
-                languageDataCallback
-            )
-            languageData.addNewResources(result)
         }
 
-        ThreadUtils.executeOnMain { languageDataCallback?.onDataLoaded(languageData) }
+        // Combine all data before save to storage
+        val languageData = LanguageData()
+        val languageInfo = getLanguageInfo(preferredLanguageCode!!)?.data
+        languageInfo?.let { info ->
+            languageData.language = info.locale
+            manifest?.files?.forEach {
+                val filePath = validateFilePath(it, info, preferredLanguageCode!!)
+                val eTag = eTagMap[filePath]
+                val result = requestStringData(
+                    eTag,
+                    distributionHash,
+                    filePath,
+                    manifest.timestamp,
+                    languageDataCallback
+                )
+                languageData.addNewResources(result)
+            }
+
+            ThreadUtils.executeOnMain { languageDataCallback?.onDataLoaded(languageData) }
+        }
     }
 
     private fun requestStringData(
@@ -102,7 +98,7 @@ internal class StringDataRemoteRepository(
                 }
                 code == HttpURLConnection.HTTP_FORBIDDEN -> {
                     val errorMessage =
-                        "Translation file $filePath for locale ${preferredLanguageCode?.getLocaleForLanguageCode()} not found in the distribution"
+                        "Translation file $filePath for locale $preferredLanguageCode not found in the distribution"
                     Log.i(Crowdin.CROWDIN_TAG, errorMessage)
                     languageDataCallback?.onFailure(Throwable(errorMessage))
                 }

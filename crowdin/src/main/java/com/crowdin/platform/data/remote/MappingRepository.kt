@@ -7,24 +7,21 @@ import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.parser.Reader
-import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.executeIO
-import java.net.HttpURLConnection
 import okhttp3.ResponseBody
 import retrofit2.Response
+import java.net.HttpURLConnection
 
 internal class MappingRepository(
     private val crowdinDistributionApi: CrowdinDistributionApi,
-    crowdinApi: CrowdinApi,
     private val reader: Reader,
     private val dataManager: DataManager,
     private val distributionHash: String,
     private val sourceLanguage: String
 ) : CrowdingRepository(
     crowdinDistributionApi,
-    crowdinApi,
     distributionHash
 ) {
 
@@ -42,7 +39,7 @@ internal class MappingRepository(
         val languageInfo = getLanguageInfo(sourceLanguage)?.data
         languageInfo?.let { info ->
             manifest?.files?.forEach {
-                val filePath = validateMappingFilePath(it, info)
+                val filePath = validateFilePath(it, info, sourceLanguage)
                 val eTag = eTagMap[filePath]
 
                 val result = requestFileMapping(

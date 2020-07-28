@@ -1,9 +1,6 @@
 package com.crowdin.platform.data.remote
 
 import com.crowdin.platform.data.model.LanguageInfo
-import com.crowdin.platform.util.getFormattedCode
-import com.crowdin.platform.util.getLocaleForLanguageCode
-import java.util.Locale
 
 internal abstract class BaseRepository : RemoteRepository {
 
@@ -28,34 +25,11 @@ internal abstract class BaseRepository : RemoteRepository {
 
     protected var eTagMap = mutableMapOf<String, String>()
 
-    protected fun validateFilePath(filePath: String, locale: Locale): String {
-        var path = filePath
-        val language = locale.language
-        val threeLetterCode = locale.isO3Language
-        val country = locale.country
-        val countryFormatted = if (country.isNullOrEmpty()) "" else "-$country"
-        val localeValue = "$language$countryFormatted"
-        val valuesCountryFormatted = if (country.isNullOrEmpty()) "" else "-r$country"
-        val androidCode = "$language$valuesCountryFormatted"
-
-        if (containsExportPattern(path)) {
-            path = replacePatterns(
-                path,
-                locale.getDisplayLanguage(Locale.ENGLISH),
-                language,
-                threeLetterCode,
-                localeValue,
-                locale.toString(),
-                androidCode
-            )
-        } else {
-            return getFormattedPath(path, locale.getFormattedCode())
-        }
-
-        return path
-    }
-
-    protected fun validateMappingFilePath(filePath: String, languageInfo: LanguageInfo): String {
+    protected fun validateFilePath(
+        filePath: String,
+        languageInfo: LanguageInfo,
+        formattedCode: String
+    ): String {
         var path = filePath
         if (containsExportPattern(path)) {
             path = replacePatterns(
@@ -68,7 +42,6 @@ internal abstract class BaseRepository : RemoteRepository {
                 languageInfo.androidCode
             )
         } else {
-            val formattedCode = languageInfo.id.getLocaleForLanguageCode().getFormattedCode()
             return getFormattedPath(path, formattedCode)
         }
 
@@ -107,7 +80,7 @@ internal abstract class BaseRepository : RemoteRepository {
             "/$formattedCode/$path"
         }
 
-    protected fun containsExportPattern(path: String): Boolean {
+    private fun containsExportPattern(path: String): Boolean {
         for (element in listExportPattern) {
             if (path.contains(element)) {
                 return true

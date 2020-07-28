@@ -441,6 +441,7 @@ object Crowdin {
                         viewTransformerManager.invalidate()
                     }
                 })
+        remoteRepository.crowdinApi = getCrowdinApi()
     }
 
     private fun initViewTransformer() {
@@ -457,12 +458,12 @@ object Crowdin {
         if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             val mappingRepository = MappingRepository(
                 CrowdinRetrofitService.getCrowdinDistributionApi(),
-                getCrowdinApi(),
                 XmlReader(StringResourceParser()),
                 dataManager!!,
                 config.distributionHash,
                 config.sourceLanguage
             )
+            mappingRepository.crowdinApi = getCrowdinApi()
             mappingRepository.fetchData()
         }
     }
@@ -473,12 +474,12 @@ object Crowdin {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             translationDataRepository = TranslationDataRepository(
                 CrowdinRetrofitService.getCrowdinDistributionApi(),
-                getCrowdinApi(),
                 CrowdinRetrofitService.getCrowdinTranslationApi(),
                 XmlReader(StringResourceParser()),
                 dataManager!!,
                 config.distributionHash
             )
+            translationDataRepository?.crowdinApi = getCrowdinApi()
             loadTranslation()
         }
     }

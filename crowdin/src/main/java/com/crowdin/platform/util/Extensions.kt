@@ -7,7 +7,6 @@ import android.view.MenuInflater
 import androidx.annotation.MenuRes
 import com.crowdin.platform.Crowdin
 import java.io.IOException
-import java.lang.RuntimeException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -27,15 +26,7 @@ fun Long.parseToDateTimeFormat(): String {
     return monthDate.format(cal.time)
 }
 
-fun Locale.getFormattedCode(): String {
-    val formattedLanguageCode = "$language-$country"
-
-    return if (isSupported(formattedLanguageCode)) {
-        formattedLanguageCode
-    } else {
-        language
-    }
-}
+fun Locale.getFormattedCode(): String = "$language-$country"
 
 fun String.getLocaleForLanguageCode(): Locale {
     var code = Locale.getDefault().language

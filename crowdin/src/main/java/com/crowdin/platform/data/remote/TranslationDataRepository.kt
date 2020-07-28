@@ -8,30 +8,28 @@ import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.model.Translation
 import com.crowdin.platform.data.parser.Reader
-import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.data.remote.api.CrowdinTranslationApi
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.executeIO
-import com.crowdin.platform.util.getFormattedCode
-import java.util.Locale
 import okhttp3.ResponseBody
 
 internal class TranslationDataRepository(
     crowdinDistributionApi: CrowdinDistributionApi,
-    private val crowdinApi: CrowdinApi,
     private val crowdinTranslationApi: CrowdinTranslationApi,
     private val reader: Reader,
     private val dataManager: DataManager,
     distributionHash: String
 ) : CrowdingRepository(
     crowdinDistributionApi,
-    crowdinApi,
     distributionHash
 ) {
 
+    private var preferredLanguageCode: String? = null
+
     override fun fetchData(languageCode: String?, languageDataCallback: LanguageDataCallback?) {
+        preferredLanguageCode = languageCode
         getManifest(languageDataCallback)
     }
 
@@ -39,6 +37,15 @@ internal class TranslationDataRepository(
         manifest: ManifestData?,
         languageDataCallback: LanguageDataCallback?
     ) {
+        val supportedLanguages = manifest?.languages
+        if (preferredLanguageCode == null) {
+            preferredLanguageCode = getMatchedCode(supportedLanguages) ?: return
+        } else {
+            if (supportedLanguages?.contains(preferredLanguageCode!!) == false) {
+                return
+            }
+        }
+
         dataManager.getData<DistributionInfoResponse.DistributionData>(
             DataManager.DISTRIBUTION_DATA,
             DistributionInfoResponse.DistributionData::class.java
@@ -47,17 +54,23 @@ internal class TranslationDataRepository(
 
     private fun getFiles(id: String, files: List<String>) {
         executeIO {
-            crowdinApi.getFiles(id).execute().body()
+            crowdinApi?.getFiles(id)?.execute()?.body()
                 ?.let { onFilesReceived(files, it, id) }
         }
     }
 
     private fun onFilesReceived(files: List<String>, body: FileResponse, projectId: String) {
-        val languageData = LanguageData(Locale.getDefault().getFormattedCode())
+        val languageData = LanguageData(preferredLanguageCode!!)
 
         files.forEach { file ->
+            var fileName = file
+            if (file.contains("/")) {
+                fileName = file.split("/").last()
+            } else {
+                fileName.replace("/", "")
+            }
             body.data.forEach {
-                if ("/${it.data.name}" == file) {
+                if (it.data.name == fileName) {
                     val eTag = eTagMap[file]
                     val result = requestBuildTranslation(
                         eTag ?: HEADER_ETAG_EMPTY,
@@ -81,14 +94,13 @@ internal class TranslationDataRepository(
         file: String
     ): LanguageData {
         var languageData = LanguageData()
-        val formattedCode = Locale.getDefault().getFormattedCode()
         executeIO {
-            crowdinApi.getTranslation(
+            crowdinApi?.getTranslation(
                 eTag,
                 projectId,
                 stringId,
-                BuildTranslationRequest(formattedCode)
-            ).execute().body()?.let {
+                BuildTranslationRequest(preferredLanguageCode!!)
+            )?.execute()?.body()?.let {
                 languageData = onTranslationReceived(it.data, file)
             }
         }
