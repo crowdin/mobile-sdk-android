@@ -1,5 +1,6 @@
 package com.crowdin.platform.data.remote.api
 
+import com.crowdin.platform.data.model.ManifestData
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.GET
@@ -20,7 +21,7 @@ internal interface CrowdinDistributionApi {
     @GET("/{distributionHash}/manifest.json")
     fun getResourceManifest(
         @Path("distributionHash") distributionHash: String
-    ): Call<ResponseBody>
+    ): Call<ManifestData>
 
     @GET("/{distributionHash}/mapping{filePath}")
     fun getMappingFile(

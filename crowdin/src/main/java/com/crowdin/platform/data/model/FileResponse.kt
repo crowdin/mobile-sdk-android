@@ -1,14 +1,14 @@
 package com.crowdin.platform.data.model
 
-data class FileResponse(
+internal data class FileResponse(
     val data: List<FileData>
 )
 
-data class FileData(
+internal data class FileData(
     val data: File
 )
 
-data class File(
+internal data class File(
     val id: Long,
     val projectId: Long,
     val name: String,

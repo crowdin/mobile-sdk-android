@@ -20,6 +20,7 @@ import com.crowdin.platform.data.remote.DistributionInfoManager
 import com.crowdin.platform.data.remote.MappingRepository
 import com.crowdin.platform.data.remote.StringDataRemoteRepository
 import com.crowdin.platform.data.remote.TranslationDataRepository
+import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager
 import com.crowdin.platform.recurringwork.RecurringManager
 import com.crowdin.platform.screenshot.ScreenshotCallback
@@ -396,10 +397,7 @@ object Crowdin {
     private fun initFeatureManagers() {
         if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             distributionInfoManager = DistributionInfoManager(
-                CrowdinRetrofitService.getCrowdinApi(
-                    dataManager!!,
-                    config.authConfig?.organizationName
-                ),
+                getCrowdinApi(),
                 dataManager!!,
                 config.distributionHash
             )
@@ -415,10 +413,7 @@ object Crowdin {
 
         if (FeatureFlags.isScreenshotEnabled) {
             screenshotManager = ScreenshotManager(
-                CrowdinRetrofitService.getCrowdinApi(
-                    dataManager!!,
-                    config.authConfig?.organizationName
-                ),
+                getCrowdinApi(),
                 dataManager!!,
                 config.sourceLanguage
             )
@@ -462,6 +457,7 @@ object Crowdin {
         if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             val mappingRepository = MappingRepository(
                 CrowdinRetrofitService.getCrowdinDistributionApi(),
+                getCrowdinApi(),
                 XmlReader(StringResourceParser()),
                 dataManager!!,
                 config.distributionHash,
@@ -477,10 +473,7 @@ object Crowdin {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             translationDataRepository = TranslationDataRepository(
                 CrowdinRetrofitService.getCrowdinDistributionApi(),
-                CrowdinRetrofitService.getCrowdinApi(
-                    dataManager!!,
-                    config.authConfig?.organizationName
-                ),
+                getCrowdinApi(),
                 CrowdinRetrofitService.getCrowdinTranslationApi(),
                 XmlReader(StringResourceParser()),
                 dataManager!!,
@@ -495,4 +488,10 @@ object Crowdin {
             translationDataRepository?.fetchData()
         }
     }
+
+    private fun getCrowdinApi(): CrowdinApi =
+        CrowdinRetrofitService.getCrowdinApi(
+            dataManager!!,
+            config.authConfig?.organizationName
+        )
 }

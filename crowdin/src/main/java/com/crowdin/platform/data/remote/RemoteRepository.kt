@@ -2,8 +2,6 @@ package com.crowdin.platform.data.remote
 
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
-import com.crowdin.platform.util.getFormattedCode
-import java.util.Locale
 
 /**
  * Repository of strings from network.
@@ -17,7 +15,7 @@ internal interface RemoteRepository {
      * @param languageDataCallback delivers data back to caller.
      */
     fun fetchData(
-        languageCode: String = Locale.getDefault().getFormattedCode(),
+        languageCode: String? = null,
         languageDataCallback: LanguageDataCallback? = null
     )
 }

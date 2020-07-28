@@ -8,11 +8,13 @@ import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.parser.ReaderFactory
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.ThreadUtils
+import com.crowdin.platform.util.executeIO
 import com.crowdin.platform.util.getFormattedCode
 import com.crowdin.platform.util.getLocaleForLanguageCode
 import java.net.HttpURLConnection
 import java.util.Locale
 import okhttp3.ResponseBody
+import retrofit2.Response
 
 private const val XML_EXTENSION = ".xml"
 
@@ -21,24 +23,34 @@ internal class StringDataRemoteRepository(
     private val distributionHash: String
 ) : CrowdingRepository(
     crowdinDistributionApi,
-    distributionHash
+    distributionHash = distributionHash
 ) {
 
-    private var preferredLanguageCode = Locale.getDefault().getFormattedCode()
+    private var preferredLanguageCode: String? = null
 
-    override fun fetchData(languageCode: String, languageDataCallback: LanguageDataCallback?) {
+    override fun fetchData(languageCode: String?, languageDataCallback: LanguageDataCallback?) {
         preferredLanguageCode = languageCode
         getManifest(languageDataCallback)
     }
 
     override fun onManifestDataReceived(
-        manifest: ManifestData,
+        manifest: ManifestData?,
         languageDataCallback: LanguageDataCallback?
     ) {
         // Combine all data before save to storage
-        val languageData = LanguageData(preferredLanguageCode)
-        val locale = preferredLanguageCode.getLocaleForLanguageCode()
-        manifest.files.forEach {
+        val languageData =
+            LanguageData(preferredLanguageCode ?: Locale.getDefault().getFormattedCode())
+        manifest?.files?.forEach {
+            if (preferredLanguageCode == null) {
+                preferredLanguageCode = if (containsExportPattern(it)) {
+                    "${Locale.getDefault().language}-${Locale.getDefault().country}"
+                } else {
+                    Locale.getDefault().getFormattedCode()
+                }
+            }
+
+            val locale = preferredLanguageCode!!.getLocaleForLanguageCode()
+
             val filePath = try {
                 validateFilePath(it, locale)
             } catch (ex: Exception) {
@@ -66,30 +78,39 @@ internal class StringDataRemoteRepository(
         languageDataCallback: LanguageDataCallback?
     ): LanguageData {
         var languageData = LanguageData()
-        val result = crowdinDistributionApi.getResourceFile(
-            eTag ?: HEADER_ETAG_EMPTY,
-            distributionHash,
-            filePath,
-            timestamp
-        ).execute()
-        val body = result.body()
-        val code = result.code()
-        when {
-            code == HttpURLConnection.HTTP_OK && body != null -> {
-                languageData = onStringDataReceived(
-                    result.headers()[HEADER_ETAG],
-                    filePath,
-                    body
-                )
+        var result: Response<ResponseBody>? = null
+
+        executeIO {
+            result = crowdinDistributionApi.getResourceFile(
+                eTag ?: HEADER_ETAG_EMPTY,
+                distributionHash,
+                filePath,
+                timestamp
+            ).execute()
+        }
+
+        result?.let {
+            val body = it.body()
+            val code = it.code()
+            when {
+                code == HttpURLConnection.HTTP_OK && body != null -> {
+                    languageData = onStringDataReceived(
+                        it.headers()[HEADER_ETAG],
+                        filePath,
+                        body
+                    )
+                }
+                code == HttpURLConnection.HTTP_FORBIDDEN -> {
+                    val errorMessage =
+                        "Translation file $filePath for locale ${preferredLanguageCode?.getLocaleForLanguageCode()} not found in the distribution"
+                    Log.i(Crowdin.CROWDIN_TAG, errorMessage)
+                    languageDataCallback?.onFailure(Throwable(errorMessage))
+                }
+                code != HttpURLConnection.HTTP_NOT_MODIFIED ->
+                    languageDataCallback?.onFailure(Throwable("Unexpected http error code $code"))
+                else -> {
+                }
             }
-            code == HttpURLConnection.HTTP_FORBIDDEN -> {
-                val errorMessage =
-                    "Translation file $filePath for locale ${preferredLanguageCode.getLocaleForLanguageCode()} not found in the distribution"
-                Log.i(Crowdin.CROWDIN_TAG, errorMessage)
-                languageDataCallback?.onFailure(Throwable(errorMessage))
-            }
-            code != HttpURLConnection.HTTP_NOT_MODIFIED ->
-                languageDataCallback?.onFailure(Throwable("Unexpected http error code $code"))
         }
 
         return languageData

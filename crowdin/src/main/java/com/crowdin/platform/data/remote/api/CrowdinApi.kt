@@ -2,6 +2,7 @@ package com.crowdin.platform.data.remote.api
 
 import com.crowdin.platform.data.model.BuildTranslationRequest
 import com.crowdin.platform.data.model.FileResponse
+import com.crowdin.platform.data.model.LanguageInfoResponse
 import com.crowdin.platform.data.model.TranslationResponse
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -47,4 +48,9 @@ internal interface CrowdinApi {
 
     @GET("/api/v2/projects/{projectId}/files")
     fun getFiles(@Path("projectId") projectId: String): Call<FileResponse>
+
+    @GET("/api/v2/languages/{languageId}")
+    fun getLanguageInfo(
+        @Path("languageId") languageId: String
+    ): Call<LanguageInfoResponse>
 }

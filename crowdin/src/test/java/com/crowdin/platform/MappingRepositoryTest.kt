@@ -3,8 +3,11 @@ package com.crowdin.platform
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.LanguageInfo
+import com.crowdin.platform.data.model.LanguageInfoResponse
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.MappingRepository
+import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import okhttp3.ResponseBody
 import org.junit.Before
@@ -18,6 +21,7 @@ import retrofit2.Response
 class MappingRepositoryTest {
 
     private lateinit var mockDistributionApi: CrowdinDistributionApi
+    private lateinit var mockCrowdinAPi: CrowdinApi
     private lateinit var mockReader: Reader
     private lateinit var mockDataManager: DataManager
     private lateinit var mockCallback: LanguageDataCallback
@@ -25,6 +29,7 @@ class MappingRepositoryTest {
     @Before
     fun setUp() {
         mockDistributionApi = mock(CrowdinDistributionApi::class.java)
+        mockCrowdinAPi = mock(CrowdinApi::class.java)
         mockReader = mock(Reader::class.java)
         mockDataManager = mock(DataManager::class.java)
         `when`(mockReader.parseInput(any())).thenReturn(LanguageData())
@@ -49,6 +54,7 @@ class MappingRepositoryTest {
         // Given
         val mappingRepository = givenMappingRepository()
         val manifestData = givenManifestData()
+        givenMockLanguageResponse()
         givenMockResponse()
 
         // When
@@ -63,6 +69,7 @@ class MappingRepositoryTest {
         // Given
         val mappingRepository = givenMappingRepository()
         val manifestData = givenManifestData()
+        givenMockLanguageResponse()
         givenMockResponse()
 
         // When
@@ -77,6 +84,7 @@ class MappingRepositoryTest {
         // Given
         val mappingRepository = givenMappingRepository()
         val manifestData = givenManifestData()
+        givenMockLanguageResponse()
         givenMockResponse()
 
         // When
@@ -91,6 +99,7 @@ class MappingRepositoryTest {
         // Given
         val mappingRepository = givenMappingRepository()
         val manifestData = givenManifestData()
+        givenMockLanguageResponse()
         givenMockResponse(false)
 
         // When
@@ -105,6 +114,7 @@ class MappingRepositoryTest {
         // Given
         val mappingRepository = givenMappingRepository()
         val manifestData = givenManifestData()
+        givenMockLanguageResponse()
         givenMockResponse(successCode = 204)
 
         // When
@@ -117,6 +127,7 @@ class MappingRepositoryTest {
     private fun givenMappingRepository(): MappingRepository =
         MappingRepository(
             mockDistributionApi,
+            mockCrowdinAPi,
             mockReader,
             mockDataManager,
             "hash",
@@ -132,6 +143,16 @@ class MappingRepositoryTest {
         } else {
             Response.error<ResponseBody>(403, StubResponseBody())
         }
+        `when`(mockedCall.execute()).thenReturn(response)
+    }
+
+    private fun givenMockLanguageResponse() {
+        val mockedCall = mock(Call::class.java) as Call<LanguageInfoResponse>
+        `when`(mockCrowdinAPi.getLanguageInfo(any())).thenReturn(mockedCall)
+        val response = Response.success(
+            200,
+            LanguageInfoResponse(LanguageInfo("en", "English", "en", "eng", "en-US", "en-rUS"))
+        )
         `when`(mockedCall.execute()).thenReturn(response)
     }
 }

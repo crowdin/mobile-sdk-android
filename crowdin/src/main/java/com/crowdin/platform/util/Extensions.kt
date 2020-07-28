@@ -1,10 +1,13 @@
 package com.crowdin.platform.util
 
 import android.content.res.Resources
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import androidx.annotation.MenuRes
 import com.crowdin.platform.Crowdin
+import java.io.IOException
+import java.lang.RuntimeException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -43,5 +46,15 @@ fun String.getLocaleForLanguageCode(): Locale {
         Locale(code, region)
     } catch (ex: Exception) {
         Locale(code)
+    }
+}
+
+fun executeIO(function: () -> Unit) {
+    try {
+        function.invoke()
+    } catch (ex: IOException) {
+        Log.w("Operation failed", ex)
+    } catch (ex: RuntimeException) {
+        Log.w("Operation failed", ex)
     }
 }

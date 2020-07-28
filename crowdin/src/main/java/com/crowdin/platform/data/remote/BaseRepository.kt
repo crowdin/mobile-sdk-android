@@ -1,6 +1,8 @@
 package com.crowdin.platform.data.remote
 
+import com.crowdin.platform.data.model.LanguageInfo
 import com.crowdin.platform.util.getFormattedCode
+import com.crowdin.platform.util.getLocaleForLanguageCode
 import java.util.Locale
 
 internal abstract class BaseRepository : RemoteRepository {
@@ -29,38 +31,89 @@ internal abstract class BaseRepository : RemoteRepository {
     protected fun validateFilePath(filePath: String, locale: Locale): String {
         var path = filePath
         val language = locale.language
-        val languageThreeLetterCode = locale.isO3Language
-        val languageName = locale.getDisplayLanguage(Locale.ENGLISH)
+        val threeLetterCode = locale.isO3Language
         val country = locale.country
-        val formattedCode = locale.getFormattedCode()
-        var containsExportPattern = false
+        val countryFormatted = if (country.isNullOrEmpty()) "" else "-$country"
+        val localeValue = "$language$countryFormatted"
+        val valuesCountryFormatted = if (country.isNullOrEmpty()) "" else "-r$country"
+        val androidCode = "$language$valuesCountryFormatted"
 
-        for (element in listExportPattern) {
-            if (path.contains(element)) {
-                containsExportPattern = true
-                break
-            }
-        }
-
-        if (!containsExportPattern) {
-            return if (path.startsWith("/")) {
-                "/$formattedCode$path"
-            } else {
-                "/$formattedCode/$path"
-            }
-        }
-
-        when {
-            path.contains(LANGUAGE_NAME) -> path = path.replace(LANGUAGE_NAME, languageName)
-            path.contains(TWO_LETTER_CODE) -> path = path.replace(TWO_LETTER_CODE, language)
-            path.contains(THREE_LETTER_CODE) -> path =
-                path.replace(THREE_LETTER_CODE, languageThreeLetterCode)
-            path.contains(LOCALE) -> path = path.replace(LOCALE, "$language-$country")
-            path.contains(LOCALE_WITH_UNDERSCORE) -> path =
-                path.replace(LOCALE_WITH_UNDERSCORE, locale.toString())
-            path.contains(ANDROID_CODE) -> path = path.replace(ANDROID_CODE, "$language-r$country")
+        if (containsExportPattern(path)) {
+            path = replacePatterns(
+                path,
+                locale.getDisplayLanguage(Locale.ENGLISH),
+                language,
+                threeLetterCode,
+                localeValue,
+                locale.toString(),
+                androidCode
+            )
+        } else {
+            return getFormattedPath(path, locale.getFormattedCode())
         }
 
         return path
+    }
+
+    protected fun validateMappingFilePath(filePath: String, languageInfo: LanguageInfo): String {
+        var path = filePath
+        if (containsExportPattern(path)) {
+            path = replacePatterns(
+                path,
+                languageInfo.name,
+                languageInfo.twoLettersCode,
+                languageInfo.threeLettersCode,
+                languageInfo.locale,
+                languageInfo.locale.replace("-", "_"),
+                languageInfo.androidCode
+            )
+        } else {
+            val formattedCode = languageInfo.id.getLocaleForLanguageCode().getFormattedCode()
+            return getFormattedPath(path, formattedCode)
+        }
+
+        return path
+    }
+
+    private fun replacePatterns(
+        filePath: String,
+        name: String,
+        twoLettersCode: String,
+        threeLetterCode: String,
+        locale: String,
+        localeWithUnderscore: String,
+        androidCode: String
+    ): String {
+        var path = filePath
+        when {
+            path.contains(LANGUAGE_NAME) -> path = path.replace(LANGUAGE_NAME, name)
+            path.contains(TWO_LETTER_CODE) -> path =
+                path.replace(TWO_LETTER_CODE, twoLettersCode)
+            path.contains(THREE_LETTER_CODE) -> path =
+                path.replace(THREE_LETTER_CODE, threeLetterCode)
+            path.contains(LOCALE) -> path = path.replace(LOCALE, locale)
+            path.contains(LOCALE_WITH_UNDERSCORE) -> path =
+                path.replace(LOCALE_WITH_UNDERSCORE, localeWithUnderscore)
+            path.contains(ANDROID_CODE) -> path = path.replace(ANDROID_CODE, androidCode)
+        }
+
+        return path
+    }
+
+    private fun getFormattedPath(path: String, formattedCode: String): String =
+        if (path.startsWith("/")) {
+            "/$formattedCode$path"
+        } else {
+            "/$formattedCode/$path"
+        }
+
+    protected fun containsExportPattern(path: String): Boolean {
+        for (element in listExportPattern) {
+            if (path.contains(element)) {
+                return true
+            }
+        }
+
+        return false
     }
 }

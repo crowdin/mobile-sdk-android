@@ -38,20 +38,19 @@ internal fun givenMockManifestResponse(
     success: Boolean = true,
     successCode: Int = 200
 ) {
-    val mockedCall = mock(Call::class.java) as Call<ResponseBody>
+    val mockedCall = mock(Call::class.java) as Call<ManifestData>
     `when`(mockDistributionApi.getResourceManifest(any())).thenReturn(mockedCall)
-    val responseBody = mock(StubResponseBody::class.java)
-    val json = "{\"files\":[\"\\/strings.xml\"]}"
-    `when`(responseBody.string()).thenReturn(json)
-
     val response = if (success) {
-        Response.success<ResponseBody>(successCode, responseBody)
+        Response.success<ManifestData>(
+            successCode,
+            ManifestData(listOf("strings.xml"), 123124154L, listOf())
+        )
     } else {
         Response.error(403, StubResponseBody())
     }
 
     doAnswer {
-        val callback = it.getArgument(0, Callback::class.java) as Callback<ResponseBody>
+        val callback = it.getArgument(0, Callback::class.java) as Callback<ManifestData>
         callback.onResponse(mockedCall, response)
     }.`when`(mockedCall).enqueue(any())
 }
