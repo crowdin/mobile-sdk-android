@@ -10,9 +10,9 @@ import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.executeIO
+import java.net.HttpURLConnection
 import okhttp3.ResponseBody
 import retrofit2.Response
-import java.net.HttpURLConnection
 
 internal class MappingRepository(
     private val crowdinDistributionApi: CrowdinDistributionApi,

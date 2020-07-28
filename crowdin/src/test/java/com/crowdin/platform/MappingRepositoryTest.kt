@@ -21,7 +21,7 @@ import retrofit2.Response
 class MappingRepositoryTest {
 
     private lateinit var mockDistributionApi: CrowdinDistributionApi
-    private lateinit var mockCrowdinAPi: CrowdinApi
+    private lateinit var mockCrowdinApi: CrowdinApi
     private lateinit var mockReader: Reader
     private lateinit var mockDataManager: DataManager
     private lateinit var mockCallback: LanguageDataCallback
@@ -29,7 +29,7 @@ class MappingRepositoryTest {
     @Before
     fun setUp() {
         mockDistributionApi = mock(CrowdinDistributionApi::class.java)
-        mockCrowdinAPi = mock(CrowdinApi::class.java)
+        mockCrowdinApi = mock(CrowdinApi::class.java)
         mockReader = mock(Reader::class.java)
         mockDataManager = mock(DataManager::class.java)
         `when`(mockReader.parseInput(any())).thenReturn(LanguageData())
@@ -124,15 +124,17 @@ class MappingRepositoryTest {
         verify(mockCallback).onFailure(any())
     }
 
-    private fun givenMappingRepository(): MappingRepository =
-        MappingRepository(
+    private fun givenMappingRepository(): MappingRepository {
+        val repository = MappingRepository(
             mockDistributionApi,
-            mockCrowdinAPi,
             mockReader,
             mockDataManager,
             "hash",
             "en"
         )
+        repository.crowdinApi = mockCrowdinApi
+        return repository
+    }
 
     private fun givenMockResponse(success: Boolean = true, successCode: Int = 200) {
         val mockedCall = mock(Call::class.java) as Call<ResponseBody>
@@ -148,7 +150,7 @@ class MappingRepositoryTest {
 
     private fun givenMockLanguageResponse() {
         val mockedCall = mock(Call::class.java) as Call<LanguageInfoResponse>
-        `when`(mockCrowdinAPi.getLanguageInfo(any())).thenReturn(mockedCall)
+        `when`(mockCrowdinApi.getLanguageInfo(any())).thenReturn(mockedCall)
         val response = Response.success(
             200,
             LanguageInfoResponse(LanguageInfo("en", "English", "en", "eng", "en-US", "en-rUS"))

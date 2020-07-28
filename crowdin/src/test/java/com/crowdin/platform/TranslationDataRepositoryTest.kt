@@ -149,15 +149,17 @@ class TranslationDataRepositoryTest {
         ).thenReturn(distributionData)
     }
 
-    private fun givenTranslationDataRepository(): TranslationDataRepository =
-        TranslationDataRepository(
+    private fun givenTranslationDataRepository(): TranslationDataRepository {
+        val repository = TranslationDataRepository(
             mockDistributionApi,
-            mockCrowdinApi,
             mockCrowdinTranslationApi,
             mockReader,
             mockDataManager,
             "hash"
         )
+        repository.crowdinApi = mockCrowdinApi
+        return repository
+    }
 
     private fun givenMockEmptyFileResponse() {
         val mockedCall = mock(Call::class.java) as Call<FileResponse>

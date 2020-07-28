@@ -8,11 +8,11 @@ import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.executeIO
+import java.net.HttpURLConnection
+import java.util.Locale
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.net.HttpURLConnection
-import java.util.Locale
 
 internal abstract class CrowdingRepository(
     private val crowdinDistributionApi: CrowdinDistributionApi,
