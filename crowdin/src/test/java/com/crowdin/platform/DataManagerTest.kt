@@ -10,8 +10,6 @@ import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.remote.RemoteRepository
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.getFormattedCode
-import java.lang.reflect.Type
-import java.util.Locale
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Before
@@ -20,6 +18,8 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoInteractions
+import java.lang.reflect.Type
+import java.util.Locale
 
 class DataManagerTest {
 
@@ -390,6 +390,52 @@ class DataManagerTest {
 
         // Then
         verify(mockPreferences).getString("distribution_hash")
+    }
+
+    @Test
+    fun refreshData() {
+        // Given
+        val dataManager = givenDataManager()
+        val givenLanguageData = LanguageData("en")
+        FeatureFlags.registerConfig(
+            CrowdinConfig.Builder()
+                .withSourceLanguage("en")
+                .withDistributionHash("test")
+                .withRealTimeUpdates()
+                .build()
+        )
+
+        // When
+        dataManager.refreshData(givenLanguageData)
+
+        // Then
+        verify(mockLocalRepository).saveLanguageData(givenLanguageData)
+        verify(mockLocalDataChangeObserver).onDataChanged()
+    }
+
+    @Test
+    fun getResourcesByLocale() {
+        // Given
+        val dataManager = givenDataManager()
+        val givenMockCallback = mock(ResourcesCallback::class.java)
+
+        // When
+        dataManager.getResourcesByLocale("en", givenMockCallback)
+
+        // Then
+        verify(mockRemoteRepository).fetchData(eq("en"), any())
+    }
+
+    @Test
+    fun getLanguageData() {
+        // Given
+        val dataManager = givenDataManager()
+
+        // When
+        dataManager.getLanguageData("en")
+
+        // Then
+        verify(mockLocalRepository).getLanguageData(eq("en"))
     }
 
     private fun givenDataManager(): DataManager =
