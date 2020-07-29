@@ -25,7 +25,7 @@ internal abstract class BaseRepository : RemoteRepository {
 
     protected var eTagMap = mutableMapOf<String, String>()
 
-    protected fun validateFilePath(
+    fun validateFilePath(
         filePath: String,
         languageInfo: LanguageInfo,
         formattedCode: String

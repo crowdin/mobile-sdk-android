@@ -13,7 +13,7 @@ import retrofit2.Response
 
 internal fun givenManifestData(): ManifestData =
     Gson().fromJson(
-        "{\"files\":[\"\\/strings.xml\"]}",
+        "{\"files\":[\"\\/strings.xml\"],\"languages\":[\"en\"]}",
         ManifestData::class.java
     )
 
