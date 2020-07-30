@@ -360,6 +360,7 @@ object Crowdin {
     /**
      * Create realtime update connection.
      */
+    @JvmStatic
     fun createRealTimeConnection() {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             realTimeUpdateManager?.openConnection()
@@ -403,15 +404,16 @@ object Crowdin {
      */
     fun downloadTranslation(callback: TranslationDownloadCallback? = null) {
         if (FeatureFlags.isRealTimeUpdateEnabled && dataManager?.isAuthorized() == true) {
-            translationDataRepository?.fetchData(object : LanguageDataCallback {
-                override fun onDataLoaded(languageData: LanguageData) {
-                    callback?.onSuccess()
-                }
+            translationDataRepository?.fetchData(
+                languageDataCallback = object : LanguageDataCallback {
+                    override fun onDataLoaded(languageData: LanguageData) {
+                        callback?.onSuccess()
+                    }
 
-                override fun onFailure(throwable: Throwable) {
-                    callback?.onFailure(throwable)
-                }
-            })
+                    override fun onFailure(throwable: Throwable) {
+                        callback?.onFailure(throwable)
+                    }
+                })
         }
     }
 
