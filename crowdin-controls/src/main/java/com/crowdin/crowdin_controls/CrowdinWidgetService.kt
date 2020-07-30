@@ -136,12 +136,12 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
     }
 
     override fun onDataChanged() {
-        showToast("Data reloaded")
+        showToast(DISTRIBUTION_RELOADED)
         Crowdin.unregisterDataLoadingObserver(this)
     }
 
     override fun onFailure(throwable: Throwable) {
-        showToast(throwable.message ?: "Data reload failed")
+        showToast(throwable.message ?: RELOAD_FAILED)
         Crowdin.unregisterDataLoadingObserver(this)
     }
 
@@ -162,7 +162,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
             if (Crowdin.isAuthorized()) {
                 Crowdin.createRealTimeConnection()
             } else {
-                showToast("Authorization required")
+                showToast(AUTH_REQUIRED)
                 realTimeBtn.isChecked = false
             }
         }
@@ -175,7 +175,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
                 action = BROADCAST_SCREENSHOT
             })
         } else {
-            showToast("Authorization required")
+            showToast(AUTH_REQUIRED)
         }
     }
 
@@ -184,11 +184,11 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
         if (Crowdin.isRealTimeUpdatesEnabled()) {
             Crowdin.downloadTranslation(object : TranslationDownloadCallback {
                 override fun onSuccess() {
-                    showToast("Data reloaded")
+                    showToast(TRANSLATION_RELOADED)
                 }
 
                 override fun onFailure(throwable: Throwable) {
-                    showToast(throwable.message ?: "Data reload failed")
+                    showToast(throwable.message ?: RELOAD_FAILED)
                 }
             })
         } else {
@@ -227,6 +227,13 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
     }
 
     companion object {
+
+        private const val AUTH_REQUIRED =
+            "Crowdin Authorization required for this action. Press 'Log in' button to authorize"
+        private const val DISTRIBUTION_RELOADED =
+            "Translations successfully reloaded from the distribution"
+        private const val TRANSLATION_RELOADED = "The latest translations successfully reloaded"
+        private const val RELOAD_FAILED = "Data reload failed"
 
         private const val BROADCAST_SCREENSHOT = "com.crowdin.crowdin_controls.broadcast.SCREENSHOT"
         private lateinit var receiver: BroadcastReceiver
