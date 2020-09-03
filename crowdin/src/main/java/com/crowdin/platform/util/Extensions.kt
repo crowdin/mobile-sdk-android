@@ -49,3 +49,12 @@ fun executeIO(function: () -> Unit) {
         Log.w("Operation failed", ex)
     }
 }
+
+fun getMatchedCode(list: List<String>?): String? {
+    val code = "${Locale.getDefault().language}-${Locale.getDefault().country}"
+    if (list?.contains(code) == false) {
+        val languageCode = Locale.getDefault().language
+        return languageCode.takeIf { list.contains(languageCode) }
+    }
+    return code
+}

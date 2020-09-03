@@ -3,6 +3,7 @@ package com.crowdin.platform.data.remote
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.crowdin.platform.data.DataManager
+import com.crowdin.platform.data.DataManager.Companion.MANIFEST_DATA
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.LanguagesInfo
@@ -30,7 +31,9 @@ internal class MappingRepository(
         supportedLanguages: LanguagesInfo?,
         languageDataCallback: LanguageDataCallback?
     ) {
-        getManifest(languageDataCallback)
+        getManifest({
+            onManifestDataReceived(it, languageDataCallback)
+        }, languageDataCallback)
     }
 
     @WorkerThread
@@ -38,6 +41,7 @@ internal class MappingRepository(
         manifest: ManifestData?,
         languageDataCallback: LanguageDataCallback?
     ) {
+        dataManager.saveData(MANIFEST_DATA, manifest)
         // Combine all data before save to storage
         val languageData = LanguageData(sourceLanguage)
         dataManager.getSupportedLanguages { languagesInfo ->

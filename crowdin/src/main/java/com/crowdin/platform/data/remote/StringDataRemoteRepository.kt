@@ -9,6 +9,7 @@ import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.parser.ReaderFactory
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.executeIO
+import com.crowdin.platform.util.getMatchedCode
 import okhttp3.ResponseBody
 import retrofit2.Response
 import java.net.HttpURLConnection
@@ -32,7 +33,9 @@ internal class StringDataRemoteRepository(
     ) {
         preferredLanguageCode = languageCode
         crowdinLanguages = supportedLanguages
-        getManifest(languageDataCallback)
+        getManifest({
+            onManifestDataReceived(it, languageDataCallback)
+        }, languageDataCallback)
     }
 
     override fun onManifestDataReceived(

@@ -13,7 +13,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.net.HttpURLConnection
-import java.util.Locale
 
 internal abstract class CrowdingRepository(
     private val crowdinDistributionApi: CrowdinDistributionApi,
@@ -23,7 +22,7 @@ internal abstract class CrowdingRepository(
     var crowdinApi: CrowdinApi? = null
     var crowdinLanguages: LanguagesInfo? = null
 
-    fun getManifest(languageDataCallback: LanguageDataCallback?) {
+    override fun getManifest(function: (ManifestData) -> Unit, languageDataCallback: LanguageDataCallback?) {
         crowdinDistributionApi.getResourceManifest(distributionHash)
             .enqueue(object : Callback<ManifestData> {
 
@@ -37,7 +36,7 @@ internal abstract class CrowdingRepository(
                             try {
                                 ThreadUtils.runInBackgroundPool(Runnable {
                                     synchronized(this) {
-                                        onManifestDataReceived(body, languageDataCallback)
+                                        function.invoke(body)
                                     }
                                 }, true)
                             } catch (throwable: Throwable) {
@@ -74,14 +73,5 @@ internal abstract class CrowdingRepository(
         }
 
         return null
-    }
-
-    fun getMatchedCode(list: List<String>?): String? {
-        val code = "${Locale.getDefault().language}-${Locale.getDefault().country}"
-        if (list?.contains(code) == false) {
-            val languageCode = Locale.getDefault().language
-            return languageCode.takeIf { list.contains(languageCode) }
-        }
-        return code
     }
 }

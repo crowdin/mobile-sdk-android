@@ -4,6 +4,7 @@ import androidx.annotation.WorkerThread
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.LanguagesInfo
+import com.crowdin.platform.data.model.ManifestData
 
 /**
  * Repository of strings from network.
@@ -21,6 +22,8 @@ internal interface RemoteRepository {
         supportedLanguages: LanguagesInfo? = null,
         languageDataCallback: LanguageDataCallback? = null
     )
+
+    fun getManifest(function: (ManifestData) -> Unit, languageDataCallback: LanguageDataCallback? = null)
 
     /**
      * Fetch all supported languages.

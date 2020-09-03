@@ -10,6 +10,7 @@ import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.LanguagesInfo
+import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.model.TextMetaData
@@ -37,6 +38,7 @@ internal class DataManager(
         const val DISTRIBUTION_HASH = "distribution_hash"
         const val MAPPING_SUF = "-mapping"
         const val SUPPORTED_LANGUAGES = "supported_languages"
+        const val MANIFEST_DATA = "manifest_data"
     }
 
     private var loadingStateListeners: ArrayList<LoadingStateListener>? = null
@@ -161,6 +163,20 @@ internal class DataManager(
 
     fun getMapping(sourceLanguage: String): LanguageData? =
         localRepository.getLanguageData(sourceLanguage + MAPPING_SUF)
+
+    fun getManifest(function: (ManifestData) -> Unit) {
+        ThreadUtils.runInBackgroundPool(Runnable {
+            val manifest: ManifestData? = getData(MANIFEST_DATA, ManifestData::class.java)
+            if (manifest == null) {
+                remoteRepository.getManifest({
+                    saveData(MANIFEST_DATA, it)
+                    function.invoke(it)
+                })
+            } else {
+                function.invoke(manifest)
+            }
+        }, true)
+    }
 
     fun saveData(type: String, data: Any?) {
         localRepository.saveData(type, data)

@@ -14,6 +14,7 @@ import com.crowdin.platform.data.remote.api.CrowdinTranslationApi
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.executeIO
+import com.crowdin.platform.util.getMatchedCode
 import okhttp3.ResponseBody
 
 internal class TranslationDataRepository(
@@ -35,7 +36,9 @@ internal class TranslationDataRepository(
         languageDataCallback: LanguageDataCallback?
     ) {
         preferredLanguageCode = languageCode
-        getManifest(languageDataCallback)
+        getManifest({
+            onManifestDataReceived(it, languageDataCallback)
+        }, languageDataCallback)
     }
 
     override fun onManifestDataReceived(
