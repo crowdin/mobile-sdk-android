@@ -54,23 +54,40 @@ internal class TranslationDataRepository(
             }
         }
 
-        dataManager.getData<DistributionInfoResponse.DistributionData>(
-            DataManager.DISTRIBUTION_DATA,
-            DistributionInfoResponse.DistributionData::class.java
-        )?.project?.id?.let { manifest?.files?.let { files -> getFiles(it, files) } }
-    }
-
-    private fun getFiles(id: String, files: List<String>) {
-        executeIO {
-            crowdinApi?.getFiles(id)?.execute()?.body()
-                ?.let { onFilesReceived(files, it, id) }
+        dataManager.getSupportedLanguages { languagesInfo ->
+            crowdinLanguages = languagesInfo
+            val languageInfo = getLanguageInfo(preferredLanguageCode!!)
+            languageInfo?.let { info ->
+                dataManager.getData<DistributionInfoResponse.DistributionData>(
+                    DataManager.DISTRIBUTION_DATA,
+                    DistributionInfoResponse.DistributionData::class.java
+                )?.project?.id?.let {
+                    manifest?.files?.let { files ->
+                        getFiles(
+                            it,
+                            files,
+                            info.locale
+                        )
+                    }
+                }
+            }
         }
     }
 
-    private fun onFilesReceived(files: List<String>, body: FileResponse, projectId: String) {
-//        TODO: update language to de-DE format check supported codes
-        val languageData = LanguageData(preferredLanguageCode!!)
+    private fun getFiles(id: String, files: List<String>, locale: String) {
+        executeIO {
+            crowdinApi?.getFiles(id)?.execute()?.body()
+                ?.let { onFilesReceived(files, it, id, locale) }
+        }
+    }
 
+    private fun onFilesReceived(
+        files: List<String>,
+        body: FileResponse,
+        projectId: String,
+        locale: String
+    ) {
+        val languageData = LanguageData(locale)
         files.forEach { file ->
             var fileName = file
             if (file.contains("/")) {

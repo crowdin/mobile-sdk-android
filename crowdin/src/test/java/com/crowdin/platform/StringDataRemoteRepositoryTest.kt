@@ -1,8 +1,9 @@
 package com.crowdin.platform
 
+import android.util.Log
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageInfo
-import com.crowdin.platform.data.model.LanguageInfoResponse
+import com.crowdin.platform.data.model.LanguageInfoData
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.StringDataRemoteRepository
 import com.crowdin.platform.data.remote.api.CrowdinApi
@@ -16,6 +17,7 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import retrofit2.Call
 import retrofit2.Response
+import java.util.Locale
 
 class StringDataRemoteRepositoryTest {
 
@@ -90,6 +92,31 @@ class StringDataRemoteRepositoryTest {
         verify(mockCallback).onFailure(any())
     }
 
+    @Test
+    fun validation_test() {
+        val formattedCode = "de"
+
+        var locale: Locale = Locale.getDefault()
+        if (formattedCode.contentEquals("-")) {
+            val localeData = formattedCode.split("-").toTypedArray()
+            locale = Locale(localeData[0], localeData[1])
+        } else {
+
+//            LocaleUtils.countriesByLanguage(String)
+
+            run loop@{
+                Locale.getAvailableLocales().forEach {
+                    if (it.toString().contains("_") && it.language == formattedCode) {
+
+                        locale = Locale(formattedCode, it.country)
+                        return@loop
+                    }
+                }
+            }
+        }
+        Log.d("TAG", "TA")
+    }
+
     private fun givenStringDataRemoteRepository(): StringDataRemoteRepository {
         val repository = StringDataRemoteRepository(mockDistributionApi, "hash")
         repository.crowdinApi = mockCrowdinApi
@@ -119,11 +146,11 @@ class StringDataRemoteRepositoryTest {
     }
 
     private fun givenMockLanguageResponse() {
-        val mockedCall = mock(Call::class.java) as Call<LanguageInfoResponse>
+        val mockedCall = mock(Call::class.java) as Call<LanguageInfoData>
         `when`(mockCrowdinApi.getLanguageInfo(any())).thenReturn(mockedCall)
         val response = Response.success(
             200,
-            LanguageInfoResponse(LanguageInfo("en", "English", "en", "eng", "en-US", "en-rUS"))
+            LanguageInfoData(LanguageInfo("en", "English", "en", "eng", "en-US", "en-rUS"))
         )
         `when`(mockedCall.execute()).thenReturn(response)
     }

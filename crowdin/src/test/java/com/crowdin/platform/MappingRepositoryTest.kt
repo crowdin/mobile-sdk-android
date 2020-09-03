@@ -4,7 +4,7 @@ import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.LanguageInfo
-import com.crowdin.platform.data.model.LanguageInfoResponse
+import com.crowdin.platform.data.model.LanguageInfoData
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.MappingRepository
 import com.crowdin.platform.data.remote.api.CrowdinApi
@@ -221,9 +221,9 @@ class MappingRepositoryTest {
         givenMockLanguageResponse()
         val expectedInfo = givenLanguageInfo()
 
-        val actualLanguageInfo = mappingRepository.getLanguageInfo("en")?.data
+        val actualLanguageInfo = mappingRepository.getLanguageInfo("en")
 
-        verify(mockCrowdinApi).getLanguageInfo("en")
+        verify(mockCrowdinApi).getLanguagesInfo(any())
         assertThat(actualLanguageInfo, equalTo(expectedInfo))
     }
 
@@ -252,11 +252,11 @@ class MappingRepositoryTest {
     }
 
     private fun givenMockLanguageResponse() {
-        val mockedCall = mock(Call::class.java) as Call<LanguageInfoResponse>
-        `when`(mockCrowdinApi.getLanguageInfo(any())).thenReturn(mockedCall)
+        val mockedCall = mock(Call::class.java) as Call<LanguageInfoData>
+//        `when`(mockCrowdinApi.getLanguageInfo(any())).thenReturn(mockedCall)
         val response = Response.success(
             200,
-            LanguageInfoResponse(givenLanguageInfo())
+            LanguageInfoData(givenLanguageInfo())
         )
         `when`(mockedCall.execute()).thenReturn(response)
     }
