@@ -34,7 +34,7 @@ internal abstract class CrowdingRepository(
                     when {
                         response.code() == HttpURLConnection.HTTP_OK && body != null -> {
                             try {
-                                ThreadUtils.runInBackgroundPool(Runnable {
+                                ThreadUtils.runInBackgroundPool({
                                     synchronized(this) {
                                         function.invoke(body)
                                     }

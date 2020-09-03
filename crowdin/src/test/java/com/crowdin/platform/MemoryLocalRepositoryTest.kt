@@ -195,8 +195,8 @@ class MemoryLocalRepositoryTest {
         memoryLocalRepository.saveData("auth_info", expectedAuthInfo)
 
         // Then
-        val actualAuthInfo =
-            memoryLocalRepository.getData<AuthInfo>("auth_info", AuthInfo::class.java) as AuthInfo
+        val actualAuthInfo: AuthInfo? =
+            memoryLocalRepository.getData("auth_info", AuthInfo::class.java)
         assertThat(actualAuthInfo, `is`(expectedAuthInfo))
     }
 

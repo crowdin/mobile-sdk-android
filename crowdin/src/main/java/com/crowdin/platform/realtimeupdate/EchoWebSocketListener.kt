@@ -42,7 +42,7 @@ internal class EchoWebSocketListener(
 
         viewTransformerManager.setOnViewsChangeListener(object : ViewsChangeListener {
             override fun onChange(pair: Pair<TextView, TextMetaData>) {
-                ThreadUtils.runInBackgroundPool(Runnable {
+                ThreadUtils.runInBackgroundPool({
                     resubscribeView(pair, webSocket, project, user)
                 }, false)
             }

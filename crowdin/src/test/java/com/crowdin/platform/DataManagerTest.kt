@@ -15,6 +15,7 @@ import java.util.Locale
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
@@ -413,6 +414,7 @@ class DataManagerTest {
         verify(mockLocalDataChangeObserver).onDataChanged()
     }
 
+    @Ignore("Check supported/manifest language codes feature")
     @Test
     fun getResourcesByLocale() {
         // Given

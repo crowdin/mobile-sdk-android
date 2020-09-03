@@ -35,6 +35,7 @@ import com.crowdin.platform.transformer.ToolbarTransformer
 import com.crowdin.platform.transformer.ViewTransformerManager
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.TextUtils
+import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.createAuthDialog
 import com.crowdin.platform.util.getFormattedCode
 import java.util.Locale
@@ -438,7 +439,9 @@ object Crowdin {
                 crowdinPreferences,
                 object : LocalDataChangeObserver {
                     override fun onDataChanged() {
-                        viewTransformerManager.invalidate()
+                        ThreadUtils.executeOnMain {
+                            viewTransformerManager.invalidate()
+                        }
                     }
                 })
         remoteRepository.crowdinApi = getCrowdinApi()

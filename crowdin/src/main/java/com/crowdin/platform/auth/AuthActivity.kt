@@ -117,7 +117,7 @@ internal class AuthActivity : AppCompatActivity() {
     private fun handleCode(code: String) {
         if (code.isNotEmpty()) {
             progressView.visibility = View.VISIBLE
-            ThreadUtils.runInBackgroundPool(Runnable {
+            ThreadUtils.runInBackgroundPool({
                 val apiService = CrowdinRetrofitService.getCrowdinAuthApi()
                 executeIO {
                     val response = apiService.getToken(

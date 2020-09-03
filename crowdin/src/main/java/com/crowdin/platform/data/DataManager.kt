@@ -85,9 +85,7 @@ internal class DataManager(
     fun refreshData(languageData: LanguageData) {
         localRepository.saveLanguageData(languageData)
         if (FeatureFlags.isRealTimeUpdateEnabled) {
-            ThreadUtils.executeOnMain {
-                dataChangeObserver.onDataChanged()
-            }
+            dataChangeObserver.onDataChanged()
         }
 
         sendOnDataChanged()
@@ -165,7 +163,7 @@ internal class DataManager(
         localRepository.getLanguageData(sourceLanguage + MAPPING_SUF)
 
     fun getManifest(function: (ManifestData) -> Unit) {
-        ThreadUtils.runInBackgroundPool(Runnable {
+        ThreadUtils.runInBackgroundPool({
             val manifest: ManifestData? = getData(MANIFEST_DATA, ManifestData::class.java)
             if (manifest == null) {
                 remoteRepository.getManifest({
@@ -224,7 +222,7 @@ internal class DataManager(
     }
 
     fun getSupportedLanguages(function: (LanguagesInfo?) -> Unit) {
-        ThreadUtils.runInBackgroundPool(Runnable {
+        ThreadUtils.runInBackgroundPool({
             var info: LanguagesInfo? = getData(SUPPORTED_LANGUAGES, LanguagesInfo::class.java)
             if (info == null) {
                 info = remoteRepository.getSupportedLanguages()
