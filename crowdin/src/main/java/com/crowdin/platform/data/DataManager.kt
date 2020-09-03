@@ -9,6 +9,7 @@ import com.crowdin.platform.data.local.LocalRepository
 import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.model.TextMetaData
@@ -35,6 +36,7 @@ internal class DataManager(
         const val AUTH_INFO = "auth_info"
         const val DISTRIBUTION_HASH = "distribution_hash"
         const val MAPPING_SUF = "-mapping"
+        const val SUPPORTED_LANGUAGES = "supported_languages"
     }
 
     private var loadingStateListeners: ArrayList<LoadingStateListener>? = null
@@ -57,27 +59,33 @@ internal class DataManager(
         localRepository.getStringPlural(resourceKey, quantityKey)
 
     fun updateData(context: Context, networkType: NetworkType) {
-        val status = validateData(context, networkType)
-        if (status == STATUS_OK) {
-            remoteRepository.fetchData(languageDataCallback = object : LanguageDataCallback {
+        getSupportedLanguages {
+            val status = validateData(context, networkType)
+            if (status == STATUS_OK) {
+                remoteRepository.fetchData(
+                    supportedLanguages = it,
+                    languageDataCallback = object : LanguageDataCallback {
 
-                override fun onDataLoaded(languageData: LanguageData) {
-                    refreshData(languageData)
-                }
+                        override fun onDataLoaded(languageData: LanguageData) {
+                            refreshData(languageData)
+                        }
 
-                override fun onFailure(throwable: Throwable) {
-                    sendOnFailure(throwable)
-                }
-            })
-        } else {
-            sendOnFailure(Throwable(status))
+                        override fun onFailure(throwable: Throwable) {
+                            sendOnFailure(throwable)
+                        }
+                    })
+            } else {
+                sendOnFailure(Throwable(status))
+            }
         }
     }
 
     fun refreshData(languageData: LanguageData) {
         localRepository.saveLanguageData(languageData)
         if (FeatureFlags.isRealTimeUpdateEnabled) {
-            dataChangeObserver.onDataChanged()
+            ThreadUtils.executeOnMain {
+                dataChangeObserver.onDataChanged()
+            }
         }
 
         sendOnDataChanged()
@@ -179,16 +187,34 @@ internal class DataManager(
     fun getDistributionHash(): String? = crowdinPreferences.getString(DISTRIBUTION_HASH)
 
     fun getResourcesByLocale(languageCode: String, callback: ResourcesCallback) {
-        remoteRepository.fetchData(languageCode, object : LanguageDataCallback {
+        getSupportedLanguages {
+            remoteRepository.fetchData(
+                languageCode,
+                it,
+                languageDataCallback = object : LanguageDataCallback {
 
-            override fun onDataLoaded(languageData: LanguageData) {
-                callback.onDataReceived(languageData.toString())
-            }
+                    override fun onDataLoaded(languageData: LanguageData) {
+                        ThreadUtils.executeOnMain { callback.onDataReceived(languageData.toString()) }
+                    }
 
-            override fun onFailure(throwable: Throwable) {
-                callback.onDataReceived("")
-                sendOnFailure(throwable)
+                    override fun onFailure(throwable: Throwable) {
+                        ThreadUtils.executeOnMain {
+                            callback.onDataReceived("")
+                            sendOnFailure(throwable)
+                        }
+                    }
+                })
+        }
+    }
+
+    fun getSupportedLanguages(function: (LanguagesInfo?) -> Unit) {
+        ThreadUtils.runInBackgroundPool(Runnable {
+            var info: LanguagesInfo? = getData(SUPPORTED_LANGUAGES, LanguagesInfo::class.java)
+            if (info == null) {
+                info = remoteRepository.getSupportedLanguages()
+                saveData(SUPPORTED_LANGUAGES, info)
             }
-        })
+            function.invoke(info)
+        }, true)
     }
 }

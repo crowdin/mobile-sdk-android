@@ -2,17 +2,18 @@ package com.crowdin.platform.data.remote
 
 import androidx.annotation.WorkerThread
 import com.crowdin.platform.data.LanguageDataCallback
-import com.crowdin.platform.data.model.LanguageInfoResponse
+import com.crowdin.platform.data.model.LanguageInfo
+import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.executeIO
-import java.net.HttpURLConnection
-import java.util.Locale
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.HttpURLConnection
+import java.util.Locale
 
 internal abstract class CrowdingRepository(
     private val crowdinDistributionApi: CrowdinDistributionApi,
@@ -20,6 +21,7 @@ internal abstract class CrowdingRepository(
 ) : BaseRepository() {
 
     var crowdinApi: CrowdinApi? = null
+    var crowdinLanguages: LanguagesInfo? = null
 
     fun getManifest(languageDataCallback: LanguageDataCallback?) {
         crowdinDistributionApi.getResourceManifest(distributionHash)
@@ -57,10 +59,21 @@ internal abstract class CrowdingRepository(
         languageDataCallback: LanguageDataCallback?
     )
 
-    fun getLanguageInfo(sourceLanguage: String): LanguageInfoResponse? {
-        var info: LanguageInfoResponse? = null
-        executeIO { info = crowdinApi?.getLanguageInfo(sourceLanguage)?.execute()?.body() }
+    override fun getSupportedLanguages(): LanguagesInfo? {
+        var info: LanguagesInfo? = null
+        executeIO { info = crowdinApi?.getLanguagesInfo()?.execute()?.body() }
         return info
+    }
+
+    fun getLanguageInfo(sourceLanguage: String): LanguageInfo? {
+        crowdinLanguages?.data?.forEach {
+            val languageInfo = it.data
+            if (languageInfo.id == sourceLanguage) {
+                return languageInfo
+            }
+        }
+
+        return null
     }
 
     fun getMatchedCode(list: List<String>?): String? {

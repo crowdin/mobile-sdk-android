@@ -4,14 +4,14 @@ import android.util.Log
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.parser.ReaderFactory
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
-import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.executeIO
-import java.net.HttpURLConnection
 import okhttp3.ResponseBody
 import retrofit2.Response
+import java.net.HttpURLConnection
 
 private const val XML_EXTENSION = ".xml"
 
@@ -25,8 +25,13 @@ internal class StringDataRemoteRepository(
 
     private var preferredLanguageCode: String? = null
 
-    override fun fetchData(languageCode: String?, languageDataCallback: LanguageDataCallback?) {
+    override fun fetchData(
+        languageCode: String?,
+        supportedLanguages: LanguagesInfo?,
+        languageDataCallback: LanguageDataCallback?
+    ) {
         preferredLanguageCode = languageCode
+        crowdinLanguages = supportedLanguages
         getManifest(languageDataCallback)
     }
 
@@ -45,7 +50,7 @@ internal class StringDataRemoteRepository(
 
         // Combine all data before save to storage
         val languageData = LanguageData()
-        val languageInfo = getLanguageInfo(preferredLanguageCode!!)?.data
+        val languageInfo = getLanguageInfo(preferredLanguageCode!!)
         languageInfo?.let { info ->
             languageData.language = info.locale
             manifest?.files?.forEach {
@@ -61,7 +66,7 @@ internal class StringDataRemoteRepository(
                 languageData.addNewResources(result)
             }
 
-            ThreadUtils.executeOnMain { languageDataCallback?.onDataLoaded(languageData) }
+            languageDataCallback?.onDataLoaded(languageData)
         }
     }
 

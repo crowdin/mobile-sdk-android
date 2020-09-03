@@ -2,7 +2,7 @@ package com.crowdin.platform.data.remote.api
 
 import com.crowdin.platform.data.model.BuildTranslationRequest
 import com.crowdin.platform.data.model.FileResponse
-import com.crowdin.platform.data.model.LanguageInfoResponse
+import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.TranslationResponse
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -13,6 +13,8 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
+
+private const val LANGUAGE_COUNT = 500
 
 internal interface CrowdinApi {
 
@@ -49,8 +51,8 @@ internal interface CrowdinApi {
     @GET("/api/v2/projects/{projectId}/files")
     fun getFiles(@Path("projectId") projectId: String): Call<FileResponse>
 
-    @GET("/api/v2/languages/{languageId}")
-    fun getLanguageInfo(
-        @Path("languageId") languageId: String
-    ): Call<LanguageInfoResponse>
+    @GET("/api/v2/languages")
+    fun getLanguagesInfo(
+        @Query("limit") limit: Int = LANGUAGE_COUNT
+    ): Call<LanguagesInfo>
 }

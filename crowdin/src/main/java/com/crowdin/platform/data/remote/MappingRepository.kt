@@ -5,14 +5,14 @@ import androidx.annotation.WorkerThread
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
-import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.executeIO
-import java.net.HttpURLConnection
 import okhttp3.ResponseBody
 import retrofit2.Response
+import java.net.HttpURLConnection
 
 internal class MappingRepository(
     private val crowdinDistributionApi: CrowdinDistributionApi,
@@ -25,7 +25,11 @@ internal class MappingRepository(
     distributionHash
 ) {
 
-    override fun fetchData(languageCode: String?, languageDataCallback: LanguageDataCallback?) {
+    override fun fetchData(
+        languageCode: String?,
+        supportedLanguages: LanguagesInfo?,
+        languageDataCallback: LanguageDataCallback?
+    ) {
         getManifest(languageDataCallback)
     }
 
@@ -36,21 +40,24 @@ internal class MappingRepository(
     ) {
         // Combine all data before save to storage
         val languageData = LanguageData(sourceLanguage)
-        val languageInfo = getLanguageInfo(sourceLanguage)?.data
-        languageInfo?.let { info ->
-            manifest?.files?.forEach {
-                val filePath = validateFilePath(it, info, sourceLanguage)
-                val eTag = eTagMap[filePath]
+        dataManager.getSupportedLanguages { languagesInfo ->
+            crowdinLanguages = languagesInfo
+            val languageInfo = getLanguageInfo(sourceLanguage)
+            languageInfo?.let { info ->
+                manifest?.files?.forEach {
+                    val filePath = validateFilePath(it, info, sourceLanguage)
+                    val eTag = eTagMap[filePath]
 
-                val result = requestFileMapping(
-                    eTag,
-                    distributionHash,
-                    filePath,
-                    languageDataCallback
-                )
-                languageData.addNewResources(result)
+                    val result = requestFileMapping(
+                        eTag,
+                        distributionHash,
+                        filePath,
+                        languageDataCallback
+                    )
+                    languageData.addNewResources(result)
+                }
+                dataManager.saveMapping(languageData)
             }
-            dataManager.saveMapping(languageData)
         }
     }
 
@@ -107,7 +114,7 @@ internal class MappingRepository(
         eTag?.let { eTagMap.put(filePath, eTag) }
 
         val languageData = reader.parseInput(body.byteStream())
-        ThreadUtils.executeOnMain { languageDataCallback?.onDataLoaded(languageData) }
+        languageDataCallback?.onDataLoaded(languageData)
 
         return languageData
     }

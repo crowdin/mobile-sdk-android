@@ -5,6 +5,7 @@ import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.BuildTranslationRequest
 import com.crowdin.platform.data.model.FileResponse
 import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.model.Translation
 import com.crowdin.platform.data.parser.Reader
@@ -28,7 +29,11 @@ internal class TranslationDataRepository(
 
     private var preferredLanguageCode: String? = null
 
-    override fun fetchData(languageCode: String?, languageDataCallback: LanguageDataCallback?) {
+    override fun fetchData(
+        languageCode: String?,
+        supportedLanguages: LanguagesInfo?,
+        languageDataCallback: LanguageDataCallback?
+    ) {
         preferredLanguageCode = languageCode
         getManifest(languageDataCallback)
     }
@@ -60,6 +65,7 @@ internal class TranslationDataRepository(
     }
 
     private fun onFilesReceived(files: List<String>, body: FileResponse, projectId: String) {
+//        TODO: update language to de-DE format check supported codes
         val languageData = LanguageData(preferredLanguageCode!!)
 
         files.forEach { file ->
