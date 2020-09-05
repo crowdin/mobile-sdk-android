@@ -84,7 +84,7 @@ internal class DataManager(
 
     fun refreshData(languageData: LanguageData) {
         localRepository.saveLanguageData(languageData)
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
+        if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             dataChangeObserver.onDataChanged()
         }
 
@@ -107,7 +107,7 @@ internal class DataManager(
         arrayData: ArrayData? = null,
         pluralData: PluralData? = null
     ) {
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
+        if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             when {
                 stringData != null -> localRepository.setStringData(
                     Locale.getDefault().getFormattedCode() + SUF_COPY,
