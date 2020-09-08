@@ -82,15 +82,19 @@ internal class StringResourceParser : Parser {
             (isArrayStarted && isInnerTagOpened) ||
             (isPluralStarted && isItemStarted && isInnerTagOpened)
         ) {
-            content += parser.text.replace("\\", "")
+            content += unEscapeQuotes(parser.text)
         } else if (isArrayStarted && isItemStarted) {
             when (arrayData?.values) {
                 null -> arrayData?.values = arrayOf(parser.text)
                 else -> arrayData?.values = arrayData?.values?.plus(parser.text)
             }
         } else if (isPluralStarted && isItemStarted) {
-            content += parser.text.replace("\\", "")
+            content += unEscapeQuotes(parser.text)
         }
+    }
+    fun unEscapeQuotes(replaceString: String): String {
+        return replaceString.replace("\\\"", "\"")
+                .replace("\\\'", "\'")
     }
 
     override fun onEndTag(parser: XmlPullParser) {
