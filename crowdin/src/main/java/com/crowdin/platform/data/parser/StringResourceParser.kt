@@ -82,14 +82,14 @@ internal class StringResourceParser : Parser {
             (isArrayStarted && isInnerTagOpened) ||
             (isPluralStarted && isItemStarted && isInnerTagOpened)
         ) {
-            content += parser.text
+            content += parser.text.replace("\\", "")
         } else if (isArrayStarted && isItemStarted) {
             when (arrayData?.values) {
                 null -> arrayData?.values = arrayOf(parser.text)
                 else -> arrayData?.values = arrayData?.values?.plus(parser.text)
             }
         } else if (isPluralStarted && isItemStarted) {
-            content += parser.text
+            content += parser.text.replace("\\", "")
         }
     }
 
