@@ -1,13 +1,15 @@
 package com.crowdin.platform
 
 import com.crowdin.platform.data.LanguageDataCallback
+import com.crowdin.platform.data.model.LanguageInfo
+import com.crowdin.platform.data.model.LanguageInfoData
+import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.StringDataRemoteRepository
 import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import okhttp3.ResponseBody
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.`when`
@@ -44,12 +46,12 @@ class StringDataRemoteRepositoryTest {
         verify(mockDistributionApi).getResourceManifest(any())
     }
 
-    @Ignore("Check supported/manifest language codes feature")
     @Test
     fun whenFetchData_shouldTriggerApiCall() {
         // Given
         val repository = givenStringDataRemoteRepository()
         val manifestData = givenManifestData()
+        repository.crowdinLanguages = givenSupportedLanguages()
         givenMockResponse()
 
         // When
@@ -59,12 +61,12 @@ class StringDataRemoteRepositoryTest {
         verify(mockDistributionApi).getResourceFile(any(), any(), any(), ArgumentMatchers.anyLong())
     }
 
-    @Ignore("Check supported/manifest language codes feature")
     @Test
     fun whenFetchWithCallbackAndResponseFailure_shouldCallFailureMethod() {
         // Given
         val repository = givenStringDataRemoteRepository()
         val manifestData = givenManifestData()
+        repository.crowdinLanguages = givenSupportedLanguages()
         givenMockResponse(false)
 
         // When
@@ -74,12 +76,12 @@ class StringDataRemoteRepositoryTest {
         verify(mockCallback).onFailure(any())
     }
 
-    @Ignore("Check supported/manifest language codes feature")
     @Test
     fun whenFetchWithCallbackAndResponseNotCode200_shouldCallFailureMethod() {
         // Given
         val repository = givenStringDataRemoteRepository()
         val manifestData = givenManifestData()
+        repository.crowdinLanguages = givenSupportedLanguages()
         givenMockResponse(successCode = 204)
 
         // When
@@ -87,6 +89,13 @@ class StringDataRemoteRepositoryTest {
 
         // Then
         verify(mockCallback).onFailure(any())
+    }
+
+    private fun givenSupportedLanguages(): LanguagesInfo {
+        val languageInfo = LanguageInfo("en", "name", "qq", "www", "en-US", "en-rUS")
+        return LanguagesInfo(
+            mutableListOf(LanguageInfoData(languageInfo))
+        )
     }
 
     private fun givenStringDataRemoteRepository(): StringDataRemoteRepository {

@@ -5,6 +5,7 @@ import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.LanguageInfo
 import com.crowdin.platform.data.model.LanguageInfoData
+import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.MappingRepository
 import com.crowdin.platform.data.remote.api.CrowdinApi
@@ -13,7 +14,6 @@ import okhttp3.ResponseBody
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.assertThat
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
@@ -39,7 +39,6 @@ class MappingRepositoryTest {
         mockCallback = mock(LanguageDataCallback::class.java)
     }
 
-    @Ignore("Check supported/manifest language codes feature")
     @Test
     fun whenFetchData_shouldRequestManifestApiCall() {
         // Given
@@ -53,11 +52,12 @@ class MappingRepositoryTest {
         verify(mockDistributionApi).getResourceManifest(any())
     }
 
-    @Ignore("Check supported/manifest language codes feature")
     @Test
     fun whenFetchManifestSuccess_shouldTriggerFilePathApiCall() {
         // Given
         val mappingRepository = givenMappingRepository()
+        `when`(mockDataManager.getSupportedLanguages()).thenReturn(givenSupportedLanguages())
+        mappingRepository.crowdinLanguages = givenSupportedLanguages()
         val manifestData = givenManifestData()
         givenMockLanguageResponse()
         givenMockResponse()
@@ -69,12 +69,13 @@ class MappingRepositoryTest {
         verify(mockDistributionApi).getMappingFile(any(), any(), any())
     }
 
-    @Ignore("Check supported/manifest language codes feature")
     @Test
     fun whenFetchDataSuccess_shouldParseResponseAndCloseReader() {
         // Given
         val mappingRepository = givenMappingRepository()
         val manifestData = givenManifestData()
+        `when`(mockDataManager.getSupportedLanguages()).thenReturn(givenSupportedLanguages())
+        mappingRepository.crowdinLanguages = givenSupportedLanguages()
         givenMockLanguageResponse()
         givenMockResponse()
 
@@ -85,11 +86,12 @@ class MappingRepositoryTest {
         verify(mockReader).parseInput(any())
     }
 
-    @Ignore("Check supported/manifest language codes feature")
     @Test
     fun whenFetchDataSuccess_shouldStoreResult() {
         // Given
         val mappingRepository = givenMappingRepository()
+        `when`(mockDataManager.getSupportedLanguages()).thenReturn(givenSupportedLanguages())
+        mappingRepository.crowdinLanguages = givenSupportedLanguages()
         val manifestData = givenManifestData()
         givenMockLanguageResponse()
         givenMockResponse()
@@ -101,11 +103,12 @@ class MappingRepositoryTest {
         verify(mockDataManager).saveMapping(any())
     }
 
-    @Ignore("Check supported/manifest language codes feature")
     @Test
     fun whenFetchWithCallbackAndResponseFailure_shouldCallFailureMethod() {
         // Given
         val mappingRepository = givenMappingRepository()
+        `when`(mockDataManager.getSupportedLanguages()).thenReturn(givenSupportedLanguages())
+        mappingRepository.crowdinLanguages = givenSupportedLanguages()
         val manifestData = givenManifestData()
         givenMockLanguageResponse()
         givenMockResponse(false)
@@ -117,11 +120,12 @@ class MappingRepositoryTest {
         verify(mockCallback).onFailure(any())
     }
 
-    @Ignore("Check supported/manifest language codes feature")
     @Test
     fun whenFetchWithCallbackAndResponseNotCode200_shouldCallFailureMethod() {
         // Given
         val mappingRepository = givenMappingRepository()
+        `when`(mockDataManager.getSupportedLanguages()).thenReturn(givenSupportedLanguages())
+        mappingRepository.crowdinLanguages = givenSupportedLanguages()
         val manifestData = givenManifestData()
         givenMockLanguageResponse()
         givenMockResponse(successCode = 204)
@@ -222,17 +226,31 @@ class MappingRepositoryTest {
         )
     }
 
-    @Ignore("Check supported/manifest language codes feature")
     @Test
     fun getLanguageInfoTest() {
+        // Given
         val mappingRepository = givenMappingRepository()
-        givenMockLanguageResponse()
-        val expectedInfo = givenLanguageInfo()
+        val languageInfo = LanguageInfo("en", "name", "qq", "www", "en-US", "en-rUS")
+        mappingRepository.crowdinLanguages = givenSupportedLanguages()
 
+        // When
         val actualLanguageInfo = mappingRepository.getLanguageInfo("en")
 
-        verify(mockCrowdinApi).getLanguagesInfo(any())
-        assertThat(actualLanguageInfo, equalTo(expectedInfo))
+        // Then
+        assertThat(actualLanguageInfo, equalTo(languageInfo))
+    }
+
+    @Test
+    fun getLanguageInfoNotFoundTest() {
+        // Given
+        val mappingRepository = givenMappingRepository()
+        mappingRepository.crowdinLanguages = givenSupportedLanguages()
+
+        // When
+        val actualLanguageInfo = mappingRepository.getLanguageInfo("fr")
+
+        // Then
+        assertThat(actualLanguageInfo, equalTo(null))
     }
 
     private fun givenMappingRepository(): MappingRepository {
@@ -261,12 +279,18 @@ class MappingRepositoryTest {
 
     private fun givenMockLanguageResponse() {
         val mockedCall = mock(Call::class.java) as Call<LanguageInfoData>
-//        `when`(mockCrowdinApi.getLanguageInfo(any())).thenReturn(mockedCall)
         val response = Response.success(
             200,
             LanguageInfoData(givenLanguageInfo())
         )
         `when`(mockedCall.execute()).thenReturn(response)
+    }
+
+    private fun givenSupportedLanguages(): LanguagesInfo {
+        val languageInfo = LanguageInfo("en", "name", "qq", "www", "en-US", "en-rUS")
+        return LanguagesInfo(
+            mutableListOf(LanguageInfoData(languageInfo))
+        )
     }
 
     private fun givenLanguageInfo(): LanguageInfo =

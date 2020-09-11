@@ -44,24 +44,23 @@ internal class MappingRepository(
         dataManager.saveData(MANIFEST_DATA, manifest)
         // Combine all data before save to storage
         val languageData = LanguageData(sourceLanguage)
-        dataManager.getSupportedLanguages { languagesInfo ->
-            crowdinLanguages = languagesInfo
-            val languageInfo = getLanguageInfo(sourceLanguage)
-            languageInfo?.let { info ->
-                manifest?.files?.forEach {
-                    val filePath = validateFilePath(it, info, sourceLanguage)
-                    val eTag = eTagMap[filePath]
+        val languagesInfo = dataManager.getSupportedLanguages()
+        crowdinLanguages = languagesInfo
+        val languageInfo = getLanguageInfo(sourceLanguage)
+        languageInfo?.let { info ->
+            manifest?.files?.forEach {
+                val filePath = validateFilePath(it, info, sourceLanguage)
+                val eTag = eTagMap[filePath]
 
-                    val result = requestFileMapping(
-                        eTag,
-                        distributionHash,
-                        filePath,
-                        languageDataCallback
-                    )
-                    languageData.addNewResources(result)
-                }
-                dataManager.saveMapping(languageData)
+                val result = requestFileMapping(
+                    eTag,
+                    distributionHash,
+                    filePath,
+                    languageDataCallback
+                )
+                languageData.addNewResources(result)
             }
+            dataManager.saveMapping(languageData)
         }
     }
 

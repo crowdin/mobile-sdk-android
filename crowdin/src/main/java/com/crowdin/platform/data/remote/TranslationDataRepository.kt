@@ -1,5 +1,6 @@
 package com.crowdin.platform.data.remote
 
+import androidx.annotation.WorkerThread
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.BuildTranslationRequest
@@ -41,6 +42,7 @@ internal class TranslationDataRepository(
         }, languageDataCallback)
     }
 
+    @WorkerThread
     override fun onManifestDataReceived(
         manifest: ManifestData?,
         languageDataCallback: LanguageDataCallback?
@@ -54,21 +56,20 @@ internal class TranslationDataRepository(
             }
         }
 
-        dataManager.getSupportedLanguages { languagesInfo ->
-            crowdinLanguages = languagesInfo
-            val languageInfo = getLanguageInfo(preferredLanguageCode!!)
-            languageInfo?.let { info ->
-                dataManager.getData<DistributionInfoResponse.DistributionData>(
-                    DataManager.DISTRIBUTION_DATA,
-                    DistributionInfoResponse.DistributionData::class.java
-                )?.project?.id?.let {
-                    manifest?.files?.let { files ->
-                        getFiles(
-                            it,
-                            files,
-                            info.locale
-                        )
-                    }
+        val languagesInfo = dataManager.getSupportedLanguages()
+        crowdinLanguages = languagesInfo
+        val languageInfo = getLanguageInfo(preferredLanguageCode!!)
+        languageInfo?.let { info ->
+            dataManager.getData<DistributionInfoResponse.DistributionData>(
+                DataManager.DISTRIBUTION_DATA,
+                DistributionInfoResponse.DistributionData::class.java
+            )?.project?.id?.let {
+                manifest?.files?.let { files ->
+                    getFiles(
+                        it,
+                        files,
+                        info.locale
+                    )
                 }
             }
         }

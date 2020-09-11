@@ -15,7 +15,6 @@ import java.util.Locale
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
@@ -412,20 +411,6 @@ class DataManagerTest {
         // Then
         verify(mockLocalRepository).saveLanguageData(givenLanguageData)
         verify(mockLocalDataChangeObserver).onDataChanged()
-    }
-
-    @Ignore("Check supported/manifest language codes feature")
-    @Test
-    fun getResourcesByLocale() {
-        // Given
-        val dataManager = givenDataManager()
-        val givenMockCallback = mock(ResourcesCallback::class.java)
-
-        // When
-        dataManager.getResourcesByLocale("en", givenMockCallback)
-
-        // Then
-        verify(mockRemoteRepository).fetchData(eq("en"), any())
     }
 
     @Test

@@ -7,6 +7,9 @@ import com.crowdin.platform.data.model.File
 import com.crowdin.platform.data.model.FileData
 import com.crowdin.platform.data.model.FileResponse
 import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.LanguageInfo
+import com.crowdin.platform.data.model.LanguageInfoData
+import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.Translation
 import com.crowdin.platform.data.model.TranslationResponse
 import com.crowdin.platform.data.parser.Reader
@@ -17,7 +20,6 @@ import com.crowdin.platform.data.remote.api.CrowdinTranslationApi
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import okhttp3.ResponseBody
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
@@ -58,28 +60,27 @@ class TranslationDataRepositoryTest {
         verify(mockDistributionApi).getResourceManifest(any())
     }
 
-    @Ignore("Check supported/manifest language codes feature")
     @Test
     fun whenFetchManifestSuccess_shouldGetDistributionData() {
         // Given
         val repository = givenTranslationDataRepository()
+        `when`(mockDataManager.getSupportedLanguages()).thenReturn(givenSupportedLanguages())
+        repository.crowdinLanguages = givenSupportedLanguages()
         val manifestData = givenManifestData()
 
         // When
         repository.onManifestDataReceived(manifestData, mockCallback)
 
         // Then
-        verify(mockDataManager).getData<DistributionInfoResponse.DistributionData>(
-            "distribution_data",
-            DistributionInfoResponse.DistributionData::class.java
-        )
+        verify(mockDataManager).getData<DistributionInfoResponse.DistributionData>(any(), any())
     }
 
-    @Ignore("Check supported/manifest language codes feature")
     @Test
     fun whenDistributionDataHasProjectId_shouldRequestProjectFiles() {
         // Given
         val repository = givenTranslationDataRepository()
+        `when`(mockDataManager.getSupportedLanguages()).thenReturn(givenSupportedLanguages())
+        repository.crowdinLanguages = givenSupportedLanguages()
         val manifestData = givenManifestData()
         givenMockMappingFileResponse(mockDistributionApi)
         givenMockDistributionData()
@@ -92,11 +93,12 @@ class TranslationDataRepositoryTest {
         verify(mockCrowdinApi).getFiles("testId")
     }
 
-    @Ignore("Check supported/manifest language codes feature")
     @Test
     fun whenFilesReceived_shouldRequestBuildTranslations() {
         // Given
         val repository = givenTranslationDataRepository()
+        `when`(mockDataManager.getSupportedLanguages()).thenReturn(givenSupportedLanguages())
+        repository.crowdinLanguages = givenSupportedLanguages()
         val manifestData = givenManifestData()
         givenMockDistributionData()
         givenMockFilesResponse()
@@ -114,11 +116,12 @@ class TranslationDataRepositoryTest {
         )
     }
 
-    @Ignore("Check supported/manifest language codes feature")
     @Test
     fun whenTranslationReady_shouldRequestTranslationResource() {
         // Given
         val repository = givenTranslationDataRepository()
+        `when`(mockDataManager.getSupportedLanguages()).thenReturn(givenSupportedLanguages())
+        repository.crowdinLanguages = givenSupportedLanguages()
         val manifestData = givenManifestData()
         givenMockDistributionData()
         givenMockFilesResponse()
@@ -131,6 +134,13 @@ class TranslationDataRepositoryTest {
         // Then
         verify(mockCrowdinTranslationApi).getTranslationResource("test_url")
         verify(mockReader).parseInput(any())
+    }
+
+    private fun givenSupportedLanguages(): LanguagesInfo {
+        val languageInfo = LanguageInfo("en", "name", "qq", "www", "en-US", "en-rUS")
+        return LanguagesInfo(
+            mutableListOf(LanguageInfoData(languageInfo))
+        )
     }
 
     private fun givenMockDistributionData() {
