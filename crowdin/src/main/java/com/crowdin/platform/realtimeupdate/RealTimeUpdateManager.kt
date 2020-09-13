@@ -3,6 +3,7 @@ package com.crowdin.platform.realtimeupdate
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.transformer.ViewTransformerManager
+import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.getMatchedCode
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -39,21 +40,24 @@ internal class RealTimeUpdateManager(
 
     private fun createConnection(distributionData: DistributionInfoResponse.DistributionData) {
         val mappingData = dataManager?.getMapping(sourceLanguage) ?: return
-        dataManager.getManifest {
-            val client = OkHttpClient().newBuilder().build()
-            val request = Request.Builder()
-                .url(distributionData.wsUrl)
-                .build()
 
-            val languageCode = getMatchedCode(it.languages) ?: return@getManifest
-            val listener = EchoWebSocketListener(
-                mappingData,
-                distributionData,
-                viewTransformerManager,
-                languageCode
-            )
-            socket = client.newWebSocket(request, listener)
-            client.dispatcher.executorService.shutdown()
-        }
+        ThreadUtils.runInBackgroundPool({
+            dataManager.getManifest()?.let {
+                val client = OkHttpClient().newBuilder().build()
+                val request = Request.Builder()
+                    .url(distributionData.wsUrl)
+                    .build()
+
+                val languageCode = getMatchedCode(it.languages) ?: return@let
+                val listener = EchoWebSocketListener(
+                    mappingData,
+                    distributionData,
+                    viewTransformerManager,
+                    languageCode
+                )
+                socket = client.newWebSocket(request, listener)
+                client.dispatcher.executorService.shutdown()
+            }
+        }, true)
     }
 }

@@ -1,6 +1,9 @@
 package com.crowdin.platform
 
+import android.content.ContentResolver
+import android.content.Context
 import android.graphics.Bitmap
+import android.provider.MediaStore
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.remote.api.CreateScreenshotResponse
@@ -17,6 +20,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.inOrder
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoInteractions
 import retrofit2.Call
@@ -142,6 +146,45 @@ class ScreenshotManagerTest {
 
         // Then
         verify(mockCallback).onFailure(any())
+    }
+
+    @Test
+    fun registerScreenshotObserverTest() {
+        // Given
+        val sourceLanguage = "EN"
+        val screenshotManager = ScreenshotManager(mockCrowdinApi, mockDataManager, sourceLanguage)
+        val mockContext = mock(Context::class.java)
+        val mockContextResolver = mock(ContentResolver::class.java)
+        `when`(mockContext.contentResolver).thenReturn(mockContextResolver)
+
+        // When
+        screenshotManager.registerScreenShotContentObserver(mockContext)
+
+        // Then
+        verify(mockContext).contentResolver
+        verify(mockContextResolver).registerContentObserver(
+            eq(MediaStore.Images.Media.EXTERNAL_CONTENT_URI),
+            eq(true),
+            any()
+        )
+    }
+
+    @Test
+    fun unregisterScreenshotObserver() {
+        // Given
+        val sourceLanguage = "EN"
+        val screenshotManager = ScreenshotManager(mockCrowdinApi, mockDataManager, sourceLanguage)
+        val mockContext = mock(Context::class.java)
+        val mockContextResolver = mock(ContentResolver::class.java)
+        `when`(mockContext.contentResolver).thenReturn(mockContextResolver)
+        screenshotManager.registerScreenShotContentObserver(mockContext)
+
+        // When
+        screenshotManager.unregisterScreenShotContentObserver(mockContext)
+
+        // Then
+        verify(mockContext, times(2)).contentResolver
+        verify(mockContextResolver).unregisterContentObserver(any())
     }
 
     private fun givenDistributionData() =

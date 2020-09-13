@@ -1,6 +1,7 @@
 package com.crowdin.platform.data
 
 import android.content.Context
+import androidx.annotation.WorkerThread
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.LocalDataChangeObserver
 import com.crowdin.platform.Preferences
@@ -163,18 +164,17 @@ internal class DataManager(
     fun getMapping(sourceLanguage: String): LanguageData? =
         localRepository.getLanguageData(sourceLanguage + MAPPING_SUF)
 
-    fun getManifest(function: (ManifestData) -> Unit) {
-        ThreadUtils.runInBackgroundPool({
-            val manifest: ManifestData? = getData(MANIFEST_DATA, ManifestData::class.java)
-            if (manifest == null) {
-                remoteRepository.getManifest({
-                    saveData(MANIFEST_DATA, it)
-                    function.invoke(it)
-                })
-            } else {
-                function.invoke(manifest)
-            }
-        }, true)
+    @WorkerThread
+    fun getManifest(): ManifestData? {
+        var manifest: ManifestData? = getData(MANIFEST_DATA, ManifestData::class.java)
+        if (manifest == null) {
+            remoteRepository.getManifest({
+                saveData(MANIFEST_DATA, it)
+                manifest = it
+            })
+        }
+
+        return manifest
     }
 
     fun saveData(type: String, data: Any?) {
@@ -223,6 +223,7 @@ internal class DataManager(
         }, true)
     }
 
+    @WorkerThread
     fun getSupportedLanguages(): LanguagesInfo? {
         var info: LanguagesInfo? = getData(SUPPORTED_LANGUAGES, LanguagesInfo::class.java)
         if (info == null) {

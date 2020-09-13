@@ -1,14 +1,11 @@
 package com.crowdin.platform.data.parser
 
-internal class ReaderFactory {
+internal object ReaderFactory {
 
-    companion object {
-
-        fun createReader(type: ReaderType): Reader {
-            return when (type) {
-                ReaderType.XML -> XmlReader(StringResourceParser())
-                ReaderType.JSON -> JsonReader()
-            }
+    fun createReader(type: ReaderType): Reader {
+        return when (type) {
+            ReaderType.XML -> XmlReader(StringResourceParser())
+            ReaderType.JSON -> JsonReader()
         }
     }
 
