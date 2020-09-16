@@ -1,10 +1,10 @@
 package com.crowdin.platform.data.model
 
-data class TranslationResponse(
+internal data class TranslationResponse(
     val data: Translation
 )
 
-data class Translation(
+internal data class Translation(
     val url: String,
     val etag: String
 )

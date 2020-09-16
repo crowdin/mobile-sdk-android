@@ -32,7 +32,7 @@ internal class SpinnerTransformer : BaseTransformer() {
                         val resId = attrs.getAttributeResourceValue(index, 0)
                         setAdapter(view, resId)
 
-                        if (FeatureFlags.isRealTimeUpdateEnabled) {
+                        if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
                             createdView[view] = resId
                         }
                     }

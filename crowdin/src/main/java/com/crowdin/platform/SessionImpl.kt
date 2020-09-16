@@ -6,6 +6,8 @@ import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.AuthResponse
 import com.crowdin.platform.data.model.RefreshToken
 import com.crowdin.platform.data.remote.api.AuthApi
+import com.crowdin.platform.util.executeIO
+import retrofit2.Response
 
 internal class SessionImpl(
     private val dataManager: DataManager,
@@ -26,11 +28,14 @@ internal class SessionImpl(
         val clientSecret = authConfig?.clientSecret ?: ""
         val domain = authConfig?.organizationName
 
-        val response = authApi.getToken(
-            RefreshToken("refresh_token", clientId, clientSecret, refreshToken), domain
-        ).execute()
+        var response: Response<AuthResponse>? = null
+        executeIO {
+            response = authApi.getToken(
+                RefreshToken("refresh_token", clientId, clientSecret, refreshToken), domain
+            ).execute()
+        }
 
-        val authResponse = response.body()
+        val authResponse = response?.body()
         authResponse?.let { saveToken(it) }
 
         return authResponse != null

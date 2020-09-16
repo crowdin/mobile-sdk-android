@@ -5,6 +5,7 @@ import com.crowdin.platform.data.local.LocalRepository
 import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.remote.RemoteRepository
@@ -390,6 +391,75 @@ class DataManagerTest {
 
         // Then
         verify(mockPreferences).getString("distribution_hash")
+    }
+
+    @Test
+    fun refreshData() {
+        // Given
+        val dataManager = givenDataManager()
+        val givenLanguageData = LanguageData("en")
+        FeatureFlags.registerConfig(
+            CrowdinConfig.Builder()
+                .withSourceLanguage("en")
+                .withDistributionHash("test")
+                .withRealTimeUpdates()
+                .build()
+        )
+        val mockListener = mock(LoadingStateListener::class.java)
+        dataManager.addLoadingStateListener(mockListener)
+
+        // When
+        dataManager.refreshData(givenLanguageData)
+
+        // Then
+        verify(mockLocalRepository).saveLanguageData(givenLanguageData)
+        verify(mockLocalDataChangeObserver).onDataChanged()
+        verify(mockListener).onDataChanged()
+    }
+
+    @Test
+    fun getLanguageData() {
+        // Given
+        val dataManager = givenDataManager()
+
+        // When
+        dataManager.getLanguageData("en")
+
+        // Then
+        verify(mockLocalRepository).getLanguageData(eq("en"))
+    }
+
+    @Test
+    fun whenGetManifest_shouldFetchFromCacheFirst() {
+        // Given
+        val dataManager = givenDataManager()
+
+        // When
+        dataManager.getManifest()
+
+        // Then
+        verify(mockLocalRepository).getData<ManifestData>(
+            eq("manifest_data"),
+            eq(ManifestData::class.java)
+        )
+    }
+
+    @Test
+    fun whenGetManifestLocalNull_shouldFetchFromApi() {
+        // Given
+        val dataManager = givenDataManager()
+        `when`(
+            mockLocalRepository.getData<ManifestData>(
+                eq("manifest_data"),
+                eq(ManifestData::class.java)
+            )
+        ).thenReturn(null)
+
+        // When
+        dataManager.getManifest()
+
+        // Then
+        verify(mockRemoteRepository).getManifest(any(), any())
     }
 
     private fun givenDataManager(): DataManager =

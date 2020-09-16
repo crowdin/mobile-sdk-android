@@ -1,8 +1,12 @@
 package com.crowdin.platform
 
 import com.crowdin.platform.data.LanguageDataCallback
+import com.crowdin.platform.data.model.LanguageInfo
+import com.crowdin.platform.data.model.LanguageInfoData
+import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.StringDataRemoteRepository
+import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import okhttp3.ResponseBody
 import org.junit.Before
@@ -17,12 +21,14 @@ import retrofit2.Response
 class StringDataRemoteRepositoryTest {
 
     private lateinit var mockDistributionApi: CrowdinDistributionApi
+    private lateinit var mockCrowdinApi: CrowdinApi
     private lateinit var mockReader: Reader
     private lateinit var mockCallback: LanguageDataCallback
 
     @Before
     fun setUp() {
         mockDistributionApi = mock(CrowdinDistributionApi::class.java)
+        mockCrowdinApi = mock(CrowdinApi::class.java)
         mockReader = mock(Reader::class.java)
         mockCallback = mock(LanguageDataCallback::class.java)
     }
@@ -45,6 +51,7 @@ class StringDataRemoteRepositoryTest {
         // Given
         val repository = givenStringDataRemoteRepository()
         val manifestData = givenManifestData()
+        repository.crowdinLanguages = givenSupportedLanguages()
         givenMockResponse()
 
         // When
@@ -59,6 +66,7 @@ class StringDataRemoteRepositoryTest {
         // Given
         val repository = givenStringDataRemoteRepository()
         val manifestData = givenManifestData()
+        repository.crowdinLanguages = givenSupportedLanguages()
         givenMockResponse(false)
 
         // When
@@ -73,6 +81,7 @@ class StringDataRemoteRepositoryTest {
         // Given
         val repository = givenStringDataRemoteRepository()
         val manifestData = givenManifestData()
+        repository.crowdinLanguages = givenSupportedLanguages()
         givenMockResponse(successCode = 204)
 
         // When
@@ -82,8 +91,18 @@ class StringDataRemoteRepositoryTest {
         verify(mockCallback).onFailure(any())
     }
 
-    private fun givenStringDataRemoteRepository(): StringDataRemoteRepository =
-        StringDataRemoteRepository(mockDistributionApi, "hash")
+    private fun givenSupportedLanguages(): LanguagesInfo {
+        val languageInfo = LanguageInfo("en", "name", "qq", "www", "en-US", "en-rUS")
+        return LanguagesInfo(
+            mutableListOf(LanguageInfoData(languageInfo))
+        )
+    }
+
+    private fun givenStringDataRemoteRepository(): StringDataRemoteRepository {
+        val repository = StringDataRemoteRepository(mockDistributionApi, "hash")
+        repository.crowdinApi = mockCrowdinApi
+        return repository
+    }
 
     private fun givenMockResponse(success: Boolean = true, successCode: Int = 200) {
         val mockedCall = mock(Call::class.java) as Call<ResponseBody>

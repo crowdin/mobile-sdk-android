@@ -26,7 +26,7 @@ internal class SupportToolbarTransformer(textMetaDataProvider: TextMetaDataProvi
         val textMetaData = TextMetaData()
 
         var child: TextView? = null
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
+        if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             child = findChildView(view)
             addTextWatcherToChild(child)
         }
@@ -39,7 +39,7 @@ internal class SupportToolbarTransformer(textMetaDataProvider: TextMetaDataProvi
                     val title = TextUtils.getTextForAttribute(attrs, index, resources)
                     if (title != null) {
                         view.title = title
-                        if (FeatureFlags.isRealTimeUpdateEnabled) {
+                        if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
                             if (id != null && child != null) {
                                 textMetaData.textAttributeKey = id
                             }
@@ -49,7 +49,7 @@ internal class SupportToolbarTransformer(textMetaDataProvider: TextMetaDataProvi
             }
         }
 
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
+        if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             child?.let {
                 addViewWithData(it, textMetaData)
                 listener?.onChange(Pair(it, textMetaData))

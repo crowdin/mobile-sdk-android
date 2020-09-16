@@ -1,9 +1,10 @@
 package com.crowdin.platform.data.remote
 
+import androidx.annotation.WorkerThread
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
-import com.crowdin.platform.util.getFormattedCode
-import java.util.Locale
+import com.crowdin.platform.data.model.LanguagesInfo
+import com.crowdin.platform.data.model.ManifestData
 
 /**
  * Repository of strings from network.
@@ -17,7 +18,16 @@ internal interface RemoteRepository {
      * @param languageDataCallback delivers data back to caller.
      */
     fun fetchData(
-        languageCode: String = Locale.getDefault().getFormattedCode(),
+        languageCode: String? = null,
+        supportedLanguages: LanguagesInfo? = null,
         languageDataCallback: LanguageDataCallback? = null
     )
+
+    fun getManifest(function: (ManifestData) -> Unit, languageDataCallback: LanguageDataCallback? = null)
+
+    /**
+     * Fetch all supported languages.
+     */
+    @WorkerThread
+    fun getSupportedLanguages(): LanguagesInfo?
 }

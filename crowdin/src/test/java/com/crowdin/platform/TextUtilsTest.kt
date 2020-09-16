@@ -3,6 +3,8 @@ package com.crowdin.platform
 import android.content.res.Resources
 import android.util.AttributeSet
 import com.crowdin.platform.util.TextUtils
+import com.crowdin.platform.util.getLocaleForLanguageCode
+import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.core.Is.`is`
 import org.junit.Assert.assertThat
 import org.junit.Before
@@ -183,5 +185,13 @@ class TextUtilsTest {
 
         // Then
         assertThat(actual, `is`(expectedText))
+    }
+
+    @Test
+    fun getLocaleForLanguageCode() {
+        val languageCodeWithCountry = "en-US"
+        val languageCode = "en"
+        assertThat(languageCodeWithCountry.getLocaleForLanguageCode().toString(), equalTo("en_US"))
+        assertThat(languageCode.getLocaleForLanguageCode().toString(), equalTo("en"))
     }
 }

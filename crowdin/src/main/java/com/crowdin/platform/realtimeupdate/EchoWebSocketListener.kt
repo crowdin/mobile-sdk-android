@@ -15,7 +15,6 @@ import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager.Companion.PLURA
 import com.crowdin.platform.transformer.ViewTransformerManager
 import com.crowdin.platform.transformer.ViewsChangeListener
 import com.crowdin.platform.util.ThreadUtils
-import com.crowdin.platform.util.getFormattedCode
 import com.google.gson.Gson
 import java.lang.ref.WeakReference
 import java.util.Locale
@@ -26,7 +25,8 @@ import okhttp3.WebSocketListener
 internal class EchoWebSocketListener(
     private var mappingData: LanguageData,
     private var distributionData: DistributionInfoResponse.DistributionData,
-    private var viewTransformerManager: ViewTransformerManager
+    private var viewTransformerManager: ViewTransformerManager,
+    private var languageCode: String
 ) : WebSocketListener() {
 
     private var dataHolderMap = ConcurrentHashMap<WeakReference<TextView>, TextMetaData>()
@@ -42,7 +42,7 @@ internal class EchoWebSocketListener(
 
         viewTransformerManager.setOnViewsChangeListener(object : ViewsChangeListener {
             override fun onChange(pair: Pair<TextView, TextMetaData>) {
-                ThreadUtils.runInBackgroundPool(Runnable {
+                ThreadUtils.runInBackgroundPool({
                     resubscribeView(pair, webSocket, project, user)
                 }, false)
             }
@@ -115,7 +115,7 @@ internal class EchoWebSocketListener(
                 project.wsHash,
                 project.id,
                 user.id,
-                Locale.getDefault().getFormattedCode(),
+                languageCode,
                 mappingValue
             )
                 .toString()
@@ -125,7 +125,7 @@ internal class EchoWebSocketListener(
             SubscribeSuggestionEvent(
                 project.wsHash,
                 project.id,
-                Locale.getDefault().getFormattedCode(),
+                languageCode,
                 mappingValue
             )
                 .toString()

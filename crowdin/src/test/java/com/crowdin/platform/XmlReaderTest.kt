@@ -1,8 +1,5 @@
 package com.crowdin.platform
 
-import com.crowdin.platform.data.model.ArrayData
-import com.crowdin.platform.data.model.PluralData
-import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.parser.Parser
 import com.crowdin.platform.data.parser.XmlReader
 import java.io.InputStream
@@ -38,8 +35,8 @@ class XmlReaderTest {
 
         // Then
         assertThat(result.language, `is`(""))
-        assertThat(result.resources, `is`(emptyList<StringData>()))
-        assertThat(result.arrays, `is`(emptyList<ArrayData>()))
-        assertThat(result.plurals, `is`(emptyList<PluralData>()))
+        assertThat(result.resources, `is`(emptyList()))
+        assertThat(result.arrays, `is`(emptyList()))
+        assertThat(result.plurals, `is`(emptyList()))
     }
 }

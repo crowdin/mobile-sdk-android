@@ -62,6 +62,38 @@ class MemoryLocalRepositoryTest {
     }
 
     @Test
+    fun whenSaveStringToExistingList_shouldReturnSameString() {
+        // Given
+        val memoryLocalRepository = MemoryLocalRepository()
+        val key = "test key"
+        val expectedValue = "Test value"
+        memoryLocalRepository.setString("EN", "key0", "value0")
+
+        // When
+        memoryLocalRepository.setString("EN", key, expectedValue)
+
+        // Then
+        val actualValue = memoryLocalRepository.getString("EN", key)
+        assertThat(actualValue, `is`(expectedValue))
+    }
+
+    @Test
+    fun whenSaveExistingString_shouldReturnUpdated() {
+        // Given
+        val memoryLocalRepository = MemoryLocalRepository()
+        val key = "test key"
+        val expectedValue = "Test value"
+        memoryLocalRepository.setString("EN", key, "value0")
+
+        // When
+        memoryLocalRepository.setString("EN", key, expectedValue)
+
+        // Then
+        val actualValue = memoryLocalRepository.getString("EN", key)
+        assertThat(actualValue, `is`(expectedValue))
+    }
+
+    @Test
     fun whenGetUnknownString_shouldReturnNull() {
         // Given
         val memoryLocalRepository = MemoryLocalRepository()
@@ -195,8 +227,8 @@ class MemoryLocalRepositoryTest {
         memoryLocalRepository.saveData("auth_info", expectedAuthInfo)
 
         // Then
-        val actualAuthInfo =
-            memoryLocalRepository.getData<AuthInfo>("auth_info", AuthInfo::class.java) as AuthInfo
+        val actualAuthInfo: AuthInfo? =
+            memoryLocalRepository.getData("auth_info", AuthInfo::class.java)
         assertThat(actualAuthInfo, `is`(expectedAuthInfo))
     }
 

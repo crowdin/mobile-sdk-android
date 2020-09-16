@@ -1,6 +1,7 @@
 package com.crowdin.platform.data
 
 import android.content.Context
+import androidx.annotation.WorkerThread
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.LocalDataChangeObserver
 import com.crowdin.platform.Preferences
@@ -9,6 +10,8 @@ import com.crowdin.platform.data.local.LocalRepository
 import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.LanguagesInfo
+import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.model.TextMetaData
@@ -35,6 +38,8 @@ internal class DataManager(
         const val AUTH_INFO = "auth_info"
         const val DISTRIBUTION_HASH = "distribution_hash"
         const val MAPPING_SUF = "-mapping"
+        const val SUPPORTED_LANGUAGES = "supported_languages"
+        const val MANIFEST_DATA = "manifest_data"
     }
 
     private var loadingStateListeners: ArrayList<LoadingStateListener>? = null
@@ -57,26 +62,31 @@ internal class DataManager(
         localRepository.getStringPlural(resourceKey, quantityKey)
 
     fun updateData(context: Context, networkType: NetworkType) {
-        val status = validateData(context, networkType)
-        if (status == STATUS_OK) {
-            remoteRepository.fetchData(languageDataCallback = object : LanguageDataCallback {
+        ThreadUtils.runInBackgroundPool({
+            val languageInfo = getSupportedLanguages()
+            val status = validateData(context, networkType)
+            if (status == STATUS_OK) {
+                remoteRepository.fetchData(
+                    supportedLanguages = languageInfo,
+                    languageDataCallback = object : LanguageDataCallback {
 
-                override fun onDataLoaded(languageData: LanguageData) {
-                    refreshData(languageData)
-                }
+                        override fun onDataLoaded(languageData: LanguageData) {
+                            refreshData(languageData)
+                        }
 
-                override fun onFailure(throwable: Throwable) {
-                    sendOnFailure(throwable)
-                }
-            })
-        } else {
-            sendOnFailure(Throwable(status))
-        }
+                        override fun onFailure(throwable: Throwable) {
+                            sendOnFailure(throwable)
+                        }
+                    })
+            } else {
+                sendOnFailure(Throwable(status))
+            }
+        }, true)
     }
 
     fun refreshData(languageData: LanguageData) {
         localRepository.saveLanguageData(languageData)
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
+        if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             dataChangeObserver.onDataChanged()
         }
 
@@ -99,7 +109,7 @@ internal class DataManager(
         arrayData: ArrayData? = null,
         pluralData: PluralData? = null
     ) {
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
+        if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             when {
                 stringData != null -> localRepository.setStringData(
                     Locale.getDefault().getFormattedCode() + SUF_COPY,
@@ -154,6 +164,19 @@ internal class DataManager(
     fun getMapping(sourceLanguage: String): LanguageData? =
         localRepository.getLanguageData(sourceLanguage + MAPPING_SUF)
 
+    @WorkerThread
+    fun getManifest(): ManifestData? {
+        var manifest: ManifestData? = getData(MANIFEST_DATA, ManifestData::class.java)
+        if (manifest == null) {
+            remoteRepository.getManifest({
+                saveData(MANIFEST_DATA, it)
+                manifest = it
+            })
+        }
+
+        return manifest
+    }
+
     fun saveData(type: String, data: Any?) {
         localRepository.saveData(type, data)
     }
@@ -179,16 +202,34 @@ internal class DataManager(
     fun getDistributionHash(): String? = crowdinPreferences.getString(DISTRIBUTION_HASH)
 
     fun getResourcesByLocale(languageCode: String, callback: ResourcesCallback) {
-        remoteRepository.fetchData(languageCode, object : LanguageDataCallback {
+        ThreadUtils.runInBackgroundPool({
+            val languageInfo = getSupportedLanguages()
+            remoteRepository.fetchData(
+                languageCode,
+                languageInfo,
+                languageDataCallback = object : LanguageDataCallback {
 
-            override fun onDataLoaded(languageData: LanguageData) {
-                callback.onDataReceived(languageData.toString())
-            }
+                    override fun onDataLoaded(languageData: LanguageData) {
+                        ThreadUtils.executeOnMain { callback.onDataReceived(languageData.toString()) }
+                    }
 
-            override fun onFailure(throwable: Throwable) {
-                callback.onDataReceived("")
-                sendOnFailure(throwable)
-            }
-        })
+                    override fun onFailure(throwable: Throwable) {
+                        ThreadUtils.executeOnMain {
+                            callback.onDataReceived("")
+                            sendOnFailure(throwable)
+                        }
+                    }
+                })
+        }, true)
+    }
+
+    @WorkerThread
+    fun getSupportedLanguages(): LanguagesInfo? {
+        var info: LanguagesInfo? = getData(SUPPORTED_LANGUAGES, LanguagesInfo::class.java)
+        if (info == null) {
+            info = remoteRepository.getSupportedLanguages()
+            saveData(SUPPORTED_LANGUAGES, info)
+        }
+        return info
     }
 }

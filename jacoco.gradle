@@ -46,7 +46,9 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
             '**/*SupportToolbarTransformer*.*',
             '**/*TextViewTransformer*.*',
             '**/*ToolbarTransformer*.*',
-            '**/*ScreenshotUtils*.*'
+            '**/*ScreenshotUtils*.*',
+            '**/*ResourcesData*.*',
+            '**/*UiUtil*.*'
     ]
 
     def javaDebugTree = fileTree(dir: "${buildDir}/intermediates/javac/debug", excludes: fileFilter)

@@ -26,7 +26,7 @@ internal object ThreadUtils {
                 NUMBER_OF_CORES + 1,
                 15L,
                 TimeUnit.SECONDS,
-                LinkedBlockingDeque<Runnable>(),
+                LinkedBlockingDeque(),
                 NamedThreadPoolFactory("LocalWorkThreadPool")
             )
         }

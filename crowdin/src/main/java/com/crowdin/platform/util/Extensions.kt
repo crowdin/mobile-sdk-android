@@ -1,10 +1,12 @@
 package com.crowdin.platform.util
 
 import android.content.res.Resources
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import androidx.annotation.MenuRes
 import com.crowdin.platform.Crowdin
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -24,15 +26,7 @@ fun Long.parseToDateTimeFormat(): String {
     return monthDate.format(cal.time)
 }
 
-fun Locale.getFormattedCode(): String {
-    val formattedLanguageCode = "$language-$country"
-
-    return if (isSupported(formattedLanguageCode)) {
-        formattedLanguageCode
-    } else {
-        language
-    }
-}
+fun Locale.getFormattedCode(): String = "$language-$country"
 
 fun String.getLocaleForLanguageCode(): Locale {
     var code = Locale.getDefault().language
@@ -44,4 +38,23 @@ fun String.getLocaleForLanguageCode(): Locale {
     } catch (ex: Exception) {
         Locale(code)
     }
+}
+
+fun executeIO(function: () -> Unit) {
+    try {
+        function.invoke()
+    } catch (ex: IOException) {
+        Log.w("Operation failed", ex)
+    } catch (ex: RuntimeException) {
+        Log.w("Operation failed", ex)
+    }
+}
+
+fun getMatchedCode(list: List<String>?): String? {
+    val code = "${Locale.getDefault().language}-${Locale.getDefault().country}"
+    if (list?.contains(code) == false) {
+        val languageCode = Locale.getDefault().language
+        return languageCode.takeIf { list.contains(languageCode) }
+    }
+    return code
 }

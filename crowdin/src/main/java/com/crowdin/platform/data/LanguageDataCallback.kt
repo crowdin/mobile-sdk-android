@@ -1,5 +1,6 @@
 package com.crowdin.platform.data
 
+import androidx.annotation.WorkerThread
 import com.crowdin.platform.data.model.LanguageData
 
 /**
@@ -12,6 +13,7 @@ internal interface LanguageDataCallback {
      *
      * @see LanguageData
      */
+    @WorkerThread
     fun onDataLoaded(languageData: LanguageData)
 
     /**
@@ -19,5 +21,6 @@ internal interface LanguageDataCallback {
      *
      * @param throwable error during data update process.
      */
+    @WorkerThread
     fun onFailure(throwable: Throwable)
 }

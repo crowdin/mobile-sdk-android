@@ -9,7 +9,7 @@ import com.crowdin.platform.example.R
 internal class SampleAdapter(private var dataArray: Array<String>) :
     RecyclerView.Adapter<SampleAdapter.SampleViewHolder>() {
 
-    internal inner class SampleViewHolder(internal val textView: TextView) :
+    internal class SampleViewHolder(internal val textView: TextView) :
         RecyclerView.ViewHolder(textView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SampleViewHolder {

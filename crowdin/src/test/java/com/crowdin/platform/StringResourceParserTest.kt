@@ -1,8 +1,6 @@
 package com.crowdin.platform
 
-import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.PluralData
-import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.parser.StringResourceParser
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -25,9 +23,9 @@ class StringResourceParserTest {
 
         // Then
         assertThat(result.language, `is`(""))
-        assertThat(result.resources, `is`(emptyList<StringData>()))
-        assertThat(result.arrays, `is`(emptyList<ArrayData>()))
-        assertThat(result.plurals, `is`(emptyList<PluralData>()))
+        assertThat(result.resources, `is`(emptyList()))
+        assertThat(result.arrays, `is`(emptyList()))
+        assertThat(result.plurals, `is`(emptyList()))
     }
 
     @Test

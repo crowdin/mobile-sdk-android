@@ -24,6 +24,7 @@ import com.crowdin.platform.data.model.TokenRequest
 import com.crowdin.platform.data.remote.CrowdinRetrofitService
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.ThreadUtils
+import com.crowdin.platform.util.executeIO
 import kotlinx.android.synthetic.main.auth_layout.*
 
 internal class AuthActivity : AppCompatActivity() {
@@ -116,22 +117,23 @@ internal class AuthActivity : AppCompatActivity() {
     private fun handleCode(code: String) {
         if (code.isNotEmpty()) {
             progressView.visibility = View.VISIBLE
-            ThreadUtils.runInBackgroundPool(Runnable {
+            ThreadUtils.runInBackgroundPool({
                 val apiService = CrowdinRetrofitService.getCrowdinAuthApi()
-                val response = apiService.getToken(
-                    TokenRequest(
-                        GRANT_TYPE,
-                        clientId, clientSecret, REDIRECT_URI, code
-                    ), domain
-                ).execute()
-
-                if (response.isSuccessful && response.body() != null) {
-                    Crowdin.saveAuthInfo(AuthInfo(response.body()!!))
-                    getDistributionInfo()
-                } else {
-                    runOnUiThread {
-                        Toast.makeText(this, "Not authenticated.", Toast.LENGTH_LONG).show()
-                        requestPermission()
+                executeIO {
+                    val response = apiService.getToken(
+                        TokenRequest(
+                            GRANT_TYPE,
+                            clientId, clientSecret, REDIRECT_URI, code
+                        ), domain
+                    ).execute()
+                    if (response.isSuccessful && response.body() != null) {
+                        Crowdin.saveAuthInfo(AuthInfo(response.body()!!))
+                        getDistributionInfo()
+                    } else {
+                        runOnUiThread {
+                            Toast.makeText(this, "Not authenticated.", Toast.LENGTH_LONG).show()
+                            requestPermission()
+                        }
                     }
                 }
             }, false)

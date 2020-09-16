@@ -1,3 +1,3 @@
 package com.crowdin.platform.data.model
 
-data class BuildTranslationRequest(val targetLanguageId: String)
+internal data class BuildTranslationRequest(val targetLanguageId: String)

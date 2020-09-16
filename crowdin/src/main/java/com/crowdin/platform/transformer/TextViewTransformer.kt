@@ -39,7 +39,7 @@ internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvide
                     val text = TextUtils.getTextForAttribute(attrs, index, resources)
                     if (text != null) {
                         view.text = text
-                        if (FeatureFlags.isRealTimeUpdateEnabled) {
+                        if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
                             if (id != null) {
                                 textMetaData.textAttributeKey = id
                             }
@@ -50,7 +50,7 @@ internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvide
                     val hint = TextUtils.getTextForAttribute(attrs, index, resources)
                     if (hint != null) {
                         view.hint = hint
-                        if (FeatureFlags.isRealTimeUpdateEnabled) {
+                        if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
                             if (id != null) {
                                 textMetaData.hintAttributeKey = id
                             }
@@ -64,7 +64,7 @@ internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvide
                             is Switch -> view.textOn = textOn
                             is ToggleButton -> view.textOn = textOn
                         }
-                        if (FeatureFlags.isRealTimeUpdateEnabled) {
+                        if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
                             if (id != null) {
                                 textMetaData.textOnAttributeKey = id
                             }
@@ -78,7 +78,7 @@ internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvide
                             is Switch -> view.textOff = textOff
                             is ToggleButton -> view.textOff = textOff
                         }
-                        if (FeatureFlags.isRealTimeUpdateEnabled) {
+                        if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
                             if (id != null) {
                                 textMetaData.textOffAttributeKey = id
                             }
@@ -88,7 +88,7 @@ internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvide
             }
         }
 
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
+        if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             addViewWithData(view, textMetaData)
             view.addTextChangedListener(Watcher(WeakReference(view)))
             listener?.onChange(Pair(view, textMetaData))
