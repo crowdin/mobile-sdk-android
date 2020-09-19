@@ -33,6 +33,7 @@ The SDK provides:
 * [File Export Patterns](#file-export-patterns)
 * [Notes](#notes)
 * [Limitations](#limitations)
+* [SDK Controls](#sdk-controls)
 * [Contributing](#contributing)
 * [Seeking Assistance](#seeking-assistance)
 * [Security](#security)
@@ -516,6 +517,95 @@ You can set file export patterns and check existing ones using *File Settings*. 
 1. Plurals are supported from Android SDK version 24.
 2. TabItem text added via xml won't be updated. There is workaround: you can store tabItem titles in your string-array and add tabs dynamically.
 3. `PreferenceScreen` defined via XML not supported.
+
+## SDK Controls
+Crowdin SDK Controls - UI widget for an easy access to the main features of the Crowdin SDK.
+Component can be drag and drop to any position of a device screen and has two states: collapsed - simple icon, and expanded with following action buttons:
+
+- Log In/Out: launch authorization flow or clear user authorization data on logout.
+- Real-time preview Enable/Disable: open / close connection which is required for work with Crowdin editor.
+- Capture screenshots: capture screenshot of the current screen with all tags and upload to the crowdin platform. 
+- Reload Translations:
+    - Real-Time-Preview ON: it will fetch latest translations from crowdin platform and apply changes to UI.
+    
+    - Real-Time-Preview OFF: it will fetch content from distribution(it won't update UI).
+
+Initialization:
+Add this line to your base Activity onCreate method:
+
+   <details>
+   <summary>Kotlin</summary>
+ 
+   ```kotlin
+   override fun onCreate(savedInstanceState: Bundle?) {
+       super.onCreate(savedInstanceState)
+       initCrowdinControl(this)
+   }
+   ```
+   </details>
+   
+   <details>
+   <summary>Java</summary>
+ 
+   ```java
+   @Override
+   protected void onCreate(Bundle savedInstanceState) {
+       super.onCreate(savedInstanceState);
+       CrowdinControlUtil.initCrowdinControl(this);
+   }
+   ```
+   </details>
+   
+Call destroy method to hide control component. Also you can do it by clicking on close image button.
+
+   <details>
+   <summary>Kotlin</summary>
+ 
+   ```kotlin
+   override fun onDestroy() {
+       super.onCreate(savedInstanceState)
+       destroyCrowdinControl(this)
+   }
+   ```
+   </details>
+
+   <details>
+   <summary>Java</summary>
+ 
+   ```java
+   @Override
+   protected void onDestroy() {
+       super.onDestroy();
+       CrowdinControlUtil.destroyCrowdinControl(this);
+   }
+   ```
+   </details>
+
+Starting from Android M - `Display over other apps` permission is required. You will be redirected to settings automatically.
+To handle result properly please add next lines to your Activity class:
+   
+   <details>
+   <summary>Kotlin</summary>
+ 
+   ```kotlin
+   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        onActivityResult(this, requestCode)
+   }
+   ```
+   </details>
+
+   <details>
+   <summary>Java</summary>
+
+   ```java
+   @Override
+   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+       super.onActivityResult(requestCode, resultCode, data);
+       CrowdinControlUtil.onActivityResult(this, requestCode);
+   }
+   ```
+   </details>
 
 ## Contributing
 
