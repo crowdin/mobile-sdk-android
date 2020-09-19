@@ -414,7 +414,6 @@ class DataManagerTest {
         // Then
         verify(mockLocalRepository).saveLanguageData(givenLanguageData)
         verify(mockLocalDataChangeObserver).onDataChanged()
-        verify(mockListener).onDataChanged()
     }
 
     @Test

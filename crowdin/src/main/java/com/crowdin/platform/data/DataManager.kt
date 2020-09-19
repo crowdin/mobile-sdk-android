@@ -151,7 +151,9 @@ internal class DataManager(
     private fun sendOnDataChanged() {
         loadingStateListeners?.let { listeners ->
             listeners.forEach {
-                it.onDataChanged()
+                ThreadUtils.executeOnMain {
+                    it.onDataChanged()
+                }
             }
         }
     }
