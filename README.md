@@ -527,7 +527,7 @@ Crowdin SDK Controls - UI widget for easy access to the main features of the Cro
 - Reload Translations:
     - Real-Time-Preview ON: it will fetch the latest translations from Crowdin and apply changes to UI.
     
-    - Real-Time-Preview OFF: it will fetch the content from distribution (it won't update UI).
+    - Real-Time-Preview OFF: it will fetch the content from distribution (it won't update UI instantly. Translations will be updated on the next application load or Activity change).
 
 Initialization:
 Add this line to your base Activity onCreate method:
