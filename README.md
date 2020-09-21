@@ -12,7 +12,7 @@ The SDK provides:
 
 ## Status
 
-[![Download](https://api.bintray.com/packages/crowdin/mobile-sdk/mobile-sdk-android/images/download.svg?version=1.1.6)](https://bintray.com/crowdin/mobile-sdk/mobile-sdk-android/1.1.6/link)
+[![Download](https://api.bintray.com/packages/crowdin/mobile-sdk/mobile-sdk-android/images/download.svg?version=1.2.0)](https://bintray.com/crowdin/mobile-sdk/mobile-sdk-android/1.2.0/link)
 [![GitHub issues](https://img.shields.io/github/issues/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/issues)
 [![GitHub Release Date](https://img.shields.io/github/release-date/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/releases/latest)
 [![GitHub contributors](https://img.shields.io/github/contributors/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/graphs/contributors)
@@ -50,21 +50,21 @@ You have two ways to install Crowdin Android SDK.
 - From JCenter
 
    ```groovy
-   implementation 'com.crowdin.platform:mobile-sdk:1.1.6'
+   implementation 'com.crowdin.platform:mobile-sdk:1.2.0'
    ```
-   
+
    For Android project which already have [transitive dependency](https://docs.gradle.org/current/userguide/dependency_management_terminology.html#sub:terminology_transitive_dependency) of `com.google.code.gson`, after integration of Crowdin SDK, it will show you the following error during build time:
-   
+
    `Duplicate class com.google.gson.DefaultDateTypeAdapter found in modules xxx.jar (xxx.jar) and jetified-gson-2.8.5.jar (com.google.code.gson:gson:2.8.5)`
-   
+
    To resolve, either exclude `gson` from Crowdin or from your library is OK, but be sure to keep the newer one for backward-compatibility.
-   
+
    ```groovy
-    implementation ('com.crowdin.platform:mobile-sdk:1.1.6') {
+    implementation ('com.crowdin.platform:mobile-sdk:1.2.0') {
         exclude group: 'com.google.code.gson', module: 'gson'
     }
    ```
-   
+
 
 - Manually download or clone this module.
 
