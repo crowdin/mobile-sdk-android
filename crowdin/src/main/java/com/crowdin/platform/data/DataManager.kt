@@ -151,7 +151,9 @@ internal class DataManager(
     private fun sendOnDataChanged() {
         loadingStateListeners?.let { listeners ->
             listeners.forEach {
-                it.onDataChanged()
+                ThreadUtils.executeOnMain {
+                    it.onDataChanged()
+                }
             }
         }
     }
@@ -200,6 +202,10 @@ internal class DataManager(
     }
 
     fun getDistributionHash(): String? = crowdinPreferences.getString(DISTRIBUTION_HASH)
+
+    fun invalidateAuthData() {
+        saveData(AUTH_INFO, null)
+    }
 
     fun getResourcesByLocale(languageCode: String, callback: ResourcesCallback) {
         ThreadUtils.runInBackgroundPool({

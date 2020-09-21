@@ -1,5 +1,6 @@
 package com.crowdin.platform.example
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -9,6 +10,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import com.crowdin.crowdin_controls.destroyCrowdinControl
+import com.crowdin.crowdin_controls.initCrowdinControl
+import com.crowdin.crowdin_controls.onActivityResult
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.example.fragments.CameraFragment
@@ -62,20 +66,22 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         // Observe data loading.
         Crowdin.registerDataLoadingObserver(dataLoadingObserver)
 
-        // Crowdin Auth. required for screenshot/realtime update functionality.
-        Crowdin.authorize(this)
-
         // Simple device shake detector. Could be used for triggering force update.
         Crowdin.registerShakeDetector(this)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        onActivityResult(this, requestCode)
+
+//      Java
+//      CrowdinControlUtil.onActivityResult(this, requestCode);
     }
 
     override fun onDestroy() {
         super.onDestroy()
         // Remove data loading observer.
         Crowdin.unregisterDataLoadingObserver(dataLoadingObserver)
-
-        // Close connection with crowdin.
-        Crowdin.disconnectRealTimeUpdates()
 
         // Remove shake detector listener.
         Crowdin.unregisterShakeDetector()

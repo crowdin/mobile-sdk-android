@@ -43,6 +43,9 @@ internal abstract class CrowdingRepository(
                                 languageDataCallback?.onFailure(throwable)
                             }
                         }
+                        else -> {
+                            languageDataCallback?.onFailure(Throwable("Network operation failed ${response.code()}"))
+                        }
                     }
                 }
 

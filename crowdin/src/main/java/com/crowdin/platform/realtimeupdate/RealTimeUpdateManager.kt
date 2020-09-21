@@ -21,6 +21,7 @@ internal class RealTimeUpdateManager(
     }
 
     private var socket: WebSocket? = null
+    var isConnectionCreated = false
 
     fun openConnection() {
         dataManager ?: return
@@ -36,6 +37,7 @@ internal class RealTimeUpdateManager(
     fun closeConnection() {
         socket?.close(NORMAL_CLOSURE_STATUS, null)
         viewTransformerManager.setOnViewsChangeListener(null)
+        isConnectionCreated = false
     }
 
     private fun createConnection(distributionData: DistributionInfoResponse.DistributionData) {
@@ -57,6 +59,7 @@ internal class RealTimeUpdateManager(
                 )
                 socket = client.newWebSocket(request, listener)
                 client.dispatcher.executorService.shutdown()
+                isConnectionCreated = true
             }
         }, true)
     }

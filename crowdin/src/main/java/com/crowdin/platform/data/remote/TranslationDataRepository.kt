@@ -68,17 +68,23 @@ internal class TranslationDataRepository(
                     getFiles(
                         it,
                         files,
-                        info.locale
+                        info.locale,
+                        languageDataCallback
                     )
                 }
             }
         }
     }
 
-    private fun getFiles(id: String, files: List<String>, locale: String) {
+    private fun getFiles(
+        id: String,
+        files: List<String>,
+        locale: String,
+        languageDataCallback: LanguageDataCallback?
+    ) {
         executeIO {
             crowdinApi?.getFiles(id)?.execute()?.body()
-                ?.let { onFilesReceived(files, it, id, locale) }
+                ?.let { onFilesReceived(files, it, id, locale, languageDataCallback) }
         }
     }
 
@@ -86,7 +92,8 @@ internal class TranslationDataRepository(
         files: List<String>,
         body: FileResponse,
         projectId: String,
-        locale: String
+        locale: String,
+        languageDataCallback: LanguageDataCallback? = null
     ) {
         val languageData = LanguageData(locale)
         files.forEach { file ->
@@ -111,7 +118,10 @@ internal class TranslationDataRepository(
             }
         }
 
-        ThreadUtils.executeOnMain { dataManager.refreshData(languageData) }
+        ThreadUtils.executeOnMain {
+            dataManager.refreshData(languageData)
+            languageDataCallback?.onDataLoaded(languageData)
+        }
     }
 
     private fun requestBuildTranslation(

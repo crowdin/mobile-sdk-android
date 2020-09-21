@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">
+
+    <string name="log_in">Log In</string>
+    <string name="log_out">Log Out</string>
+    <string name="realtimepreview_off">Real-Time Preview: enable</string>
+    <string name="realtimepreview_on">Real-Time Preview: disable</string>
+    <string name="capture_screenshot">Capture screenshot</string>
+    <string name="reload_translations">Reload Translations</string>
+</resources>

@@ -1,7 +1,7 @@
 package com.crowdin.platform.auth
 
 import android.Manifest
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -22,7 +22,6 @@ import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.TokenRequest
 import com.crowdin.platform.data.remote.CrowdinRetrofitService
-import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.executeIO
 import kotlinx.android.synthetic.main.auth_layout.*
@@ -41,9 +40,10 @@ internal class AuthActivity : AppCompatActivity() {
         private const val REDIRECT_URI = "crowdintest://"
 
         @JvmStatic
-        fun launchActivity(activity: Activity) {
-            val intent = Intent(activity, AuthActivity::class.java)
-            activity.startActivity(intent)
+        fun launchActivity(context: Context) {
+            val intent = Intent(context, AuthActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(intent)
         }
     }
 
@@ -52,7 +52,6 @@ internal class AuthActivity : AppCompatActivity() {
         setContentView(R.layout.auth_layout)
 
         if (Crowdin.isAuthorized()) {
-            Crowdin.tryCreateRealTimeConnection()
             requestPermission()
         } else {
             requestAuthorization()
@@ -146,11 +145,8 @@ internal class AuthActivity : AppCompatActivity() {
     private fun getDistributionInfo() {
         Crowdin.getDistributionInfo(object : DistributionInfoCallback {
             override fun onResponse() {
-                if (FeatureFlags.isRealTimeUpdateEnabled) {
-                    Crowdin.tryCreateRealTimeConnection()
-                }
                 requestPermission()
-                Crowdin.loadTranslation()
+                Crowdin.downloadTranslation()
             }
 
             override fun onError(throwable: Throwable) {

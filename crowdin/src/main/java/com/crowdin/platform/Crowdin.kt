@@ -9,10 +9,12 @@ import androidx.annotation.MenuRes
 import com.crowdin.platform.auth.AuthActivity
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.DistributionInfoCallback
+import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.TextMetaDataProvider
 import com.crowdin.platform.data.local.LocalStringRepositoryFactory
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.model.AuthInfo
+import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.parser.StringResourceParser
 import com.crowdin.platform.data.parser.XmlReader
 import com.crowdin.platform.data.remote.CrowdinRetrofitService
@@ -20,6 +22,7 @@ import com.crowdin.platform.data.remote.DistributionInfoManager
 import com.crowdin.platform.data.remote.MappingRepository
 import com.crowdin.platform.data.remote.StringDataRemoteRepository
 import com.crowdin.platform.data.remote.TranslationDataRepository
+import com.crowdin.platform.data.remote.TranslationDownloadCallback
 import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager
 import com.crowdin.platform.recurringwork.RecurringManager
@@ -110,7 +113,7 @@ object Crowdin {
      */
     fun onConfigurationChanged() {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
-            loadTranslation()
+            downloadTranslation()
         }
     }
 
@@ -326,20 +329,44 @@ object Crowdin {
      * Auth to Crowdin platform. Create connection for realtime updates if feature turned on.
      */
     @JvmStatic
-    fun authorize(activity: Activity) {
+    fun authorize(context: Context) {
         if (isAuthorized()) {
-            tryCreateRealTimeConnection()
-        } else if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
-            createAuthDialog(activity) { AuthActivity.launchActivity(activity) }
+            createRealTimeConnection()
+        } else if ((FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) &&
+            !isAuthorized()
+        ) {
+            createAuthDialog(context) { AuthActivity.launchActivity(context) }
         }
     }
 
     /**
-     * Open realtime update connection.
+     * Logs out from Crowdin platform.
+     */
+    fun logOut() {
+        dataManager?.invalidateAuthData()
+        disconnectRealTimeUpdates()
+    }
+
+    fun isAuthorized(): Boolean {
+        dataManager?.let {
+            val oldHash = it.getDistributionHash()
+            val newHash = config.distributionHash
+            it.saveDistributionHash(newHash)
+
+            return it.isAuthorized() && (oldHash == null || oldHash == newHash)
+        }
+
+        return false
+    }
+
+    /**
+     * Create realtime update connection.
      */
     @JvmStatic
-    fun connectRealTimeUpdates() {
-        tryCreateRealTimeConnection()
+    fun createRealTimeConnection() {
+        if (FeatureFlags.isRealTimeUpdateEnabled) {
+            realTimeUpdateManager?.openConnection()
+        }
     }
 
     /**
@@ -349,6 +376,11 @@ object Crowdin {
     fun disconnectRealTimeUpdates() {
         realTimeUpdateManager?.closeConnection()
     }
+
+    /**
+     * Return `real-time` feature enable state. true - enabled, false - disabled.
+     */
+    fun isRealTimeUpdatesEnabled(): Boolean = realTimeUpdateManager?.isConnectionCreated ?: false
 
     /**
      * Register shake detector. Will trigger force update on shake event.
@@ -369,21 +401,21 @@ object Crowdin {
         shakeDetectorManager?.unregisterShakeDetector()
     }
 
-    internal fun isAuthorized(): Boolean {
-        dataManager?.let {
-            val oldHash = it.getDistributionHash()
-            val newHash = config.distributionHash
-            it.saveDistributionHash(newHash)
+    /**
+     * Download latest translations from Crowdin.
+     */
+    fun downloadTranslation(callback: TranslationDownloadCallback? = null) {
+        if (FeatureFlags.isRealTimeUpdateEnabled && dataManager?.isAuthorized() == true) {
+            translationDataRepository?.fetchData(
+                languageDataCallback = object : LanguageDataCallback {
+                    override fun onDataLoaded(languageData: LanguageData) {
+                        callback?.onSuccess()
+                    }
 
-            return it.isAuthorized() && (oldHash == null || oldHash == newHash)
-        }
-
-        return false
-    }
-
-    internal fun tryCreateRealTimeConnection() {
-        if (FeatureFlags.isRealTimeUpdateEnabled) {
-            realTimeUpdateManager?.openConnection()
+                    override fun onFailure(throwable: Throwable) {
+                        callback?.onFailure(throwable)
+                    }
+                })
         }
     }
 
@@ -483,13 +515,7 @@ object Crowdin {
                 config.distributionHash
             )
             translationDataRepository?.crowdinApi = getCrowdinApi()
-            loadTranslation()
-        }
-    }
-
-    internal fun loadTranslation() {
-        if (dataManager?.isAuthorized() == true) {
-            translationDataRepository?.fetchData()
+            downloadTranslation()
         }
     }
 

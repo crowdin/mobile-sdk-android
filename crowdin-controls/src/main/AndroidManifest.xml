@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.crowdin.crowdin_controls">
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <application>
+
+        <service
+            android:name="com.crowdin.crowdin_controls.CrowdinWidgetService"
+            android:enabled="true"
+            android:exported="false" />
+    </application>
+</manifest>
