@@ -519,16 +519,15 @@ You can set file export patterns and check existing ones using *File Settings*. 
 3. `PreferenceScreen` defined via XML not supported.
 
 ## SDK Controls
-Crowdin SDK Controls - UI widget for an easy access to the main features of the Crowdin SDK.
-Component can be drag and drop to any position of a device screen and has two states: collapsed - simple icon, and expanded with following action buttons:
+Crowdin SDK Controls - UI widget for easy access to the main features of the Crowdin SDK. The component can be drag-and-dropped to any position of a device's screen, and it has two states: collapsed (simple icon) and expanded. The expanded state provides the following action buttons:
 
 - Log In/Out: launch authorization flow or clear user authorization data on logout.
-- Real-time preview Enable/Disable: open / close connection which is required for work with Crowdin editor.
-- Capture screenshots: capture screenshot of the current screen with all tags and upload to the crowdin platform. 
+- Real-time preview Enable/Disable: open/close connection that is required to work with Crowdin editor.
+- Capture screenshots: capture a screenshot of the current screen with all tags and upload it to Crowdin.
 - Reload Translations:
-    - Real-Time-Preview ON: it will fetch latest translations from crowdin platform and apply changes to UI.
+    - Real-Time-Preview ON: it will fetch the latest translations from Crowdin and apply changes to UI.
     
-    - Real-Time-Preview OFF: it will fetch content from distribution(it won't update UI).
+    - Real-Time-Preview OFF: it will fetch the content from distribution (it won't update UI instantly. Translations will be updated on the next application load or Activity change).
 
 Initialization:
 Add this line to your base Activity onCreate method:
@@ -556,7 +555,7 @@ Add this line to your base Activity onCreate method:
    ```
    </details>
    
-Call destroy method to hide control component. Also you can do it by clicking on close image button.
+Call `destroy` method to hide the control component. Also, you can do it by clicking on the close image button.
 
    <details>
    <summary>Kotlin</summary>
@@ -581,8 +580,7 @@ Call destroy method to hide control component. Also you can do it by clicking on
    ```
    </details>
 
-Starting from Android M - `Display over other apps` permission is required. You will be redirected to settings automatically.
-To handle result properly please add next lines to your Activity class:
+Starting from Android M - `Display over other apps` permission is required. You will be redirected to settings automatically. To handle result properly, please add the next lines to your Activity class:
    
    <details>
    <summary>Kotlin</summary>
