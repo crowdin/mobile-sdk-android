@@ -92,7 +92,7 @@ internal class StringResourceParser : Parser {
             content += unEscapeQuotes(parser.text)
         }
     }
-    fun unEscapeQuotes(replaceString: String): String {
+    private fun unEscapeQuotes(replaceString: String): String {
         return replaceString.replace("\\\"", "\"")
                 .replace("\\\'", "\'")
     }

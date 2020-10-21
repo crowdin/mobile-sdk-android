@@ -1,5 +1,6 @@
 package com.crowdin.crowdin_controls
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Service
 import android.content.BroadcastReceiver
@@ -38,6 +39,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
         return null
     }
 
+    @SuppressLint("InflateParams")
     override fun onCreate() {
         super.onCreate()
         floatingView = LayoutInflater.from(this).inflate(R.layout.layout_floating_widget, null)

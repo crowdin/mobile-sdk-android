@@ -1,5 +1,6 @@
 package com.crowdin.platform.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PixelFormat
 import android.os.Build
@@ -10,6 +11,7 @@ import android.view.WindowManager
 import android.widget.Button
 import com.crowdin.platform.R
 
+@SuppressLint("InflateParams")
 fun createAuthDialog(context: Context, positiveAction: (() -> Unit)) {
     val floatingView = LayoutInflater.from(context).inflate(R.layout.auth_dialog, null)
 

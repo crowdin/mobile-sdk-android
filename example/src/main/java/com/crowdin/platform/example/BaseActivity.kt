@@ -18,18 +18,13 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 //      Init Crowdin SDK overlay controls
         initCrowdinControl(this)
-//      Java
-//      CrowdinControlUtil.initCrowdinControl(this);
     }
 
     override fun onDestroy() {
         super.onDestroy()
 //      Destroy crowdin overlay view.
         destroyCrowdinControl(this)
-//      Java
-//      CrowdinControlUtil.destroyCrowdinControl(this);
     }
 }
