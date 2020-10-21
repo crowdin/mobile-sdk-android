@@ -8,10 +8,10 @@ import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.Toast
 import com.crowdin.platform.example.R
-import com.crowdin.platform.example.category.`interface`.CategoryAdd
-import com.crowdin.platform.example.category.`interface`.CategoryDelete
-import com.crowdin.platform.example.category.`interface`.CategoryUpdate
-import com.crowdin.platform.example.category.database.DBManagerCategory
+import com.crowdin.platform.example.category.CategoryAdd
+import com.crowdin.platform.example.category.CategoryDelete
+import com.crowdin.platform.example.category.CategoryUpdate
+import com.crowdin.platform.example.category.DBManagerCategory
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date

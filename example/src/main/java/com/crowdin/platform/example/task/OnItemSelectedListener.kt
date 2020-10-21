@@ -1,4 +1,4 @@
-package com.crowdin.platform.example.task.listener
+package com.crowdin.platform.example.task
 
 import android.view.View
 import android.widget.AdapterView

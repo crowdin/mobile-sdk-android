@@ -1,4 +1,4 @@
-package com.crowdin.platform.example.category.`interface`
+package com.crowdin.platform.example.category
 
 interface CategoryIsEmpty {
 

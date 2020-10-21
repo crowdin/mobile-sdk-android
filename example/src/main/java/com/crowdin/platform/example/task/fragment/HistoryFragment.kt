@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crowdin.platform.example.R
-import com.crowdin.platform.example.task.adapter.TaskAdapter
-import com.crowdin.platform.example.task.database.DBManagerTask
+import com.crowdin.platform.example.task.TaskAdapter
+import com.crowdin.platform.example.task.DBManagerTask
 import com.crowdin.platform.example.task.model.TaskModel
 import com.crowdin.platform.example.utils.getFormatDate
 import com.crowdin.platform.example.utils.getFormatTime

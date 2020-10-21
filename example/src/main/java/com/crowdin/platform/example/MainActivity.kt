@@ -6,7 +6,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.crowdin.platform.example.category.fragment.CategoryFragment
+import com.crowdin.platform.example.category.CategoryFragment
 import com.crowdin.platform.example.task.fragment.DashboardFragment
 import com.crowdin.platform.example.task.fragment.HistoryFragment
 import com.google.android.material.navigation.NavigationView

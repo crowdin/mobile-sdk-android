@@ -24,7 +24,7 @@
 
         <activity android:name=".MainActivity" />
 
-        <activity android:name=".task.activity.AddTaskActivity" />
+        <activity android:name=".task.AddTaskActivity" />
 
     </application>
 </manifest>

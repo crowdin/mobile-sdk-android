@@ -1,4 +1,4 @@
-package com.crowdin.platform.example.task.activity
+package com.crowdin.platform.example.task
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -11,10 +11,8 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.crowdin.platform.example.R
-import com.crowdin.platform.example.category.`interface`.CategoryAdd
-import com.crowdin.platform.example.category.database.DBManagerCategory
-import com.crowdin.platform.example.task.database.DBManagerTask
-import com.crowdin.platform.example.task.listener.OnItemSelectedListener
+import com.crowdin.platform.example.category.CategoryAdd
+import com.crowdin.platform.example.category.DBManagerCategory
 import com.crowdin.platform.example.utils.dialogAddCategory
 import com.crowdin.platform.example.utils.toastMessage
 import kotlinx.android.synthetic.main.activity_add_task.*

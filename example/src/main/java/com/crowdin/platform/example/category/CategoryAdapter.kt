@@ -1,4 +1,4 @@
-package com.crowdin.platform.example.category.adapter
+package com.crowdin.platform.example.category
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,10 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.crowdin.platform.example.R
-import com.crowdin.platform.example.category.`interface`.CategoryDelete
-import com.crowdin.platform.example.category.`interface`.CategoryIsEmpty
-import com.crowdin.platform.example.category.`interface`.CategoryUpdate
-import com.crowdin.platform.example.category.model.CategoryModel
 import com.crowdin.platform.example.utils.dialogDeleteCategory
 import com.crowdin.platform.example.utils.dialogUpdateCategory
 import kotlinx.android.synthetic.main.row_category.view.*

@@ -1,4 +1,4 @@
-package com.crowdin.platform.example.category.model
+package com.crowdin.platform.example.category
 
 data class CategoryModel(
     var id: Int,

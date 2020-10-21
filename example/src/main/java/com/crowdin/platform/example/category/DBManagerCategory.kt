@@ -1,9 +1,8 @@
-package com.crowdin.platform.example.category.database
+package com.crowdin.platform.example.category
 
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import com.crowdin.platform.example.category.model.CategoryModel
 import com.crowdin.platform.example.databasehelper.DatabaseHelper
 import com.crowdin.platform.example.utils.CATEGORY_NAME
 import com.crowdin.platform.example.utils.ID

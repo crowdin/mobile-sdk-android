@@ -1,4 +1,4 @@
-package com.crowdin.platform.example.task.database
+package com.crowdin.platform.example.task
 
 import android.content.ContentValues
 import android.content.Context

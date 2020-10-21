@@ -1,4 +1,4 @@
-package com.crowdin.platform.example.task.adapter
+package com.crowdin.platform.example.task
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.crowdin.platform.example.R
-import com.crowdin.platform.example.task.database.DBManagerTask
 import com.crowdin.platform.example.task.model.TaskModel
 import com.crowdin.platform.example.utils.views.ItemTouchHelperAdapter
 import kotlinx.android.synthetic.main.row_task.view.*

@@ -1,4 +1,4 @@
-package com.crowdin.platform.example.category.fragment
+package com.crowdin.platform.example.category
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.crowdin.platform.example.R
-import com.crowdin.platform.example.category.`interface`.CategoryAdd
-import com.crowdin.platform.example.category.`interface`.CategoryIsEmpty
-import com.crowdin.platform.example.category.adapter.CategoryAdapter
-import com.crowdin.platform.example.category.database.DBManagerCategory
-import com.crowdin.platform.example.category.model.CategoryModel
 import com.crowdin.platform.example.utils.dialogAddCategory
 import kotlinx.android.synthetic.main.fragment_category.*
 import java.util.ArrayList
