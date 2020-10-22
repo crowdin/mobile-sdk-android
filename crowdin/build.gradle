@@ -39,9 +39,6 @@ android {
         versionCode libraryVersionCode
         versionName libraryVersionName
 
-        buildConfigField 'int', 'VERSION_CODE', "$libraryVersionCode"
-        buildConfigField 'String', 'VERSION_NAME', "\"$libraryVersionName\""
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -79,20 +76,20 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.0"
     }
 }
 
 dependencies {
-    implementation "androidx.appcompat:appcompat:1.2.0"
-    implementation "androidx.work:work-runtime-ktx:2.4.0"
-    implementation "com.google.android.material:material:1.2.1"
-    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation "androidx.appcompat:appcompat:1.1.0"
+    implementation "androidx.work:work-runtime-ktx:2.3.4"
+    implementation "com.google.android.material:material:1.1.0"
+    implementation "com.squareup.retrofit2:retrofit:2.6.2"
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
     implementation "com.google.code.gson:gson:2.8.5"
     implementation "com.squareup.okhttp3:logging-interceptor:4.0.1"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10"
-    implementation "androidx.constraintlayout:constraintlayout:2.0.2"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.0"
+    implementation "androidx.constraintlayout:constraintlayout:1.1.3"
 
     testImplementation 'junit:junit:4.13.1'
     testImplementation 'org.mockito:mockito-core:3.1.0'
