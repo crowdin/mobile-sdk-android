@@ -27,4 +27,9 @@ abstract class BaseActivity : AppCompatActivity() {
 //      Destroy crowdin overlay view.
         destroyCrowdinControl(this)
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        com.crowdin.crowdin_controls.onActivityResult(this, requestCode)
+    }
 }

@@ -2,141 +2,140 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp"
-    android:elevation="10dp"
+    android:clickable="true"
+    android:elevation="4dp"
+    android:focusable="true"
     app:cardCornerRadius="2dp">
 
     <View
-        android:id="@+id/viewColorTag"
+        android:id="@+id/viewColor"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginBottom="1dp"
-        android:background="@color/colorWhite"
+        android:background="@drawable/selectable_background_white"
+        android:paddingStart="16dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="16dp"
         android:paddingBottom="5dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/titleTv"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="5dp">
+            android:text="@string/title"
+            android:textColor="@color/litherGray"
+            android:textSize="@dimen/text_small"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/textTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:text="@string/title"
-                android:textColor="@color/litherGray"
-                android:textSize="11sp"
-                android:visibility="gone"
-                tools:ignore="SmallSp" />
+        <TextView
+            android:id="@+id/titleValueTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_toStartOf="@+id/categoryTv"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/task_title"
+            android:textColor="#303030"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleTv" />
 
-            <TextView
-                android:id="@+id/txtShowTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/textTitle"
-                android:layout_alignParentStart="true"
-                android:layout_marginEnd="5dp"
-                android:layout_toStartOf="@+id/txtShowCategory"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/task_title"
-                android:textColor="#303030"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+        <TextView
+            android:id="@+id/taskTitleTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/task"
+            android:textColor="@color/litherGray"
+            android:textSize="@dimen/text_small"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleValueTv" />
 
-            <TextView
-                android:id="@+id/textTask"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txtShowTitle"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="12dp"
-                android:text="@string/task"
-                android:textColor="@color/litherGray"
-                android:textSize="@dimen/text_small"
-                android:visibility="gone" />
+        <TextView
+            android:id="@+id/taskTextValueTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/task_title"
+            android:textColor="@color/colorBlack"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/taskTitleTv" />
 
-            <TextView
-                android:id="@+id/txtShowTask"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/textTask"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="4dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/task_title"
-                android:textColor="@color/colorBlack"
-                android:textSize="16sp" />
+        <TextView
+            android:id="@+id/categoryTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxWidth="80dp"
+            android:maxLines="1"
+            android:text="@string/category"
+            android:textColor="@color/litherGray"
+            android:textSize="@dimen/text_small"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/txtShowCategory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:ellipsize="end"
-                android:maxWidth="80dp"
-                android:maxLines="1"
-                android:text="@string/category"
-                android:textColor="@color/litherGray"
-                android:textSize="@dimen/text_small" />
+        <TextView
+            android:id="@+id/dateTitleTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/taskTextValueTv"
+            android:layout_marginTop="10dp"
+            android:text="@string/date"
+            android:textColor="@color/litherGray"
+            android:textSize="@dimen/text_small"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/taskTextValueTv" />
 
-            <TextView
-                android:id="@+id/textDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txtShowTask"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="15dp"
-                android:text="@string/date"
-                android:textColor="@color/litherGray"
-                android:textSize="@dimen/text_small"
-                android:visibility="gone" />
+        <TextView
+            android:id="@+id/dateValueTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/colorBlack"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dateTitleTv"
+            tools:text="22-12-2017" />
 
-            <TextView
-                android:id="@+id/txtShowDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/textDate"
-                android:layout_alignParentStart="true"
-                android:textColor="@color/colorBlack"
-                android:visibility="gone"
-                tools:text="22-12-2017" />
+        <TextView
+            android:id="@+id/timeTitleTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time"
+            android:textColor="@color/litherGray"
+            android:textSize="@dimen/text_small"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/dateTitleTv" />
 
-            <TextView
-                android:id="@+id/textTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txtShowTask"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="15dp"
-                android:text="@string/time"
-                android:textColor="@color/litherGray"
-                android:textSize="@dimen/text_small"
-                android:visibility="gone" />
+        <TextView
+            android:id="@+id/timeValueTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/colorBlack"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timeTitleTv"
+            tools:text="22:12 AM" />
 
-            <TextView
-                android:id="@+id/txtShowTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/textTime"
-                android:layout_alignParentEnd="true"
-                android:textColor="@color/colorBlack"
-                android:visibility="gone"
-                tools:text="22:12 AM" />
-
-        </RelativeLayout>
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

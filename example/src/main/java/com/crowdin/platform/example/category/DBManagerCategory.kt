@@ -8,7 +8,7 @@ import com.crowdin.platform.example.utils.CATEGORY_NAME
 import com.crowdin.platform.example.utils.ID
 import com.crowdin.platform.example.utils.TABLE_CATEGORY
 
-class DBManagerCategory(val context: Context) {
+class DBManagerCategory(private val context: Context) {
 
     private lateinit var dbHelper: DatabaseHelper
     private lateinit var database: SQLiteDatabase

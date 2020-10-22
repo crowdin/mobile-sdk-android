@@ -7,11 +7,9 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -19,132 +17,60 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crowdin.platform.example.R
 import com.crowdin.platform.example.task.AddTaskActivity
-import com.crowdin.platform.example.task.TaskAdapter
 import com.crowdin.platform.example.task.DBManagerTask
+import com.crowdin.platform.example.task.TaskAdapter
 import com.crowdin.platform.example.task.model.TaskModel
-import com.crowdin.platform.example.utils.DASHBOARD_RECYCLEVIEW_REFRESH
-import com.crowdin.platform.example.utils.getFormatDate
-import com.crowdin.platform.example.utils.getFormatTime
-import com.crowdin.platform.example.utils.views.RecyclerItemClickListener
+import com.crowdin.platform.example.utils.DASHBOARD_RECYCLER_VIEW_REFRESH
+import com.crowdin.platform.example.utils.convertDpToPx
 import com.crowdin.platform.example.utils.views.OnStartDragListener
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.android.synthetic.main.fragment_dashboard.view.*
+import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlin.math.abs
-import kotlin.math.roundToInt
 
 class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener {
 
-    private lateinit var fabAddTask: FloatingActionButton
-    private lateinit var txtNoTask: TextView
-    private lateinit var recyclerViewTask: RecyclerView
-
-    private var mArrayList: ArrayList<TaskModel> = ArrayList()
     private lateinit var dbManager: DBManagerTask
-    lateinit var taskAdapter: TaskAdapter
-
+    private lateinit var taskAdapter: TaskAdapter
     private lateinit var mItemTouchHelper: ItemTouchHelper
+    private var taskList: ArrayList<TaskModel> = ArrayList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_dashboard, container, false)
-        initialize(view)
-
-        return view
+        return inflater.inflate(R.layout.fragment_dashboard, container, false)
     }
 
-    private fun initialize(view: View) {
-        fabAddTask = view.fabAddTask
-        txtNoTask = view.txtNoTask
-        recyclerViewTask = view.recyclerViewTask
-
-        recyclerViewTask.setHasFixedSize(true)
-        recyclerViewTask.layoutManager = LinearLayoutManager(activity)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(activity)
 
         fabAddTask.setOnClickListener(this)
 
         dbManager = DBManagerTask(requireActivity())
-        mArrayList = dbManager.getTaskList()
+        taskList = dbManager.getTaskList()
 
-        taskAdapter = TaskAdapter(requireActivity(), mArrayList)
-        recyclerViewTask.adapter = taskAdapter
+        taskAdapter = TaskAdapter(requireActivity(), taskList)
+        recyclerView.adapter = taskAdapter
 
         initSwipe()
-
-        recyclerViewTask.addOnItemTouchListener(
-            RecyclerItemClickListener(
-                requireContext(),
-                recyclerViewTask,
-                object : RecyclerItemClickListener.OnItemClickListener {
-                    override fun onItemClick(view: View, position: Int) {
-                        val holder: TaskAdapter.ViewHolder = TaskAdapter.ViewHolder(view)
-                        clickForDetails(holder, position)
-                    }
-
-                    override fun onLongItemClick(view: View, position: Int) {
-                    }
-                })
-        )
     }
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         mItemTouchHelper.startDrag(viewHolder)
     }
 
-    private fun clickForDetails(holder: TaskAdapter.ViewHolder, position: Int) {
-        val taskList = taskAdapter.getList()
-
-        if (holder.textTitle.visibility == View.GONE && holder.textTask.visibility == View.GONE) {
-            holder.textTitle.visibility = View.VISIBLE
-            holder.textTask.visibility = View.VISIBLE
-            holder.txtShowTitle.maxLines = Integer.MAX_VALUE
-            holder.txtShowTask.maxLines = Integer.MAX_VALUE
-
-            if (taskList[position].date != "") {
-                holder.txtShowDate.text = getFormatDate(taskList[position].date!!)
-                holder.textDate.visibility = View.VISIBLE
-                holder.txtShowDate.visibility = View.VISIBLE
-            }
-
-            if (taskList[position].time != "") {
-                holder.txtShowTime.text = getFormatTime(taskList[position].time!!)
-                holder.textTime.visibility = View.VISIBLE
-                holder.txtShowTime.visibility = View.VISIBLE
-            }
-
-        } else {
-            holder.textTitle.visibility = View.GONE
-            holder.textTask.visibility = View.GONE
-            holder.txtShowTask.maxLines = 1
-            holder.txtShowTitle.maxLines = 1
-
-            if (taskList[position].date != "") {
-                holder.textDate.visibility = View.GONE
-                holder.txtShowDate.visibility = View.GONE
-            }
-
-            if (taskList[position].time != "") {
-                holder.textTime.visibility = View.GONE
-                holder.txtShowTime.visibility = View.GONE
-            }
-        }
-    }
-
     override fun onResume() {
         super.onResume()
-        isTaskListEmpty()
+        updateEmptyStateView()
     }
 
     override fun onClick(view: View?) {
-        when (view!!.id) {
-            R.id.fabAddTask -> {
-                startActivityForResult(
-                    Intent(activity, AddTaskActivity::class.java),
-                    DASHBOARD_RECYCLEVIEW_REFRESH
-                )
-            }
+        if (view == fabAddTask) {
+            startActivityForResult(
+                Intent(activity, AddTaskActivity::class.java), DASHBOARD_RECYCLER_VIEW_REFRESH
+            )
         }
     }
 
@@ -152,10 +78,10 @@ class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener 
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                DASHBOARD_RECYCLEVIEW_REFRESH -> {
-                    mArrayList = dbManager.getTaskList()
+                DASHBOARD_RECYCLER_VIEW_REFRESH -> {
+                    taskList = dbManager.getTaskList()
                     taskAdapter.clearAdapter()
-                    taskAdapter.setList(mArrayList)
+                    taskAdapter.setList(taskList)
                 }
             }
         }
@@ -175,13 +101,12 @@ class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener 
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-
                 if (direction == ItemTouchHelper.LEFT) {
                     taskAdapter.deleteTask(position)
-                    isTaskListEmpty()
+                    updateEmptyStateView()
                 } else {
                     taskAdapter.finishTask(position)
-                    isTaskListEmpty()
+                    updateEmptyStateView()
                 }
             }
 
@@ -194,20 +119,15 @@ class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener 
                 actionState: Int,
                 isCurrentlyActive: Boolean
             ) {
-
                 if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-
                     val itemView = viewHolder.itemView
-
                     val paint = Paint()
                     val iconBitmap: Bitmap
 
                     if (dX > 0) {
                         iconBitmap =
                             BitmapFactory.decodeResource(resources, R.drawable.ic_check_white_png)
-
                         paint.color = ContextCompat.getColor(requireContext(), R.color.green)
-
                         canvas.drawRect(
                             itemView.left.toFloat(), itemView.top.toFloat(),
                             itemView.left.toFloat() + dX, itemView.bottom.toFloat(), paint
@@ -216,7 +136,7 @@ class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener 
                         // Set the image icon for Right side swipe
                         canvas.drawBitmap(
                             iconBitmap,
-                            itemView.left.toFloat() + convertDpToPx(16),
+                            itemView.left.toFloat() + 16.convertDpToPx(resources),
                             itemView.top.toFloat() + (itemView.bottom.toFloat() - itemView.top.toFloat() - iconBitmap.height.toFloat()) / 2,
                             paint
                         )
@@ -232,7 +152,7 @@ class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener 
                         //Set the image icon for Left side swipe
                         canvas.drawBitmap(
                             iconBitmap,
-                            itemView.right.toFloat() - convertDpToPx(16) - iconBitmap.width,
+                            itemView.right.toFloat() - 16.convertDpToPx(resources) - iconBitmap.width,
                             itemView.top.toFloat() + (itemView.bottom.toFloat() - itemView.top.toFloat() - iconBitmap.height.toFloat()) / 2,
                             paint
                         )
@@ -257,19 +177,14 @@ class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener 
             }
         }
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
-        itemTouchHelper.attachToRecyclerView(recyclerViewTask)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
-    private fun convertDpToPx(dp: Int): Int {
-        return (dp * (resources.displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
-    }
-
-    fun isTaskListEmpty() {
+    fun updateEmptyStateView() {
         if (taskAdapter.itemCount == 0) {
-            txtNoTask.visibility = View.VISIBLE
+            emptyStateView.visibility = View.VISIBLE
         } else {
-            txtNoTask.visibility = View.GONE
+            emptyStateView.visibility = View.GONE
         }
     }
-
 }

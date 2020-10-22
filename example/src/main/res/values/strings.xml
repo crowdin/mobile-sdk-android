@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <string name="app_name">Crowdin</string>
+    <string name="app_name">Crowdin TODO</string>
     <string name="dashboard">Dashboard</string>
     <string name="category">Category</string>
     <string name="history">History</string>
@@ -42,4 +42,6 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="no_category_to_added">No category added</string>
+    <string name="dialog_delete_category_title">Delete Category</string>
+    <string name="dialog_delete_category_desc">Do you want to delete this category?</string>
 </resources>

@@ -16,10 +16,10 @@ import com.crowdin.platform.example.utils.TASK_TASK
 import com.crowdin.platform.example.utils.TASK_TIME
 import com.crowdin.platform.example.utils.TASK_TITLE
 
-class DBManagerTask(val context: Context) {
+class DBManagerTask(private val context: Context) {
 
     private lateinit var dbHelper: DatabaseHelper
-    lateinit var database: SQLiteDatabase
+    private lateinit var database: SQLiteDatabase
 
     private fun open(): DBManagerTask {
         dbHelper = DatabaseHelper(context)
@@ -67,27 +67,23 @@ class DBManagerTask(val context: Context) {
      * Get task list from Task table
      */
     fun getTaskList(): ArrayList<TaskModel> {
-
         open()
-
         val arrayList = ArrayList<TaskModel>()
-
         val query = "SELECT * FROM $TABLE_TASK"
         val cursor = database.rawQuery(query, null)
-
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 val isFinish =
                     Integer.parseInt(cursor.getString(cursor.getColumnIndex(TASK_FINISH)))
                 if (isFinish == TASK_IS_NOT_FINISH) {
-                    val taskModel = TaskModel()
-                    taskModel.id = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ID)))
-                    taskModel.title = cursor.getString(cursor.getColumnIndex(TASK_TITLE))
-                    taskModel.task = cursor.getString(cursor.getColumnIndex(TASK_TASK))
-                    taskModel.category = cursor.getString(cursor.getColumnIndex(TASK_CATEGORY))
-                    taskModel.date = cursor.getString(cursor.getColumnIndex(TASK_DATE))
-                    taskModel.time = cursor.getString(cursor.getColumnIndex(TASK_TIME))
-
+                    val taskModel = TaskModel(
+                        Integer.parseInt(cursor.getString(cursor.getColumnIndex(ID))),
+                        cursor.getString(cursor.getColumnIndex(TASK_TITLE)),
+                        cursor.getString(cursor.getColumnIndex(TASK_TASK)),
+                        cursor.getString(cursor.getColumnIndex(TASK_CATEGORY)),
+                        cursor.getString(cursor.getColumnIndex(TASK_DATE)),
+                        cursor.getString(cursor.getColumnIndex(TASK_TIME))
+                    )
                     arrayList.add(taskModel)
                 }
             } while (cursor.moveToNext())
@@ -113,20 +109,19 @@ class DBManagerTask(val context: Context) {
         val arrayList = ArrayList<TaskModel>()
         val query = "SELECT * FROM $TABLE_TASK"
         val cursor = database.rawQuery(query, null)
-
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 val isFinish =
                     Integer.parseInt(cursor.getString(cursor.getColumnIndex(TASK_FINISH)))
                 if (isFinish == TASK_IS_FINISH) {
-                    val taskModel = TaskModel()
-                    taskModel.id = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ID)))
-                    taskModel.title = cursor.getString(cursor.getColumnIndex(TASK_TITLE))
-                    taskModel.task = cursor.getString(cursor.getColumnIndex(TASK_TASK))
-                    taskModel.category = cursor.getString(cursor.getColumnIndex(TASK_CATEGORY))
-                    taskModel.date = cursor.getString(cursor.getColumnIndex(TASK_DATE))
-                    taskModel.time = cursor.getString(cursor.getColumnIndex(TASK_TIME))
-
+                    val taskModel = TaskModel(
+                        Integer.parseInt(cursor.getString(cursor.getColumnIndex(ID))),
+                        cursor.getString(cursor.getColumnIndex(TASK_TITLE)),
+                        cursor.getString(cursor.getColumnIndex(TASK_TASK)),
+                        cursor.getString(cursor.getColumnIndex(TASK_CATEGORY)),
+                        cursor.getString(cursor.getColumnIndex(TASK_DATE)),
+                        cursor.getString(cursor.getColumnIndex(TASK_TIME))
+                    )
                     arrayList.add(taskModel)
                 }
             } while (cursor.moveToNext())

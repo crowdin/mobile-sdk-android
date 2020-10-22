@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -100,7 +99,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayoutTime" />
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/relativeLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -109,27 +108,28 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:orientation="horizontal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView12">
 
         <Spinner
             android:id="@+id/spinnerCategory"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:layout_toStartOf="@+id/imgAddCategory" />
+            android:layout_weight="0.7" />
 
         <ImageView
             android:id="@+id/imgAddCategory"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_weight="0.3"
             android:src="@drawable/ic_playlist_add_black_24dp"
             app:tint="@color/colorAccent" />
-    </RelativeLayout>
+    </LinearLayout>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/relativeLayoutDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
 
         <EditText
             android:id="@+id/edtSetDate"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_toStartOf="@+id/imgCancelDate"
             android:clickable="true"
@@ -152,21 +152,26 @@
             android:drawableEnd="@drawable/ic_date_range_black_24dp"
             android:drawableTint="@color/colorAccent"
             android:focusable="true"
-            android:hint="@string/set_date" />
+            android:hint="@string/set_date"
+            app:layout_constraintEnd_toStartOf="@+id/imgCancelDate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/imgCancelDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:src="@drawable/ic_cancel_black_24dp"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/edtSetDate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/edtSetDate"
+            app:layout_constraintTop_toTopOf="@+id/edtSetDate"
             app:tint="@color/colorAccent" />
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/relativeLayoutTime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -179,7 +184,7 @@
 
         <EditText
             android:id="@+id/edtSetTime"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_toStartOf="@+id/imgCancelTime"
             android:clickable="true"
@@ -187,18 +192,23 @@
             android:drawableEnd="@drawable/ic_access_time_black_24dp"
             android:drawableTint="@color/colorAccent"
             android:focusable="true"
-            android:hint="@string/set_time" />
+            android:hint="@string/set_time"
+            app:layout_constraintEnd_toStartOf="@+id/imgCancelTime"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/imgCancelTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:src="@drawable/ic_cancel_black_24dp"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/edtSetTime"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/edtSetTime"
+            app:layout_constraintTop_toTopOf="@+id/edtSetTime"
             app:tint="@color/colorAccent" />
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
