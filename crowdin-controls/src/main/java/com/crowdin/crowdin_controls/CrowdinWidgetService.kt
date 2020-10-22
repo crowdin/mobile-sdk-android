@@ -60,9 +60,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
 
         // Specify the view position
         // Initially view will be added to top-left corner
-        params.gravity = Gravity.TOP or Gravity.START
-        params.x = 0
-        params.y = 100
+        params.gravity = Gravity.CENTER or Gravity.START
 
         //Add the view to the window
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager

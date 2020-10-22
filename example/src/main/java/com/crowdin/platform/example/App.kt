@@ -4,11 +4,16 @@ import android.app.Application
 import android.content.res.Configuration
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.CrowdinConfig
+import com.crowdin.platform.example.utils.updateLocale
 
 class App : Application() {
 
+    lateinit var languagePreferences: LanguagePreferences
+
     override fun onCreate() {
         super.onCreate()
+        languagePreferences = LanguagePreferences(this)
+
         // Crowdin sdk initialization
 //        val distributionHash = "your_distribution_hash"
 //        val networkType = NetworkType.WIFI                  //  ALL, CELLULAR, WIFI
@@ -18,11 +23,14 @@ class App : Application() {
 //        val clientSecret = "your_client_secret"
 //        val organizationName = "your_organization_name"     // for Crowdin Enterprise users only
 
-        val distributionHash = "01b75f4d892f38ab5c2025876j9"
+        val distributionHash = "0485528a2127232ce98b62876j9"
         val clientId = "nyjTPt1mCx6PLmgCUWvZ"
         val clientSecret = "OumG8dVQudHsimUYVniLvacNtVAcp1yOIeXjVwJp"
         val sourceLanguage = "en"
 //        val organizationName = "test000"     // for Crowdin Enterprise users only
+
+//      Set custom locale before SDK initialization.
+        this.updateLocale(languagePreferences.getLanguageCode())
 
         Crowdin.init(
             applicationContext,
@@ -32,7 +40,8 @@ class App : Application() {
 //                .withRealTimeUpdates()
 //                .withSourceLanguage(sourceLanguage)
 //                .withAuthConfig(AuthConfig(clientId, clientSecret))
-                .build())
+                .build()
+        )
 
         // Using system buttons to take screenshot automatically will upload them to crowdin.
 //        Crowdin.registerScreenShotContentObserver(this)

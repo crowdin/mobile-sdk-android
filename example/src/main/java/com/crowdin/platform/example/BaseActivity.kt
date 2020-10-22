@@ -1,10 +1,7 @@
 package com.crowdin.platform.example
 
-import android.os.Bundle
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.BaseContextWrappingDelegate
-import com.crowdin.crowdin_controls.destroyCrowdinControl
-import com.crowdin.crowdin_controls.initCrowdinControl
 
 abstract class BaseActivity : AppCompatActivity() {
 
@@ -15,18 +12,6 @@ abstract class BaseActivity : AppCompatActivity() {
      * @see BaseContextWrappingDelegate.attachBaseContext2
      */
     override fun getDelegate() = BaseContextWrappingDelegate(super.getDelegate())
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//      Init Crowdin SDK overlay controls
-        initCrowdinControl(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-//      Destroy crowdin overlay view.
-        destroyCrowdinControl(this)
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

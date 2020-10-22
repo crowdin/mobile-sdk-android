@@ -43,6 +43,7 @@ class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().setTitle(R.string.dashboard)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
 

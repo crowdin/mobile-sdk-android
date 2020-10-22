@@ -9,7 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
-import androidx.appcompat.app.AppCompatActivity
+import com.crowdin.platform.example.BaseActivity
 import com.crowdin.platform.example.R
 import com.crowdin.platform.example.category.CategoryAdd
 import com.crowdin.platform.example.category.DBManagerCategory
@@ -20,8 +20,8 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class AddTaskActivity : AppCompatActivity(), View.OnClickListener, CategoryAdd,
-    OnItemSelectedListener.CategoryName {
+class AddTaskActivity : BaseActivity(), View.OnClickListener, CategoryAdd,
+    OnItemSelectedListener.SpinnerItemListener {
 
     private lateinit var calendar: Calendar
     private lateinit var dateSetListener: DatePickerDialog.OnDateSetListener
@@ -137,7 +137,7 @@ class AddTaskActivity : AppCompatActivity(), View.OnClickListener, CategoryAdd,
         spinnerCategory.onItemSelectedListener = OnItemSelectedListener(this)
     }
 
-    override fun spinnerCatName(categoryName: String) {
+    override fun onSpinnerItemSelected(categoryName: String) {
         if (categoryName != getString(R.string.no_category_to_added)) {
             if (categoryName != "") {
                 this.categoryName = categoryName

@@ -12,6 +12,7 @@ import com.crowdin.platform.example.category.CategoryAdd
 import com.crowdin.platform.example.category.CategoryDelete
 import com.crowdin.platform.example.category.CategoryUpdate
 import com.crowdin.platform.example.category.DBManagerCategory
+import com.crowdin.platform.util.getLocaleForLanguageCode
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -154,3 +155,11 @@ fun dialogDeleteCategory(context: Context, id: Int, categoryDelete: CategoryDele
 
 fun Int.convertDpToPx(resources: Resources): Int =
     (this * (resources.displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
+
+fun Context.updateLocale(newLocaleCode: String) {
+    val newLocale = newLocaleCode.getLocaleForLanguageCode()
+    Locale.setDefault(newLocale)
+    val configuration = this.resources.configuration
+    configuration.setLocale(newLocale)
+    this.createConfigurationContext(configuration)
+}

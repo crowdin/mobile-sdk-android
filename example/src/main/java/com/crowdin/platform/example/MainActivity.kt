@@ -6,6 +6,8 @@ import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.crowdin.crowdin_controls.destroyCrowdinControl
+import com.crowdin.crowdin_controls.initCrowdinControl
 import com.crowdin.platform.example.category.CategoryFragment
 import com.crowdin.platform.example.task.fragment.DashboardFragment
 import com.crowdin.platform.example.task.fragment.HistoryFragment
@@ -34,6 +36,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         supportFragmentManager.beginTransaction()
             .replace(R.id.frameLayout, DashboardFragment())
             .commit()
+
+//      Init Crowdin SDK overlay controls
+        initCrowdinControl(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+//      Destroy crowdin overlay view.
+        destroyCrowdinControl(this)
     }
 
     override fun onBackPressed() {
@@ -63,6 +74,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.id.nav_history -> {
                 toolbarMain.title = getString(R.string.history)
                 HistoryFragment()
+            }
+            R.id.nav_settings -> {
+                toolbarMain.title = getString(R.string.settings)
+                SettingsFragment()
             }
             else -> DashboardFragment()
         }
