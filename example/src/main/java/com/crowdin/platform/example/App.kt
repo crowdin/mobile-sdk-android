@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.res.Configuration
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.CrowdinConfig
+import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.example.utils.updateLocale
 
 class App : Application() {
@@ -23,7 +24,7 @@ class App : Application() {
 //        val clientSecret = "your_client_secret"
 //        val organizationName = "your_organization_name"     // for Crowdin Enterprise users only
 
-        val distributionHash = "0485528a2127232ce98b62876j9"
+        val distributionHash = "64da0c44ecb64277ba61e7876j9"
         val clientId = "nyjTPt1mCx6PLmgCUWvZ"
         val clientSecret = "OumG8dVQudHsimUYVniLvacNtVAcp1yOIeXjVwJp"
         val sourceLanguage = "en"
@@ -36,10 +37,10 @@ class App : Application() {
             applicationContext,
             CrowdinConfig.Builder()
                 .withDistributionHash(distributionHash)
-//                .withScreenshotEnabled()
-//                .withRealTimeUpdates()
-//                .withSourceLanguage(sourceLanguage)
-//                .withAuthConfig(AuthConfig(clientId, clientSecret))
+                .withScreenshotEnabled()
+                .withRealTimeUpdates()
+                .withSourceLanguage(sourceLanguage)
+                .withAuthConfig(AuthConfig(clientId, clientSecret))
                 .build()
         )
 
