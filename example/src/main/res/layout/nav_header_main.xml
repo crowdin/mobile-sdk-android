@@ -25,6 +25,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/nav_header_sub_title" />
+        android:text="@string/nav_header_sub_title"
+        android:textColorLink="@color/colorWhite" />
 
 </LinearLayout>

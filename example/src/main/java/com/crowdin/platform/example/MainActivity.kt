@@ -2,7 +2,9 @@ package com.crowdin.platform.example
 
 import android.os.Bundle
 import android.os.Handler
+import android.text.method.LinkMovementMethod
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -32,6 +34,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         drawerLayout.setDrawerListener(toggle)
         toggle.syncState()
         navigationView.setNavigationItemSelectedListener(this)
+
+        val header = navigationView.getHeaderView(0)
+        header.findViewById<TextView>(R.id.textView).movementMethod =
+            LinkMovementMethod.getInstance()
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.frameLayout, DashboardFragment())

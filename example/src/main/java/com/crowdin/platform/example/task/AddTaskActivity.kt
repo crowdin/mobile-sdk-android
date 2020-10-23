@@ -137,10 +137,10 @@ class AddTaskActivity : BaseActivity(), View.OnClickListener, CategoryAdd,
         spinnerCategory.onItemSelectedListener = OnItemSelectedListener(this)
     }
 
-    override fun onSpinnerItemSelected(categoryName: String) {
-        if (categoryName != getString(R.string.no_category_to_added)) {
-            if (categoryName != "") {
-                this.categoryName = categoryName
+    override fun onSpinnerItemSelected(item: String) {
+        if (item != getString(R.string.no_category_to_added)) {
+            if (item != "") {
+                categoryName = item
             }
         }
     }

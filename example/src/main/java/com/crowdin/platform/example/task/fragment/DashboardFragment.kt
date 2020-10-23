@@ -55,6 +55,10 @@ class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener 
         taskAdapter = TaskAdapter(requireActivity(), taskList)
         recyclerView.adapter = taskAdapter
 
+        if (taskList.isEmpty()) {
+            addDefaultTask()
+        }
+
         initSwipe()
     }
 
@@ -187,5 +191,18 @@ class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener 
         } else {
             emptyStateView.visibility = View.GONE
         }
+    }
+
+    private fun addDefaultTask() {
+        val dbManager = DBManagerTask(requireContext())
+        dbManager.insert(
+            "Meet with Laura",
+            "Design a prototype",
+            "Business",
+            "",
+            ""
+        )
+        taskList = dbManager.getTaskList()
+        taskAdapter.setList(taskList)
     }
 }

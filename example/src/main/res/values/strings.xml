@@ -32,8 +32,8 @@
     <string name="do_you_want_to_save_this_task">Do you want to save this task?</string>
     <string name="save_task">Save task!</string>
     <string name="save">SAVE</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_sub_title">android.studio@android.com</string>
+    <string name="nav_header_title">Crowdin SDK Example project</string>
+    <string name="nav_header_sub_title"><a href="https://github.com/crowdin/mobile-sdk-android">Repository: mobile-sdk-android</a></string>
     <string name="date">Date</string>
     <string name="task">Task</string>
     <string name="time">Time</string>
