@@ -39,6 +39,9 @@ android {
         versionCode libraryVersionCode
         versionName libraryVersionName
 
+        buildConfigField 'int', 'VERSION_CODE', "$libraryVersionCode"
+        buildConfigField 'String', 'VERSION_NAME', "\"$libraryVersionName\""
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -76,7 +79,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.0"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10"
     }
 }
 
