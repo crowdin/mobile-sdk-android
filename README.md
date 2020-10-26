@@ -102,10 +102,8 @@ To integrate SDK with your application you need to follow step by step instructi
    <details>
    <summary>Kotlin</summary>
 
-    ```kotlin
-   override fun attachBaseContext(newBase: Context) {
-     super.attachBaseContext(Crowdin.wrapContext(newBase))
-   }
+   ```kotlin
+    override fun getDelegate() = BaseContextWrappingDelegate(super.getDelegate())
    ```
    </details>
 
@@ -113,26 +111,13 @@ To integrate SDK with your application you need to follow step by step instructi
    <summary>Java</summary>
 
    ```java
-   @Override
-   protected void attachBaseContext(Context newBase) {
-     super.attachBaseContext(Crowdin.wrapContext(newBase));
-   }
+    @NonNull
+    @Override
+    public AppCompatDelegate getDelegate() {
+        return new BaseContextWrappingDelegate(super.getDelegate());
+    }
    ```
    </details>
-
-   In case your project already overrides *attachBaseContext* use the following code:
-
-   ```java
-   @Override
-   super.attachBaseContext(Crowdin.wrapContext(SomeLib.wrap(newBase)));
-   ```
-
-   SKD uses `androidx` version of libraries. In case your project still not migrated to `androidx` you can add this lines in the `gradle.properties` file:
-   ```groovy
-   android.enableJetifier=true
-   android.useAndroidX=true
-   ```
-   It might require additional changes in your code. 
 
 2. Enable *Over-The-Air Content Delivery* in your project so that application can pull translations from CDN vault. Add the following code to *App*/*Application* class:
 
