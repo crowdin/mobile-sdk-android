@@ -6,7 +6,7 @@ import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.AuthResponse
 import com.crowdin.platform.data.remote.api.AuthApi
 import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert.assertThat
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.`when`

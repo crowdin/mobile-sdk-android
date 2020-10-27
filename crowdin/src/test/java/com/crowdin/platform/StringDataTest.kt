@@ -2,7 +2,7 @@ package com.crowdin.platform
 
 import com.crowdin.platform.data.model.StringData
 import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert.assertThat
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
 class StringDataTest {

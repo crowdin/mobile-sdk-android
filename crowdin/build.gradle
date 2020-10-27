@@ -39,9 +39,6 @@ android {
         versionCode libraryVersionCode
         versionName libraryVersionName
 
-        buildConfigField 'int', 'VERSION_CODE', "$libraryVersionCode"
-        buildConfigField 'String', 'VERSION_NAME', "\"$libraryVersionName\""
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

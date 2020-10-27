@@ -5,7 +5,7 @@ import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
 import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert.assertThat
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
 class LanguageDataTest {
@@ -16,9 +16,10 @@ class LanguageDataTest {
         val actualLanguageData = LanguageData()
         val secondLanguageData = LanguageData()
         val expectedListOfStringData = mutableListOf(
-                StringData("Key0"),
-                StringData("Key1"),
-                StringData("Key2"))
+            StringData("Key0"),
+            StringData("Key1"),
+            StringData("Key2")
+        )
         secondLanguageData.resources = expectedListOfStringData
 
         // When
@@ -34,9 +35,10 @@ class LanguageDataTest {
         val actualLanguageData = LanguageData()
         val secondLanguageData = LanguageData()
         val expectedListOfArrayData = mutableListOf(
-                ArrayData("Key0"),
-                ArrayData("Key1"),
-                ArrayData("Key2"))
+            ArrayData("Key0"),
+            ArrayData("Key1"),
+            ArrayData("Key2")
+        )
         secondLanguageData.arrays = expectedListOfArrayData
 
         // When
@@ -52,9 +54,10 @@ class LanguageDataTest {
         val actualLanguageData = LanguageData()
         val secondLanguageData = LanguageData()
         val expectedListOfPluralData = mutableListOf(
-                PluralData("Key0"),
-                PluralData("Key1"),
-                PluralData("Key2"))
+            PluralData("Key0"),
+            PluralData("Key1"),
+            PluralData("Key2")
+        )
         secondLanguageData.plurals = expectedListOfPluralData
 
         // When

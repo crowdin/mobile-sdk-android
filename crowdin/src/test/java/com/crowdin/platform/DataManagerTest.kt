@@ -14,7 +14,7 @@ import com.crowdin.platform.util.getFormattedCode
 import java.lang.reflect.Type
 import java.util.Locale
 import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert.assertThat
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.`when`

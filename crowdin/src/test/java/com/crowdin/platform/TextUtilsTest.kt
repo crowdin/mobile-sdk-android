@@ -5,8 +5,8 @@ import android.util.AttributeSet
 import com.crowdin.platform.util.TextUtils
 import com.crowdin.platform.util.getLocaleForLanguageCode
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
-import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.`when`
