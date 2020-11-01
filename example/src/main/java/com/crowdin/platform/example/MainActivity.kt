@@ -1,8 +1,10 @@
 package com.crowdin.platform.example
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.text.method.LinkMovementMethod
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -13,6 +15,7 @@ import com.crowdin.crowdin_controls.initCrowdinControl
 import com.crowdin.platform.example.category.CategoryFragment
 import com.crowdin.platform.example.task.fragment.DashboardFragment
 import com.crowdin.platform.example.task.fragment.HistoryFragment
+import com.crowdin.platform.util.inflateWithCrowdin
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -59,6 +62,24 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             drawer.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Translate menu items
+        menuInflater.inflateWithCrowdin(R.menu.activity_menu, menu, resources)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (item.itemId == R.id.menuInfo) {
+            startActivity(Intent().apply {
+                setClassName(this@MainActivity, "com.example.example_info.InfoActivity")
+            })
+
+            true
+        } else {
+            super.onOptionsItemSelected(item)
         }
     }
 
