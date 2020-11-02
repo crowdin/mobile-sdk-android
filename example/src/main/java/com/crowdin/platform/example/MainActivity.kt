@@ -46,13 +46,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             .replace(R.id.frameLayout, DashboardFragment())
             .commit()
 
-//      Init Crowdin SDK overlay controls
+        // Init Crowdin SDK overlay controls
         initCrowdinControl(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-//      Destroy crowdin overlay view.
+        // Destroy crowdin overlay view.
         destroyCrowdinControl(this)
     }
 
@@ -81,6 +81,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         } else {
             super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // Settings.ACTION_MANAGE_OVERLAY_PERMISSION required for displaying Crowdin Control button.
+        // We should pass result to sdk when user returns from settings.
+        com.crowdin.crowdin_controls.onActivityResult(this, requestCode)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

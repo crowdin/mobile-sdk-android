@@ -28,6 +28,7 @@ class SettingsFragment : Fragment(), OnItemSelectedListener.SpinnerItemListener 
     }
 
     private fun loadDataInSpinner() {
+        // Test languages. You can set your own depending on you project supported languages.
         val labels: List<String> = arrayListOf(
             (requireActivity().application as App).languagePreferences.getLanguageCode(),
             "en-US",
