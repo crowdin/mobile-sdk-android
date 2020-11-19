@@ -295,7 +295,7 @@ You can take a screenshots and automatically upload them tagged to Crowdin in tw
                .withSourceLanguage(source_language)
                .withAuthConfig(AuthConfig(client_id, client_secret, organization_name))
                .withNetworkType(network_type)                                           // optional
-               .withUpdateInterval(interval_in_millisec)                                // optional
+               .withUpdateInterval(interval_in_seconds)                                 // optional
                .build())
     }
 
