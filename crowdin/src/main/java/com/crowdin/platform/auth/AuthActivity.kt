@@ -23,6 +23,7 @@ import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.TokenRequest
 import com.crowdin.platform.data.remote.CrowdinRetrofitService
 import com.crowdin.platform.util.ThreadUtils
+import com.crowdin.platform.util.UserAgentUtils
 import com.crowdin.platform.util.executeIO
 import kotlinx.android.synthetic.main.auth_layout.*
 
@@ -74,6 +75,7 @@ internal class AuthActivity : AppCompatActivity() {
         domain?.let { builder.appendQueryParameter(DOMAIN, it) }
         val url = builder.build().toString()
 
+        webView.settings.userAgentString = UserAgentUtils.getUserAgent()
         webView.webChromeClient = WebChromeClient()
         webView.webViewClient = object : WebViewClient() {
 
