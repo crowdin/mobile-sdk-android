@@ -14,8 +14,8 @@ class CrowdinConfigTest {
         // When
         try {
             CrowdinConfig.Builder()
-                    .withDistributionHash(distributionHash)
-                    .build()
+                .withDistributionHash(distributionHash)
+                .build()
             Assert.fail("SDK initialization with empty `distribution hash` not valid.")
         } catch (exception: IllegalArgumentException) {
             // Then
@@ -31,10 +31,10 @@ class CrowdinConfigTest {
         // When
         try {
             CrowdinConfig.Builder()
-                    .withDistributionHash("distributionHash")
-                    .withRealTimeUpdates()
-                    .withSourceLanguage(sourceLanguage)
-                    .build()
+                .withDistributionHash("distributionHash")
+                .withRealTimeUpdates()
+                .withSourceLanguage(sourceLanguage)
+                .build()
             Assert.fail("SDK initialization with empty `sourceLanguage` when realTime updates enabled - not valid.")
         } catch (exception: IllegalArgumentException) {
             // Then
@@ -50,10 +50,10 @@ class CrowdinConfigTest {
         // When
         try {
             CrowdinConfig.Builder()
-                    .withDistributionHash("distributionHash")
-                    .withScreenshotEnabled()
-                    .withSourceLanguage(sourceLanguage)
-                    .build()
+                .withDistributionHash("distributionHash")
+                .withScreenshotEnabled()
+                .withSourceLanguage(sourceLanguage)
+                .build()
             Assert.fail("SDK initialization with empty `sourceLanguage` when screenshots enabled - not valid.")
         } catch (exception: IllegalArgumentException) {
             // Then
@@ -69,9 +69,9 @@ class CrowdinConfigTest {
         // When
         try {
             CrowdinConfig.Builder()
-                    .withDistributionHash("distributionHash")
-                    .withAuthConfig(authConfig)
-                    .build()
+                .withDistributionHash("distributionHash")
+                .withAuthConfig(authConfig)
+                .build()
             Assert.fail("SDK initialization with empty `AuthConfig` values - not valid.")
         } catch (exception: IllegalArgumentException) {
             // Then

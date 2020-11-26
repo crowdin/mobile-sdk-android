@@ -95,16 +95,36 @@ To manage distributions open the needed project and go to *Over-The-Air Content 
 
 To integrate SDK with your application you need to follow step by step instructions:
 
-1. Inject Crowdin translations by adding *override* method in *BaseActivity* class to inject Crowdin translations into the Context.
-
-   **Note!** If you don’t have *BaseActivity* class add the following code to all of your activities.
+1. Inject Crowdin translations by adding *override* method in *BaseActivity* class to inject Crowdin translations into the Context. If you already migrated to [AppCompat](https://developer.android.com/jetpack/androidx/releases/appcompat) 1.2.0+ version. Please use this method:
 
    <details>
    <summary>Kotlin</summary>
 
-    ```kotlin
+   ```kotlin
+   override fun getDelegate() = BaseContextWrappingDelegate(super.getDelegate())
+   ```
+   </details>
+
+   <details>
+   <summary>Java</summary>
+
+   ```java
+   @NonNull
+   @Override
+   public AppCompatDelegate getDelegate() {
+       return new BaseContextWrappingDelegate(super.getDelegate());
+   }
+   ```
+   </details>
+
+   And for AppCompat 1.1.0 and lower use this:
+
+   <details>
+   <summary>Kotlin</summary>
+
+   ```kotlin
    override fun attachBaseContext(newBase: Context) {
-     super.attachBaseContext(Crowdin.wrapContext(newBase))
+       super.attachBaseContext(Crowdin.wrapContext(newBase))
    }
    ```
    </details>
@@ -115,24 +135,12 @@ To integrate SDK with your application you need to follow step by step instructi
    ```java
    @Override
    protected void attachBaseContext(Context newBase) {
-     super.attachBaseContext(Crowdin.wrapContext(newBase));
+       super.attachBaseContext(Crowdin.wrapContext(newBase));
    }
    ```
    </details>
 
-   In case your project already overrides *attachBaseContext* use the following code:
-
-   ```java
-   @Override
-   super.attachBaseContext(Crowdin.wrapContext(SomeLib.wrap(newBase)));
-   ```
-
-   SKD uses `androidx` version of libraries. In case your project still not migrated to `androidx` you can add this lines in the `gradle.properties` file:
-   ```groovy
-   android.enableJetifier=true
-   android.useAndroidX=true
-   ```
-   It might require additional changes in your code. 
+   **Note!** If you don’t have *BaseActivity* class add the following code to all of your activities.
 
 2. Enable *Over-The-Air Content Delivery* in your project so that application can pull translations from CDN vault. Add the following code to *App*/*Application* class:
 
@@ -159,14 +167,14 @@ To integrate SDK with your application you need to follow step by step instructi
    ```java
    @Override
    protected void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
+       super.onCreate(savedInstanceState);
 
-      Crowdin.init(this,
-          new CrowdinConfig.Builder()
-              .withDistributionHash(your_distribution_hash)
-              .withNetworkType(network_type)                // optional
-              .withUpdateInterval(interval_in_seconds)      // optional
-              .build());
+       Crowdin.init(this,
+           new CrowdinConfig.Builder()
+               .withDistributionHash(your_distribution_hash)
+               .withNetworkType(network_type)                // optional
+               .withUpdateInterval(interval_in_seconds)      // optional
+               .build());
    }
    ```
    </details>
@@ -212,17 +220,17 @@ All the translations that are done in the Editor can be shown in your version of
    ```java
    @Override
    protected void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
+       super.onCreate(savedInstanceState);
 
-      Crowdin.init(this,
-          new CrowdinConfig.Builder()
-              .withDistributionHash(your_distribution_hash)
-              .withRealTimeUpdates()
-              .withSourceLanguage(source_language)
-              .withAuthConfig(new AuthConfig(client_id, client_secret, organization_name_or_null))
-              .withNetworkType(network_type)                                           // optional
-              .withUpdateInterval(interval_in_seconds)                                 // optional
-              .build());
+       Crowdin.init(this,
+           new CrowdinConfig.Builder()
+               .withDistributionHash(your_distribution_hash)
+               .withRealTimeUpdates()
+               .withSourceLanguage(source_language)
+               .withAuthConfig(new AuthConfig(client_id, client_secret, organization_name_or_null))
+               .withNetworkType(network_type)                                           // optional
+               .withUpdateInterval(interval_in_seconds)                                 // optional
+               .build());
    }
    ```
    </details>
@@ -369,13 +377,13 @@ You can take a screenshots and automatically upload them tagged to Crowdin in tw
 
    ```kotlin
    Crowdin.sendScreenshot(activity!!, object : ScreenshotCallback {
-      override fun onSuccess() {
-          Log.d(TAG, "Screenshot uploaded")
-      }
+       override fun onSuccess() {
+           Log.d(TAG, "Screenshot uploaded")
+       }
 
-      override fun onFailure(throwable: Throwable) {
-          Log.d(TAG, throwable.localizedMessage)
-      }
+       override fun onFailure(throwable: Throwable) {
+           Log.d(TAG, throwable.localizedMessage)
+       }
    })
    ```
    </details>
@@ -385,20 +393,19 @@ You can take a screenshots and automatically upload them tagged to Crowdin in tw
 
    ```java
    View.OnClickListener oclBtnOk = new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-          Crowdin.sendScreenshot(YourActivity.this, new ScreenshotCallback() {
-              @Override
-              public void onSuccess() {
-                  Log.d("", "Screenshot uploaded");
-              }
+       @Override
+       public void onClick(View v) {
+           Crowdin.sendScreenshot(YourActivity.this, new ScreenshotCallback() {
+               @Override
+               public void onSuccess() {
+                   Log.d("", "Screenshot uploaded");
+               }
 
-              @Override
-              public void onFailure(Throwable throwable) {
-                  Log.d("", String.valueOf(throwable));
-              }
+               @Override
+               public void onFailure(Throwable throwable) {
+                   Log.d("", String.valueOf(throwable));
+               }
           });
-
       }
    };
    ```

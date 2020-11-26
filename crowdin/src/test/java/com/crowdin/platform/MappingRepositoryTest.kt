@@ -12,7 +12,7 @@ import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import okhttp3.ResponseBody
 import org.hamcrest.CoreMatchers.equalTo
-import org.junit.Assert.assertThat
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.`when`

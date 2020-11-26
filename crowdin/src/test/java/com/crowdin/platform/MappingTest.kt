@@ -8,7 +8,7 @@ import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.model.TextMetaData
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
-import org.junit.Assert.assertThat
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
