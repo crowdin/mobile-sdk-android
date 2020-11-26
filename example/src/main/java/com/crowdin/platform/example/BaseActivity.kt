@@ -2,6 +2,7 @@ package com.crowdin.platform.example
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.BaseContextWrappingDelegate
 
 abstract class BaseActivity : AppCompatActivity() {
 
