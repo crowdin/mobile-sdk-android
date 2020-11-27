@@ -1,4 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
+
+    <color name="colorPrimary">#294E2F</color>
+    <color name="colorAccent">#000000</color>
+
+    <color name="colorBlack">#000000</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="green">#388E3C</color>
+    <color name="red">#D32F2F</color>
+    <color name="litherGray">#a1a1a1</color>
+
+    <array name="random_color">
+        <item name="red_400" type="color">#e84e40</item>
+        <item name="pink_400" type="color">#ec407a</item>
+        <item name="purple_400" type="color">#ab47bc</item>
+        <item name="deep_purple_400" type="color">#7e57c2</item>
+        <item name="indigo_400" type="color">#5c6bc0</item>
+        <item name="blue_400" type="color">#738ffe</item>
+        <item name="light_blue_400" type="color">#29b6f6</item>
+        <item name="cyan_400" type="color">#26c6da</item>
+        <item name="teal_400" type="color">#26a69a</item>
+        <item name="green_400" type="color">#2baf2b</item>
+        <item name="light_green_400" type="color">#9ccc65</item>
+        <item name="lime_400" type="color">#d4e157</item>
+        <item name="yellow_400" type="color">#ffee58</item>
+        <item name="orange_400" type="color">#ffa726</item>
+        <item name="deep_orange_400" type="color">#ff7043</item>
+        <item name="brown_400" type="color">#8d6e63</item>
+        <item name="grey_400" type="color">#bdbdbd</item>
+        <item name="blue_grey_400" type="color">#78909c</item>
+    </array>
 </resources>

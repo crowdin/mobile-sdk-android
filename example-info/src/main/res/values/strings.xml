@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">example-info</string>
+    <string name="info_text">Crowdin Android SDK delivers all new translations from Crowdin project to the application immediately. So there is no need to update this application via Google Play Store to get the new version with the localization.</string>
+
+    <string name="features_title">The SDK provides:</string>
+    <string name="feature_one">- Over-The-Air Content Delivery – the localized content can be sent to the application from the project whenever needed.</string>
+    <string name="feature_two">- Real-Time Preview – all the translations that are done in the Editor can be shown in your version of the application in real-time. View the translations already made and the ones you\'re currently typing in.</string>
+    <string name="feature_three">- Screenshots – all the screenshots made in the application may be automatically sent to your Crowdin project with tagged source strings.</string>
+</resources>

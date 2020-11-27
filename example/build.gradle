@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.crowdin.platform.example"
-        minSdkVersion rootProject.ext.minSdkVersion
+        minSdkVersion 23
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
@@ -34,9 +34,10 @@ android {
 dependencies {
     implementation project(":crowdin")
     implementation project(":crowdin-controls")
+    implementation project(":example-info")
 
     implementation "androidx.appcompat:appcompat:1.2.0"
     implementation "com.google.android.material:material:1.2.1"
-    implementation "androidx.constraintlayout:constraintlayout:2.0.2"
+    implementation "androidx.constraintlayout:constraintlayout:2.0.4"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10"
 }

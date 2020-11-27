@@ -2,89 +2,67 @@ package com.crowdin.platform.example
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
+import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import com.crowdin.crowdin_controls.destroyCrowdinControl
 import com.crowdin.crowdin_controls.initCrowdinControl
-import com.crowdin.crowdin_controls.onActivityResult
-import com.crowdin.platform.Crowdin
-import com.crowdin.platform.LoadingStateListener
-import com.crowdin.platform.example.fragments.CameraFragment
-import com.crowdin.platform.example.fragments.GalleryFragment
-import com.crowdin.platform.example.fragments.HomeFragment
-import com.crowdin.platform.example.fragments.SendFragment
-import com.crowdin.platform.example.fragments.ShareFragment
-import com.crowdin.platform.example.fragments.SlideshowFragment
-import com.crowdin.platform.example.fragments.ToolsFragment
+import com.crowdin.platform.example.category.CategoryFragment
+import com.crowdin.platform.example.task.fragment.DashboardFragment
+import com.crowdin.platform.example.task.fragment.HistoryFragment
 import com.crowdin.platform.util.inflateWithCrowdin
 import com.google.android.material.navigation.NavigationView
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
-
-    private lateinit var navigationView: NavigationView
-    private lateinit var drawerLayout: DrawerLayout
-
-    private val dataLoadingObserver = object : LoadingStateListener {
-        override fun onDataChanged() {
-            Log.d(MainActivity::class.java.simpleName, "LoadingStateListener: onSuccess")
-        }
-
-        override fun onFailure(throwable: Throwable) {
-            Log.d(
-                MainActivity::class.java.simpleName,
-                "LoadingStateListener: onFailure ${throwable.localizedMessage}"
-            )
-        }
-
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(toolbarMain)
 
-        drawerLayout = findViewById(R.id.drawer_layout)
         val toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar,
-            R.string.navigation_drawer_open, R.string.navigation_drawer_close
+            this,
+            drawerLayout,
+            toolbarMain,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
         )
-        drawerLayout.addDrawerListener(toggle)
+        drawerLayout.setDrawerListener(toggle)
         toggle.syncState()
-        replaceFragment(HomeFragment.newInstance())
-        navigationView = findViewById(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
-        navigationView.post { navigationView.setCheckedItem(R.id.nav_home) }
-        setTitle(R.string.home)
 
-        // Observe data loading.
-        Crowdin.registerDataLoadingObserver(dataLoadingObserver)
+        val header = navigationView.getHeaderView(0)
+        header.findViewById<TextView>(R.id.textView).movementMethod =
+            LinkMovementMethod.getInstance()
 
-        // Simple device shake detector. Could be used for triggering force update.
-        Crowdin.registerShakeDetector(this)
-    }
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.frameLayout, DashboardFragment())
+            .commit()
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        onActivityResult(this, requestCode)
-
-//      Java
-//      CrowdinControlUtil.onActivityResult(this, requestCode);
+        // Init Crowdin SDK overlay controls
+        initCrowdinControl(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        // Remove data loading observer.
-        Crowdin.unregisterDataLoadingObserver(dataLoadingObserver)
+        // Destroy crowdin overlay view.
+        destroyCrowdinControl(this)
+    }
 
-        // Remove shake detector listener.
-        Crowdin.unregisterShakeDetector()
+    override fun onBackPressed() {
+        val drawer = findViewById<DrawerLayout>(R.id.drawerLayout)
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -93,60 +71,54 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         return true
     }
 
-    override fun onBackPressed() =
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (item.itemId == R.id.menuInfo) {
+            startActivity(Intent().apply {
+                setClassName(this@MainActivity, "com.example.example_info.InfoActivity")
+            })
+
+            true
         } else {
-            super.onBackPressed()
+            super.onOptionsItemSelected(item)
         }
+    }
 
-    override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
-        val fragment: Fragment?
-        var title = 0
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // Settings.ACTION_MANAGE_OVERLAY_PERMISSION required for displaying Crowdin Control button.
+        // We should pass result to sdk when user returns from settings.
+        com.crowdin.crowdin_controls.onActivityResult(this, requestCode)
+    }
 
-        when (menuItem.itemId) {
-            R.id.nav_home -> {
-                fragment = HomeFragment.newInstance()
-                title = R.string.home
-            }
-            R.id.nav_camera -> {
-                fragment = CameraFragment.newInstance()
-                title = R.string.camera
-            }
-            R.id.nav_gallery -> {
-                fragment = GalleryFragment.newInstance()
-                title = R.string.gallery
-            }
-            R.id.nav_slideshow -> {
-                fragment = SlideshowFragment.newInstance()
-                title = R.string.slideshow
-            }
-            R.id.nav_manage -> {
-                fragment = ToolsFragment.newInstance()
-                title = R.string.tools
-            }
-            R.id.nav_share -> {
-                fragment = ShareFragment.newInstance()
-                title = R.string.share
-            }
-            R.id.nav_send -> {
-                fragment = SendFragment.newInstance()
-                title = R.string.send
-            }
-            else -> fragment = null
-        }
-
-        if (fragment != null) {
-            replaceFragment(fragment)
-            setTitle(title)
-        }
-
-        menuItem.isChecked = true
-        drawerLayout.closeDrawer(GravityCompat.START)
-
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        Handler().postDelayed({ navigate(item.itemId) }, 280)
         return true
     }
 
-    private fun replaceFragment(fragment: Fragment) =
-        supportFragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit()
+    private fun navigate(id: Int) {
+        val fragment = when (id) {
+            R.id.nav_dashboard -> {
+                toolbarMain.title = getString(R.string.dashboard)
+                DashboardFragment()
+            }
+            R.id.nav_category -> {
+                toolbarMain.title = getString(R.string.category)
+                CategoryFragment()
+            }
+            R.id.nav_history -> {
+                toolbarMain.title = getString(R.string.history)
+                HistoryFragment()
+            }
+            R.id.nav_settings -> {
+                toolbarMain.title = getString(R.string.settings)
+                SettingsFragment()
+            }
+            else -> DashboardFragment()
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.frameLayout, fragment).commit()
+    }
 }

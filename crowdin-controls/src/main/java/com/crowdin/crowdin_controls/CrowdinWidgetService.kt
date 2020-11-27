@@ -1,5 +1,6 @@
 package com.crowdin.crowdin_controls
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Service
 import android.content.BroadcastReceiver
@@ -38,6 +39,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
         return null
     }
 
+    @SuppressLint("InflateParams")
     override fun onCreate() {
         super.onCreate()
         floatingView = LayoutInflater.from(this).inflate(R.layout.layout_floating_widget, null)
@@ -58,9 +60,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
 
         // Specify the view position
         // Initially view will be added to top-left corner
-        params.gravity = Gravity.TOP or Gravity.START
-        params.x = 0
-        params.y = 100
+        params.gravity = Gravity.CENTER or Gravity.START
 
         //Add the view to the window
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager

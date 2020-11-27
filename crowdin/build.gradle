@@ -89,7 +89,7 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.5"
     implementation "com.squareup.okhttp3:logging-interceptor:4.0.1"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10"
-    implementation "androidx.constraintlayout:constraintlayout:2.0.2"
+    implementation "androidx.constraintlayout:constraintlayout:2.0.4"
 
     testImplementation 'junit:junit:4.13.1'
     testImplementation 'org.mockito:mockito-core:3.1.0'
