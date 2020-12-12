@@ -186,7 +186,7 @@ class TranslationDataRepositoryTest {
         val mockedCall = mock(Call::class.java) as Call<FileResponse>
         `when`(mockCrowdinApi.getFiles(any())).thenReturn(mockedCall)
         val fileResponse = FileResponse(
-            listOf(FileData(File(0, 0, "strings.xml", "title0")))
+            listOf(FileData(File(0, 0, "strings.xml", "title0", "/strings.xml")))
         )
         val response = Response.success<FileResponse>(200, fileResponse)
         `when`(mockedCall.execute()).thenReturn(response)
