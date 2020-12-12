@@ -202,6 +202,19 @@ class SharedPrefLocalRepositoryTest {
     }
 
     @Test
+    fun containsKeyTest() {
+        // Given
+        val sharedPrefLocalRepository =
+            SharedPrefLocalRepository(context, mockMemoryLocalRepository)
+
+        // When
+        sharedPrefLocalRepository.containsKey("key")
+
+        // Then
+        verify(mockMemoryLocalRepository).containsKey("key")
+    }
+
+    @Test
     fun getTextDataTest() {
         // Given
         val sharedPrefLocalRepository =

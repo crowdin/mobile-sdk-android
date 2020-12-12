@@ -134,6 +134,7 @@ class DataManagerTest {
         val mockStringData = mock(StringData::class.java)
         Locale.setDefault(Locale.US)
         val expectedLanguage = Locale.getDefault().getFormattedCode() + "-copy"
+        `when`(mockLocalRepository.containsKey(any())).thenReturn(true)
 
         // When
         dataManager.saveReserveResources(mockStringData)
@@ -152,6 +153,7 @@ class DataManagerTest {
         val mockArrayData = mock(ArrayData::class.java)
         Locale.setDefault(Locale.US)
         val expectedLanguage = Locale.getDefault().getFormattedCode() + "-copy"
+        `when`(mockLocalRepository.containsKey(any())).thenReturn(true)
 
         // When
         dataManager.saveReserveResources(arrayData = mockArrayData)
@@ -170,6 +172,7 @@ class DataManagerTest {
         val mockPluralData = mock(PluralData::class.java)
         Locale.setDefault(Locale.US)
         val expectedLanguage = Locale.getDefault().getFormattedCode() + "-copy"
+        `when`(mockLocalRepository.containsKey(any())).thenReturn(true)
 
         // When
         dataManager.saveReserveResources(pluralData = mockPluralData)

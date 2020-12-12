@@ -118,6 +118,28 @@ internal class MemoryLocalRepository : LocalRepository {
         return stringsData[language] != null
     }
 
+    override fun containsKey(key: String): Boolean {
+        stringsData[Locale.getDefault().getFormattedCode()]?.let { languageData ->
+            languageData.resources.forEach {
+                if (it.stringKey == key) {
+                    return true
+                }
+            }
+            languageData.plurals.forEach {
+                if (it.name == key) {
+                    return true
+                }
+            }
+            languageData.arrays.forEach {
+                if (it.name == key) {
+                    return true
+                }
+            }
+        }
+
+        return false
+    }
+
     override fun getTextData(text: String): TextMetaData {
         val textMetaData = TextMetaData()
 

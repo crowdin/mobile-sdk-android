@@ -74,6 +74,8 @@ internal class SharedPrefLocalRepository internal constructor(
 
     override fun isExist(language: String): Boolean = memoryLocalRepository.isExist(language)
 
+    override fun containsKey(key: String): Boolean = memoryLocalRepository.containsKey(key)
+
     override fun getTextData(text: String): TextMetaData = memoryLocalRepository.getTextData(text)
 
     override fun saveData(type: String, data: Any?) {
