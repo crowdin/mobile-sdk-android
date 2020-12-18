@@ -95,6 +95,14 @@ internal interface LocalRepository {
     fun isExist(language: String): Boolean
 
     /**
+     * Returns <tt>true</tt> if repository contains resource key.
+     *
+     * @param key to compare.
+     * @return true if exist, otherwise false.
+     */
+    fun containsKey(key: String): Boolean
+
+    /**
      * Retrieves text related meta data.
      *
      * @param text searchable text.

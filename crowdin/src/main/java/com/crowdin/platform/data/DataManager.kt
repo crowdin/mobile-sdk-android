@@ -111,18 +111,30 @@ internal class DataManager(
     ) {
         if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             when {
-                stringData != null -> localRepository.setStringData(
-                    Locale.getDefault().getFormattedCode() + SUF_COPY,
-                    stringData
-                )
-                arrayData != null -> localRepository.setArrayData(
-                    Locale.getDefault().getFormattedCode() + SUF_COPY,
-                    arrayData
-                )
-                pluralData != null -> localRepository.setPluralData(
-                    Locale.getDefault().getFormattedCode() + SUF_COPY,
-                    pluralData
-                )
+                stringData != null -> {
+                    if (localRepository.containsKey(stringData.stringKey)) {
+                        localRepository.setStringData(
+                            Locale.getDefault().getFormattedCode() + SUF_COPY,
+                            stringData
+                        )
+                    }
+                }
+                arrayData != null -> {
+                    if (localRepository.containsKey(arrayData.name)) {
+                        localRepository.setArrayData(
+                            Locale.getDefault().getFormattedCode() + SUF_COPY,
+                            arrayData
+                        )
+                    }
+                }
+                pluralData != null -> {
+                    if (localRepository.containsKey(pluralData.name)) {
+                        localRepository.setPluralData(
+                            Locale.getDefault().getFormattedCode() + SUF_COPY,
+                            pluralData
+                        )
+                    }
+                }
             }
         }
     }

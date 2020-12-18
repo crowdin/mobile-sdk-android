@@ -284,6 +284,64 @@ class MemoryLocalRepositoryTest {
         assertThat(textMetaData.arrayIndex, `is`(expectedIndex))
     }
 
+    @Test
+    fun whenStringResourceHasKey_containsShouldReturnTrue() {
+        // Given
+        val memoryLocalRepository = MemoryLocalRepository()
+        val key = "test key"
+        val stringData = StringData(key, "empty")
+        memoryLocalRepository.setStringData(Locale.getDefault().getFormattedCode(), stringData)
+
+        // When
+        val actualValue = memoryLocalRepository.containsKey(key)
+
+        // Then
+        assertThat(actualValue, `is`(true))
+    }
+
+    @Test
+    fun whenArrayResourceHasKey_containsShouldReturnTrue() {
+        // Given
+        val memoryLocalRepository = MemoryLocalRepository()
+        val key = "test key"
+        val arrayData = ArrayData(key, null)
+        memoryLocalRepository.setArrayData(Locale.getDefault().getFormattedCode(), arrayData)
+
+        // When
+        val actualValue = memoryLocalRepository.containsKey(key)
+
+        // Then
+        assertThat(actualValue, `is`(true))
+    }
+
+    @Test
+    fun whenPluralResourceHasKey_containsShouldReturnTrue() {
+        // Given
+        val memoryLocalRepository = MemoryLocalRepository()
+        val key = "test key"
+        val pluralData = PluralData(key)
+        memoryLocalRepository.setPluralData(Locale.getDefault().getFormattedCode(), pluralData)
+
+        // When
+        val actualValue = memoryLocalRepository.containsKey(key)
+
+        // Then
+        assertThat(actualValue, `is`(true))
+    }
+
+    @Test
+    fun whenStringResourceEmpty_containsShouldReturnFalse() {
+        // Given
+        val memoryLocalRepository = MemoryLocalRepository()
+        val key = "test key"
+
+        // When
+        val actualValue = memoryLocalRepository.containsKey(key)
+
+        // Then
+        assertThat(actualValue, `is`(false))
+    }
+
     private fun givenLanguageData(locale: String): LanguageData {
         val languageData = LanguageData(locale)
         val listOfStringData = mutableListOf(
