@@ -8,7 +8,7 @@ import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.model.TextMetaData
 import com.crowdin.platform.util.getFormattedCode
 import java.lang.reflect.Type
-import java.util.IllegalFormatConversionException
+import java.util.IllegalFormatException
 import java.util.Locale
 
 /**
@@ -167,7 +167,7 @@ internal class MemoryLocalRepository : LocalRepository {
                         searchResultData.pluralFormatArgs = pluralData.formatArgs
                         return
                     }
-                } catch (ex: IllegalFormatConversionException) {
+                } catch (ex: IllegalFormatException) {
                     return
                 }
             }
