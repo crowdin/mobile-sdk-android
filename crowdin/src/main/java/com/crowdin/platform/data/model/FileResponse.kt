@@ -12,5 +12,6 @@ internal data class File(
     val id: Long,
     val projectId: Long,
     val name: String,
-    val title: String
+    val title: String,
+    val path: String
 )

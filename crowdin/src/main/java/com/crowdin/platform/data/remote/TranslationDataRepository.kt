@@ -96,24 +96,19 @@ internal class TranslationDataRepository(
         languageDataCallback: LanguageDataCallback? = null
     ) {
         val languageData = LanguageData(locale)
-        files.forEach { file ->
-            var fileName = file
-            if (file.contains("/")) {
-                fileName = file.split("/").last()
-            } else {
-                fileName.replace("/", "")
-            }
-            body.data.forEach {
-                if (it.data.name == fileName) {
+        loop@ for (file in files) {
+            for (fileData in body.data) {
+                if (fileData.data.path == file) {
                     val eTag = eTagMap[file]
                     val result = requestBuildTranslation(
                         eTag ?: HEADER_ETAG_EMPTY,
                         projectId,
-                        it.data.id,
+                        fileData.data.id,
                         file
                     )
 
                     languageData.addNewResources(result)
+                    continue@loop
                 }
             }
         }
