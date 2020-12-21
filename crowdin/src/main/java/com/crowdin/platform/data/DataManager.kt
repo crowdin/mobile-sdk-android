@@ -232,10 +232,7 @@ internal class DataManager(
                     }
 
                     override fun onFailure(throwable: Throwable) {
-                        ThreadUtils.executeOnMain {
-                            callback.onDataReceived("")
-                            sendOnFailure(throwable)
-                        }
+                        ThreadUtils.executeOnMain { sendOnFailure(throwable) }
                     }
                 })
         }, true)
