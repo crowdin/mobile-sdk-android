@@ -58,7 +58,7 @@ internal class EchoWebSocketListener(
         dataHolderMap.clear()
         saveMatchedTextViewWithMappingId(mappingData)
         val mappingValue = getMappingValueForKey(pair.second, mappingData)
-        mappingValue?.let {
+        mappingValue.value?.let {
             subscribeView(webSocket, project, user, it)
         }
     }
@@ -85,9 +85,10 @@ internal class EchoWebSocketListener(
         val viewsWithData = viewTransformerManager.getVisibleViewsWithData()
         for (entry in viewsWithData) {
             val textMetaData = entry.value
-            val mappingValue = getMappingValueForKey(textMetaData, mappingData)
-            mappingValue?.let {
-                textMetaData.mappingValue = mappingValue
+            val mapping = getMappingValueForKey(textMetaData, mappingData)
+            mapping.value?.let {
+                textMetaData.mappingValue = it
+                textMetaData.isHint = mapping.isHint
                 dataHolderMap.put(WeakReference(entry.key), textMetaData)
             }
         }
@@ -159,21 +160,28 @@ internal class EchoWebSocketListener(
         val view = mutableEntry.key.get()
 
         if (eventData.pluralForm == null || eventData.pluralForm == PLURAL_NONE) {
-            updateViewText(view, text)
+            updateViewText(view, text, textMetaData.isHint)
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 val quantity = textMetaData.pluralQuantity
                 val rule = PluralRules.forLocale(Locale.getDefault())
                 val ruleName = rule.select(quantity.toDouble())
                 if (eventData.pluralForm == ruleName) {
-                    updateViewText(view, text)
+                    updateViewText(view, text, textMetaData.isHint)
                 }
             }
         }
     }
 
-    private fun updateViewText(view: TextView?, text: String) {
-        view?.post { view.text = text.fromHtml() }
+    private fun updateViewText(view: TextView?, text: String, isHint: Boolean) {
+        view?.post {
+            val textFormatted = text.fromHtml()
+            if (isHint) {
+                view.hint = textFormatted
+            } else {
+                view.text = textFormatted
+            }
+        }
     }
 
     private fun parseResponse(response: String): EventResponse {

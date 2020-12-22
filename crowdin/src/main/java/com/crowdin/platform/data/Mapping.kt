@@ -3,24 +3,25 @@ package com.crowdin.platform.data
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.TextMetaData
 
-internal fun getMappingValueForKey(textMetaData: TextMetaData, mappingData: LanguageData): String? {
-
+internal fun getMappingValueForKey(textMetaData: TextMetaData, mappingData: LanguageData): Mapping {
     val resources = mappingData.resources
     val arrays = mappingData.arrays
     val plurals = mappingData.plurals
 
     when {
-        textMetaData.hasAttributeKey -> {
+        textMetaData.hasAttributeKey || textMetaData.hasHintKey -> {
             for (resource in resources) {
                 if (resource.stringKey == textMetaData.textAttributeKey) {
-                    return resource.stringValue
+                    return Mapping(resource.stringValue)
+                } else if (resource.stringKey == textMetaData.hintAttributeKey) {
+                    return Mapping(resource.stringValue, true)
                 }
             }
         }
         textMetaData.isArrayItem -> {
             for (array in arrays) {
                 if (array.name == textMetaData.arrayName && textMetaData.isArrayItem) {
-                    return array.values!![textMetaData.arrayIndex]
+                    return Mapping(array.values!![textMetaData.arrayIndex])
                 }
             }
         }
@@ -28,7 +29,7 @@ internal fun getMappingValueForKey(textMetaData: TextMetaData, mappingData: Lang
             for (plural in plurals) {
                 if (plural.name == textMetaData.pluralName) {
                     try {
-                        return plural.quantity.values.first()
+                        return Mapping(plural.quantity.values.first())
                     } catch (ex: NoSuchElementException) {
                         // element not found
                     }
@@ -37,5 +38,7 @@ internal fun getMappingValueForKey(textMetaData: TextMetaData, mappingData: Lang
         }
     }
 
-    return null
+    return Mapping(null)
 }
+
+data class Mapping(val value: String?, val isHint: Boolean = false)
