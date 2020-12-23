@@ -92,9 +92,11 @@ internal class StringResourceParser : Parser {
             content += unEscapeQuotes(parser.text)
         }
     }
+
     private fun unEscapeQuotes(replaceString: String): String {
         return replaceString.replace("\\\"", "\"")
-                .replace("\\\'", "\'")
+            .replace("\\\'", "\'")
+            .replace("\\n", "<br>")
     }
 
     override fun onEndTag(parser: XmlPullParser) {
