@@ -167,8 +167,8 @@ internal class ScreenshotManager(
     ): MutableList<TagData> {
         val list = mutableListOf<TagData>()
         for (viewData in viewDataList) {
-            val mappingValue = getMappingValueForKey(viewData.textMetaData, mappingData)
-            mappingValue?.let {
+            val mapping = getMappingValueForKey(viewData.textMetaData, mappingData)
+            mapping.value?.let {
                 list.add(
                     TagData(
                         it.toInt(),

@@ -33,7 +33,30 @@ class MappingTest {
         val actualResult = getMappingValueForKey(mockTextMetaData, languageData)
 
         // Then
-        assertThat(actualResult, `is`(expectedValue))
+        assertThat(actualResult.value, `is`(expectedValue))
+        assertThat(actualResult.isHint, `is`(false))
+    }
+
+    @Test
+    fun getMappingValueForHintStringDataKeyTest() {
+        // Given
+        val mockTextMetaData = mock(TextMetaData::class.java)
+        `when`(mockTextMetaData.hasHintKey).thenReturn(true)
+        `when`(mockTextMetaData.hintAttributeKey).thenReturn("key1")
+        val languageData = LanguageData()
+        languageData.resources = mutableListOf(
+            StringData("key0", "value0"),
+            StringData("key1", "value1"),
+            StringData("key2", "value2")
+        )
+        val expectedValue = "value1"
+
+        // When
+        val actualResult = getMappingValueForKey(mockTextMetaData, languageData)
+
+        // Then
+        assertThat(actualResult.value, `is`(expectedValue))
+        assertThat(actualResult.isHint, `is`(true))
     }
 
     @Test
@@ -55,7 +78,8 @@ class MappingTest {
         val actualResult = getMappingValueForKey(mockTextMetaData, languageData)
 
         // Then
-        assertThat(actualResult, `is`(expectedValue))
+        assertThat(actualResult.value, `is`(expectedValue))
+        assertThat(actualResult.isHint, `is`(false))
     }
 
     @Test
@@ -76,7 +100,8 @@ class MappingTest {
         val actualResult = getMappingValueForKey(mockTextMetaData, languageData)
 
         // Then
-        assertThat(actualResult, `is`(expectedValue))
+        assertThat(actualResult.value, `is`(expectedValue))
+        assertThat(actualResult.isHint, `is`(false))
     }
 
     @Test
@@ -89,6 +114,7 @@ class MappingTest {
         val actualResult = getMappingValueForKey(textMetaData, languageData)
 
         // Then
-        assertThat(actualResult, `is`(nullValue()))
+        assertThat(actualResult.value, `is`(nullValue()))
+        assertThat(actualResult.isHint, `is`(false))
     }
 }

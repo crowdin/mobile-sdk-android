@@ -14,6 +14,12 @@ internal class TextMetaData {
             return textAttributeKey.isNotEmpty()
         }
 
+    val hasHintKey: Boolean
+        get() {
+            return hintAttributeKey.isNotEmpty()
+        }
+    var isHint = false
+
     val isArrayItem: Boolean
         get() {
             return arrayName.isNotEmpty() && arrayIndex != -1
