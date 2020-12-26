@@ -4,6 +4,7 @@ import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
+import com.crowdin.platform.util.unEscapeQuotes
 import org.xmlpull.v1.XmlPullParser
 
 internal class StringResourceParser : Parser {
@@ -82,21 +83,15 @@ internal class StringResourceParser : Parser {
             (isArrayStarted && isInnerTagOpened) ||
             (isPluralStarted && isItemStarted && isInnerTagOpened)
         ) {
-            content += unEscapeQuotes(parser.text)
+            content += parser.text.unEscapeQuotes()
         } else if (isArrayStarted && isItemStarted) {
             when (arrayData?.values) {
                 null -> arrayData?.values = arrayOf(parser.text)
                 else -> arrayData?.values = arrayData?.values?.plus(parser.text)
             }
         } else if (isPluralStarted && isItemStarted) {
-            content += unEscapeQuotes(parser.text)
+            content += parser.text.unEscapeQuotes()
         }
-    }
-
-    private fun unEscapeQuotes(replaceString: String): String {
-        return replaceString.replace("\\\"", "\"")
-            .replace("\\\'", "\'")
-            .replace("\\n", "<br>")
     }
 
     override fun onEndTag(parser: XmlPullParser) {

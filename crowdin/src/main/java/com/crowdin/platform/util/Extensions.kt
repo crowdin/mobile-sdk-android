@@ -58,3 +58,9 @@ fun getMatchedCode(list: List<String>?): String? {
     }
     return code
 }
+
+fun String.unEscapeQuotes(): String {
+    return this.replace("\\\"", "\"")
+        .replace("\\\'", "\'")
+        .replace("\\n", "<br>")
+}
