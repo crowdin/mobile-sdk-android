@@ -327,6 +327,9 @@ You can take a screenshots and automatically upload them tagged to Crowdin in tw
               .withUpdateInterval(interval_in_seconds)                                 // optional
               .build());
    }
+
+   // Using system buttons to take screenshots and automatically upload them to Crowdin.
+   Crowdin.registerScreenShotContentObserver(this);
    ```
    </details>
 
