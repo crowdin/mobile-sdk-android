@@ -29,7 +29,7 @@ internal class CrowdinResources(
     @Throws(NotFoundException::class)
     override fun getString(id: Int): String {
         val entryName = getResourceEntryName(id)
-        val string = getStringFromRepository(id) ?: super.getString(id)
+        val string = getStringFromRepository(id)?.fromHtml()?.toString() ?: super.getString(id)
         saveStringDataToCopy(entryName, string)
 
         return string
@@ -38,7 +38,7 @@ internal class CrowdinResources(
     @Throws(NotFoundException::class)
     override fun getString(id: Int, vararg formatArgs: Any): String {
         val entryName = getResourceEntryName(id)
-        val string = getStringFromRepository(id)
+        val string = getStringFromRepository(id)?.fromHtml()?.toString()
         val formattedString =
             if (string == null) {
                 super.getString(id, *formatArgs)
@@ -170,9 +170,13 @@ internal class CrowdinResources(
         }
 }
 
-fun String.fromHtml(): CharSequence =
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-        Html.fromHtml(this)
-    } else {
-        Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT)
+fun String.fromHtml(): CharSequence? =
+    try {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            Html.fromHtml(this)
+        } else {
+            Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT)
+        }
+    } catch (ex: Exception) {
+        null
     }

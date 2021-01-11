@@ -15,6 +15,7 @@ import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager.Companion.PLURA
 import com.crowdin.platform.transformer.ViewTransformerManager
 import com.crowdin.platform.transformer.ViewsChangeListener
 import com.crowdin.platform.util.ThreadUtils
+import com.crowdin.platform.util.unEscapeQuotes
 import com.google.gson.Gson
 import java.lang.ref.WeakReference
 import java.util.Locale
@@ -175,7 +176,7 @@ internal class EchoWebSocketListener(
 
     private fun updateViewText(view: TextView?, text: String, isHint: Boolean) {
         view?.post {
-            val textFormatted = text.fromHtml()
+            val textFormatted = text.unEscapeQuotes().fromHtml()
             if (isHint) {
                 view.hint = textFormatted
             } else {
