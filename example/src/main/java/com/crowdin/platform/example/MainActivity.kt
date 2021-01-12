@@ -45,15 +45,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         supportFragmentManager.beginTransaction()
             .replace(R.id.frameLayout, DashboardFragment())
             .commit()
-
-        // Init Crowdin SDK overlay controls
-        initCrowdinControl(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        // Destroy crowdin overlay view.
-        destroyCrowdinControl(this)
     }
 
     override fun onBackPressed() {
