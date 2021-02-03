@@ -17,7 +17,7 @@ import com.crowdin.platform.transformer.ViewTransformerManager
  * the string attribute set as a string resource it transforms the text and apply it to the view again.
  */
 internal class CrowdinLayoutInflater constructor(
-    original: LayoutInflater,
+    private val original: LayoutInflater,
     newContext: Context,
     private val viewTransformerManager: ViewTransformerManager
 ) : LayoutInflater(original, newContext) {
@@ -27,7 +27,7 @@ internal class CrowdinLayoutInflater constructor(
     }
 
     override fun cloneInContext(newContext: Context): LayoutInflater {
-        return CrowdinLayoutInflater(this, newContext, viewTransformerManager)
+        return CrowdinLayoutInflater(original, newContext, viewTransformerManager)
     }
 
     override fun setFactory(factory: Factory?) {

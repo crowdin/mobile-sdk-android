@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorPrimary">#294E2F</color>
-    <color name="colorAccent">#000000</color>
-
-    <color name="colorBlack">#000000</color>
-    <color name="colorWhite">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="white_2">#EFEFF4</color>
     <color name="green">#388E3C</color>
     <color name="red">#D32F2F</color>
     <color name="litherGray">#a1a1a1</color>
+    <color name="grey_light">#F2F2F7</color>
+    <color name="grey_1_light">#8E8E93</color>
 
     <array name="random_color">
         <item name="red_400" type="color">#e84e40</item>

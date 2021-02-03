@@ -8,7 +8,6 @@
 
     <TextView
         android:id="@+id/txtCategoryName"
-        style="@style/SelectableItemBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -17,7 +16,7 @@
         android:paddingTop="8dp"
         android:paddingRight="8dp"
         android:paddingBottom="8dp"
-        android:textColor="@color/colorBlack"
+        android:textColor="?android:textColorPrimary"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -27,7 +26,6 @@
 
     <ImageView
         android:id="@+id/imgEditCategory"
-        style="@style/SelectableItemBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -37,12 +35,10 @@
         app:layout_constraintRight_toLeftOf="@+id/imgDeleteCategory"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/ic_edit_black_24dp"
-        app:tint="@color/colorAccent" />
+        app:srcCompat="@drawable/ic_edit_black_24dp" />
 
     <ImageView
         android:id="@+id/imgDeleteCategory"
-        style="@style/SelectableItemBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -52,13 +48,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/ic_delete_black_24dp"
-        app:tint="@color/colorAccent" />
+        app:srcCompat="@drawable/ic_delete_black_24dp" />
 
     <View
         android:layout_width="368dp"
         android:layout_height="1dp"
-        android:background="@color/colorPrimary"
+        android:background="?attr/colorOnSurface"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

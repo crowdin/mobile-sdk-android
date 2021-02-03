@@ -13,7 +13,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/app_language"
-        android:textColor="@color/colorBlack"
+        android:textColor="?android:textColorPrimary"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
