@@ -6,28 +6,6 @@ apply from: '../jacoco.gradle'
 ext {
     libraryVersionCode = 15
     libraryVersionName = "1.3.4"
-
-    bintrayRepo = 'mobile-sdk'
-    bintrayName = 'mobile-sdk-android'
-
-    publishedGroupId = 'com.crowdin.platform'
-    libraryName = 'CrowdinAndroidSdk'
-    artifact = 'mobile-sdk'
-
-    libraryDescription = "Crowdin Android SDK delivers all new translations from Crowdin project to the application immediately. So there is no need to update this application via Google Play Store to get the new version with the localization."
-
-    siteUrl = 'https://crowdin.com/'
-    gitUrl = 'https://github.com/crowdin/mobile-sdk-android'
-
-    libraryVersion = libraryVersionName
-
-    developerId = 'mykhailo-nester'
-    developerName = 'Mykhailo Nester'
-    developerEmail = 'nsmisha.dev@gmail.com'
-
-    licenseName = 'The MIT License'
-    licenseUrl = 'https://opensource.org/licenses/MIT'
-    allLicenses = ["MIT"]
 }
 
 android {
@@ -76,7 +54,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.30"
     }
 }
 
@@ -118,6 +96,3 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
     main = "com.pinterest.ktlint.Main"
     args "-F", "src/**/*.kt"
 }
-
-apply from: 'install.gradle'
-apply from: 'bintray.gradle'
