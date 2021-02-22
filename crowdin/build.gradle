@@ -4,15 +4,12 @@ apply plugin: 'kotlin-android-extensions'
 apply from: '../jacoco.gradle'
 
 ext {
-    libraryVersionCode = 15
-    libraryVersionName = "1.3.4"
-
-    bintrayRepo = 'mobile-sdk'
-    bintrayName = 'mobile-sdk-android'
+    libraryVersionCode = 16
+    libraryVersionName = "1.3.5"
 
     publishedGroupId = 'com.crowdin.platform'
     libraryName = 'CrowdinAndroidSdk'
-    artifact = 'mobile-sdk'
+    artifact = 'sdk'
 
     libraryDescription = "Crowdin Android SDK delivers all new translations from Crowdin project to the application immediately. So there is no need to update this application via Google Play Store to get the new version with the localization."
 
@@ -120,4 +117,4 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
 }
 
 apply from: 'install.gradle'
-apply from: 'bintray.gradle'
+apply from: 'maven.gradle'
