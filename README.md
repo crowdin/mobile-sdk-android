@@ -13,6 +13,8 @@ The SDK provides:
 ## Status
 
 [![](https://jitpack.io/v/crowdin/mobile-sdk-android.svg)](https://jitpack.io/#crowdin/mobile-sdk-android)
+![Downloads](https://jitpack.io/v/crowdin/mobile-sdk-android/month.svg)
+
 [![GitHub issues](https://img.shields.io/github/issues/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/issues)
 [![GitHub Release Date](https://img.shields.io/github/release-date/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/releases/latest)
 [![GitHub contributors](https://img.shields.io/github/contributors/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/graphs/contributors)
