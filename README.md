@@ -13,7 +13,7 @@ The SDK provides:
 ## Status
 
 [![](https://jitpack.io/v/crowdin/mobile-sdk-android.svg)](https://jitpack.io/#crowdin/mobile-sdk-android)
-![Downloads](https://jitpack.io/v/crowdin/mobile-sdk-android/month.svg)
+[![Downloads](https://jitpack.io/v/crowdin/mobile-sdk-android/month.svg)](https://jitpack.io/#crowdin/mobile-sdk-android)
 
 [![GitHub issues](https://img.shields.io/github/issues/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/issues)
 [![GitHub Release Date](https://img.shields.io/github/release-date/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/releases/latest)
@@ -50,7 +50,7 @@ You have two ways to install Crowdin Android SDK.
 
 - From Jitpack
 
-   Add it in your root build.gradle at the end of repositories:
+   Add this to your root `build.gradle` at the end of repositories:
 
    ```groovy
    allprojects {
@@ -61,7 +61,7 @@ You have two ways to install Crowdin Android SDK.
    }
    ```
 
-   Add the dependency
+   Add the dependency:
 
    ```groovy
    dependencies {
