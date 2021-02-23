@@ -56,26 +56,3 @@ jobs:
       - bash: |
           bash <(curl -s https://codecov.io/bash) -t $(CODECOV_TOKEN)
         displayName: 'Upload coverage to codecov.io'
-
-  - job: Publish
-    dependsOn:
-      - Test
-    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
-    pool:
-      vmImage: ubuntu-latest
-    steps:
-      - task: Gradle@2
-        displayName: 'Publish to maven'
-        inputs:
-          workingDirectory: ''
-          gradleWrapperFile: 'gradlew'
-          gradleOptions: '-Xmx3072m'
-          javaHomeOption: 'JDKVersion'
-          jdkVersionOption: '1.11'
-          jdkArchitectureOption: 'x64'
-          publishJUnitResults: true
-          testResultsFiles: '**/TEST-*.xml'
-          tasks: 'build'
-      - script: |
-          ./gradlew -Pbintray.user=$(BINTRAY_LOGIN) -Pbintray.key=$(BINTRAY_TOKEN) bintrayUpload
-        displayName: 'Publishing to maven and jcenter'
