@@ -1,5 +1,4 @@
 apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
 
 version = libraryVersion
 
@@ -40,36 +39,6 @@ publishing {
                         dependencyNode.appendNode('version', it.version)
                     }
                 }
-            }
-        }
-    }
-}
-
-// Bintray
-bintray {
-    user = property('bintray.user') ?: System.getenv('BINTRAY_USER')
-    key = property('bintray.key') ?: System.getenv('BINTRAY_API_KEY')
-    publications = ['Publication']
-    configurations = ['archives']
-
-    pkg {
-        repo = bintrayRepo
-        name = bintrayName
-        desc = libraryDescription
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = allLicenses
-        publish = true
-        publicDownloadNumbers = true
-        userOrg = 'crowdin'
-        licenses = ['MIT']
-        vcsUrl = 'https://github.com/crowdin/mobile-sdk-android'
-        override = true
-
-        version {
-            desc = libraryDescription
-            gpg {
-                sign = true
             }
         }
     }

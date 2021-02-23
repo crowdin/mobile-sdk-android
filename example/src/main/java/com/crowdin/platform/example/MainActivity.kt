@@ -10,8 +10,6 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.crowdin.crowdin_controls.destroyCrowdinControl
-import com.crowdin.crowdin_controls.initCrowdinControl
 import com.crowdin.platform.example.category.CategoryFragment
 import com.crowdin.platform.example.task.fragment.DashboardFragment
 import com.crowdin.platform.example.task.fragment.HistoryFragment
@@ -72,13 +70,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         } else {
             super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        // Settings.ACTION_MANAGE_OVERLAY_PERMISSION required for displaying Crowdin Control button.
-        // We should pass result to sdk when user returns from settings.
-        com.crowdin.crowdin_controls.onActivityResult(this, requestCode)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

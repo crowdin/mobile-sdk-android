@@ -12,7 +12,9 @@ The SDK provides:
 
 ## Status
 
-[![Download](https://api.bintray.com/packages/crowdin/mobile-sdk/mobile-sdk-android/images/download.svg?version=1.3.4)](https://bintray.com/crowdin/mobile-sdk/mobile-sdk-android/1.3.4/link)
+[![](https://jitpack.io/v/crowdin/mobile-sdk-android.svg)](https://jitpack.io/#crowdin/mobile-sdk-android)
+![Downloads](https://jitpack.io/v/crowdin/mobile-sdk-android/month.svg)
+
 [![GitHub issues](https://img.shields.io/github/issues/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/issues)
 [![GitHub Release Date](https://img.shields.io/github/release-date/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/releases/latest)
 [![GitHub contributors](https://img.shields.io/github/contributors/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/graphs/contributors)
@@ -46,10 +48,25 @@ The SDK provides:
 
 You have two ways to install Crowdin Android SDK.
 
-- From JCenter
+- From Jitpack
+
+   Add it in your root build.gradle at the end of repositories:
 
    ```groovy
-   implementation 'com.crowdin.platform:mobile-sdk:1.3.4'
+   allprojects {
+       repositories {
+           ...
+           maven { url 'https://jitpack.io' }
+       }
+   }
+   ```
+
+   Add the dependency
+
+   ```groovy
+   dependencies {
+       implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.3.5'
+   }
    ```
 
    For Android project which already have [transitive dependency](https://docs.gradle.org/current/userguide/dependency_management_terminology.html#sub:terminology_transitive_dependency) of `com.google.code.gson`, after integration of Crowdin SDK, it will show you the following error during build time:
@@ -59,9 +76,9 @@ You have two ways to install Crowdin Android SDK.
    To resolve, either exclude `gson` from Crowdin or from your library is OK, but be sure to keep the newer one for backward-compatibility.
 
    ```groovy
-    implementation ('com.crowdin.platform:mobile-sdk:1.3.4') {
-        exclude group: 'com.google.code.gson', module: 'gson'
-    }
+   implementation ('com.github.crowdin.mobile-sdk-android:sdk:1.3.5') {
+       exclude group: 'com.google.code.gson', module: 'gson'
+   }
    ```
 
 
