@@ -4,8 +4,8 @@ apply plugin: 'kotlin-android-extensions'
 apply from: '../jacoco.gradle'
 
 ext {
-    libraryVersionCode = 16
-    libraryVersionName = "1.4.0"
+    libraryVersionCode = 17
+    libraryVersionName = "1.4.1"
 
     publishedGroupId = 'com.crowdin.platform'
     libraryName = 'CrowdinAndroidSdk'
