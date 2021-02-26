@@ -3,8 +3,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 ext {
-    libraryVersionCode = 1
-    libraryVersionName = "1.0.0"
+    libraryVersionCode = 2
+    libraryVersionName = "1.0.1"
 
     publishedGroupId = 'com.crowdin.platform'
     libraryName = 'CrowdinControlsSdk'
@@ -57,7 +57,7 @@ android {
 }
 
 dependencies {
-    implementation project(":crowdin")
+    implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.4.0'
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
