@@ -51,10 +51,16 @@ internal class ScreenshotService(private val context: Context) : ContentObserver
                     return
                 }
 
+                val idIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID)
+                if (idIndex < 0) {
+                    Log.d(ScreenshotService::class.java.simpleName, "Error: screenshot not found")
+                    return@use
+                }
+
                 val imageUri: Uri = ContentUris
                     .withAppendedId(
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        cursor.getInt(cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID)).toLong()
+                        cursor.getLong(idIndex)
                     )
                 val bitmap = BitmapFactory.decodeStream(resolver.openInputStream(imageUri))
 
