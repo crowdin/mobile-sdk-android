@@ -38,7 +38,9 @@ android {
 
 dependencies {
     implementation project(":crowdin")
-    implementation project(":crowdin-controls")
+    implementation(project(":crowdin-controls")) {
+        exclude group: 'com.github.crowdin.mobile-sdk-android'
+    }
     implementation project(":example-info")
 
     implementation "androidx.multidex:multidex:2.0.1"
