@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -23,7 +24,7 @@ import com.crowdin.platform.example.task.model.TaskModel
 import com.crowdin.platform.example.utils.DASHBOARD_RECYCLER_VIEW_REFRESH
 import com.crowdin.platform.example.utils.convertDpToPx
 import com.crowdin.platform.example.utils.views.OnStartDragListener
-import kotlinx.android.synthetic.main.fragment_dashboard.*
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlin.math.abs
 
 class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener {
@@ -31,6 +32,9 @@ class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener 
     private lateinit var dbManager: DBManagerTask
     private lateinit var taskAdapter: TaskAdapter
     private lateinit var mItemTouchHelper: ItemTouchHelper
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var fabAddTask: FloatingActionButton
+    private lateinit var emptyStateView: TextView
     private var taskList: ArrayList<TaskModel> = ArrayList()
 
     override fun onCreateView(
@@ -44,9 +48,12 @@ class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().setTitle(R.string.dashboard)
+        emptyStateView = view.findViewById(R.id.emptyStateView)
+        recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
+        fabAddTask = view.findViewById(R.id.fabAddTask)
         fabAddTask.setOnClickListener(this)
 
         dbManager = DBManagerTask(requireActivity())

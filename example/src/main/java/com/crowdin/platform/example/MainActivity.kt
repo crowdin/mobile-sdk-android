@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.crowdin.platform.example.category.CategoryFragment
@@ -15,14 +16,19 @@ import com.crowdin.platform.example.task.fragment.DashboardFragment
 import com.crowdin.platform.example.task.fragment.HistoryFragment
 import com.crowdin.platform.util.inflateWithCrowdin
 import com.google.android.material.navigation.NavigationView
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+    private lateinit var toolbarMain: Toolbar
+    private lateinit var drawerLayout: DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        toolbarMain = findViewById(R.id.toolbarMain)
+        drawerLayout = findViewById(R.id.drawerLayout)
+        val navigationView = findViewById<NavigationView>(R.id.navigationView)
+
         setSupportActionBar(toolbarMain)
 
         val toggle = ActionBarDrawerToggle(

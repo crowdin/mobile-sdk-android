@@ -4,13 +4,14 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.crowdin.platform.example.R
 import com.crowdin.platform.example.task.model.TaskModel
 import com.crowdin.platform.example.utils.getFormatDate
 import com.crowdin.platform.example.utils.getFormatTime
 import com.crowdin.platform.example.utils.views.ItemTouchHelperAdapter
-import kotlinx.android.synthetic.main.row_task.view.*
 import java.util.ArrayList
 import java.util.Collections
 import java.util.Random
@@ -79,17 +80,17 @@ class TaskAdapter(
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        private val viewColor = view.viewColor
-        private val titleValueTv = view.titleValueTv
-        private val taskTextValueTv = view.taskTextValueTv
-        private val categoryTv = view.categoryTv
-        private val dateValueTv = view.dateValueTv
-        private val dateTitleTv = view.dateTitleTv
-        private val timeValueTv = view.timeValueTv
-        private val timeTitleTv = view.timeTitleTv
-        private val titleTv = view.titleTv
-        private val taskTitleTv = view.taskTitleTv
-        private val cardView = view.cardView
+        private val viewColor = view.findViewById<View>(R.id.viewColor)
+        private val titleValueTv = view.findViewById<TextView>(R.id.titleValueTv)
+        private val taskTextValueTv = view.findViewById<TextView>(R.id.taskTextValueTv)
+        private val categoryTv = view.findViewById<TextView>(R.id.categoryTv)
+        private val dateValueTv = view.findViewById<TextView>(R.id.dateValueTv)
+        private val dateTitleTv = view.findViewById<TextView>(R.id.dateTitleTv)
+        private val timeValueTv = view.findViewById<TextView>(R.id.timeValueTv)
+        private val timeTitleTv = view.findViewById<TextView>(R.id.timeTitleTv)
+        private val titleTv = view.findViewById<TextView>(R.id.titleTv)
+        private val taskTitleTv = view.findViewById<TextView>(R.id.taskTitleTv)
+        private val cardView = view.findViewById<CardView>(R.id.cardView)
 
         fun onBind(taskModel: TaskModel) {
             val androidColors = context.resources.getIntArray(R.array.random_color)

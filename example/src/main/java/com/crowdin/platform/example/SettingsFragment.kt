@@ -5,14 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.example.task.OnItemSelectedListener
 import com.crowdin.platform.example.utils.updateLocale
-import kotlinx.android.synthetic.main.fragment_settings.*
 import java.util.Locale
 
 class SettingsFragment : Fragment(), OnItemSelectedListener.SpinnerItemListener {
+
+    private lateinit var spinnerLanguages: Spinner
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,6 +26,7 @@ class SettingsFragment : Fragment(), OnItemSelectedListener.SpinnerItemListener 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        spinnerLanguages = view.findViewById(R.id.spinnerLanguages)
         loadDataInSpinner()
     }
 
