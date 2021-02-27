@@ -7,7 +7,7 @@ ext {
     libraryVersionCode = 3
     libraryVersionName = "1.0.2"
 
-    publishedGroupId = 'com.crowdin.control'
+    publishedGroupId = 'com.crowdin.platform'
     libraryName = 'CrowdinControlsSdk'
     artifact = 'controls'
 
