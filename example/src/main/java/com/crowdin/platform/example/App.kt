@@ -1,14 +1,14 @@
 package com.crowdin.platform.example
 
+import android.app.Application
 import android.content.res.Configuration
-import androidx.multidex.MultiDexApplication
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.CrowdinConfig
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.remote.NetworkType
 import com.crowdin.platform.example.utils.updateLocale
 
-class App : MultiDexApplication() {
+class App : Application() {
 
     lateinit var languagePreferences: LanguagePreferences
 
