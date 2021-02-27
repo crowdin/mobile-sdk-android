@@ -3,10 +3,10 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 ext {
-    libraryVersionCode = 2
-    libraryVersionName = "1.0.1"
+    libraryVersionCode = 3
+    libraryVersionName = "1.0.2"
 
-    publishedGroupId = 'com.crowdin.platform'
+    publishedGroupId = 'com.crowdin.control'
     libraryName = 'CrowdinControlsSdk'
     artifact = 'controls'
 

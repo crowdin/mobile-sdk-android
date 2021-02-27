@@ -22,8 +22,8 @@ artifacts {
 publishing {
     publications {
         Publication(MavenPublication) {
-            artifact("$buildDir/outputs/aar/crowdin-release.aar")
-            groupId
+            artifact("$buildDir/outputs/aar/crowdin-controls-release.aar")
+            groupId publishedGroupId
             artifactId artifact
             version this.version
 
