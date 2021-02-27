@@ -30,6 +30,10 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    packagingOptions {
+        exclude 'META-INF/crowdin_release.kotlin_module'
+    }
 }
 
 dependencies {
@@ -37,7 +41,7 @@ dependencies {
     implementation project(":crowdin-controls")
     implementation project(":example-info")
 
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation "androidx.multidex:multidex:2.0.1"
     implementation "androidx.appcompat:appcompat:1.2.0"
     implementation "com.google.android.material:material:1.2.1"
     implementation "androidx.constraintlayout:constraintlayout:2.0.4"
