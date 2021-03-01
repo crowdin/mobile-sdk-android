@@ -29,11 +29,17 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    packagingOptions {
+        exclude 'META-INF/crowdin_release.kotlin_module'
+    }
 }
 
 dependencies {
     implementation project(":crowdin")
-    implementation project(":crowdin-controls")
+    implementation(project(":crowdin-controls")) {
+        exclude group: 'com.github.crowdin.mobile-sdk-android'
+    }
     implementation project(":example-info")
 
     implementation "androidx.appcompat:appcompat:1.2.0"

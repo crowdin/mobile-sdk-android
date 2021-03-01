@@ -65,7 +65,10 @@ class DBManagerCategory(private val context: Context) {
         val cursor = database.rawQuery(query, null)
         if (cursor.moveToFirst()) {
             do {
-                categoryName = cursor.getString(cursor.getColumnIndex(CATEGORY_NAME))
+                val index = cursor.getColumnIndex(CATEGORY_NAME)
+                if (index >= 0) {
+                    categoryName = cursor.getString(index)
+                }
             } while (cursor.moveToNext())
         }
         cursor.close()
@@ -84,10 +87,15 @@ class DBManagerCategory(private val context: Context) {
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                val id = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ID)))
-                val name = cursor.getString(cursor.getColumnIndex(CATEGORY_NAME))
-                val categoryModel = CategoryModel(id, name)
-                arrayList.add(categoryModel)
+                val idIndex = cursor.getColumnIndex(ID)
+                val nameIndex = cursor.getColumnIndex(CATEGORY_NAME)
+                if (idIndex >= 0 && nameIndex >= 0) {
+                    val id = Integer.parseInt(cursor.getString(idIndex))
+                    val name = cursor.getString(nameIndex)
+                    val categoryModel = CategoryModel(id, name)
+                    arrayList.add(categoryModel)
+                }
+
             } while (cursor.moveToNext())
         }
         cursor.close()
@@ -106,8 +114,10 @@ class DBManagerCategory(private val context: Context) {
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                labels.add(cursor.getString(cursor.getColumnIndex(CATEGORY_NAME)))
-
+                val nameIndex = cursor.getColumnIndex(CATEGORY_NAME)
+                if (nameIndex >= 0) {
+                    labels.add(cursor.getString(nameIndex))
+                }
             } while (cursor.moveToNext())
         }
         cursor.close()

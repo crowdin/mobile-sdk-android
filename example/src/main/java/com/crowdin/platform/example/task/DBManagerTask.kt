@@ -73,18 +73,21 @@ class DBManagerTask(private val context: Context) {
         val cursor = database.rawQuery(query, null)
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                val isFinish =
-                    Integer.parseInt(cursor.getString(cursor.getColumnIndex(TASK_FINISH)))
-                if (isFinish == TASK_IS_NOT_FINISH) {
-                    val taskModel = TaskModel(
-                        Integer.parseInt(cursor.getString(cursor.getColumnIndex(ID))),
-                        cursor.getString(cursor.getColumnIndex(TASK_TITLE)),
-                        cursor.getString(cursor.getColumnIndex(TASK_TASK)),
-                        cursor.getString(cursor.getColumnIndex(TASK_CATEGORY)),
-                        cursor.getString(cursor.getColumnIndex(TASK_DATE)),
-                        cursor.getString(cursor.getColumnIndex(TASK_TIME))
-                    )
-                    arrayList.add(taskModel)
+                try {
+                    val isFinish =
+                        Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(TASK_FINISH)))
+                    if (isFinish == TASK_IS_NOT_FINISH) {
+                        val taskModel = TaskModel(
+                            Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(ID))),
+                            cursor.getString(cursor.getColumnIndexOrThrow(TASK_TITLE)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(TASK_TASK)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(TASK_CATEGORY)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(TASK_DATE)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(TASK_TIME))
+                        )
+                        arrayList.add(taskModel)
+                    }
+                } catch (ex: IllegalArgumentException) {
                 }
             } while (cursor.moveToNext())
         }
@@ -111,18 +114,21 @@ class DBManagerTask(private val context: Context) {
         val cursor = database.rawQuery(query, null)
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                val isFinish =
-                    Integer.parseInt(cursor.getString(cursor.getColumnIndex(TASK_FINISH)))
-                if (isFinish == TASK_IS_FINISH) {
-                    val taskModel = TaskModel(
-                        Integer.parseInt(cursor.getString(cursor.getColumnIndex(ID))),
-                        cursor.getString(cursor.getColumnIndex(TASK_TITLE)),
-                        cursor.getString(cursor.getColumnIndex(TASK_TASK)),
-                        cursor.getString(cursor.getColumnIndex(TASK_CATEGORY)),
-                        cursor.getString(cursor.getColumnIndex(TASK_DATE)),
-                        cursor.getString(cursor.getColumnIndex(TASK_TIME))
-                    )
-                    arrayList.add(taskModel)
+                try {
+                    val isFinish =
+                        Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(TASK_FINISH)))
+                    if (isFinish == TASK_IS_FINISH) {
+                        val taskModel = TaskModel(
+                            Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(ID))),
+                            cursor.getString(cursor.getColumnIndexOrThrow(TASK_TITLE)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(TASK_TASK)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(TASK_CATEGORY)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(TASK_DATE)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(TASK_TIME))
+                        )
+                        arrayList.add(taskModel)
+                    }
+                } catch (ex: IllegalArgumentException) {
                 }
             } while (cursor.moveToNext())
         }
