@@ -4,8 +4,8 @@ plugins {
 }
 
 ext {
-    libraryVersionCode = 3
-    libraryVersionName = "1.0.2"
+    libraryVersionCode = 4
+    libraryVersionName = "1.0.3"
 
     publishedGroupId = 'com.crowdin.platform'
     libraryName = 'CrowdinControlsSdk'
