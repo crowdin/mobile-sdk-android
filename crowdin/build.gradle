@@ -41,8 +41,6 @@ ext {
     allLicenses = ["MIT"]
 }
 
-def STRING = 'String'
-
 android {
     compileSdkVersion 29
 
@@ -51,8 +49,6 @@ android {
         targetSdkVersion 29
         versionCode libraryVersionCode
         versionName libraryVersionName
-
-        buildConfigField STRING, 'VERSION_NAME', "\"${libraryVersionName}\""
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
