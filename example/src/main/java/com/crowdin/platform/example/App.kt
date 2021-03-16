@@ -18,11 +18,11 @@ class App : Application() {
 
         // Crowdin sdk initialization
         val distributionHash = "your_distribution_hash"
-        val networkType = NetworkType.WIFI                  //  ALL, CELLULAR, WIFI
-        val sourceLanguage = "source_language"
-        val intervalInSeconds: Long = 18 * 60               // 18 minutes
-        val clientId = "your_client_id"
-        val clientSecret = "your_client_secret"
+        val networkType = NetworkType.WIFI                  // ALL, CELLULAR, WIFI
+        val sourceLanguage = "source_language"              // en, uk, de, etc.
+        val intervalInSeconds: Long = 18 * 60               // 18 minutes, min 15 min
+        val clientId = "your_client_id"                     // "gpY2yC...cx3TYB"
+        val clientSecret = "your_client_secret"             // "Xz95tfedd0A...TabEDx9T"
         val organizationName = "your_organization_name"     // for Crowdin Enterprise users only
 
         // Set custom locale before SDK initialization.
@@ -34,7 +34,7 @@ class App : Application() {
                 .withNetworkType(networkType)                                           // optional
                 .withRealTimeUpdates()                                                  // optional
                 .withScreenshotEnabled()                                                // optional
-                .withSourceLanguage(sourceLanguage)                                     // optional
+                .withSourceLanguage(sourceLanguage)                                     // required if screenshot or realtime update are enabled, otherwise optional
                 .withUpdateInterval(intervalInSeconds)                                  // optional
                 .withAuthConfig(AuthConfig(clientId, clientSecret, organizationName))   // optional
                 .build()
