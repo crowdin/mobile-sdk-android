@@ -266,7 +266,10 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
 
         fun destroyService(activity: Activity) {
             activity.stopService(Intent(activity, CrowdinWidgetService::class.java))
-            activity.unregisterReceiver(receiver)
+
+            if (this::receiver.isInitialized) {
+                activity.unregisterReceiver(receiver)
+            }
         }
     }
 }
