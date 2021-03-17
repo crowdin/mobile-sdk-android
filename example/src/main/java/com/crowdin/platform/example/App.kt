@@ -19,7 +19,7 @@ class App : Application() {
         // Crowdin sdk initialization
         val distributionHash = "your_distribution_hash"
         val networkType = NetworkType.WIFI                  // ALL, CELLULAR, WIFI
-        val sourceLanguage = "source_language"              // en, uk, de, etc.
+        val sourceLanguage = "source_language"              // Source language code in your Crowdin project - e.g. 'en'
         val intervalInSeconds: Long = 18 * 60               // 18 minutes, min 15 min
         val clientId = "your_client_id"                     // "gpY2yC...cx3TYB"
         val clientSecret = "your_client_secret"             // "Xz95tfedd0A...TabEDx9T"
