@@ -2,6 +2,7 @@ package com.crowdin.platform
 
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.remote.NetworkType
+import com.crowdin.platform.recurringwork.RecurringManager
 
 /**
  * Contains configuration properties for initializing Crowdin.
@@ -83,6 +84,10 @@ class CrowdinConfig private constructor() {
                 require(sourceLanguage.isNotEmpty()) {
                     "Crowdin: `sourceLanguage` cannot be empty"
                 }
+            }
+
+            require((updateInterval == -1L) or (updateInterval >= RecurringManager.MIN_PERIODIC_INTERVAL_MILLIS)) {
+                "Crowdin: `updateInterval` must be not less than 15 minutes"
             }
 
             config.sourceLanguage = sourceLanguage
