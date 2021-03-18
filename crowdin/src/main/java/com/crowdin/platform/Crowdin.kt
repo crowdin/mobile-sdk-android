@@ -17,6 +17,7 @@ import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.parser.StringResourceParser
 import com.crowdin.platform.data.parser.XmlReader
+import com.crowdin.platform.data.remote.Connectivity
 import com.crowdin.platform.data.remote.CrowdinRetrofitService
 import com.crowdin.platform.data.remote.DistributionInfoManager
 import com.crowdin.platform.data.remote.MappingRepository
@@ -48,7 +49,7 @@ import java.util.Locale
  */
 object Crowdin {
 
-    const val CROWDIN_TAG = "CrowdingSDK:"
+    const val CROWDIN_TAG = "CrowdinSDK"
     private lateinit var viewTransformerManager: ViewTransformerManager
     private lateinit var config: CrowdinConfig
     private lateinit var crowdinPreferences: Preferences
@@ -329,12 +330,16 @@ object Crowdin {
      * Auth to Crowdin platform. Create connection for realtime updates if feature turned on.
      */
     @JvmStatic
-    fun authorize(context: Context) {
+    fun authorize(context: Context, onErrorAction: ((str: String) -> Unit)? = null) {
         if (isAuthorized()) {
             createRealTimeConnection()
         } else if ((FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) &&
             !isAuthorized()
         ) {
+            if (!Connectivity.isOnline(context)) {
+                onErrorAction?.invoke("No internet connection")
+                return
+            }
             createAuthDialog(context) { AuthActivity.launchActivity(context) }
         }
     }
