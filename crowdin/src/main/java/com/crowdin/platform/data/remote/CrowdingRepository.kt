@@ -43,6 +43,9 @@ internal abstract class CrowdingRepository(
                                 languageDataCallback?.onFailure(throwable)
                             }
                         }
+                        response.code() == HttpURLConnection.HTTP_FORBIDDEN -> {
+                            languageDataCallback?.onFailure(Throwable("Unable to download translations from the distribution. Please check your distribution hash"))
+                        }
                         else -> {
                             languageDataCallback?.onFailure(Throwable("Network operation failed ${response.code()}"))
                         }
