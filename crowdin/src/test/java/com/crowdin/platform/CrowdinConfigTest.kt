@@ -80,31 +80,31 @@ class CrowdinConfigTest {
         }
     }
 
-//    @Test
-//    fun whenUpdateIntervalLess15Minutes_shouldUseDefault() {
-//        // Given
-//        val smallInterval = 10 * 60L
-//
-//        // When
-//        val configWithSmallInterval = CrowdinConfig.Builder()
-//            .withDistributionHash("distributionHash")
-//            .withUpdateInterval(smallInterval)
-//            .build()
-//
-//        // Then
-//        Assert.assertTrue(configWithSmallInterval.updateInterval == RecurringManager.MIN_PERIODIC_INTERVAL_MILLIS)
-//
-//
-//        // Given
-//        val bigInterval = 20 * 60L
-//
-//        // When
-//        val configWithBigInterval = CrowdinConfig.Builder()
-//            .withDistributionHash("distributionHash")
-//            .withUpdateInterval(bigInterval)
-//            .build()
-//
-//        // Then
-//        Assert.assertTrue(configWithBigInterval.updateInterval == bigInterval * 1000)
-//    }
+    @Test
+    fun whenUpdateIntervalLess15Minutes_shouldUseDefault() {
+        // Given
+        val smallInterval = 10 * 60L
+
+        // When
+        val configWithSmallInterval = CrowdinConfig.Builder()
+            .withDistributionHash("distributionHash")
+            .withUpdateInterval(smallInterval)
+            .build()
+
+        // Then
+        Assert.assertTrue(configWithSmallInterval.updateInterval == RecurringManager.MIN_PERIODIC_INTERVAL_MILLIS)
+
+
+        // Given
+        val bigInterval = 20 * 60L
+
+        // When
+        val configWithBigInterval = CrowdinConfig.Builder()
+            .withDistributionHash("distributionHash")
+            .withUpdateInterval(bigInterval)
+            .build()
+
+        // Then
+        Assert.assertTrue(configWithBigInterval.updateInterval == bigInterval * 1000)
+    }
 }
