@@ -18,8 +18,8 @@ plugins {
 apply from: '../jacoco.gradle'
 
 ext {
-    libraryVersionCode = 19
-    libraryVersionName = "1.4.3"
+    libraryVersionCode = 18
+    libraryVersionName = "1.4.2"
 
     publishedGroupId = 'com.crowdin.platform'
     libraryName = 'CrowdinAndroidSdk'
@@ -87,7 +87,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
     implementation "com.google.code.gson:gson:2.8.6"
     implementation "com.squareup.okhttp3:logging-interceptor:4.2.1"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.30"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.31"
     implementation "androidx.constraintlayout:constraintlayout:2.0.4"
 
     testImplementation 'junit:junit:4.13.2'
