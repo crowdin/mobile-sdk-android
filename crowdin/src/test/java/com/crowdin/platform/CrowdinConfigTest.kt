@@ -94,7 +94,6 @@ class CrowdinConfigTest {
         // Then
         Assert.assertTrue(configWithSmallInterval.updateInterval == RecurringManager.MIN_PERIODIC_INTERVAL_MILLIS)
 
-
         // Given
         val bigInterval = 20 * 60L
 
