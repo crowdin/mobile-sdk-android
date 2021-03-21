@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Crowdin TODO</string>
+    <string name="dashboard">Головна панель</string>
+    <string name="category">Категорія</string>
+    <string name="history">Історія</string>
+    <string name="add_task">Додати завдання</string>
+    <string name="action_done">Виконано</string>
+    <string name="task_title">Назва завдання</string>
+    <string name="enter_task_title">Введіть назву завдання</string>
+    <string name="what_is_to_be_done">Що робити?</string>
+    <string name="enter_your_task">Введіть ваше завдання</string>
+    <string name="set_date_and_time">Встановити дату та час нагадування</string>
+    <string name="add_to_category">Додати до категорії</string>
+    <string name="set_date">Встановити дату</string>
+    <string name="set_time">Встановити час</string>
+    <string name="add_category">Додати Категорію</string>
+    <string name="enter_category">Вкажіть категорію</string>
+    <string name="update_category">Оновити категорію</string>
+    <string name="please_add_task">Будь ласка, додайте завдання</string>
+    <string name="please_add_title">Будь ласка, додайте заголовок</string>
+    <string name="add">ДОДАТИ</string>
+    <string name="cancel" tools:ignore="ButtonCase">Скасувати</string>
+    <string name="please_enter_category_to_add">Будь ласка, введіть категорію для додавання</string>
+    <string name="update">ОНОВИТИ</string>
+    <string name="please_edit_category_to_update">Будь ласка, відредагуйте категорію для оновлення</string>
+    <string name="delete">ВИДАЛИТИ</string>
+    <string name="please_enter_something_to_update">Будь ласка, введіть щось для оновлення</string>
+    <string name="no_category_to_display">Немає категорії для відображення</string>
+    <string name="no_task_to_show">Немає завдань для відображення</string>
+    <string name="no_history_to_show">Немає історії для показу</string>
+    <string name="do_you_want_to_save_this_task">Зберегти це завдання?</string>
+    <string name="save_task">Зберегти завдання!</string>
+    <string name="save">ЗБЕРЕГТИ</string>
+    <string name="nav_header_title">Приклад проекту з Crowdin SDK</string>
+    <string name="nav_header_sub_title"><a href="https://github.com/crowdin/mobile-sdk-android">Репозиторій: mobile-sdk-android</a></string>
+    <string name="date">Дата</string>
+    <string name="task">Завдання</string>
+    <string name="time">Час</string>
+    <string name="title">Заголовок</string>
+    <string name="navigation_drawer_open">Відкрити панель навігації</string>
+    <string name="navigation_drawer_close">Закрити панель навігації</string>
+    <string name="no_category_to_added">Не додано жодної категорії</string>
+    <string name="dialog_delete_category_title">Видалити категорію</string>
+    <string name="dialog_delete_category_desc">Видалити цю категорію?</string>
+    <string name="settings">Налаштування</string>
+    <string name="app_language">Поточна мова</string>
+    <string name="menu_info">Інформація</string>
+</resources>
