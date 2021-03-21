@@ -1,6 +1,7 @@
 package com.crowdin.platform
 
 import com.crowdin.platform.data.model.AuthConfig
+import com.crowdin.platform.recurringwork.RecurringManager
 import org.junit.Assert
 import org.junit.Test
 
@@ -77,5 +78,33 @@ class CrowdinConfigTest {
             // Then
             // exception expected
         }
+    }
+
+    @Test
+    fun whenUpdateIntervalLess15Minutes_shouldUseDefault() {
+        // Given
+        val smallInterval = 10 * 60L
+
+        // When
+        val configWithSmallInterval = CrowdinConfig.Builder()
+            .withDistributionHash("distributionHash")
+            .withUpdateInterval(smallInterval)
+            .build()
+
+        // Then
+        Assert.assertTrue(configWithSmallInterval.updateInterval == RecurringManager.MIN_PERIODIC_INTERVAL_MILLIS)
+
+
+        // Given
+        val bigInterval = 20 * 60L
+
+        // When
+        val configWithBigInterval = CrowdinConfig.Builder()
+            .withDistributionHash("distributionHash")
+            .withUpdateInterval(bigInterval)
+            .build()
+
+        // Then
+        Assert.assertTrue(configWithBigInterval.updateInterval == bigInterval * 1000)
     }
 }
