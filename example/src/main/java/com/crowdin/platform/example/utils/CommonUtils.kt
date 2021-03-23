@@ -1,6 +1,7 @@
 package com.crowdin.platform.example.utils
 
 import android.content.Context
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -137,10 +138,10 @@ fun dialogDeleteCategory(context: Context, id: Int, categoryDelete: CategoryDele
 fun Int.convertDpToPx(resources: Resources): Int =
     (this * (resources.displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
 
-fun Context.updateLocale(newLocaleCode: String) {
+fun Context.updateLocale(newLocaleCode: String): Context {
     val newLocale = newLocaleCode.getLocaleForLanguageCode()
     Locale.setDefault(newLocale)
-    val configuration = this.resources.configuration
+    val configuration = Configuration(this.resources.configuration)
     configuration.setLocale(newLocale)
-    this.createConfigurationContext(configuration)
+    return this.createConfigurationContext(configuration)
 }
