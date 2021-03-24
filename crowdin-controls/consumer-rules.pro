@@ -1,0 +1,1 @@
+-keep class com.crowdin.crowdin_controls.** { *; }
