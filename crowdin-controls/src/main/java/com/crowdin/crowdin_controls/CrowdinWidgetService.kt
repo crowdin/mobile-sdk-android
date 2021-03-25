@@ -151,7 +151,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
         if (Crowdin.isAuthorized()) {
             Crowdin.logOut()
         } else {
-            Crowdin.authorize(this)
+            Crowdin.authorize(this) { error -> showToast(error) }
         }
     }
 

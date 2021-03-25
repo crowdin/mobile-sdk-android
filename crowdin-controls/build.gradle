@@ -57,7 +57,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.4.1'
+    implementation project(":crowdin")
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
