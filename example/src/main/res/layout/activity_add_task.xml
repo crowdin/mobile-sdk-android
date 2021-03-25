@@ -95,10 +95,10 @@
         android:text="@string/add_to_category"
         android:textColor="?android:textColorPrimary"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativeLayoutTime" />
+        app:layout_constraintTop_toBottomOf="@+id/timeLayout" />
 
     <LinearLayout
-        android:id="@+id/relativeLayout"
+        android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -127,7 +127,7 @@
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/relativeLayoutDate"
+        android:id="@+id/layoutDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -167,7 +167,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/relativeLayoutTime"
+        android:id="@+id/timeLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -175,7 +175,7 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativeLayoutDate">
+        app:layout_constraintTop_toBottomOf="@+id/layoutDate">
 
         <EditText
             android:id="@+id/edtSetTime"

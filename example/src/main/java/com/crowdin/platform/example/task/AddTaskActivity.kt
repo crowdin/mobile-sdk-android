@@ -9,13 +9,17 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.Spinner
+import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.crowdin.platform.example.BaseActivity
 import com.crowdin.platform.example.R
 import com.crowdin.platform.example.category.CategoryAdd
 import com.crowdin.platform.example.category.DBManagerCategory
 import com.crowdin.platform.example.utils.dialogAddCategory
 import com.crowdin.platform.example.utils.toastMessage
-import kotlinx.android.synthetic.main.activity_add_task.*
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -23,6 +27,15 @@ import java.util.Locale
 class AddTaskActivity : BaseActivity(), View.OnClickListener, CategoryAdd,
     OnItemSelectedListener.SpinnerItemListener {
 
+    private lateinit var edtTitle: EditText
+    private lateinit var edtTask: EditText
+    private lateinit var edtSetDate: EditText
+    private lateinit var edtSetTime: EditText
+    private lateinit var imgCancelDate: ImageView
+    private lateinit var imgCancelTime: ImageView
+    private lateinit var imgAddCategory: ImageView
+    private lateinit var spinnerCategory: Spinner
+    private lateinit var timeLayout: ConstraintLayout
     private lateinit var calendar: Calendar
     private lateinit var dateSetListener: DatePickerDialog.OnDateSetListener
     private lateinit var timeSetListener: TimePickerDialog.OnTimeSetListener
@@ -35,6 +48,17 @@ class AddTaskActivity : BaseActivity(), View.OnClickListener, CategoryAdd,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_task)
+        val toolbarAddTask = findViewById<Toolbar>(R.id.toolbarAddTask)
+        edtTitle = findViewById(R.id.edtTitle)
+        edtTask = findViewById(R.id.edtTask)
+        edtSetDate = findViewById(R.id.edtSetDate)
+        edtSetTime = findViewById(R.id.edtSetTime)
+        imgCancelDate = findViewById(R.id.imgCancelDate)
+        imgCancelTime = findViewById(R.id.imgCancelTime)
+        imgAddCategory = findViewById(R.id.imgAddCategory)
+        spinnerCategory = findViewById(R.id.spinnerCategory)
+        timeLayout = findViewById(R.id.timeLayout)
+
         setSupportActionBar(toolbarAddTask)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
@@ -159,8 +183,8 @@ class AddTaskActivity : BaseActivity(), View.OnClickListener, CategoryAdd,
                 edtSetDate.setText("")
                 date = ""
                 imgCancelDate.visibility = View.GONE
-                if (relativeLayoutTime.visibility == View.VISIBLE) {
-                    relativeLayoutTime.visibility = View.GONE
+                if (timeLayout.visibility == View.VISIBLE) {
+                    timeLayout.visibility = View.GONE
                     edtSetTime.setText("")
                     time = ""
                     imgCancelTime.visibility = View.GONE
@@ -226,7 +250,7 @@ class AddTaskActivity : BaseActivity(), View.OnClickListener, CategoryAdd,
         val myFormat2 = "EEE, d MMM yyyy"
         val sdf2 = SimpleDateFormat(myFormat2, Locale.US)
         edtSetDate.setText(sdf2.format(calendar.time))
-        relativeLayoutTime.visibility = View.VISIBLE
+        timeLayout.visibility = View.VISIBLE
         imgCancelDate.visibility = View.VISIBLE
     }
 

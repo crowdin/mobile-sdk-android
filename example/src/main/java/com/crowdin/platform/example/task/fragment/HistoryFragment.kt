@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -19,7 +20,6 @@ import com.crowdin.platform.example.task.TaskAdapter
 import com.crowdin.platform.example.task.model.TaskModel
 import com.crowdin.platform.example.utils.convertDpToPx
 import com.crowdin.platform.example.utils.views.OnStartDragListener
-import kotlinx.android.synthetic.main.fragment_history.*
 import java.util.ArrayList
 import kotlin.math.abs
 
@@ -28,6 +28,8 @@ class HistoryFragment : Fragment(), OnStartDragListener {
     private var list: ArrayList<TaskModel> = ArrayList()
     private lateinit var dbManager: DBManagerTask
     private lateinit var taskAdapter: TaskAdapter
+    private lateinit var recyclerViewHistory: RecyclerView
+    private lateinit var txtNoHistory: TextView
 
     private lateinit var mItemTouchHelper: ItemTouchHelper
 
@@ -41,6 +43,8 @@ class HistoryFragment : Fragment(), OnStartDragListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        txtNoHistory = view.findViewById(R.id.txtNoHistory)
+        recyclerViewHistory = view.findViewById(R.id.recyclerViewHistory)
         recyclerViewHistory.setHasFixedSize(true)
         recyclerViewHistory.layoutManager = LinearLayoutManager(requireActivity())
 

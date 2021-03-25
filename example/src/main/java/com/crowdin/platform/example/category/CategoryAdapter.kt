@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crowdin.platform.example.R
 import com.crowdin.platform.example.utils.dialogDeleteCategory
 import com.crowdin.platform.example.utils.dialogUpdateCategory
-import kotlinx.android.synthetic.main.row_category.view.*
 
 class CategoryAdapter(
     private val mContext: Context,
@@ -52,9 +51,9 @@ class CategoryAdapter(
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), CategoryUpdate,
         CategoryDelete {
 
-        private val categoryNameTv: TextView = view.txtCategoryName
-        private val editCategoryImg: ImageView = view.imgEditCategory
-        private val deleteCategoryImg: ImageView = view.imgDeleteCategory
+        private val categoryNameTv: TextView = view.findViewById(R.id.txtCategoryName)
+        private val editCategoryImg: ImageView = view.findViewById(R.id.imgEditCategory)
+        private val deleteCategoryImg: ImageView = view.findViewById(R.id.imgDeleteCategory)
 
         fun onBind(categoryModel: CategoryModel) {
             categoryNameTv.text = categoryModel.categoryName

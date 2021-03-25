@@ -13,6 +13,7 @@ import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -25,10 +26,11 @@ import com.crowdin.platform.data.model.TokenRequest
 import com.crowdin.platform.data.remote.CrowdinRetrofitService
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.executeIO
-import kotlinx.android.synthetic.main.auth_layout.*
 
 internal class AuthActivity : AppCompatActivity() {
 
+    private lateinit var webView: WebView
+    private lateinit var progressView: LinearLayout
     private lateinit var clientId: String
     private lateinit var clientSecret: String
     private var domain: String? = null
@@ -51,6 +53,9 @@ internal class AuthActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.auth_layout)
+
+        webView = findViewById(R.id.webView)
+        progressView = findViewById(R.id.progressView)
 
         if (Crowdin.isAuthorized()) {
             requestPermission()

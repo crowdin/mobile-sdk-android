@@ -22,13 +22,13 @@ artifacts {
 publishing {
     publications {
         Publication(MavenPublication) {
-            artifact("$buildDir/outputs/aar/crowdin-release.aar")
-            groupId
+            artifact("$buildDir/outputs/aar/crowdin-controls-release.aar")
+            groupId publishedGroupId
             artifactId artifact
             version this.version
 
             pom.withXml {
-                def dependenciesNode = asNode().getAt('dependencies')[0] ?: asNode().appendNode('dependencies')
+                def dependenciesNode = asNode()['dependencies'][0] ?: asNode().appendNode('dependencies')
                 // Iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
                 configurations.implementation.allDependencies.each {
                     // Ensure dependencies such as fileTree are not included.
