@@ -12,7 +12,6 @@ import android.os.Handler
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
-import android.widget.Toast
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.R
 import com.karumi.dexter.Dexter
@@ -33,6 +32,12 @@ internal class ScreenshotService(private val context: Context) : ContentObserver
 
     private var uploading = false
 
+    private var onErrorListener: ((String) -> Unit)? = null
+
+    fun setOnErrorListener(unit: (String) -> Unit) {
+        onErrorListener = unit
+    }
+
     override fun onChange(selfChange: Boolean) {
         Dexter.withContext(context)
             .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -42,7 +47,7 @@ internal class ScreenshotService(private val context: Context) : ContentObserver
                 }
 
                 override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
-                    Toast.makeText(context, context.getString(R.string.required_permission_read_storage), Toast.LENGTH_LONG).show()
+                    onErrorListener?.invoke(context.getString(R.string.required_permission_read_storage))
                 }
 
                 override fun onPermissionRationaleShouldBeShown(p0: PermissionRequest?, p1: PermissionToken?) {

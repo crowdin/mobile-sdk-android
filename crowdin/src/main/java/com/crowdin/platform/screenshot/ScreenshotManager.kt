@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.ContentObserver
 import android.graphics.Bitmap
 import android.provider.MediaStore
+import android.widget.Toast
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.getMappingValueForKey
 import com.crowdin.platform.data.model.LanguageData
@@ -61,7 +62,13 @@ internal class ScreenshotManager(
     }
 
     fun registerScreenShotContentObserver(context: Context) {
-        contentObserver = ScreenshotService(context)
+
+        val screenshotService = ScreenshotService(context)
+        screenshotService.setOnErrorListener {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+        }
+
+        contentObserver = screenshotService
         contentObserver?.let {
             context.contentResolver.registerContentObserver(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
