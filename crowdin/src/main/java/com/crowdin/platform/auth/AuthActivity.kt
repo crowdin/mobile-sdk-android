@@ -1,10 +1,8 @@
 package com.crowdin.platform.auth
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -16,8 +14,6 @@ import android.webkit.WebViewClient
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.R
 import com.crowdin.platform.data.DistributionInfoCallback
@@ -37,7 +33,6 @@ internal class AuthActivity : AppCompatActivity() {
 
     companion object {
 
-        private const val PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1330
         private const val DOMAIN = "domain"
         private const val GRANT_TYPE = "authorization_code"
         private const val REDIRECT_URI = "crowdintest://"
@@ -58,7 +53,7 @@ internal class AuthActivity : AppCompatActivity() {
         progressView = findViewById(R.id.progressView)
 
         if (Crowdin.isAuthorized()) {
-            requestPermission()
+            close()
         } else {
             requestAuthorization()
         }
@@ -111,17 +106,6 @@ internal class AuthActivity : AppCompatActivity() {
         webView.loadUrl(url)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE -> finish()
-            else -> finish()
-        }
-    }
-
     private fun handleCode(code: String) {
         if (code.isNotEmpty()) {
             progressView.visibility = View.VISIBLE
@@ -140,27 +124,27 @@ internal class AuthActivity : AppCompatActivity() {
                     } else {
                         runOnUiThread {
                             Toast.makeText(this, "Not authenticated.", Toast.LENGTH_LONG).show()
-                            requestPermission()
+                            close()
                         }
                     }
                 }
             }, false)
         } else {
             Toast.makeText(this, "Not authorized.", Toast.LENGTH_LONG).show()
-            requestPermission()
+            close()
         }
     }
 
     private fun getDistributionInfo() {
         Crowdin.getDistributionInfo(object : DistributionInfoCallback {
             override fun onResponse() {
-                requestPermission()
+                close()
                 Crowdin.downloadTranslation()
             }
 
             override fun onError(throwable: Throwable) {
                 Crowdin.saveAuthInfo(null)
-                requestPermission()
+                close()
                 Log.d(
                     AuthActivity::class.java.simpleName,
                     "Get info, onFailure:${throwable.localizedMessage}"
@@ -169,17 +153,7 @@ internal class AuthActivity : AppCompatActivity() {
         })
     }
 
-    private fun requestPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
-            )
-        } else {
-            finish()
-        }
+    private fun close() {
+        finish()
     }
 }
