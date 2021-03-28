@@ -1,5 +1,6 @@
 package com.crowdin.platform.screenshot
 
+import android.Manifest
 import android.content.ContentUris
 import android.content.Context
 import android.database.ContentObserver
@@ -11,7 +12,15 @@ import android.os.Handler
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
+import android.widget.Toast
 import com.crowdin.platform.Crowdin
+import com.crowdin.platform.R
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.single.PermissionListener
 
 /**
  * Creates a content observer.
@@ -25,6 +34,27 @@ internal class ScreenshotService(private val context: Context) : ContentObserver
     private var uploading = false
 
     override fun onChange(selfChange: Boolean) {
+        Dexter.withContext(context)
+            .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+            .withListener(object : PermissionListener {
+                override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
+                    searchAndUploadScreenshot()
+                }
+
+                override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
+                    Toast.makeText(context, context.getString(R.string.required_permission_read_storage), Toast.LENGTH_LONG).show()
+                }
+
+                override fun onPermissionRationaleShouldBeShown(p0: PermissionRequest?, p1: PermissionToken?) {
+                    p1?.continuePermissionRequest()
+                }
+            })
+            .check()
+    }
+
+    private fun searchAndUploadScreenshot() {
+        Log.d(ScreenshotService::class.java.simpleName, "Searching screenshot started")
+
         val resolver = context.contentResolver
         val current = System.currentTimeMillis() / 1000
         val selection = String.format(
@@ -62,12 +92,9 @@ internal class ScreenshotService(private val context: Context) : ContentObserver
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                         cursor.getLong(idIndex)
                     )
-                val bitmap = BitmapFactory.decodeStream(resolver.openInputStream(imageUri))
 
-                if (!uploading) {
-                    uploading = true
-                    sendScreenshot(bitmap)
-                }
+                val bitmap = BitmapFactory.decodeStream(resolver.openInputStream(imageUri))
+                sendScreenshot(bitmap)
             }
         } catch (tr: Throwable) {
             Log.d(ScreenshotService::class.java.simpleName, "Error: ${tr.message}")
@@ -75,6 +102,14 @@ internal class ScreenshotService(private val context: Context) : ContentObserver
     }
 
     private fun sendScreenshot(bitmap: Bitmap) {
+        if (uploading) {
+            Log.d(ScreenshotService::class.java.simpleName, "Uploading already started. Skipped")
+            return
+        }
+
+        uploading = true
+        Log.d(ScreenshotService::class.java.simpleName, "Screenshot uploading started")
+
         Crowdin.sendScreenshot(bitmap, object : ScreenshotCallback {
             override fun onSuccess() {
                 uploading = false
