@@ -537,6 +537,19 @@ You can set file export patterns and check existing ones using *File Settings*. 
    }
    ```
 
+   It has callback method `onDataChanged()` that can be used to invalidate your UI (TextView/Menu etc).
+   It will use downloaded resources automatically.
+
+   ```kotlin
+   override fun onDataChanged() {
+       invalidateOptionsMenu()
+       Crowdin.updateMenuItemsText(R.menu.activity_main_drawer, navigationView.menu, resources)
+       toolbarMain.title = getString(R.string.category)
+   }
+   ```
+
+   Otherwise new resources will be applied on activity restart.
+
 8. ShakeDetector for triggering force upload from Crowdin. It will try to download latest updates from release.
    ```kotlin
    override fun onCreate(savedInstanceState: Bundle?) {
