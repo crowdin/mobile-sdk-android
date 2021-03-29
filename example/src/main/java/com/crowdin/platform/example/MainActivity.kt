@@ -15,21 +15,24 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.crowdin.platform.Crowdin
+import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.util.inflateWithCrowdin
 import com.google.android.material.navigation.NavigationView
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity(), LoadingStateListener {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var toolbarMain: Toolbar
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navigationView: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         toolbarMain = findViewById(R.id.toolbarMain)
         drawerLayout = findViewById(R.id.drawerLayout)
-        val navigationView = findViewById<NavigationView>(R.id.navigationView)
+        navigationView = findViewById(R.id.navigationView)
 
         setSupportActionBar(toolbarMain)
         val host: NavHostFragment = supportFragmentManager
@@ -44,6 +47,14 @@ class MainActivity : BaseActivity() {
         val header = navigationView.getHeaderView(0)
         header.findViewById<TextView>(R.id.textView).movementMethod =
             LinkMovementMethod.getInstance()
+
+        // Register data observer. When data loaded you can invalidate your UI to apply new resources.
+        Crowdin.registerDataLoadingObserver(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Crowdin.unregisterDataLoadingObserver(this)
     }
 
     override fun onBackPressed() {
@@ -74,4 +85,12 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean = findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration)
+
+    override fun onDataChanged() {
+        invalidateOptionsMenu()
+        Crowdin.updateMenuItemsText(R.menu.activity_main_drawer, navigationView.menu, resources)
+    }
+
+    override fun onFailure(throwable: Throwable) {
+    }
 }
