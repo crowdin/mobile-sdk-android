@@ -44,9 +44,14 @@ internal class StringDataRemoteRepository(
     ) {
         val supportedLanguages = manifest?.languages
         if (preferredLanguageCode == null) {
-            preferredLanguageCode = getMatchedCode(supportedLanguages) ?: return
+            preferredLanguageCode = getMatchedCode(supportedLanguages)
+            if (preferredLanguageCode == null) {
+                languageDataCallback?.onFailure(Throwable("Can't find preferred Language"))
+                return
+            }
         } else {
             if (supportedLanguages?.contains(preferredLanguageCode!!) == false) {
+                languageDataCallback?.onFailure(Throwable("Can't find preferred Language"))
                 return
             }
         }
