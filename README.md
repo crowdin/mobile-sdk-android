@@ -536,6 +536,15 @@ You can set file export patterns and check existing ones using *File Settings*. 
    Also there are other public methods in `Crowdin` class. You can find details in `kotlin doc` files.
 
 9. Currently, Custom Languages, Dialects, and Language Mapping are not supported for Android SDK.
+    
+10. You can triger force upload from Crowdin while launch Splash Activity and after that open Main Activity
+    ```kotlin
+    override fun onCreate(savedInstanceState: Bundle?) {
+        Crowdin.forceUpdate(this) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
+    ```
 
 ## Limitations
 1. Plurals are supported from Android SDK version 24.
