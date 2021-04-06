@@ -22,6 +22,7 @@ import com.crowdin.platform.Crowdin
 import com.crowdin.platform.R
 import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.model.AuthInfo
+import com.crowdin.platform.data.model.AuthResponse
 import com.crowdin.platform.data.model.TokenRequest
 import com.crowdin.platform.data.remote.CrowdinRetrofitService
 import com.crowdin.platform.util.ThreadUtils
@@ -134,9 +135,12 @@ internal class AuthActivity : AppCompatActivity() {
                             clientId, clientSecret, REDIRECT_URI, code
                         ), domain
                     ).execute()
-                    if (response.isSuccessful && response.body() != null) {
-                        Crowdin.saveAuthInfo(AuthInfo(response.body()!!))
-                        getDistributionInfo()
+                    if (response.isSuccessful) {
+                        response.body()?.let {
+                            saveAuthInfo(it)
+                            getDistributionInfo()
+                            initRealtimePreview()
+                        }
                     } else {
                         runOnUiThread {
                             Toast.makeText(this, "Not authenticated.", Toast.LENGTH_LONG).show()
@@ -149,6 +153,14 @@ internal class AuthActivity : AppCompatActivity() {
             Toast.makeText(this, "Not authorized.", Toast.LENGTH_LONG).show()
             requestPermission()
         }
+    }
+
+    private fun saveAuthInfo(authResponse: AuthResponse) {
+        Crowdin.saveAuthInfo(AuthInfo(authResponse))
+    }
+
+    private fun initRealtimePreview() {
+        Crowdin.createRealTimeConnection()
     }
 
     private fun getDistributionInfo() {
