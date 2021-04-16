@@ -388,6 +388,11 @@ object Crowdin {
     fun isRealTimeUpdatesEnabled(): Boolean = realTimeUpdateManager?.isConnectionCreated ?: false
 
     /**
+     * Return 'capture-screenshot' feature enable state. true - enabled, false - disabled.
+     */
+    fun isCaptureScreenshotEnabled(): Boolean = config.isScreenshotEnabled
+
+    /**
      * Register shake detector. Will trigger force update on shake event.
      */
     @JvmStatic
