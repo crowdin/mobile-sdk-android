@@ -33,6 +33,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
     private lateinit var collapsedView: View
     private lateinit var expandedView: View
     private lateinit var authBtn: ToggleButton
+    private lateinit var captureScreenshotBtn: Button
     private lateinit var realTimeBtn: ToggleButton
 
     override fun onBind(intent: Intent): IBinder? {
@@ -81,8 +82,8 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
         realTimeBtn = floatingView.findViewById(R.id.realTimeBtn)
         authBtn.setOnClickListener { updateAuthState() }
         realTimeBtn.setOnClickListener { updateRealTimeConnection() }
-        floatingView.findViewById<Button>(R.id.screenshotBtn)
-            .setOnClickListener { captureScreenshot() }
+        captureScreenshotBtn = floatingView.findViewById(R.id.screenshotBtn)
+        captureScreenshotBtn.setOnClickListener { captureScreenshot() }
         floatingView.findViewById<Button>(R.id.forceReloadBtn)
             .setOnClickListener { reloadData() }
 
@@ -206,6 +207,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
     private fun updateState() {
         authBtn.isChecked = Crowdin.isAuthorized()
         realTimeBtn.isChecked = Crowdin.isRealTimeUpdatesEnabled()
+        captureScreenshotBtn.isEnabled = Crowdin.isCaptureScreenshotEnabled()
     }
 
     private fun collapseView() {
