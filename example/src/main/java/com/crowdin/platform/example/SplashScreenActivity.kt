@@ -13,23 +13,27 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        startMainActivityAfterTimeSpan()
+        //Comment if you want open Main Activity after time span
+        //startMainActivityAfterTimeSpan()
 
         //Uncomment if you want load translations and after that open Main Activity
-        //startMainActivityAfterLoadingTranslations()
+        startMainActivityAfterLoadingTranslations()
     }
 
     private fun startMainActivityAfterTimeSpan() {
         Handler(Looper.myLooper()!!).postDelayed({
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
+            startMainActivity()
         }, 500)
     }
 
     private fun startMainActivityAfterLoadingTranslations() {
         Crowdin.forceUpdate(this) {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
+            startMainActivity()
         }
+    }
+
+    private fun startMainActivity() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 }
