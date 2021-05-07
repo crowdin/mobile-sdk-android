@@ -1,5 +1,7 @@
 package com.crowdin.platform.realtimeupdate
 
+import android.util.Log
+import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.transformer.ViewTransformerManager
@@ -38,6 +40,8 @@ internal class RealTimeUpdateManager(
         socket?.close(NORMAL_CLOSURE_STATUS, null)
         viewTransformerManager.setOnViewsChangeListener(null)
         isConnectionCreated = false
+
+        Log.v(Crowdin.CROWDIN_TAG, "Realtime connection closed")
     }
 
     private fun createConnection(distributionData: DistributionInfoResponse.DistributionData) {
@@ -60,6 +64,8 @@ internal class RealTimeUpdateManager(
                 socket = client.newWebSocket(request, listener)
                 client.dispatcher.executorService.shutdown()
                 isConnectionCreated = true
+
+                Log.v(Crowdin.CROWDIN_TAG, "Realtime connection opened")
             }
         }, true)
     }

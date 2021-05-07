@@ -397,14 +397,19 @@ object Crowdin {
     }
 
     /**
-     * Return `real-time` feature enable state. true - enabled, false - disabled.
+     * Return `real-time` updates connected state. true - connected, false - disconnected.
      */
-    fun isRealTimeUpdatesEnabled(): Boolean = realTimeUpdateManager?.isConnectionCreated ?: false
+    fun isRealTimeUpdatesConnected(): Boolean = realTimeUpdateManager?.isConnectionCreated ?: false
 
     /**
      * Return 'capture-screenshot' feature enable state. true - enabled, false - disabled.
      */
     fun isCaptureScreenshotEnabled(): Boolean = config.isScreenshotEnabled
+
+    /**
+     * Return 'real-time' feature enable state. true - enabled, false - disabled.
+     */
+    fun isRealTimeUpdatesEnabled(): Boolean = config.isRealTimeUpdateEnabled
 
     /**
      * Register shake detector. Will trigger force update on shake event.
