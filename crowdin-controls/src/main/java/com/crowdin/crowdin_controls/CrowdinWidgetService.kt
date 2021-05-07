@@ -157,7 +157,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
     }
 
     private fun updateRealTimeConnection() {
-        if (Crowdin.isRealTimeUpdatesEnabled()) {
+        if (Crowdin.isRealTimeUpdatesConnected()) {
             Crowdin.disconnectRealTimeUpdates()
         } else {
             if (Crowdin.isAuthorized()) {
@@ -182,7 +182,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
 
     private fun reloadData() {
         showToast("Data reload in progress")
-        if (Crowdin.isRealTimeUpdatesEnabled()) {
+        if (Crowdin.isRealTimeUpdatesConnected()) {
             Crowdin.downloadTranslation(object : TranslationDownloadCallback {
                 override fun onSuccess() {
                     showToast(TRANSLATION_RELOADED)
@@ -206,7 +206,10 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
 
     private fun updateState() {
         authBtn.isChecked = Crowdin.isAuthorized()
-        realTimeBtn.isChecked = Crowdin.isRealTimeUpdatesEnabled()
+
+        realTimeBtn.isEnabled = Crowdin.isRealTimeUpdatesEnabled()
+        realTimeBtn.isChecked = Crowdin.isRealTimeUpdatesConnected()
+
         captureScreenshotBtn.isEnabled = Crowdin.isCaptureScreenshotEnabled()
     }
 
