@@ -1,11 +1,12 @@
 package com.crowdin.platform.data
 
 import android.content.Context
+import android.util.Log
 import androidx.annotation.WorkerThread
-import com.crowdin.platform.LoadingStateListener
+import com.crowdin.platform.*
+import com.crowdin.platform.Crowdin.CROWDIN_TAG
 import com.crowdin.platform.LocalDataChangeObserver
 import com.crowdin.platform.Preferences
-import com.crowdin.platform.ResourcesCallback
 import com.crowdin.platform.data.local.LocalRepository
 import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.AuthInfo
@@ -67,6 +68,9 @@ internal class DataManager(
             val languageInfo = getSupportedLanguages()
             val status = validateData(context, networkType)
             if (status == STATUS_OK) {
+
+                Log.v(CROWDIN_TAG, "Fetching data from Api started")
+
                 remoteRepository.fetchData(
                     supportedLanguages = languageInfo,
                     languageDataCallback = object : LanguageDataCallback {
@@ -250,11 +254,16 @@ internal class DataManager(
 
     @WorkerThread
     fun getSupportedLanguages(): LanguagesInfo? {
+        Log.v(CROWDIN_TAG, "Getting supported languages started")
+
         var info: LanguagesInfo? = getData(SUPPORTED_LANGUAGES, LanguagesInfo::class.java)
         if (info == null) {
             info = remoteRepository.getSupportedLanguages()
             saveData(SUPPORTED_LANGUAGES, info)
         }
+
+        Log.v(CROWDIN_TAG, "Supported languages: $info")
+
         return info
     }
 }

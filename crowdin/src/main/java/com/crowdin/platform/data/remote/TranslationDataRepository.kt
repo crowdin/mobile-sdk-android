@@ -1,6 +1,8 @@
 package com.crowdin.platform.data.remote
 
+import android.util.Log
 import androidx.annotation.WorkerThread
+import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.BuildTranslationRequest
@@ -36,6 +38,8 @@ internal class TranslationDataRepository(
         supportedLanguages: LanguagesInfo?,
         languageDataCallback: LanguageDataCallback?
     ) {
+        Log.v(Crowdin.CROWDIN_TAG, "TranslationRepository. Fetch data from Api started")
+
         preferredLanguageCode = languageCode
         getManifest({
             onManifestDataReceived(it, languageDataCallback)
