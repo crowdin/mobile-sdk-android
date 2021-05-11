@@ -79,11 +79,14 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
         }
 
         authBtn = floatingView.findViewById(R.id.authBtn)
-        realTimeBtn = floatingView.findViewById(R.id.realTimeBtn)
         authBtn.setOnClickListener { updateAuthState() }
+
+        realTimeBtn = floatingView.findViewById(R.id.realTimeBtn)
         realTimeBtn.setOnClickListener { updateRealTimeConnection() }
-        captureScreenshotBtn = floatingView.findViewById(R.id.screenshotBtn)
-        captureScreenshotBtn.setOnClickListener { captureScreenshot() }
+
+        floatingView.findViewById<Button>(R.id.screenshotBtn)
+            .setOnClickListener { captureScreenshot() }
+
         floatingView.findViewById<Button>(R.id.forceReloadBtn)
             .setOnClickListener { reloadData() }
 

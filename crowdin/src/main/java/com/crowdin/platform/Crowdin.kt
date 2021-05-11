@@ -268,8 +268,8 @@ object Crowdin {
     @JvmOverloads
     fun sendScreenshot(bitmap: Bitmap, screenshotCallback: ScreenshotCallback? = null) {
         screenshotManager?.let {
-            screenshotManager?.setScreenshotCallback(screenshotCallback)
-            screenshotManager?.sendScreenshot(
+            it.setScreenshotCallback(screenshotCallback)
+            it.sendScreenshot(
                 bitmap,
                 viewTransformerManager.getViewData()
             )
