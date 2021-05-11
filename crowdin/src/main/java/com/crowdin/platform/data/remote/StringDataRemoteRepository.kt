@@ -50,8 +50,6 @@ internal class StringDataRemoteRepository(
             "StringDataRemoteRepository. Handling received manifest data. Preferred language: $preferredLanguageCode"
         )
 
-        getSupportedLanguagesViaMapping(manifest)
-
         val supportedLanguages = manifest?.languages
         if (preferredLanguageCode == null) {
             preferredLanguageCode = getMatchedCode(supportedLanguages)
