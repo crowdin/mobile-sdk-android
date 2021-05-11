@@ -44,7 +44,6 @@ internal class StringDataRemoteRepository(
         manifest: ManifestData?,
         languageDataCallback: LanguageDataCallback?
     ) {
-
         Log.v(
             Crowdin.CROWDIN_TAG,
             "StringDataRemoteRepository. Handling received manifest data. Preferred language: $preferredLanguageCode"
