@@ -28,9 +28,15 @@ internal abstract class BaseRepository : RemoteRepository {
     fun validateFilePath(
         filePath: String,
         languageInfo: LanguageInfo,
-        formattedCode: String
+        formattedCode: String,
+        languageMapping: Map<String, Map<String, String>>? = null
     ): String {
         var path = filePath
+
+        if (containsLanguageMapping(path, formattedCode, languageMapping)) {
+            return getMappedFilePath(path, formattedCode, languageMapping!!)
+        }
+
         if (containsExportPattern(path)) {
             path = replacePatterns(
                 path,
@@ -46,6 +52,55 @@ internal abstract class BaseRepository : RemoteRepository {
         }
 
         return path
+    }
+
+    private fun getMappedFilePath(
+        path: String,
+        formattedCode: String,
+        languageMapping: Map<String, Map<String, String>>
+    ): String {
+        val startPatternIndex = path.indexOfFirst { it == '%' } + 1
+
+        val endPatternIndex = path.indexOfLast { it == '%' }
+
+        val pattern = path.substring(startPatternIndex, endPatternIndex)
+
+        val mappingValue = languageMapping[formattedCode]?.getValue(pattern)
+
+        if (mappingValue.isNullOrEmpty()) {
+            return path
+        }
+
+        return StringBuilder()
+            .append(path.substring(0, startPatternIndex - 1))
+            .append(mappingValue)
+            .append(path.substring(endPatternIndex + 1))
+            .toString()
+    }
+
+    private fun containsLanguageMapping(
+        path: String,
+        formattedCode: String,
+        languageMapping: Map<String, Map<String, String>>?
+    ): Boolean {
+
+        if (languageMapping == null) {
+            return false
+        }
+
+        val pattern = path.substring(path.indexOfFirst { it == '%' } + 1,
+            path.indexOfLast { it == '%' }
+        )
+
+        var result = false
+
+        val mappingValue = languageMapping[formattedCode]?.getValue(pattern)
+
+        if (!mappingValue.isNullOrEmpty()) {
+            result = true
+        }
+
+        return result
     }
 
     private fun replacePatterns(
