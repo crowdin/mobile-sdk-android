@@ -31,6 +31,8 @@ internal class StringDataRemoteRepository(
         supportedLanguages: LanguagesInfo?,
         languageDataCallback: LanguageDataCallback?
     ) {
+        Log.v(Crowdin.CROWDIN_TAG, "StringDataRemoteRepository. Fetch data from Api started")
+
         preferredLanguageCode = languageCode
         crowdinLanguages = supportedLanguages
         getManifest({
@@ -42,6 +44,14 @@ internal class StringDataRemoteRepository(
         manifest: ManifestData?,
         languageDataCallback: LanguageDataCallback?
     ) {
+
+        Log.v(
+            Crowdin.CROWDIN_TAG,
+            "StringDataRemoteRepository. Handling received manifest data. Preferred language: $preferredLanguageCode"
+        )
+
+        getSupportedLanguagesViaMapping(manifest)
+
         val supportedLanguages = manifest?.languages
         if (preferredLanguageCode == null) {
             preferredLanguageCode = getMatchedCode(supportedLanguages)
@@ -62,7 +72,7 @@ internal class StringDataRemoteRepository(
         languageInfo?.let { info ->
             languageData.language = info.locale
             manifest?.files?.forEach {
-                val filePath = validateFilePath(it, info, preferredLanguageCode!!)
+                val filePath = validateFilePath(it, info, preferredLanguageCode!!, manifest.language_mapping)
                 val eTag = eTagMap[filePath]
                 val result = requestStringData(
                     eTag,
@@ -88,6 +98,11 @@ internal class StringDataRemoteRepository(
         var languageData = LanguageData()
         var result: Response<ResponseBody>? = null
 
+        Log.v(
+            Crowdin.CROWDIN_TAG,
+            "${javaClass.simpleName}. Loading string data from $filePath"
+        )
+
         executeIO {
             result = crowdinDistributionApi.getResourceFile(
                 eTag ?: HEADER_ETAG_EMPTY,
@@ -111,11 +126,13 @@ internal class StringDataRemoteRepository(
                 code == HttpURLConnection.HTTP_FORBIDDEN -> {
                     val errorMessage =
                         "Translation file $filePath for locale $preferredLanguageCode not found in the distribution"
-                    Log.i(Crowdin.CROWDIN_TAG, errorMessage)
+                    Log.e(Crowdin.CROWDIN_TAG, errorMessage)
                     languageDataCallback?.onFailure(Throwable(errorMessage))
                 }
-                code != HttpURLConnection.HTTP_NOT_MODIFIED ->
+                code != HttpURLConnection.HTTP_NOT_MODIFIED -> {
+                    Log.v(Crowdin.CROWDIN_TAG, "Not modified resourse file")
                     languageDataCallback?.onFailure(Throwable("Unexpected http error code $code"))
+                }
                 else -> {
                 }
             }
