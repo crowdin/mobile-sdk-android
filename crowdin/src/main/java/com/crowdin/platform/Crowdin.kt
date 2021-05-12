@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.util.Log
 import android.view.Menu
 import androidx.annotation.MenuRes
 import com.crowdin.platform.auth.AuthActivity
@@ -75,7 +76,12 @@ object Crowdin {
         initViewTransformer()
         initFeatureManagers()
         initTranslationDataManager()
+        initRealTimeUpdates()
+        initPeriodicUpdates(context)
+        loadMapping()
+    }
 
+    private fun initPeriodicUpdates(context: Context) {
         when {
             config.updateInterval >= RecurringManager.MIN_PERIODIC_INTERVAL_MILLIS ->
                 RecurringManager.setPeriodicUpdates(context, config)
@@ -86,7 +92,12 @@ object Crowdin {
                 }
             }
         }
-        loadMapping()
+    }
+
+    private fun initRealTimeUpdates() {
+        if (config.isRealTimeUpdateEnabled && isAuthorized()) {
+            createRealTimeConnection()
+        }
     }
 
     internal fun initForUpdate(context: Context) {
@@ -370,7 +381,10 @@ object Crowdin {
     @JvmStatic
     fun createRealTimeConnection() {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
+            Log.v(CROWDIN_TAG, "Creating realtime connection")
             realTimeUpdateManager?.openConnection()
+        } else {
+            Log.v(CROWDIN_TAG, "Creating realtime connection skipped. Flag doesn't used")
         }
     }
 
@@ -383,14 +397,19 @@ object Crowdin {
     }
 
     /**
-     * Return `real-time` feature enable state. true - enabled, false - disabled.
+     * Return `real-time` updates connected state. true - connected, false - disconnected.
      */
-    fun isRealTimeUpdatesEnabled(): Boolean = realTimeUpdateManager?.isConnectionCreated ?: false
+    fun isRealTimeUpdatesConnected(): Boolean = realTimeUpdateManager?.isConnectionCreated ?: false
 
     /**
      * Return 'capture-screenshot' feature enable state. true - enabled, false - disabled.
      */
     fun isCaptureScreenshotEnabled(): Boolean = config.isScreenshotEnabled
+
+    /**
+     * Return 'real-time' feature enable state. true - enabled, false - disabled.
+     */
+    fun isRealTimeUpdatesEnabled(): Boolean = config.isRealTimeUpdateEnabled
 
     /**
      * Register shake detector. Will trigger force update on shake event.
