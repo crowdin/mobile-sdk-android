@@ -87,6 +87,9 @@ internal class DataManager(
                     })
             } else {
                 sendOnFailure(Throwable(status))
+                ThreadUtils.executeOnMain {
+                    onFinished?.invoke()
+                }
             }
         }, true)
     }
