@@ -233,8 +233,8 @@ object Crowdin {
      * Initialize force update from the network.
      */
     @JvmStatic
-    fun forceUpdate(context: Context) {
-        dataManager?.updateData(context, config.networkType)
+    fun forceUpdate(context: Context, onFinished: (() -> Unit)? = null) {
+        dataManager?.updateData(context, config.networkType, onFinished)
     }
 
     /**

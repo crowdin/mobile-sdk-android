@@ -9,4 +9,12 @@
         android:layout_height="100dp"
         android:layout_gravity="center"
         android:src="@drawable/ic_crowdin_logo_icon" />
+
+    <ProgressBar
+        android:layout_gravity="bottom"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:indeterminate="true"
+        android:layout_height="wrap_content" />
+
 </merge>

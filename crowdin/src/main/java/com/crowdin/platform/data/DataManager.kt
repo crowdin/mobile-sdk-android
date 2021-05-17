@@ -23,6 +23,7 @@ import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.getFormattedCode
 import java.lang.reflect.Type
 import java.util.Locale
+import kotlin.collections.ArrayList
 
 internal class DataManager(
     private val remoteRepository: RemoteRepository,
@@ -61,7 +62,7 @@ internal class DataManager(
     fun getStringPlural(resourceKey: String, quantityKey: String): String? =
         localRepository.getStringPlural(resourceKey, quantityKey)
 
-    fun updateData(context: Context, networkType: NetworkType) {
+    fun updateData(context: Context, networkType: NetworkType, onFinished: (() -> Unit)? = null) {
         ThreadUtils.runInBackgroundPool({
             val languageInfo = getSupportedLanguages()
             val status = validateData(context, networkType)
@@ -72,14 +73,23 @@ internal class DataManager(
 
                         override fun onDataLoaded(languageData: LanguageData) {
                             refreshData(languageData)
+                            ThreadUtils.executeOnMain {
+                                onFinished?.invoke()
+                            }
                         }
 
                         override fun onFailure(throwable: Throwable) {
                             sendOnFailure(throwable)
+                            ThreadUtils.executeOnMain {
+                                onFinished?.invoke()
+                            }
                         }
                     })
             } else {
                 sendOnFailure(Throwable(status))
+                ThreadUtils.executeOnMain {
+                    onFinished?.invoke()
+                }
             }
         }, true)
     }
