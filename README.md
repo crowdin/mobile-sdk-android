@@ -537,13 +537,14 @@ You can set file export patterns and check existing ones using *File Settings*. 
 
 9. Currently, Custom Languages, Dialects, and Language Mapping are not supported for Android SDK.
     
-10. You can triger force upload from Crowdin while launch Splash Activity and after that open Main Activity
+10. You can trigger force upload from Crowdin while launching Splash Activity and after that open Main Activity
     ```kotlin
     override fun onCreate(savedInstanceState: Bundle?) {
         Crowdin.forceUpdate(this) {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
+    }
     ```
 
 ## Limitations
