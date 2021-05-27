@@ -292,6 +292,8 @@ All the translations that are done in the Editor can be shown in your version of
         Crowdin.disconnectRealTimeUpdates()
     }
     ```
+    
+3. To use this feature you also need to wrap context for your activities. See [Setup](#setup).
 
 ### Screenshots
 
@@ -427,6 +429,8 @@ You can take a screenshots and automatically upload them tagged to Crowdin in tw
    };
    ```
    </details>
+   
+4. To use this feature you also need to wrap context for your activities. See [Setup](#setup).
 
 ## File Export Patterns
 
