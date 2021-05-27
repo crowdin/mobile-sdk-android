@@ -7,7 +7,6 @@ import com.crowdin.platform.Crowdin.CROWDIN_TAG
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.LocalDataChangeObserver
 import com.crowdin.platform.Preferences
-import com.crowdin.platform.ResourcesCallback
 import com.crowdin.platform.data.local.LocalRepository
 import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.AuthInfo
