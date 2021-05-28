@@ -94,9 +94,20 @@ internal abstract class BaseRepository : RemoteRepository {
 
         var result = false
 
-        val mappingValue = languageMapping[formattedCode]?.getValue(pattern)
+        var mappingValue = ""
 
-        if (!mappingValue.isNullOrEmpty()) {
+        val languageMap = languageMapping[formattedCode]
+        languageMap?.let { safeLanguageMap ->
+            if (!safeLanguageMap.containsKey(pattern)) {
+                return@let
+            }
+
+            safeLanguageMap[pattern]?.let { languageValue ->
+                mappingValue = languageValue
+            }
+        }
+
+        if (mappingValue.isNotEmpty()) {
             result = true
         }
 
