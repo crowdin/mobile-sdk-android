@@ -51,6 +51,8 @@ internal class TranslationDataRepository(
         manifest: ManifestData?,
         languageDataCallback: LanguageDataCallback?
     ) {
+        Log.v(Crowdin.CROWDIN_TAG, "Manifest data received")
+
         val supportedLanguages = manifest?.languages
         if (preferredLanguageCode == null) {
             preferredLanguageCode = getMatchedCode(supportedLanguages) ?: return
@@ -87,8 +89,11 @@ internal class TranslationDataRepository(
         languageDataCallback: LanguageDataCallback?
     ) {
         executeIO {
-            crowdinApi?.getFiles(id)?.execute()?.body()
-                ?.let { onFilesReceived(files, it, id, locale, languageDataCallback) }
+            Log.v(Crowdin.CROWDIN_TAG, "Get files started")
+
+            crowdinApi?.getFiles(id)?.execute()?.body()?.let {
+                onFilesReceived(files, it, id, locale, languageDataCallback)
+            }
         }
     }
 

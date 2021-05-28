@@ -198,10 +198,12 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
             Crowdin.downloadTranslation(object : TranslationDownloadCallback {
                 override fun onSuccess() {
                     showToast(TRANSLATION_RELOADED)
+                    Log.v(CROWDIN_TAG, TRANSLATION_RELOADED)
                 }
 
                 override fun onFailure(throwable: Throwable) {
                     showToast(throwable.message ?: RELOAD_FAILED)
+                    Log.e(CROWDIN_TAG, throwable.message, throwable)
                 }
             })
         } else {
