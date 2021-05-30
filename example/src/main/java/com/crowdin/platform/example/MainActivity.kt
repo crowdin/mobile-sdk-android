@@ -11,23 +11,27 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.crowdin.platform.Crowdin
+import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.example.category.CategoryFragment
 import com.crowdin.platform.example.task.fragment.DashboardFragment
 import com.crowdin.platform.example.task.fragment.HistoryFragment
 import com.crowdin.platform.util.inflateWithCrowdin
 import com.google.android.material.navigation.NavigationView
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
+    LoadingStateListener {
 
     private lateinit var toolbarMain: Toolbar
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navigationView: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         toolbarMain = findViewById(R.id.toolbarMain)
         drawerLayout = findViewById(R.id.drawerLayout)
-        val navigationView = findViewById<NavigationView>(R.id.navigationView)
+        navigationView = findViewById(R.id.navigationView)
 
         setSupportActionBar(toolbarMain)
 
@@ -49,6 +53,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         supportFragmentManager.beginTransaction()
             .replace(R.id.frameLayout, DashboardFragment())
             .commit()
+
+        // Register data observer. When data loaded you can invalidate your UI to apply new resources.
+        Crowdin.registerDataLoadingObserver(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Crowdin.unregisterDataLoadingObserver(this)
     }
 
     override fun onBackPressed() {
@@ -108,5 +120,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.frameLayout, fragment).commit()
+    }
+
+    override fun onDataChanged() {
+        invalidateOptionsMenu()
+        Crowdin.updateMenuItemsText(R.menu.activity_main_drawer, navigationView.menu, resources)
+    }
+
+    override fun onFailure(throwable: Throwable) {
+
     }
 }
