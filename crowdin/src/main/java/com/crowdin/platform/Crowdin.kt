@@ -16,6 +16,7 @@ import com.crowdin.platform.data.local.LocalStringRepositoryFactory
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.parser.StringResourceParser
 import com.crowdin.platform.data.parser.XmlReader
 import com.crowdin.platform.data.remote.Connectivity
@@ -562,4 +563,8 @@ object Crowdin {
             dataManager!!,
             config.authConfig?.organizationName
         )
+
+    fun getManifest(): ManifestData? {
+        return dataManager?.getManifest()
+    }
 }
