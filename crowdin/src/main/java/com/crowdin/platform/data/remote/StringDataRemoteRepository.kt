@@ -1,7 +1,7 @@
 package com.crowdin.platform.data.remote
 
 import android.util.Log
-import com.crowdin.platform.Crowdin
+import com.crowdin.platform.Crowdin.CROWDIN_TAG
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.LanguagesInfo

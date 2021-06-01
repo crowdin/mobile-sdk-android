@@ -41,6 +41,8 @@ internal abstract class CrowdingRepository(
                     call: Call<ManifestData>,
                     response: Response<ManifestData>
                 ) {
+                    Log.v(CROWDIN_TAG, "${javaClass.simpleName}. Manifest received. Body: ${response.body()}")
+
                     val body = response.body()
                     when {
                         response.code() == HttpURLConnection.HTTP_OK && body != null -> {
@@ -64,6 +66,7 @@ internal abstract class CrowdingRepository(
                 }
 
                 override fun onFailure(call: Call<ManifestData>, throwable: Throwable) {
+                    Log.e(CROWDIN_TAG, "Error while loading manifest", throwable)
                     languageDataCallback?.onFailure(throwable)
                 }
             })
