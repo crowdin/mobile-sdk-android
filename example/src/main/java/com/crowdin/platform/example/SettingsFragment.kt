@@ -1,11 +1,13 @@
 package com.crowdin.platform.example
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.example.task.OnItemSelectedListener
@@ -31,28 +33,38 @@ class SettingsFragment : Fragment(), OnItemSelectedListener.SpinnerItemListener 
     }
 
     private fun loadDataInSpinner() {
-        // Test languages. You can set your own depending on you project supported languages.
-        val labels: List<String> = arrayListOf(
-            (requireActivity().application as App).languagePreferences.getLanguageCode(),
-            "en-US",
-            "de-DE",
-            "uk-UA",
-            "fr-FR",
-            "ar-BH",
-            "ar-EG",
-            "ar-SA",
-            "ar-YE",
-            "en-co",
-            "it",
-            "es-ES",
-            "es-SV"
-        )
+
+        val languagePreferences = (requireActivity().application as App).languagePreferences
+
+        val manifestData = Crowdin.getManifest()
+
+        val labels = mutableListOf<String>()
+
+        manifestData?.languages?.let { labels.addAll(it) }
+
+        val savedLanguageCode = languagePreferences.getLanguageCode()
+
+        BuildConfig.AVAILABLE_LANGUAGES.split(',').forEach {
+            if (!labels.contains(it)) {
+                labels.add(it)
+            }
+        }
+
+        if (!labels.contains(savedLanguageCode)) {
+            labels.add(0, savedLanguageCode)
+        }
+
+        if (!labels.contains(languagePreferences.getDefaultLanguageCode())) {
+            labels.add(0, languagePreferences.getDefaultLanguageCode())
+        }
+
 
         val dataAdapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, labels)
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerLanguages.adapter = dataAdapter
         spinnerLanguages.onItemSelectedListener = OnItemSelectedListener(this)
+        spinnerLanguages.setSelection(dataAdapter.getPosition(savedLanguageCode))
     }
 
     override fun onSpinnerItemSelected(item: String) {
