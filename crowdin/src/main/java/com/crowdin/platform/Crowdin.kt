@@ -38,10 +38,10 @@ import com.crowdin.platform.transformer.SupportToolbarTransformer
 import com.crowdin.platform.transformer.TextViewTransformer
 import com.crowdin.platform.transformer.ToolbarTransformer
 import com.crowdin.platform.transformer.ViewTransformerManager
-import com.crowdin.platform.util.UiUtil
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.TextUtils
 import com.crowdin.platform.util.ThreadUtils
+import com.crowdin.platform.util.UiUtil
 import com.crowdin.platform.util.getFormattedCode
 import java.util.Locale
 
