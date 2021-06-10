@@ -26,7 +26,6 @@ object UiUtil {
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
-
         }
     }
 
