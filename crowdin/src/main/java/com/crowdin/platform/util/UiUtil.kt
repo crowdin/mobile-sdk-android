@@ -69,7 +69,7 @@ object UiUtil {
     }
 
     private fun createAuthDialogViaAlertDialog(context: Context, positiveAction: () -> Unit) {
-        AlertDialog.Builder(context.applicationContext)
+        AlertDialog.Builder(context)
             .setTitle(context.getString(R.string.auth_dialog_title))
             .setMessage(context.getString(R.string.auth_dialog_desc))
             .setNegativeButton(context.getString(R.string.auth_dialog_cancel)) { dialog, _ ->
