@@ -6,3 +6,5 @@ crowdin-controls/build
 
 #IntelliJ IDEA
 .idea/*
+
+example/src/main/java/com/crowdin/platform/example/App.bak.txt

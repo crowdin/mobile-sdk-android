@@ -41,7 +41,7 @@ import com.crowdin.platform.transformer.ViewTransformerManager
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.TextUtils
 import com.crowdin.platform.util.ThreadUtils
-import com.crowdin.platform.util.createAuthDialog
+import com.crowdin.platform.util.UiUtil
 import com.crowdin.platform.util.getFormattedCode
 import java.util.Locale
 
@@ -342,6 +342,8 @@ object Crowdin {
      */
     @JvmStatic
     fun authorize(context: Context, onErrorAction: ((str: String) -> Unit)? = null) {
+        Log.d(CROWDIN_TAG, "Authorize started")
+
         if (isAuthorized()) {
             createRealTimeConnection()
         } else if ((FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) &&
@@ -351,7 +353,8 @@ object Crowdin {
                 onErrorAction?.invoke("No internet connection")
                 return
             }
-            createAuthDialog(context) { AuthActivity.launchActivity(context) }
+
+            UiUtil.createAuthDialog(context) { AuthActivity.launchActivity(context) }
         }
     }
 
