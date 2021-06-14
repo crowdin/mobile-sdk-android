@@ -88,6 +88,10 @@ internal abstract class BaseRepository : RemoteRepository {
             return false
         }
 
+        if (!path.contains('%')) {
+            return false
+        }
+
         val pattern = path.substring(path.indexOfFirst { it == '%' } + 1,
             path.indexOfLast { it == '%' }
         )
