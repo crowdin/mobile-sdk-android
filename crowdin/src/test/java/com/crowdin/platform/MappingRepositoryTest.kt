@@ -342,6 +342,30 @@ class MappingRepositoryTest {
         assertThat(resultFilePath, expectedPath.isNotEmpty())
     }
 
+    @Test
+    fun validateFilePath_languageMappingTestWithMissingPattern() {
+        // Given
+        val mappingRepository = givenMappingRepository()
+        val givenLanguageInfo = givenLanguageInfo()
+        val expectedPath = "/ua/strings.xml"
+
+        // When
+        val givenFilePathWithTwoLettersPattern = "/missing_code/strings.xml"
+        val givenFormattedCode = "uk"
+        val givenLanguageMapping = givenLanguageMapping()
+
+        // Then Two letters pattern
+        assertThat(
+            mappingRepository.validateFilePath(
+                givenFilePathWithTwoLettersPattern,
+                givenLanguageInfo,
+                givenFormattedCode,
+                givenLanguageMapping
+            ),
+            expectedPath.isNotEmpty()
+        )
+    }
+
     private fun givenMappingRepository(): MappingRepository {
         val repository = MappingRepository(
             mockDistributionApi,
