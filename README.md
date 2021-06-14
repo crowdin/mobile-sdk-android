@@ -294,6 +294,7 @@ All the translations that are done in the Editor can be shown in your version of
     ```
     
 3. To use this feature you also need to wrap context for your activities. See [Setup](#setup).
+4. OAuth redirect URL should match your App scheme. For example, for scheme `<data android:scheme="crowdintest" />` redirect URL in Crowdin should be `crowdintest://`
 
 ### Screenshots
 
@@ -431,6 +432,7 @@ You can take a screenshots and automatically upload them tagged to Crowdin in tw
    </details>
    
 4. To use this feature you also need to wrap context for your activities. See [Setup](#setup).
+5. OAuth redirect URL should match your App scheme. For example, for scheme `<data android:scheme="crowdintest" />` redirect URL in Crowdin should be `crowdintest://`
 
 ## File Export Patterns
 
