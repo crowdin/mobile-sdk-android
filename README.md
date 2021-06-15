@@ -295,6 +295,7 @@ All the translations that are done in the Editor can be shown in your version of
     
 3. To use this feature you also need to wrap context for your activities. See [Setup](#setup).
 4. OAuth redirect URL should match your App scheme. For example, for scheme `<data android:scheme="crowdintest" />` redirect URL in Crowdin should be `crowdintest://`
+5. To easily control the Real-Time Preview feature you could also use the [SDK Controls](https://github.com/crowdin/mobile-sdk-android/wiki/SDK-Controls) UI widget.
 
 ### Screenshots
 
@@ -302,7 +303,12 @@ Enable if you want all the screenshots made in the application to be automatical
 
 [<p align='center'><img src='https://github.com/crowdin/mobile-sdk-android/blob/docs/sdk_screenshots.gif' width='500'/></p>](#)
 
-You can take a screenshots and automatically upload them tagged to Crowdin in two ways: using **system buttons** or create **own handler** (for example, clicking on some button in your application).
+You can take screenshots and automatically upload them tagged to Crowdin in the following ways: 
+- using the **system buttons** for taking a screenshot
+- create your **own handler** (for example, clicking on some button in your application)
+- using the [SDK Controls](https://github.com/crowdin/mobile-sdk-android/wiki/SDK-Controls) UI widget.
+
+To enable the Screenshots feature follow these instructions:
 
 1. Add the following code to the *Application* class:
 
