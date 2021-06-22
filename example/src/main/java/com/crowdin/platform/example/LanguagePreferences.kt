@@ -1,6 +1,7 @@
 package com.crowdin.platform.example
 
 import android.content.Context
+import java.lang.StringBuilder
 import java.util.Locale
 
 class LanguagePreferences(context: Context) {
@@ -13,9 +14,22 @@ class LanguagePreferences(context: Context) {
     }
 
     fun getLanguageCode(): String {
+        return preferences.getString(KEY_LANGUAGE, getDefaultLanguageCode())
+            ?: getDefaultLanguageCode()
+    }
+
+    fun getDefaultLanguageCode(): String {
         val defaultLocale = Locale.getDefault()
-        val defaultCode = "${defaultLocale.language}-${defaultLocale.country}"
-        return preferences.getString(KEY_LANGUAGE, defaultCode) ?: defaultCode
+
+        val sb = StringBuilder()
+            .append(defaultLocale.language)
+
+        if (defaultLocale.country.isNotEmpty()) {
+            sb.append("-")
+            sb.append(defaultLocale.country)
+        }
+
+        return sb.toString()
     }
 
     companion object {

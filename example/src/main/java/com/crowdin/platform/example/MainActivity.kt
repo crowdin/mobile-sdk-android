@@ -107,6 +107,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         drawerLayout.closeDrawer(GravityCompat.START)
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.frameLayout, fragment).commit()
+            .replace(R.id.frameLayout, fragment)
+            .commit()
     }
 }

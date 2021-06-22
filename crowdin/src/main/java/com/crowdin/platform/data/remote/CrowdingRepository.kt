@@ -1,6 +1,8 @@
 package com.crowdin.platform.data.remote
 
+import android.util.Log
 import androidx.annotation.WorkerThread
+import com.crowdin.platform.Crowdin.CROWDIN_TAG
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageInfo
 import com.crowdin.platform.data.model.LanguagesInfo
@@ -22,7 +24,12 @@ internal abstract class CrowdingRepository(
     var crowdinApi: CrowdinApi? = null
     var crowdinLanguages: LanguagesInfo? = null
 
-    override fun getManifest(function: (ManifestData) -> Unit, languageDataCallback: LanguageDataCallback?) {
+    override fun getManifest(
+        function: (ManifestData) -> Unit,
+        languageDataCallback: LanguageDataCallback?
+    ) {
+        Log.v(CROWDIN_TAG, "${javaClass.simpleName}. Get Manifest started")
+
         crowdinDistributionApi.getResourceManifest(distributionHash)
             .enqueue(object : Callback<ManifestData> {
 
@@ -30,6 +37,8 @@ internal abstract class CrowdingRepository(
                     call: Call<ManifestData>,
                     response: Response<ManifestData>
                 ) {
+                    Log.v(CROWDIN_TAG, "${javaClass.simpleName}. Manifest received. Body: ${response.body()}")
+
                     val body = response.body()
                     when {
                         response.code() == HttpURLConnection.HTTP_OK && body != null -> {
@@ -53,6 +62,7 @@ internal abstract class CrowdingRepository(
                 }
 
                 override fun onFailure(call: Call<ManifestData>, throwable: Throwable) {
+                    Log.e(CROWDIN_TAG, "Error while loading manifest", throwable)
                     languageDataCallback?.onFailure(throwable)
                 }
             })

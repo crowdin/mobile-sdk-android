@@ -2,17 +2,17 @@ package com.crowdin.platform.data.model
 
 import com.google.gson.annotations.SerializedName
 
-internal data class LanguagesInfo(
+data class LanguagesInfo(
     @SerializedName("data")
     val data: List<LanguageInfoData>
 )
 
-internal data class LanguageInfoData(
+data class LanguageInfoData(
     @SerializedName("data")
     val data: LanguageInfo
 )
 
-internal data class LanguageInfo(
+data class LanguageInfo(
     @SerializedName("id")
     val id: String,
     @SerializedName("name")

@@ -1,7 +1,7 @@
 package com.crowdin.platform.data.remote
 
 import android.util.Log
-import com.crowdin.platform.Crowdin
+import com.crowdin.platform.Crowdin.CROWDIN_TAG
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.LanguagesInfo
@@ -31,6 +31,11 @@ internal class StringDataRemoteRepository(
         supportedLanguages: LanguagesInfo?,
         languageDataCallback: LanguageDataCallback?
     ) {
+        Log.v(
+            CROWDIN_TAG,
+            "${javaClass.simpleName}. Fetch data started for language code $languageCode"
+        )
+
         preferredLanguageCode = languageCode
         crowdinLanguages = supportedLanguages
         getManifest({
@@ -42,6 +47,8 @@ internal class StringDataRemoteRepository(
         manifest: ManifestData?,
         languageDataCallback: LanguageDataCallback?
     ) {
+        Log.v(CROWDIN_TAG, "On manifest data received")
+
         val supportedLanguages = manifest?.languages
         if (preferredLanguageCode == null) {
             preferredLanguageCode = getMatchedCode(supportedLanguages)
@@ -111,7 +118,7 @@ internal class StringDataRemoteRepository(
                 code == HttpURLConnection.HTTP_FORBIDDEN -> {
                     val errorMessage =
                         "Translation file $filePath for locale $preferredLanguageCode not found in the distribution"
-                    Log.i(Crowdin.CROWDIN_TAG, errorMessage)
+                    Log.i(CROWDIN_TAG, errorMessage)
                     languageDataCallback?.onFailure(Throwable(errorMessage))
                 }
                 code != HttpURLConnection.HTTP_NOT_MODIFIED ->
