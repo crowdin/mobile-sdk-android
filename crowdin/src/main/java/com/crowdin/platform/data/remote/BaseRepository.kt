@@ -7,6 +7,7 @@ internal abstract class BaseRepository : RemoteRepository {
     internal companion object {
         const val HEADER_ETAG = "ETag"
         const val HEADER_ETAG_EMPTY = ""
+        const val PATTERN_NAME = "%name%"
         const val LANGUAGE_NAME = "%language%"
         const val TWO_LETTER_CODE = "%two_letters_code%"
         const val THREE_LETTER_CODE = "%three_letters_code%"
@@ -34,7 +35,7 @@ internal abstract class BaseRepository : RemoteRepository {
         var path = filePath
 
         if (containsLanguageMapping(path, formattedCode, languageMapping)) {
-            return getMappedFilePath(path, formattedCode, languageMapping!!)
+            return getMappedFilePath(path, formattedCode, languageMapping)
         }
 
         if (containsExportPattern(path)) {
@@ -54,65 +55,43 @@ internal abstract class BaseRepository : RemoteRepository {
         return path
     }
 
-    private fun getMappedFilePath(
-        path: String,
-        formattedCode: String,
-        languageMapping: Map<String, Map<String, String>>
-    ): String {
-        val startPatternIndex = path.indexOfFirst { it == '%' } + 1
-
-        val endPatternIndex = path.indexOfLast { it == '%' }
-
-        val pattern = path.substring(startPatternIndex, endPatternIndex)
-
-        val mappingValue = languageMapping[formattedCode]?.getValue(pattern)
-
-        if (mappingValue.isNullOrEmpty()) {
-            return path
-        }
-
-        return StringBuilder()
-            .append(path.substring(0, startPatternIndex - 1))
-            .append(mappingValue)
-            .append(path.substring(endPatternIndex + 1))
-            .toString()
-    }
-
     private fun containsLanguageMapping(
         path: String,
         formattedCode: String,
         languageMapping: Map<String, Map<String, String>>?
     ): Boolean {
 
-        if (languageMapping == null) {
-            return false
-        }
+        languageMapping?.get(formattedCode)?.keys?.forEach { mappingKey ->
+            languageMapping[formattedCode]?.get(mappingKey)?.let {
+                if (path.contains("%$mappingKey%")) {
+                    return true
+                }
 
-        if (!path.contains('%')) {
-            return false
-        }
-
-        val pattern = path.substring(path.indexOfFirst { it == '%' } + 1,
-            path.indexOfLast { it == '%' }
-        )
-
-        var result = false
-
-        var mappingValue = ""
-
-        val languageMap = languageMapping[formattedCode]
-        languageMap?.let { safeLanguageMap ->
-            if (!safeLanguageMap.containsKey(pattern)) {
-                return@let
-            }
-
-            safeLanguageMap[pattern]?.let { languageValue ->
-                mappingValue = languageValue
+                if (path.contains(LANGUAGE_NAME)) {
+                    return true
+                }
             }
         }
 
-        if (mappingValue.isNotEmpty()) {
-            result = true
+        return false
+    }
+
+    private fun getMappedFilePath(
+        path: String,
+        formattedCode: String,
+        languageMapping: Map<String, Map<String, String>>?
+    ): String {
+
+        var result = path
+
+        languageMapping?.get(formattedCode)?.keys?.forEach { mappingKey ->
+            languageMapping[formattedCode]?.get(mappingKey)?.let { mappingValue ->
+                result = result.replace("%$mappingKey%", mappingValue)
+
+                if (mappingKey == PATTERN_NAME) {
+                    result = result.replace(LANGUAGE_NAME, mappingValue)
+                }
+            }
         }
 
         return result
