@@ -89,9 +89,10 @@ internal class TranslationDataRepository(
         languageDataCallback: LanguageDataCallback?
     ) {
         executeIO {
-            Log.v(Crowdin.CROWDIN_TAG, "Get files started")
+            Log.v(Crowdin.CROWDIN_TAG, "Get files started from project id: $id")
 
             crowdinApi?.getFiles(id)?.execute()?.body()?.let {
+                Log.v(Crowdin.CROWDIN_TAG, "Get files. Done.")
                 onFilesReceived(files, it, id, locale, languageDataCallback)
             }
         }
