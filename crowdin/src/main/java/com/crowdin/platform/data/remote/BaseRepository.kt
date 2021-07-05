@@ -67,7 +67,7 @@ internal abstract class BaseRepository : RemoteRepository {
                     return true
                 }
 
-                if (path.contains(LANGUAGE_NAME)) {
+                if (path.contains(PATTERN_NAME)) {
                     return true
                 }
             }
@@ -88,7 +88,7 @@ internal abstract class BaseRepository : RemoteRepository {
             languageMapping[formattedCode]?.get(mappingKey)?.let { mappingValue ->
                 result = result.replace("%$mappingKey%", mappingValue)
 
-                if (mappingKey == PATTERN_NAME) {
+                if ("%$mappingKey%" == PATTERN_NAME) {
                     result = result.replace(LANGUAGE_NAME, mappingValue)
                 }
             }
