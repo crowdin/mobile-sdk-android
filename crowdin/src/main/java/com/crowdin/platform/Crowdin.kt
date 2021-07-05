@@ -234,6 +234,7 @@ object Crowdin {
      */
     @JvmStatic
     fun forceUpdate(context: Context, onFinished: (() -> Unit)? = null) {
+        Log.v(CROWDIN_TAG, "Force update started")
         dataManager?.updateData(context, config.networkType, onFinished)
     }
 

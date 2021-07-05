@@ -7,6 +7,7 @@ internal abstract class BaseRepository : RemoteRepository {
     internal companion object {
         const val HEADER_ETAG = "ETag"
         const val HEADER_ETAG_EMPTY = ""
+        const val PATTERN_NAME = "%name%"
         const val LANGUAGE_NAME = "%language%"
         const val TWO_LETTER_CODE = "%two_letters_code%"
         const val THREE_LETTER_CODE = "%three_letters_code%"
@@ -28,9 +29,15 @@ internal abstract class BaseRepository : RemoteRepository {
     fun validateFilePath(
         filePath: String,
         languageInfo: LanguageInfo,
-        formattedCode: String
+        formattedCode: String,
+        languageMapping: Map<String, Map<String, String>>? = null
     ): String {
         var path = filePath
+
+        if (containsLanguageMapping(path, formattedCode, languageMapping)) {
+            return getMappedFilePath(path, formattedCode, languageMapping)
+        }
+
         if (containsExportPattern(path)) {
             path = replacePatterns(
                 path,
@@ -46,6 +53,48 @@ internal abstract class BaseRepository : RemoteRepository {
         }
 
         return path
+    }
+
+    private fun containsLanguageMapping(
+        path: String,
+        formattedCode: String,
+        languageMapping: Map<String, Map<String, String>>?
+    ): Boolean {
+
+        languageMapping?.get(formattedCode)?.keys?.forEach { mappingKey ->
+            languageMapping[formattedCode]?.get(mappingKey)?.let {
+                if (path.contains("%$mappingKey%")) {
+                    return true
+                }
+
+                if (path.contains(PATTERN_NAME)) {
+                    return true
+                }
+            }
+        }
+
+        return false
+    }
+
+    private fun getMappedFilePath(
+        path: String,
+        formattedCode: String,
+        languageMapping: Map<String, Map<String, String>>?
+    ): String {
+
+        var result = path
+
+        languageMapping?.get(formattedCode)?.keys?.forEach { mappingKey ->
+            languageMapping[formattedCode]?.get(mappingKey)?.let { mappingValue ->
+                result = result.replace("%$mappingKey%", mappingValue)
+
+                if ("%$mappingKey%" == PATTERN_NAME) {
+                    result = result.replace(LANGUAGE_NAME, mappingValue)
+                }
+            }
+        }
+
+        return result
     }
 
     private fun replacePatterns(

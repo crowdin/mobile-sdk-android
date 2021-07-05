@@ -43,7 +43,7 @@ internal fun givenMockManifestResponse(
     val response = if (success) {
         Response.success<ManifestData>(
             successCode,
-            ManifestData(listOf("strings.xml"), 123124154L, listOf())
+            ManifestData(listOf("strings.xml"), 123124154L, listOf(), hashMapOf())
         )
     } else {
         Response.error(403, StubResponseBody())

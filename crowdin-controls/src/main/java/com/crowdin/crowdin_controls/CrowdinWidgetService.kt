@@ -10,6 +10,7 @@ import android.content.IntentFilter
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -21,6 +22,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import android.widget.ToggleButton
 import com.crowdin.platform.Crowdin
+import com.crowdin.platform.Crowdin.CROWDIN_TAG
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.data.remote.TranslationDownloadCallback
 import com.crowdin.platform.screenshot.ScreenshotCallback
@@ -186,15 +188,22 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
     }
 
     private fun reloadData() {
-        showToast("Data reload in progress")
-        if (Crowdin.isRealTimeUpdatesConnected()) {
+
+        val logMsg = "Data reload in progress"
+
+        showToast(logMsg)
+        Log.v(CROWDIN_TAG, logMsg)
+
+        if (Crowdin.isRealTimeUpdatesEnabled()) {
             Crowdin.downloadTranslation(object : TranslationDownloadCallback {
                 override fun onSuccess() {
                     showToast(TRANSLATION_RELOADED)
+                    Log.v(CROWDIN_TAG, TRANSLATION_RELOADED)
                 }
 
                 override fun onFailure(throwable: Throwable) {
                     showToast(throwable.message ?: RELOAD_FAILED)
+                    Log.e(CROWDIN_TAG, throwable.message, throwable)
                 }
             })
         } else {

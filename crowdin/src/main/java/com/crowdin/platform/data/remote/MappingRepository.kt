@@ -2,6 +2,7 @@ package com.crowdin.platform.data.remote
 
 import android.util.Log
 import androidx.annotation.WorkerThread
+import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.DataManager.Companion.MANIFEST_DATA
 import com.crowdin.platform.data.LanguageDataCallback
@@ -31,6 +32,8 @@ internal class MappingRepository(
         supportedLanguages: LanguagesInfo?,
         languageDataCallback: LanguageDataCallback?
     ) {
+        Log.v(Crowdin.CROWDIN_TAG, "MappingRepository. Fetch data from Api started")
+
         getManifest({
             onManifestDataReceived(it, languageDataCallback)
         }, languageDataCallback)
@@ -49,7 +52,7 @@ internal class MappingRepository(
         val languageInfo = getLanguageInfo(sourceLanguage)
         languageInfo?.let { info ->
             manifest?.files?.forEach {
-                val filePath = validateFilePath(it, info, sourceLanguage)
+                val filePath = validateFilePath(it, info, sourceLanguage, manifest.language_mapping)
                 val eTag = eTagMap[filePath]
 
                 val result = requestFileMapping(

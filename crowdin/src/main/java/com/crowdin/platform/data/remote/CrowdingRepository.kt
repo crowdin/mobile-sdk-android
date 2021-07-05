@@ -1,6 +1,8 @@
 package com.crowdin.platform.data.remote
 
+import android.util.Log
 import androidx.annotation.WorkerThread
+import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageInfo
 import com.crowdin.platform.data.model.LanguagesInfo
@@ -22,7 +24,16 @@ internal abstract class CrowdingRepository(
     var crowdinApi: CrowdinApi? = null
     var crowdinLanguages: LanguagesInfo? = null
 
-    override fun getManifest(function: (ManifestData) -> Unit, languageDataCallback: LanguageDataCallback?) {
+    override fun getManifest(
+        function: (ManifestData) -> Unit,
+        languageDataCallback: LanguageDataCallback?
+    ) {
+
+        Log.v(
+            Crowdin.CROWDIN_TAG,
+            "${javaClass.simpleName}. Loading resource manifest from Api started. Hash: $distributionHash"
+        )
+
         crowdinDistributionApi.getResourceManifest(distributionHash)
             .enqueue(object : Callback<ManifestData> {
 
@@ -65,8 +76,13 @@ internal abstract class CrowdingRepository(
     )
 
     override fun getSupportedLanguages(): LanguagesInfo? {
+        Log.v(Crowdin.CROWDIN_TAG, "Getting supported languages from Api started")
+
         var info: LanguagesInfo? = null
         executeIO { info = crowdinApi?.getLanguagesInfo()?.execute()?.body() }
+
+        Log.v(Crowdin.CROWDIN_TAG, "Supported languages from Api: $info")
+
         return info
     }
 

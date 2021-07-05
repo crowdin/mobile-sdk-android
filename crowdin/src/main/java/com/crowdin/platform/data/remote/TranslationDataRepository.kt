@@ -1,6 +1,8 @@
 package com.crowdin.platform.data.remote
 
+import android.util.Log
 import androidx.annotation.WorkerThread
+import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.BuildTranslationRequest
@@ -36,6 +38,8 @@ internal class TranslationDataRepository(
         supportedLanguages: LanguagesInfo?,
         languageDataCallback: LanguageDataCallback?
     ) {
+        Log.v(Crowdin.CROWDIN_TAG, "TranslationRepository. Fetch data from Api started")
+
         preferredLanguageCode = languageCode
         getManifest({
             onManifestDataReceived(it, languageDataCallback)
@@ -47,6 +51,8 @@ internal class TranslationDataRepository(
         manifest: ManifestData?,
         languageDataCallback: LanguageDataCallback?
     ) {
+        Log.v(Crowdin.CROWDIN_TAG, "Manifest data received")
+
         val supportedLanguages = manifest?.languages
         if (preferredLanguageCode == null) {
             preferredLanguageCode = getMatchedCode(supportedLanguages) ?: return
@@ -83,8 +89,12 @@ internal class TranslationDataRepository(
         languageDataCallback: LanguageDataCallback?
     ) {
         executeIO {
-            crowdinApi?.getFiles(id)?.execute()?.body()
-                ?.let { onFilesReceived(files, it, id, locale, languageDataCallback) }
+            Log.v(Crowdin.CROWDIN_TAG, "Get files started from project id: $id")
+
+            crowdinApi?.getFiles(id)?.execute()?.body()?.let {
+                Log.v(Crowdin.CROWDIN_TAG, "Get files. Done.")
+                onFilesReceived(files, it, id, locale, languageDataCallback)
+            }
         }
     }
 
