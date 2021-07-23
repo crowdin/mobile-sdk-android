@@ -67,7 +67,7 @@ internal abstract class BaseRepository : RemoteRepository {
                     return true
                 }
 
-                if (path.contains(PATTERN_NAME)) {
+                if (path.contains(LANGUAGE_NAME)) {
                     return true
                 }
             }
