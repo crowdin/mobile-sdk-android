@@ -70,13 +70,15 @@ internal class DataManager(
             val status = validateData(context, networkType)
             if (status == STATUS_OK) {
 
-                Log.v(CROWDIN_TAG, "Fetching data from Api started")
+                Log.v(CROWDIN_TAG, "Update data from Api started")
 
                 remoteRepository.fetchData(
                     supportedLanguages = languageInfo,
                     languageDataCallback = object : LanguageDataCallback {
 
                         override fun onDataLoaded(languageData: LanguageData) {
+                            Log.v(CROWDIN_TAG, "Update data from Api finished")
+
                             refreshData(languageData)
                             ThreadUtils.executeOnMain {
                                 onFinished?.invoke()
@@ -84,6 +86,8 @@ internal class DataManager(
                         }
 
                         override fun onFailure(throwable: Throwable) {
+                            Log.v(CROWDIN_TAG, "Update data from Api failed")
+
                             sendOnFailure(throwable)
                             ThreadUtils.executeOnMain {
                                 onFinished?.invoke()
