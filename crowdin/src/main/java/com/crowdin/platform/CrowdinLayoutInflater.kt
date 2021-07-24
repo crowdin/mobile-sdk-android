@@ -17,17 +17,17 @@ import com.crowdin.platform.transformer.ViewTransformerManager
  * the string attribute set as a string resource it transforms the text and apply it to the view again.
  */
 internal class CrowdinLayoutInflater constructor(
-    private val original: LayoutInflater,
     newContext: Context,
-    private val viewTransformerManager: ViewTransformerManager
-) : LayoutInflater(original, newContext) {
+    private val viewTransformerManager: ViewTransformerManager,
+    parent: LayoutInflater = from(newContext)
+) : LayoutInflater(parent, newContext) {
 
     companion object {
         private val sClassPrefixList = arrayOf("android.widget.", "android.webkit.", "android.app.")
     }
 
     override fun cloneInContext(newContext: Context): LayoutInflater {
-        return CrowdinLayoutInflater(original, newContext, viewTransformerManager)
+        return CrowdinLayoutInflater(newContext, viewTransformerManager, this)
     }
 
     override fun setFactory(factory: Factory?) {
@@ -75,17 +75,18 @@ internal class CrowdinLayoutInflater constructor(
     }
 
     private fun createCustomViewInternal(view: View?, name: String, attrs: AttributeSet): View? {
-        @Suppress("NAME_SHADOWING")
-        var view = view
+        var mainView = view
         // If CustomViewCreation is off skip this.
-        if (view == null && name.indexOf('.') > -1) {
+        if (mainView == null && (name.contains("androidx.appcompat.widget.NavigationView")
+                    || name.contains("com.google.android.material.bottomnavigation.BottomNavigationView"))
+        ) {
             try {
-                view = createView(name, null, attrs)
+                mainView = createView(name, null, attrs)
             } catch (ignored: ClassNotFoundException) {
             } catch (inflateException: InflateException) {
             }
         }
-        return view
+        return mainView
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
