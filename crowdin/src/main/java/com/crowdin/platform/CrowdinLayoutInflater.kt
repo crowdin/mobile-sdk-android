@@ -78,9 +78,9 @@ internal class CrowdinLayoutInflater constructor(
         var mainView = view
         // If CustomViewCreation is off skip this.
         if (mainView == null &&
-            (!name.contains("com.google.android.material.appbar.AppBarLayout")
-                    || name.contains("androidx.appcompat.widget.NavigationView")
-                    || name.contains("com.google.android.material.bottomnavigation.BottomNavigationView"))
+            (!name.contains("com.google.android.material.appbar.AppBarLayout") ||
+                    name.contains("androidx.appcompat.widget.NavigationView") ||
+                    name.contains("com.google.android.material.bottomnavigation.BottomNavigationView"))
         ) {
             try {
                 mainView = createView(name, null, attrs)
