@@ -2,23 +2,25 @@ package com.crowdin.platform.example
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.crowdin.platform.example.category.CategoryFragment
-import com.crowdin.platform.example.task.fragment.DashboardFragment
-import com.crowdin.platform.example.task.fragment.HistoryFragment
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.crowdin.platform.util.inflateWithCrowdin
 import com.google.android.material.navigation.NavigationView
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : BaseActivity() {
 
+    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var toolbarMain: Toolbar
     private lateinit var drawerLayout: DrawerLayout
 
@@ -30,25 +32,18 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         val navigationView = findViewById<NavigationView>(R.id.navigationView)
 
         setSupportActionBar(toolbarMain)
+        val host: NavHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
 
-        val toggle = ActionBarDrawerToggle(
-            this,
-            drawerLayout,
-            toolbarMain,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
-        drawerLayout.setDrawerListener(toggle)
-        toggle.syncState()
-        navigationView.setNavigationItemSelectedListener(this)
+        // Set up Action Bar
+        val navController = host.navController
+        appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_dashboard), drawerLayout)
+        setupActionBarWithNavController(navController, appBarConfiguration)
 
+        navigationView.setupWithNavController(navController)
         val header = navigationView.getHeaderView(0)
         header.findViewById<TextView>(R.id.textView).movementMethod =
             LinkMovementMethod.getInstance()
-
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.frameLayout, DashboardFragment())
-            .commit()
     }
 
     override fun onBackPressed() {
@@ -78,35 +73,5 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        Handler().postDelayed({ navigate(item.itemId) }, 280)
-        return true
-    }
-
-    private fun navigate(id: Int) {
-        val fragment = when (id) {
-            R.id.nav_dashboard -> {
-                toolbarMain.title = getString(R.string.dashboard)
-                DashboardFragment()
-            }
-            R.id.nav_category -> {
-                toolbarMain.title = getString(R.string.category)
-                CategoryFragment()
-            }
-            R.id.nav_history -> {
-                toolbarMain.title = getString(R.string.history)
-                HistoryFragment()
-            }
-            R.id.nav_settings -> {
-                toolbarMain.title = getString(R.string.settings)
-                SettingsFragment()
-            }
-            else -> DashboardFragment()
-        }
-
-        drawerLayout.closeDrawer(GravityCompat.START)
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.frameLayout, fragment).commit()
-    }
+    override fun onSupportNavigateUp(): Boolean = findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration)
 }
