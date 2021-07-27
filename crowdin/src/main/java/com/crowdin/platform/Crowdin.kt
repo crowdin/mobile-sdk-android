@@ -448,9 +448,12 @@ object Crowdin {
                     override fun onFailure(throwable: Throwable) {
                         callback?.onFailure(throwable)
                     }
-                })
+                }
+            )
         } else {
-            callback?.onFailure(Throwable("This action requires authorization due to the 'withRealTimeUpdates' option is being enabled in config. Press the 'Log In' button to authorize"))
+            val error =
+                "This action requires authorization due to the 'withRealTimeUpdates' option is being enabled in config. Press the 'Log In' button to authorize"
+            callback?.onFailure(Throwable(error))
         }
     }
 
