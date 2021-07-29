@@ -75,17 +75,20 @@ internal class CrowdinLayoutInflater constructor(
     }
 
     private fun createCustomViewInternal(view: View?, name: String, attrs: AttributeSet): View? {
-        @Suppress("NAME_SHADOWING")
-        var view = view
+        var mainView = view
         // If CustomViewCreation is off skip this.
-        if (view == null && name.indexOf('.') > -1) {
+        if (mainView == null &&
+            (!name.contains("com.google.android.material.appbar.AppBarLayout") ||
+                    name.contains("androidx.appcompat.widget.NavigationView") ||
+                    name.contains("com.google.android.material.bottomnavigation.BottomNavigationView"))
+        ) {
             try {
-                view = createView(name, null, attrs)
+                mainView = createView(name, null, attrs)
             } catch (ignored: ClassNotFoundException) {
             } catch (inflateException: InflateException) {
             }
         }
-        return view
+        return mainView
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
