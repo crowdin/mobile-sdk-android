@@ -86,7 +86,7 @@ internal class DataManager(
                         }
 
                         override fun onFailure(throwable: Throwable) {
-                            Log.v(CROWDIN_TAG, "Update data from Api failed")
+                            Log.e(CROWDIN_TAG, "Update data from Api failed. ${throwable.message}")
 
                             sendOnFailure(throwable)
                             ThreadUtils.executeOnMain {

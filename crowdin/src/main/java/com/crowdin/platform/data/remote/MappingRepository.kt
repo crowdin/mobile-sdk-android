@@ -52,7 +52,7 @@ internal class MappingRepository(
         val languageInfo = getLanguageInfo(sourceLanguage)
         languageInfo?.let { info ->
             manifest?.files?.forEach {
-                val filePath = validateFilePath(it, info, sourceLanguage, manifest.language_mapping)
+                val filePath = validateFilePath(it, info, sourceLanguage, manifest.languageMapping)
                 val eTag = eTagMap[filePath]
 
                 val result = requestFileMapping(

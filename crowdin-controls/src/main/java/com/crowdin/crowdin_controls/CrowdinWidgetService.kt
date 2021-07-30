@@ -188,7 +188,6 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
     }
 
     private fun reloadData() {
-
         val logMsg = "Data reload in progress"
 
         showToast(logMsg)
