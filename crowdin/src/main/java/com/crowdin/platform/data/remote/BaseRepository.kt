@@ -7,7 +7,7 @@ internal abstract class BaseRepository : RemoteRepository {
     internal companion object {
         const val HEADER_ETAG = "ETag"
         const val HEADER_ETAG_EMPTY = ""
-        const val PATTERN_NAME = "%name%"
+        const val PATTERN_KEY_NAME = "name"
         const val LANGUAGE_NAME = "%language%"
         const val TWO_LETTER_CODE = "%two_letters_code%"
         const val THREE_LETTER_CODE = "%three_letters_code%"
@@ -60,14 +60,15 @@ internal abstract class BaseRepository : RemoteRepository {
         formattedCode: String,
         languageMapping: Map<String, Map<String, String>>?
     ): Boolean {
+        val languagePlaceholdersMap = languageMapping?.get(formattedCode) ?: return false
 
-        languageMapping?.get(formattedCode)?.keys?.forEach { mappingKey ->
-            languageMapping[formattedCode]?.get(mappingKey)?.let {
+        if (path.contains(LANGUAGE_NAME)) {
+            return true
+        }
+
+        languagePlaceholdersMap.keys.forEach { mappingKey ->
+            languagePlaceholdersMap[mappingKey]?.let { mappingValue ->
                 if (path.contains("%$mappingKey%")) {
-                    return true
-                }
-
-                if (path.contains(LANGUAGE_NAME)) {
                     return true
                 }
             }
@@ -81,14 +82,15 @@ internal abstract class BaseRepository : RemoteRepository {
         formattedCode: String,
         languageMapping: Map<String, Map<String, String>>?
     ): String {
-
         var result = path
 
-        languageMapping?.get(formattedCode)?.keys?.forEach { mappingKey ->
-            languageMapping[formattedCode]?.get(mappingKey)?.let { mappingValue ->
+        val languagePlaceholdersMap = languageMapping?.get(formattedCode)
+
+        languagePlaceholdersMap?.keys?.forEach { mappingKey ->
+            languagePlaceholdersMap[mappingKey]?.let { mappingValue ->
                 result = result.replace("%$mappingKey%", mappingValue)
 
-                if ("%$mappingKey%" == PATTERN_NAME) {
+                if (mappingKey == PATTERN_KEY_NAME) {
                     result = result.replace(LANGUAGE_NAME, mappingValue)
                 }
             }

@@ -70,7 +70,7 @@ internal class StringDataRemoteRepository(
         languageInfo?.let { info ->
             languageData.language = info.locale
             manifest?.files?.forEach {
-                val filePath = validateFilePath(it, info, preferredLanguageCode!!, manifest.language_mapping)
+                val filePath = validateFilePath(it, info, preferredLanguageCode!!, manifest.languageMapping)
                 val eTag = eTagMap[filePath]
                 val result = requestStringData(
                     eTag,
