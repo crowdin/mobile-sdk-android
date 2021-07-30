@@ -285,6 +285,7 @@ class MappingRepositoryTest {
             "/values/%name%/%two_letters_code%/items/%three_letters_code%/strings.xml"
         val givenFormattedCode = "uk"
         val givenLanguageMapping = givenLanguageMapping()
+        val expectedPath = "/ua/strings.xml"
 
         // When
         val resultFilePath = mappingRepository.validateFilePath(
@@ -348,23 +349,21 @@ class MappingRepositoryTest {
         val mappingRepository = givenMappingRepository()
         val givenLanguageInfo = givenLanguageInfo()
         val expectedPath = "/values/ukrainian/ua/items/ukr/strings.xml"
-
-        // When
         val givenFilePathWithThreeLettersPattern =
             "/values/%name%/%two_letters_code%/items/%three_letters_code%/strings.xml"
         val givenFormattedCode = "uk"
         val givenLanguageMapping = givenLanguageMapping()
 
-        // Then Three letters pattern
-        assertThat(
-            mappingRepository.validateFilePath(
-                givenFilePathWithThreeLettersPattern,
-                givenLanguageInfo,
-                givenFormattedCode,
-                givenLanguageMapping
-            ),
-            equalTo(expectedPath)
+        // When
+        val resultFilePath = mappingRepository.validateFilePath(
+            givenFilePathWithThreeLettersPattern,
+            givenLanguageInfo,
+            givenFormattedCode,
+            givenLanguageMapping
         )
+
+        // Then Three letters pattern
+        assertThat(resultFilePath, equalTo(expectedPath))
     }
 
     @Test
@@ -373,23 +372,20 @@ class MappingRepositoryTest {
         val mappingRepository = givenMappingRepository()
         val givenLanguageInfo = givenLanguageInfo()
         val expectedPath = "/values/ukrainian/strings.xml"
-
-        // When
-        val givenFilePathWithThreeLettersPattern =
-            "/values/%name%/strings.xml"
+        val givenFilePathWithThreeLettersPattern = "/values/%language%/strings.xml"
         val givenFormattedCode = "uk"
         val givenLanguageMapping = givenLanguageMapping()
 
-        // Then Three letters pattern
-        assertThat(
-            mappingRepository.validateFilePath(
-                givenFilePathWithThreeLettersPattern,
-                givenLanguageInfo,
-                givenFormattedCode,
-                givenLanguageMapping
-            ),
-            equalTo(expectedPath)
+        // When
+        val resultFilePath = mappingRepository.validateFilePath(
+            givenFilePathWithThreeLettersPattern,
+            givenLanguageInfo,
+            givenFormattedCode,
+            givenLanguageMapping
         )
+
+        // Then Three letters pattern
+        assertThat(resultFilePath, equalTo(expectedPath))
     }
 
     @Test
@@ -398,22 +394,20 @@ class MappingRepositoryTest {
         val mappingRepository = givenMappingRepository()
         val givenLanguageInfo = givenLanguageInfo()
         val expectedPath = "/ua/strings.xml"
-
-        // When
         val givenFilePathWithTwoLettersPattern = "/missing_code/strings.xml"
         val givenFormattedCode = "uk"
         val givenLanguageMapping = givenLanguageMapping()
 
-        // Then Two letters pattern
-        assertThat(
-            mappingRepository.validateFilePath(
-                givenFilePathWithTwoLettersPattern,
-                givenLanguageInfo,
-                givenFormattedCode,
-                givenLanguageMapping
-            ),
-            expectedPath.isNotEmpty()
+        // When
+        val resultFilePath = mappingRepository.validateFilePath(
+            givenFilePathWithTwoLettersPattern,
+            givenLanguageInfo,
+            givenFormattedCode,
+            givenLanguageMapping
         )
+
+        // Then Two letters pattern
+        assertThat(resultFilePath, expectedPath.isNotEmpty())
     }
 
     private fun givenMappingRepository(): MappingRepository {
