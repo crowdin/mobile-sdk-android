@@ -17,18 +17,20 @@ import com.crowdin.platform.transformer.ViewTransformerManager
  * the string attribute set as a string resource it transforms the text and apply it to the view again.
  */
 internal class CrowdinLayoutInflater constructor(
-    private val original: LayoutInflater,
-    newContext: Context,
+    context: Context,
+    parent: LayoutInflater = from(context),
     private val viewTransformerManager: ViewTransformerManager
-) : LayoutInflater(original, newContext) {
+) : LayoutInflater(parent, context) {
 
-    companion object {
-        private val sClassPrefixList = arrayOf("android.widget.", "android.webkit.", "android.app.")
-    }
+    private val classPrefixList = listOf("android.widget.", "android.webkit.", "android.app.")
+    private val supportedCustomViews = listOf(
+        "com.google.android.material.bottomnavigation.BottomNavigationView",
+        "com.google.android.material.navigation.NavigationView",
+        "TextView"
+    )
 
-    override fun cloneInContext(newContext: Context): LayoutInflater {
-        return CrowdinLayoutInflater(original, newContext, viewTransformerManager)
-    }
+    override fun cloneInContext(newContext: Context): LayoutInflater =
+        CrowdinLayoutInflater(newContext, this, viewTransformerManager)
 
     override fun setFactory(factory: Factory?) {
         if (factory is WrapperFactory) {
@@ -48,7 +50,7 @@ internal class CrowdinLayoutInflater constructor(
 
     @Throws(ClassNotFoundException::class)
     override fun onCreateView(name: String, attrs: AttributeSet): View? {
-        for (prefix in sClassPrefixList) {
+        for (prefix in classPrefixList) {
             try {
                 val view = createView(name, prefix, attrs)
                 if (view != null) {
@@ -66,6 +68,28 @@ internal class CrowdinLayoutInflater constructor(
         return viewTransformerManager.transform(view, attrs)
     }
 
+    private fun createCustomViewInternal(view: View?, name: String, attrs: AttributeSet): View? {
+        var mainView = view
+        // If CustomViewCreation is off skip this.
+
+        var isSupported = false
+        supportedCustomViews.forEach {
+            if (name.contains(it)) {
+                isSupported = true
+            }
+        }
+
+        if (isSupported) {
+            try {
+                mainView = createView(name, null, attrs)
+            } catch (ignored: ClassNotFoundException) {
+            } catch (inflateException: InflateException) {
+            }
+        }
+
+        return mainView
+    }
+
     private inner class WrapperFactory(val factory: Factory?) : Factory {
 
         override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
@@ -74,27 +98,8 @@ internal class CrowdinLayoutInflater constructor(
         }
     }
 
-    private fun createCustomViewInternal(view: View?, name: String, attrs: AttributeSet): View? {
-        var mainView = view
-        // If CustomViewCreation is off skip this.
-        if (mainView == null &&
-            (!name.contains("com.google.android.material.appbar.AppBarLayout") ||
-                    name.contains("androidx.appcompat.widget.NavigationView") ||
-                    name.contains("com.google.android.material.bottomnavigation.BottomNavigationView"))
-        ) {
-            try {
-                mainView = createView(name, null, attrs)
-            } catch (ignored: ClassNotFoundException) {
-            } catch (inflateException: InflateException) {
-            }
-        }
-        return mainView
-    }
-
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private inner class PrivateWrapperFactory2(
-        val factory2: Factory2?
-    ) : Factory2 {
+    private inner class PrivateWrapperFactory2(val factory2: Factory2?) : Factory2 {
 
         override fun onCreateView(
             parent: View?,
