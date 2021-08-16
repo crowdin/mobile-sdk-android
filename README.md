@@ -572,6 +572,8 @@ You can set file export patterns and check existing ones using *File Settings*. 
     }
     ```
 
+11. In case you have custom TextView with string specified in xml make sure you follow this naming convention `PlaceholderTextView` otherwise SDK will skip this view during inflating process and it won't be translated.
+
 ## Limitations
 1. Plurals are supported from Android SDK version 24.
 2. TabItem text added via xml won't be updated. There is workaround: you can store tabItem titles in your string-array and add tabs dynamically.
