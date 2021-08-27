@@ -1,13 +1,12 @@
 package com.crowdin.platform.example
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import androidx.annotation.RequiresApi
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.example.task.OnItemSelectedListener
@@ -17,6 +16,8 @@ import java.util.Locale
 class SettingsFragment : Fragment(), OnItemSelectedListener.SpinnerItemListener {
 
     private lateinit var spinnerLanguages: Spinner
+
+    private lateinit var languageDescription: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,6 +30,7 @@ class SettingsFragment : Fragment(), OnItemSelectedListener.SpinnerItemListener 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         spinnerLanguages = view.findViewById(R.id.spinnerLanguages)
+        languageDescription = view.findViewById(R.id.languageDescriptionTv)
         loadDataInSpinner()
     }
 
@@ -40,34 +42,36 @@ class SettingsFragment : Fragment(), OnItemSelectedListener.SpinnerItemListener 
 
         val labels = mutableListOf<String>()
 
-        manifestData?.languages?.let { labels.addAll(it) }
+        labels.add(languagePreferences.getLanguageCode())
 
-        val savedLanguageCode = languagePreferences.getLanguageCode()
+        manifestData?.languages?.forEach { languageIndex ->
+            Crowdin.getSupportedLanguages()?.data?.find { supportedLanguage ->
+                supportedLanguage.data.id == languageIndex
+            }?.let { languageInfoData ->
+                if (!labels.contains(languageInfoData.data.locale)) {
+                    labels.add(languageInfoData.data.locale)
+                }
+            }
+        }
 
-        BuildConfig.AVAILABLE_LANGUAGES.split(',').forEach {
+        BuildConfig.AVAILABLE_LOCAL_LANGUAGE_CODES.split(';').forEach {
             if (!labels.contains(it)) {
                 labels.add(it)
             }
         }
-
-        if (!labels.contains(savedLanguageCode)) {
-            labels.add(0, savedLanguageCode)
-        }
-
-        if (!labels.contains(languagePreferences.getDefaultLanguageCode())) {
-            labels.add(0, languagePreferences.getDefaultLanguageCode())
-        }
-
 
         val dataAdapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, labels)
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerLanguages.adapter = dataAdapter
         spinnerLanguages.onItemSelectedListener = OnItemSelectedListener(this)
-        spinnerLanguages.setSelection(dataAdapter.getPosition(savedLanguageCode))
     }
 
     override fun onSpinnerItemSelected(item: String) {
+        Crowdin.getSupportedLanguages()?.data?.find { languageInfoData ->
+            languageInfoData.data.locale == item
+        }?.data?.let { languageDescription.text = it.name }
+
         val defaultLocale = Locale.getDefault()
         if (item == "${defaultLocale.language}-${defaultLocale.country}") {
             return
