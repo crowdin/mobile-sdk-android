@@ -65,7 +65,7 @@ You have two ways to install Crowdin Android SDK.
 
    ```groovy
    dependencies {
-       implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.4.4'
+       implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.4.5'
    }
    ```
 
@@ -76,7 +76,7 @@ You have two ways to install Crowdin Android SDK.
    To resolve, either exclude `gson` from Crowdin or from your library is OK, but be sure to keep the newer one for backward-compatibility.
 
    ```groovy
-   implementation ('com.github.crowdin.mobile-sdk-android:sdk:1.4.4') {
+   implementation ('com.github.crowdin.mobile-sdk-android:sdk:1.4.5') {
        exclude group: 'com.google.code.gson', module: 'gson'
    }
    ```
