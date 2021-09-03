@@ -2,7 +2,6 @@ package com.crowdin.platform
 
 import android.content.Context
 import android.content.ContextWrapper
-import android.view.LayoutInflater
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.transformer.ViewTransformerManager
 
@@ -23,8 +22,8 @@ internal class CrowdinContextWrapper private constructor(
     override fun getSystemService(name: String): Any? {
         if (Context.LAYOUT_INFLATER_SERVICE == name) {
             return CrowdinLayoutInflater(
-                LayoutInflater.from(baseContext),
-                this, viewTransformerManager
+                context = baseContext,
+                viewTransformerManager = viewTransformerManager
             )
         }
 
