@@ -59,7 +59,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.crowdin.mobile-sdk-android:controls:1.4.6'
+    implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.4.5'
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
