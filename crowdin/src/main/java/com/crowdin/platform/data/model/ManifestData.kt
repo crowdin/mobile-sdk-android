@@ -2,7 +2,7 @@ package com.crowdin.platform.data.model
 
 import com.google.gson.annotations.SerializedName
 
-internal data class ManifestData(
+data class ManifestData(
     @SerializedName("files")
     val files: List<String>,
 
