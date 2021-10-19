@@ -9,12 +9,12 @@ import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.TextMetaData
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.data.remote.api.EventResponse
-import com.crowdin.platform.fromHtml
 import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager.Companion.NORMAL_CLOSURE_STATUS
 import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager.Companion.PLURAL_NONE
 import com.crowdin.platform.transformer.ViewTransformerManager
 import com.crowdin.platform.transformer.ViewsChangeListener
 import com.crowdin.platform.util.ThreadUtils
+import com.crowdin.platform.util.fromHtml
 import com.crowdin.platform.util.unEscapeQuotes
 import com.google.gson.Gson
 import java.lang.ref.WeakReference
