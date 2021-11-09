@@ -362,7 +362,6 @@ object Crowdin {
             } else {
                 UiUtil.createAuthDialog(context) { AuthActivity.launchActivity(context) }
             }
-
         }
     }
 
