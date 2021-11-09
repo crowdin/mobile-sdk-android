@@ -223,6 +223,7 @@ All the translations that are done in the Editor can be shown in your version of
                .withAuthConfig(AuthConfig(client_id, client_secret, organization_name))
                .withNetworkType(network_type)                                           // optional
                .withUpdateInterval(interval_in_seconds)                                 // optional
+               .skipRequestAuthDialog()                                                 // optional
                .build())
    }
    ```
@@ -244,6 +245,7 @@ All the translations that are done in the Editor can be shown in your version of
                .withAuthConfig(new AuthConfig(client_id, client_secret, organization_name_or_null))
                .withNetworkType(network_type)                                           // optional
                .withUpdateInterval(interval_in_seconds)                                 // optional
+               .skipRequestAuthDialog()                                                 // optional
                .build());
    }
    ```
