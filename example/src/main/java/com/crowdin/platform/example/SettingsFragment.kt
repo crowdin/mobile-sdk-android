@@ -44,14 +44,12 @@ class SettingsFragment : Fragment(), OnItemSelectedListener.SpinnerItemListener 
 
         labels.add(languagePreferences.getLanguageCode())
 
-        manifestData?.languages?.let { languages ->
-            for (languageIndex in languages) {
-                Crowdin.getSupportedLanguages()?.data?.find { supportedLanguage ->
-                    supportedLanguage.data.id == languageIndex
-                }?.let { languageInfoData ->
-                    if (!labels.contains(languageInfoData.data.locale)) {
-                        labels.add(languageInfoData.data.locale)
-                    }
+        manifestData?.languages?.forEach { languageIndex ->
+            Crowdin.getSupportedLanguages()?.data?.find { supportedLanguage ->
+                supportedLanguage.data.id == languageIndex
+            }?.let { languageInfoData ->
+                if (!labels.contains(languageInfoData.data.locale)) {
+                    labels.add(languageInfoData.data.locale)
                 }
             }
         }
