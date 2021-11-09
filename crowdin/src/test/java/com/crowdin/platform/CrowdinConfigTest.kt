@@ -109,4 +109,16 @@ class CrowdinConfigTest {
         // Then
         Assert.assertTrue(configWithBigInterval.updateInterval == bigInterval * 1000)
     }
+
+    @Test
+    fun whenSkipAuthDialog_shouldBeSucess() {
+        // When
+        val config = CrowdinConfig.Builder()
+            .withDistributionHash("distributionHash")
+            .skipRequestAuthDialog()
+            .build()
+
+        // Then
+        Assert.assertTrue(config.skipAuthDialog)
+    }
 }
