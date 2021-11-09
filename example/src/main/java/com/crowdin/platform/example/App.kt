@@ -37,6 +37,7 @@ class App : Application() {
                 .withSourceLanguage(sourceLanguage)                                     // required if screenshot or realtime update are enabled, otherwise optional
                 .withUpdateInterval(intervalInSeconds)                                  // optional
                 .withAuthConfig(AuthConfig(clientId, clientSecret, organizationName))   // optional
+                .skipRequestAuthDialog()                                                // optional
                 .build()
         )
 
