@@ -357,7 +357,7 @@ object Crowdin {
                 return
             }
 
-            if (config.skipAuthDialog) {
+            if (config.authConfig?.requestAuthDialog == false) {
                 AuthActivity.launchActivity(context)
             } else {
                 UiUtil.createAuthDialog(context) { AuthActivity.launchActivity(context) }
