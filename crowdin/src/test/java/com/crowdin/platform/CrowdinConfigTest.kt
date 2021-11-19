@@ -109,4 +109,54 @@ class CrowdinConfigTest {
         // Then
         Assert.assertTrue(configWithBigInterval.updateInterval == bigInterval * 1000)
     }
+
+    @Test
+    fun whenAuthConfigWithRequestAuthDialog_shouldBeTrueRequestAuthDialog() {
+        // When
+        val config = CrowdinConfig.Builder()
+            .withDistributionHash("distributionHash")
+            .withAuthConfig(AuthConfig("clientId", "cliendSecret", requestAuthDialog = true))
+            .build()
+
+        // Then
+        Assert.assertTrue(config.authConfig?.requestAuthDialog == true)
+    }
+
+    @Test
+    fun whenAuthConfigWithRequestAuthDialog_shouldBeFalseRequestAuthDialog() {
+        // When
+        val config = CrowdinConfig.Builder()
+            .withDistributionHash("distributionHash")
+            .withAuthConfig(AuthConfig("clientId", "cliendSecret", requestAuthDialog = false))
+            .build()
+
+        // Then
+        Assert.assertTrue(config.authConfig?.requestAuthDialog == false)
+    }
+
+    @Test
+    fun whenEmptyAuthConfig_shouldBeTrueRequestAuthDialog() {
+        // When
+        val config = CrowdinConfig.Builder()
+            .withDistributionHash("distributionHash")
+            .build()
+
+        // Then
+
+        val requestAuthDialog = config.authConfig?.requestAuthDialog == false
+
+        Assert.assertFalse(requestAuthDialog)
+    }
+
+    @Test
+    fun whenAuthConfigWithoutRequestAuthDialog_shouldBeTrueRequestAuthDialog() {
+        // When
+        val config = CrowdinConfig.Builder()
+            .withDistributionHash("distributionHash")
+            .withAuthConfig(AuthConfig("clientId", "cliendSecret"))
+            .build()
+
+        // Then
+        Assert.assertTrue(config.authConfig?.requestAuthDialog == true)
+    }
 }

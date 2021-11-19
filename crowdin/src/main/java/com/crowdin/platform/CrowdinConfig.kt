@@ -88,7 +88,10 @@ class CrowdinConfig private constructor() {
             }
 
             if ((updateInterval != -1L) and (updateInterval < RecurringManager.MIN_PERIODIC_INTERVAL_MILLIS)) {
-                Log.w(Crowdin.CROWDIN_TAG, "`updateInterval` must be not less than 15 minutes. Will be used default value - 15 minutes")
+                Log.w(
+                    Crowdin.CROWDIN_TAG,
+                    "`updateInterval` must be not less than 15 minutes. Will be used default value - 15 minutes"
+                )
                 config.updateInterval = RecurringManager.MIN_PERIODIC_INTERVAL_MILLIS
             } else {
                 config.updateInterval = updateInterval

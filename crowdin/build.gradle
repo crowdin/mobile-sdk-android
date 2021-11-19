@@ -1,9 +1,6 @@
 buildscript {
-
     repositories {
         mavenCentral()
-        //noinspection JcenterRepositoryObsolete
-        jcenter()
     }
 
     dependencies {
