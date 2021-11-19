@@ -3,12 +3,13 @@ package com.crowdin.platform
 import android.content.res.Resources
 import android.icu.text.PluralRules
 import android.os.Build
-import android.text.Html
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
+import com.crowdin.platform.util.fromHtml
 import com.crowdin.platform.util.getFormattedCode
+import com.crowdin.platform.util.replaceNewLine
 import java.util.Locale
 
 /**
@@ -29,7 +30,7 @@ internal class CrowdinResources(
     @Throws(NotFoundException::class)
     override fun getString(id: Int): String {
         val entryName = getResourceEntryName(id)
-        val string = getStringFromRepository(id)?.fromHtml()?.toString() ?: super.getString(id)
+        val string = getStringFromRepository(id)?.replaceNewLine() ?: super.getString(id)
         saveStringDataToCopy(entryName, string)
 
         return string
@@ -38,12 +39,16 @@ internal class CrowdinResources(
     @Throws(NotFoundException::class)
     override fun getString(id: Int, vararg formatArgs: Any): String {
         val entryName = getResourceEntryName(id)
-        val string = getStringFromRepository(id)?.fromHtml()?.toString()
+        val string = getStringFromRepository(id)?.replaceNewLine()
         val formattedString =
             if (string == null) {
                 super.getString(id, *formatArgs)
             } else {
-                String.format(string, *formatArgs)
+                try {
+                    String.format(string, *formatArgs)
+                } catch (ex: Exception) {
+                    super.getString(id, *formatArgs)
+                }
             }
 
         saveStringDataToCopy(entryName, formattedString, formatArgs)
@@ -95,7 +100,11 @@ internal class CrowdinResources(
             if (plural == null) {
                 super.getQuantityString(id, quantity, *formatArgs)
             } else {
-                String.format(plural, *formatArgs)
+                try {
+                    String.format(plural, *formatArgs)
+                } catch (ex: Exception) {
+                    super.getQuantityString(id, quantity, *formatArgs)
+                }
             }
 
         savePluralToCopy(id, quantity, formattedPlural, formatArgs)
@@ -169,14 +178,3 @@ internal class CrowdinResources(
             null
         }
 }
-
-fun String.fromHtml(): CharSequence? =
-    try {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            Html.fromHtml(this)
-        } else {
-            Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT)
-        }
-    } catch (ex: Exception) {
-        null
-    }

@@ -1,6 +1,8 @@
 package com.crowdin.platform.util
 
 import android.content.res.Resources
+import android.os.Build
+import android.text.Html
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
@@ -12,6 +14,7 @@ import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
 
+const val NEW_LINE = "<br>"
 private const val DEFAULT_DATE_TIME_FORMAT = "yyyy_MM_dd-HH_mm_ss"
 
 fun MenuInflater.inflateWithCrowdin(@MenuRes menuRes: Int, menu: Menu, resources: Resources) {
@@ -62,5 +65,18 @@ fun getMatchedCode(list: List<String>?): String? {
 fun String.unEscapeQuotes(): String {
     return this.replace("\\\"", "\"")
         .replace("\\\'", "\'")
-        .replace("\\n", "<br>")
+        .replace("\\n", NEW_LINE)
 }
+
+fun String.fromHtml(): CharSequence? =
+    try {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            Html.fromHtml(this)
+        } else {
+            Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT)
+        }
+    } catch (ex: Exception) {
+        null
+    }
+
+fun String.replaceNewLine(): String = replace(NEW_LINE, NEW_LINE.fromHtml()?.toString() ?: "")
