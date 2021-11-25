@@ -3,6 +3,8 @@ package com.crowdin.platform
 import android.content.res.Resources
 import android.icu.text.PluralRules
 import android.os.Build
+import android.text.Html
+import android.text.SpannedString
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.PluralData
@@ -178,3 +180,14 @@ internal class CrowdinResources(
             null
         }
 }
+
+fun String.fromHtml(): CharSequence? =
+    try {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            SpannedString(Html.fromHtml(this))
+        } else {
+            SpannedString(Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT))
+        }
+    } catch (ex: Exception) {
+        null
+    }
