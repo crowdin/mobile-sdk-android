@@ -11,9 +11,9 @@ import com.crowdin.platform.data.parser.ReaderFactory
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.executeIO
 import com.crowdin.platform.util.getMatchedCode
+import java.net.HttpURLConnection
 import okhttp3.ResponseBody
 import retrofit2.Response
-import java.net.HttpURLConnection
 
 private const val XML_EXTENSION = ".xml"
 
@@ -50,18 +50,16 @@ internal class StringDataRemoteRepository(
             "StringDataRemoteRepository. Handling received manifest data. Preferred language: $preferredLanguageCode"
         )
 
-        var prefLanguageCode = preferredLanguageCode
-        preferredLanguageCode = null
         val supportedLanguages = manifest?.languages
         val customLanguages = manifest?.customLanguages
-        if (prefLanguageCode == null) {
-            prefLanguageCode = getMatchedCode(supportedLanguages, customLanguages)
-            if (prefLanguageCode == null) {
+        if (preferredLanguageCode == null) {
+            preferredLanguageCode = getMatchedCode(supportedLanguages, customLanguages)
+            if (preferredLanguageCode == null) {
                 languageDataCallback?.onFailure(Throwable("Can't find preferred Language"))
                 return
             }
         } else {
-            if (supportedLanguages?.contains(prefLanguageCode) == false) {
+            if (supportedLanguages?.contains(preferredLanguageCode) == false) {
                 languageDataCallback?.onFailure(Throwable("Can't find preferred Language"))
                 return
             }
@@ -69,17 +67,17 @@ internal class StringDataRemoteRepository(
 
         // Combine all data before save to storage
         val languageData = LanguageData()
-        val languageInfo = if (customLanguages?.contains(prefLanguageCode) == true) {
-            customLanguages[prefLanguageCode]?.toLanguageInfo()
+        val languageInfo = if (customLanguages?.contains(preferredLanguageCode) == true) {
+            customLanguages[preferredLanguageCode]?.toLanguageInfo()
         } else {
-            getLanguageInfo(prefLanguageCode)
+            getLanguageInfo(preferredLanguageCode!!)
         }
 
         languageInfo ?: return
 
         languageData.language = languageInfo.locale
         manifest?.files?.forEach {
-            val filePath = validateFilePath(it, languageInfo, prefLanguageCode, manifest.languageMapping)
+            val filePath = validateFilePath(it, languageInfo, preferredLanguageCode!!, manifest.languageMapping)
             val eTag = eTagMap[filePath]
             val result = requestStringData(
                 eTag,

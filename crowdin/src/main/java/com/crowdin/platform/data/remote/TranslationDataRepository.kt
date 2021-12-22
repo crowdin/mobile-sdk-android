@@ -6,10 +6,6 @@ import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.*
-import com.crowdin.platform.data.model.BuildTranslationRequest
-import com.crowdin.platform.data.model.FileResponse
-import com.crowdin.platform.data.model.LanguageData
-import com.crowdin.platform.data.model.Translation
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.data.remote.api.CrowdinTranslationApi
@@ -52,24 +48,22 @@ internal class TranslationDataRepository(
     ) {
         Log.v(Crowdin.CROWDIN_TAG, "Manifest data received")
 
-        var prefLanguageCode = preferredLanguageCode
-        preferredLanguageCode = null
         val supportedLanguages = manifest?.languages
         val customLanguages = manifest?.customLanguages
-        if (prefLanguageCode == null) {
-            prefLanguageCode = getMatchedCode(supportedLanguages, customLanguages) ?: return
+        if (preferredLanguageCode == null) {
+            preferredLanguageCode = getMatchedCode(supportedLanguages, customLanguages) ?: return
         } else {
-            if (supportedLanguages?.contains(prefLanguageCode) == false) {
+            if (supportedLanguages?.contains(preferredLanguageCode) == false) {
                 return
             }
         }
 
         val languagesInfo = dataManager.getSupportedLanguages()
         crowdinLanguages = languagesInfo
-        val languageInfo = if (customLanguages?.contains(prefLanguageCode) == true) {
-            customLanguages[prefLanguageCode]?.toLanguageInfo()
+        val languageInfo = if (customLanguages?.contains(preferredLanguageCode) == true) {
+            customLanguages[preferredLanguageCode]?.toLanguageInfo()
         } else {
-            getLanguageInfo(prefLanguageCode)
+            getLanguageInfo(preferredLanguageCode!!)
         }
 
         languageInfo?.let { info ->

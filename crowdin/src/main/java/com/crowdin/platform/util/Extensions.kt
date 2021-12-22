@@ -11,7 +11,9 @@ import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.model.CustomLanguage
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
 const val NEW_LINE = "<br>"
 private const val DEFAULT_DATE_TIME_FORMAT = "yyyy_MM_dd-HH_mm_ss"
