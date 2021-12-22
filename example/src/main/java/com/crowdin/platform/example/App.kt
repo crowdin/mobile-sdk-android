@@ -1,16 +1,30 @@
 package com.crowdin.platform.example
 
 import android.app.Application
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.res.Configuration
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.CrowdinConfig
-import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.remote.NetworkType
 import com.crowdin.platform.example.utils.updateLocale
 
 class App : Application() {
 
     lateinit var languagePreferences: LanguagePreferences
+
+    /**
+     * For custom language set your application locale taking into account constraints for language and country/region
+     * This should match with `Locale code:` for your custom language on Crowdin platform.
+     *
+     * language - [a-zA-Z]{2,8}
+     * country/region - [a-zA-Z]{2} | [0-9]{3}
+     *
+     * Example: "aa-BB"
+     * */
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(ContextWrapper(newBase.updateLocale("tt-GG")))
+    }
 
     override fun onCreate() {
         super.onCreate()

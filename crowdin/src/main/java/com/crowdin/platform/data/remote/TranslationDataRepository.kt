@@ -5,11 +5,10 @@ import androidx.annotation.WorkerThread
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.LanguageDataCallback
+import com.crowdin.platform.data.model.*
 import com.crowdin.platform.data.model.BuildTranslationRequest
 import com.crowdin.platform.data.model.FileResponse
 import com.crowdin.platform.data.model.LanguageData
-import com.crowdin.platform.data.model.LanguagesInfo
-import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.model.Translation
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
@@ -53,18 +52,26 @@ internal class TranslationDataRepository(
     ) {
         Log.v(Crowdin.CROWDIN_TAG, "Manifest data received")
 
+        var prefLanguageCode = preferredLanguageCode
+        preferredLanguageCode = null
         val supportedLanguages = manifest?.languages
-        if (preferredLanguageCode == null) {
-            preferredLanguageCode = getMatchedCode(supportedLanguages) ?: return
+        val customLanguages = manifest?.customLanguages
+        if (prefLanguageCode == null) {
+            prefLanguageCode = getMatchedCode(supportedLanguages, customLanguages) ?: return
         } else {
-            if (supportedLanguages?.contains(preferredLanguageCode!!) == false) {
+            if (supportedLanguages?.contains(prefLanguageCode) == false) {
                 return
             }
         }
 
         val languagesInfo = dataManager.getSupportedLanguages()
         crowdinLanguages = languagesInfo
-        val languageInfo = getLanguageInfo(preferredLanguageCode!!)
+        val languageInfo = if (customLanguages?.contains(prefLanguageCode) == true) {
+            customLanguages[prefLanguageCode]?.toLanguageInfo()
+        } else {
+            getLanguageInfo(prefLanguageCode)
+        }
+
         languageInfo?.let { info ->
             dataManager.getData<DistributionInfoResponse.DistributionData>(
                 DataManager.DISTRIBUTION_DATA,

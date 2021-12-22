@@ -8,11 +8,10 @@ import android.view.Menu
 import android.view.MenuInflater
 import androidx.annotation.MenuRes
 import com.crowdin.platform.Crowdin
+import com.crowdin.platform.data.model.CustomLanguage
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
-import java.util.TimeZone
+import java.util.*
 
 const val NEW_LINE = "<br>"
 private const val DEFAULT_DATE_TIME_FORMAT = "yyyy_MM_dd-HH_mm_ss"
@@ -53,8 +52,17 @@ fun executeIO(function: () -> Unit) {
     }
 }
 
-fun getMatchedCode(list: List<String>?): String? {
+fun getMatchedCode(list: List<String>?, customLanguages: Map<String, CustomLanguage>?): String? {
     val code = "${Locale.getDefault().language}-${Locale.getDefault().country}"
+
+    if (customLanguages != null) {
+        for (languageData in customLanguages) {
+            if (languageData.value.locale == code) {
+                return languageData.key
+            }
+        }
+    }
+
     if (list?.contains(code) == false) {
         val languageCode = Locale.getDefault().language
         return languageCode.takeIf { list.contains(languageCode) }

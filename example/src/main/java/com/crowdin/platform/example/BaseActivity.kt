@@ -23,13 +23,13 @@ abstract class BaseActivity : AppCompatActivity() {
      * Update configuration with your locale. Should be done for all activities to use your
      * `values-localeCode` resources properly.
      */
-    override fun attachBaseContext(newBase: Context) {
-        val newLocaleCode =
-            (newBase.applicationContext as App).languagePreferences.getLanguageCode()
-        val newContext = newBase.updateLocale(newLocaleCode)
-
-        super.attachBaseContext(newContext)
-    }
+//    override fun attachBaseContext(newBase: Context) {
+//        val newLocaleCode =
+//            (newBase.applicationContext as App).languagePreferences.getLanguageCode()
+//        val newContext = newBase.updateLocale(newLocaleCode)
+//
+//        super.attachBaseContext(newContext)
+//    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
