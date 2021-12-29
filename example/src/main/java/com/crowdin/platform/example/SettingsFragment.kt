@@ -35,15 +35,10 @@ class SettingsFragment : Fragment(), OnItemSelectedListener.SpinnerItemListener 
     }
 
     private fun loadDataInSpinner() {
-
         val languagePreferences = (requireActivity().application as App).languagePreferences
-
         val manifestData = Crowdin.getManifest()
-
         val labels = mutableListOf<String>()
-
         labels.add(languagePreferences.getLanguageCode())
-
         manifestData?.languages?.forEach { languageIndex ->
             Crowdin.getSupportedLanguages()?.data?.find { supportedLanguage ->
                 supportedLanguage.data.id == languageIndex

@@ -6,19 +6,17 @@ import java.util.Locale
 
 class LanguagePreferences(context: Context) {
 
-    private var preferences =
-        context.applicationContext.getSharedPreferences(GLOBAL_USER_PREF, Context.MODE_PRIVATE)
+    private var preferences = context.getSharedPreferences(GLOBAL_USER_PREF, Context.MODE_PRIVATE)
 
     fun setLanguageCode(languageCode: String) {
         preferences.edit().putString(KEY_LANGUAGE, languageCode).apply()
     }
 
     fun getLanguageCode(): String {
-        return preferences.getString(KEY_LANGUAGE, getDefaultLanguageCode())
-            ?: getDefaultLanguageCode()
+        return preferences.getString(KEY_LANGUAGE, getDefaultLanguageCode()) ?: getDefaultLanguageCode()
     }
 
-    fun getDefaultLanguageCode(): String {
+    private fun getDefaultLanguageCode(): String {
         val defaultLocale = Locale.getDefault()
 
         val sb = StringBuilder()

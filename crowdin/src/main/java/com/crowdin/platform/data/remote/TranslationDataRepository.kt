@@ -11,6 +11,7 @@ import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.model.Translation
+import com.crowdin.platform.data.model.toLanguageInfo
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.data.remote.api.CrowdinTranslationApi
@@ -54,17 +55,23 @@ internal class TranslationDataRepository(
         Log.v(Crowdin.CROWDIN_TAG, "Manifest data received")
 
         val supportedLanguages = manifest?.languages
+        val customLanguages = manifest?.customLanguages
         if (preferredLanguageCode == null) {
-            preferredLanguageCode = getMatchedCode(supportedLanguages) ?: return
+            preferredLanguageCode = getMatchedCode(supportedLanguages, customLanguages) ?: return
         } else {
-            if (supportedLanguages?.contains(preferredLanguageCode!!) == false) {
+            if (supportedLanguages?.contains(preferredLanguageCode) == false) {
                 return
             }
         }
 
         val languagesInfo = dataManager.getSupportedLanguages()
         crowdinLanguages = languagesInfo
-        val languageInfo = getLanguageInfo(preferredLanguageCode!!)
+        val languageInfo = if (customLanguages?.contains(preferredLanguageCode) == true) {
+            customLanguages[preferredLanguageCode]?.toLanguageInfo()
+        } else {
+            getLanguageInfo(preferredLanguageCode!!)
+        }
+
         languageInfo?.let { info ->
             dataManager.getData<DistributionInfoResponse.DistributionData>(
                 DataManager.DISTRIBUTION_DATA,

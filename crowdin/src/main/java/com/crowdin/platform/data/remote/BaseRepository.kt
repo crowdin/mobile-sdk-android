@@ -40,13 +40,13 @@ internal abstract class BaseRepository : RemoteRepository {
 
         if (containsExportPattern(path)) {
             path = replacePatterns(
-                path,
-                languageInfo.name,
-                languageInfo.twoLettersCode,
-                languageInfo.threeLettersCode,
-                languageInfo.locale,
-                languageInfo.locale.replace("-", "_"),
-                languageInfo.androidCode
+                filePath = path,
+                name = languageInfo.name,
+                twoLettersCode = languageInfo.twoLettersCode,
+                threeLetterCode = languageInfo.threeLettersCode,
+                locale = languageInfo.locale,
+                localeWithUnderscore = languageInfo.locale.replace("-", "_"),
+                androidCode = languageInfo.androidCode
             )
         } else {
             return getFormattedPath(path, formattedCode)

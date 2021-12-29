@@ -54,7 +54,7 @@ internal class RealTimeUpdateManager(
                     .url(distributionData.wsUrl)
                     .build()
 
-                val languageCode = getMatchedCode(it.languages) ?: return@let
+                val languageCode = getMatchedCode(it.languages, it.customLanguages) ?: return@let
                 val listener = EchoWebSocketListener(
                     mappingData,
                     distributionData,

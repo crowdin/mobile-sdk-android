@@ -1,6 +1,8 @@
 package com.crowdin.platform.example
 
 import android.app.Application
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.res.Configuration
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.CrowdinConfig
@@ -12,9 +14,23 @@ class App : Application() {
 
     lateinit var languagePreferences: LanguagePreferences
 
+    /**
+     * Should be overridden in case you want to change locale programmatically.
+     * For custom language set your application locale taking into account constraints for language and country/region
+     * This should match with `Locale code:` for your custom language on Crowdin platform.
+     *
+     * language - [a-zA-Z]{2,8}
+     * country/region - [a-zA-Z]{2} | [0-9]{3}
+     *
+     * Example: "aa-BB"
+     * */
+    override fun attachBaseContext(newBase: Context) {
+        languagePreferences = LanguagePreferences(newBase)
+        super.attachBaseContext(ContextWrapper(newBase.updateLocale(languagePreferences.getLanguageCode())))
+    }
+
     override fun onCreate() {
         super.onCreate()
-        languagePreferences = LanguagePreferences(this)
 
         // Crowdin sdk initialization
         val distributionHash = "your_distribution_hash"     // "7a0c1...7uo3b"
