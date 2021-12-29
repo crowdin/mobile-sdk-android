@@ -65,7 +65,7 @@ You have two ways to install Crowdin Android SDK.
 
    ```groovy
    dependencies {
-       implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.4.8'
+       implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.5.0'
    }
    ```
 
@@ -76,7 +76,7 @@ You have two ways to install Crowdin Android SDK.
    To resolve, either exclude `gson` from Crowdin or from your library is OK, but be sure to keep the newer one for backward-compatibility.
 
    ```groovy
-   implementation ('com.github.crowdin.mobile-sdk-android:sdk:1.4.8') {
+   implementation ('com.github.crowdin.mobile-sdk-android:sdk:1.5.0') {
        exclude group: 'com.google.code.gson', module: 'gson'
    }
    ```
@@ -562,9 +562,7 @@ You can set file export patterns and check existing ones using *File Settings*. 
    On each shake event it will trigger `Crowdin.forceUpdate(this)` method. You can call this method from your app.
    Also, there are other public methods in `Crowdin` class. You can find details in `kotlin doc` files.
 
-9. Currently, Custom Languages are not supported by Android SDK.
-
-10. You can trigger force upload from Crowdin while launching Splash Activity and after that open Main Activity
+9. You can trigger force upload from Crowdin while launching Splash Activity and after that open Main Activity
     ```kotlin
     override fun onCreate(savedInstanceState: Bundle?) {
         Crowdin.forceUpdate(this) {
@@ -574,7 +572,7 @@ You can set file export patterns and check existing ones using *File Settings*. 
     }
     ```
 
-11. In case you have custom TextView with string specified in xml make sure you follow this naming convention `PlaceholderTextView` otherwise SDK will skip this view during inflating process and it won't be translated.
+10. In case you have custom TextView with string specified in xml make sure you follow this naming convention `PlaceholderTextView` otherwise SDK will skip this view during inflating process and it won't be translated.
 
 ## Limitations
 1. Plurals are supported from Android SDK version 24.
