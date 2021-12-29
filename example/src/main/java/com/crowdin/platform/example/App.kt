@@ -15,6 +15,7 @@ class App : Application() {
     lateinit var languagePreferences: LanguagePreferences
 
     /**
+     * Should be overridden in case you want to change locale programmatically.
      * For custom language set your application locale taking into account constraints for language and country/region
      * This should match with `Locale code:` for your custom language on Crowdin platform.
      *
