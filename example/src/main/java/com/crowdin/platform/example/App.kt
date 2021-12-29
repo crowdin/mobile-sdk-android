@@ -24,12 +24,12 @@ class App : Application() {
      * Example: "aa-BB"
      * */
     override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(ContextWrapper(newBase.updateLocale("tt-GG")))
+        languagePreferences = LanguagePreferences(newBase)
+        super.attachBaseContext(ContextWrapper(newBase.updateLocale(languagePreferences.getLanguageCode())))
     }
 
     override fun onCreate() {
         super.onCreate()
-        languagePreferences = LanguagePreferences(this)
 
         // Crowdin sdk initialization
         val distributionHash = "your_distribution_hash"     // "7a0c1...7uo3b"
