@@ -17,6 +17,3 @@ const val TASK_FINISH = "finish"
 
 const val TASK_IS_FINISH = 1
 const val TASK_IS_NOT_FINISH = 0
-
-const val DASHBOARD_RECYCLER_VIEW_REFRESH = 101
-
