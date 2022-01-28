@@ -33,6 +33,7 @@ internal class SessionInterceptor(private val session: Session) : Interceptor {
             } else {
                 // retry original request
                 val requestUpdated = addHeaderToRequest(original)
+                mainResponse.close()
                 mainResponse = chain.proceed(requestUpdated)
                 if (isAuthErrorCode(mainResponse)) {
                     session.invalidate()
