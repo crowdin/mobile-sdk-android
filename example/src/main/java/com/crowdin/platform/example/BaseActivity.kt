@@ -1,12 +1,14 @@
 package com.crowdin.platform.example
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.BaseContextWrappingDelegate
+import com.crowdin.crowdin_controls.OverlayActivityContract
 import com.crowdin.crowdin_controls.destroyCrowdinControl
 import com.crowdin.crowdin_controls.initCrowdinControl
 
 abstract class BaseActivity : AppCompatActivity() {
+
+    var overlayPermissionActivityLauncher = registerForActivityResult(OverlayActivityContract()) { }
 
     /**
      * We should wrap the base context of our activities, which is better to put it
@@ -16,15 +18,10 @@ abstract class BaseActivity : AppCompatActivity() {
      */
     override fun getDelegate() = BaseContextWrappingDelegate(super.getDelegate())
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        com.crowdin.crowdin_controls.onActivityResult(this, requestCode)
-    }
-
     override fun onResume() {
         super.onResume()
         // Init Crowdin SDK overlay controls
-        initCrowdinControl(this)
+        initCrowdinControl(this, overlayPermissionActivityLauncher)
     }
 
     override fun onPause() {
@@ -33,3 +30,4 @@ abstract class BaseActivity : AppCompatActivity() {
         destroyCrowdinControl(this)
     }
 }
+

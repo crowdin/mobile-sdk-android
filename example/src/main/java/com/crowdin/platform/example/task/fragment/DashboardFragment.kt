@@ -1,7 +1,6 @@
 package com.crowdin.platform.example.task.fragment
 
 import android.app.Activity
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -17,17 +16,22 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crowdin.platform.example.R
-import com.crowdin.platform.example.task.AddTaskActivity
 import com.crowdin.platform.example.task.DBManagerTask
 import com.crowdin.platform.example.task.TaskAdapter
 import com.crowdin.platform.example.task.model.TaskModel
-import com.crowdin.platform.example.utils.DASHBOARD_RECYCLER_VIEW_REFRESH
 import com.crowdin.platform.example.utils.convertDpToPx
 import com.crowdin.platform.example.utils.views.OnStartDragListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlin.math.abs
 
 class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener {
+
+    private var addTaskActivityLauncher =
+        registerForActivityResult(AddTaskActivityContract()) { result ->
+            if (result == Activity.RESULT_OK) {
+                dashboardRecyclerViewRefresh()
+            }
+        }
 
     private lateinit var dbManager: DBManagerTask
     private lateinit var taskAdapter: TaskAdapter
@@ -80,22 +84,7 @@ class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener 
 
     override fun onClick(view: View?) {
         if (view == fabAddTask) {
-            startActivityForResult(
-                Intent(activity, AddTaskActivity::class.java), DASHBOARD_RECYCLER_VIEW_REFRESH
-            )
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                DASHBOARD_RECYCLER_VIEW_REFRESH -> {
-                    taskList = dbManager.getTaskList()
-                    taskAdapter.clearAdapter()
-                    taskAdapter.setList(taskList)
-                }
-            }
+            addTaskActivityLauncher.launch(null)
         }
     }
 
@@ -198,6 +187,12 @@ class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener 
         } else {
             emptyStateView.visibility = View.GONE
         }
+    }
+
+    private fun dashboardRecyclerViewRefresh() {
+        taskList = dbManager.getTaskList()
+        taskAdapter.clearAdapter()
+        taskAdapter.setList(taskList)
     }
 
     private fun addDefaultTask() {
