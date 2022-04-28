@@ -11,7 +11,7 @@ import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.Toolbar
 import com.crowdin.platform.Crowdin
 
-class BaseContextWrappingDelegate(private val superDelegate: AppCompatDelegate) :
+class CrowdinBaseContextWrappingDelegate(private val superDelegate: AppCompatDelegate) :
     AppCompatDelegate() {
 
     override fun getSupportActionBar() = superDelegate.supportActionBar

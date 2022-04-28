@@ -115,7 +115,12 @@ To integrate SDK with your application you need to follow step by step instructi
    <summary>Kotlin</summary>
 
    ```kotlin
-   override fun getDelegate() = BaseContextWrappingDelegate(super.getDelegate())
+    private var delegate: AppCompatDelegate? = null
+
+    override fun getDelegate(): AppCompatDelegate = delegate
+        ?: BaseContextWrappingDelegate(super.getDelegate()).also {
+            delegate = it
+        }
    ```
    </details>
 
@@ -123,10 +128,15 @@ To integrate SDK with your application you need to follow step by step instructi
    <summary>Java</summary>
 
    ```java
+   private AppCompatDelegate delegate = null;
+
    @NonNull
    @Override
    public AppCompatDelegate getDelegate() {
-       return new BaseContextWrappingDelegate(super.getDelegate());
+       if (delegate == null) {
+           delegate = new CrowdinBaseContextWrappingDelegate(super.getDelegate());
+       }
+       return delegate;
    }
    ```
    </details>
