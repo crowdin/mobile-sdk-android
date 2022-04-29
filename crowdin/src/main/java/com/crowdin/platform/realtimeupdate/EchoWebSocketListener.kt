@@ -17,11 +17,9 @@ import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.fromHtml
 import com.crowdin.platform.util.unEscapeQuotes
 import com.google.gson.Gson
-import java.lang.ref.WeakReference
-import java.util.Locale
-import java.util.concurrent.ConcurrentHashMap
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import java.util.*
 
 internal class EchoWebSocketListener(
     private var mappingData: LanguageData,
@@ -30,7 +28,7 @@ internal class EchoWebSocketListener(
     private var languageCode: String
 ) : WebSocketListener() {
 
-    private var dataHolderMap = ConcurrentHashMap<WeakReference<TextView>, TextMetaData>()
+    private var dataHolderMap = Collections.synchronizedMap(WeakHashMap<TextView, TextMetaData>())
 
     override fun onOpen(webSocket: WebSocket, response: okhttp3.Response) {
         output("onOpen")
@@ -76,10 +74,10 @@ internal class EchoWebSocketListener(
 
     override fun onFailure(
         webSocket: WebSocket,
-        throwable: Throwable,
+        t: Throwable,
         response: okhttp3.Response?
     ) {
-        output("Error : " + throwable.message)
+        output("Error : " + t.message)
     }
 
     private fun saveMatchedTextViewWithMappingId(mappingData: LanguageData) {
@@ -90,7 +88,7 @@ internal class EchoWebSocketListener(
             mapping.value?.let {
                 textMetaData.mappingValue = it
                 textMetaData.isHint = mapping.isHint
-                dataHolderMap.put(WeakReference(entry.key), textMetaData)
+                dataHolderMap.put(entry.key, textMetaData)
             }
         }
     }
@@ -154,11 +152,11 @@ internal class EchoWebSocketListener(
 
     private fun updateMatchedView(
         eventData: EventResponse.EventData,
-        mutableEntry: MutableMap.MutableEntry<WeakReference<TextView>, TextMetaData>,
+        mutableEntry: MutableMap.MutableEntry<TextView, TextMetaData>,
         textMetaData: TextMetaData
     ) {
         val text = eventData.text
-        val view = mutableEntry.key.get()
+        val view = mutableEntry.key
 
         if (eventData.pluralForm == null || eventData.pluralForm == PLURAL_NONE) {
             updateViewText(view, text, textMetaData.isHint)
@@ -174,8 +172,8 @@ internal class EchoWebSocketListener(
         }
     }
 
-    private fun updateViewText(view: TextView?, text: String, isHint: Boolean) {
-        view?.post {
+    private fun updateViewText(view: TextView, text: String, isHint: Boolean) {
+        view.post {
             val textFormatted = text.unEscapeQuotes().fromHtml()
             if (isHint) {
                 view.hint = textFormatted

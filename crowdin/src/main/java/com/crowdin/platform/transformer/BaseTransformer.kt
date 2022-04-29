@@ -6,6 +6,7 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import com.crowdin.platform.data.model.TextMetaData
 import com.crowdin.platform.data.model.ViewData
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 internal abstract class BaseTransformer : Transformer {
@@ -18,7 +19,7 @@ internal abstract class BaseTransformer : Transformer {
     }
 
     var listener: ViewsChangeListener? = null
-    private val createdViews = ConcurrentHashMap<TextView, TextMetaData>()
+    private val createdViews = Collections.synchronizedMap(WeakHashMap<TextView, TextMetaData>())
 
     override fun invalidate() {
         for (createdView in createdViews) {
@@ -67,7 +68,11 @@ internal abstract class BaseTransformer : Transformer {
     }
 
     override fun getVisibleViewsWithData(): ConcurrentHashMap<TextView, TextMetaData> {
-        return createdViews
+        val concurrentHashMap = ConcurrentHashMap<TextView, TextMetaData>()
+        createdViews.forEach {
+            concurrentHashMap[it.key] = it.value
+        }
+        return concurrentHashMap
     }
 
     override fun setOnViewsChangeListener(listener: ViewsChangeListener?) {
