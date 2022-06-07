@@ -10,19 +10,22 @@ The SDK provides:
 * Real-Time Preview – all the translations that are done in the Editor can be shown in your version of the application in real-time. View the translations already made and the ones you're currently typing in.
 * Screenshots – all the screenshots made in the application may be automatically sent to your Crowdin project with tagged source strings.
 
-## Status
+<p align="center">
+ <a href="https://github.com/crowdin/mobile-sdk-android/tree/master/example">Example project</a> |
+ <a href="https://github.com/crowdin/mobile-sdk-android/wiki">Wiki</a> |
+ <a href="https://support.crowdin.com/content-delivery">Crowdin docs</a> |
+ <a href="https://support.crowdin.com/enterprise/content-delivery">Crowdin Enterprise docs</a>
+</p>
 
 [![](https://jitpack.io/v/crowdin/mobile-sdk-android.svg)](https://jitpack.io/#crowdin/mobile-sdk-android)
 [![Downloads](https://jitpack.io/v/crowdin/mobile-sdk-android/month.svg)](https://jitpack.io/#crowdin/mobile-sdk-android)
-
-[![GitHub issues](https://img.shields.io/github/issues/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/issues)
 [![GitHub Release Date](https://img.shields.io/github/release-date/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/releases/latest)
 [![GitHub contributors](https://img.shields.io/github/contributors/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/graphs/contributors)
 [![GitHub](https://img.shields.io/github/license/crowdin/mobile-sdk-android?cacheSeconds=3600)](https://github.com/crowdin/mobile-sdk-android/blob/master/LICENSE)
 
 [![Azure DevOps builds (branch)](https://img.shields.io/azure-devops/build/crowdin/mobile-sdk-android/12/master?logo=azure-pipelines&cacheSeconds=800)](https://dev.azure.com/crowdin/mobile-sdk-android/_build/latest?definitionId=12&branchName=master)
+[![Azure DevOps tests (branch)](https://img.shields.io/azure-devops/tests/crowdin/mobile-sdk-android/12/master?cacheSeconds=800)](https://dev.azure.com/crowdin/mobile-sdk-android/_build/latest?definitionId=12&branchName=master)
 [![codecov](https://codecov.io/gh/crowdin/mobile-sdk-android/branch/master/graph/badge.svg)](https://codecov.io/gh/crowdin/mobile-sdk-android)
-[![Azure DevOps tests (branch)](https://img.shields.io/azure-devops/tests/crowdin/mobile-sdk-android/13/master?cacheSeconds=800)](https://dev.azure.com/crowdin/mobile-sdk-android/_build/latest?definitionId=12&branchName=master)
 
 ## Table of Contents
 * [Requirements](#requirements)
