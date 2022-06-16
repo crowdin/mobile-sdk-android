@@ -1,4 +1,4 @@
-[<p align="center"><img src="https://support.crowdin.com/assets/logos/crowdin-dark-symbol.png" data-canonical-src="https://support.crowdin.com/assets/logos/crowdin-dark-symbol.png" width="200" height="200" align="center"/></p>](https://crowdin.com)
+[<p align="center"><img src="https://support.crowdin.com/assets/logos/crowdin-dark-symbol.png" data-canonical-src="https://support.crowdin.com/assets/logos/crowdin-dark-symbol.png" width="150" height="150" align="center"/></p>](https://crowdin.com)
 
 # Crowdin Android SDK
 
@@ -10,12 +10,16 @@ The SDK provides:
 * Real-Time Preview – all the translations that are done in the Editor can be shown in your version of the application in real-time. View the translations already made and the ones you're currently typing in.
 * Screenshots – all the screenshots made in the application may be automatically sent to your Crowdin project with tagged source strings.
 
-<p align="center">
- <a href="https://github.com/crowdin/mobile-sdk-android/tree/master/example">Example project</a> |
- <a href="https://github.com/crowdin/mobile-sdk-android/wiki">Wiki</a> |
- <a href="https://support.crowdin.com/content-delivery">Crowdin docs</a> |
- <a href="https://support.crowdin.com/enterprise/content-delivery">Crowdin Enterprise docs</a>
-</p>
+<div align="center">
+
+ [**`Example project`**](https://github.com/crowdin/mobile-sdk-android/tree/master/example) | 
+ [**`Wiki`**](https://github.com/crowdin/mobile-sdk-android/wiki) | 
+ [**`Crowdin docs`**](https://support.crowdin.com/content-delivery) | 
+ [**`Crowdin Enterprise docs`**](https://support.crowdin.com/enterprise/content-delivery)
+ 
+</div>
+
+<div align="center">
 
 [![](https://jitpack.io/v/crowdin/mobile-sdk-android.svg)](https://jitpack.io/#crowdin/mobile-sdk-android)
 [![Downloads](https://jitpack.io/v/crowdin/mobile-sdk-android/month.svg)](https://jitpack.io/#crowdin/mobile-sdk-android)
@@ -27,10 +31,11 @@ The SDK provides:
 [![Azure DevOps tests (branch)](https://img.shields.io/azure-devops/tests/crowdin/mobile-sdk-android/12/master?cacheSeconds=800)](https://dev.azure.com/crowdin/mobile-sdk-android/_build/latest?definitionId=12&branchName=master)
 [![codecov](https://codecov.io/gh/crowdin/mobile-sdk-android/branch/master/graph/badge.svg)](https://codecov.io/gh/crowdin/mobile-sdk-android)
 
+</div>
+ 
 ## Table of Contents
 * [Requirements](#requirements)
 * [Installation](#installation)
-* [Wiki](#wiki)
 * [Setup](#setup)
 * [Advanced Features](#advanced-features)
   * [Real-time Preview](#real-time-preview)
@@ -86,10 +91,6 @@ You have two ways to install Crowdin Android SDK.
 
 
 - Manually download or clone this module.
-
-## Wiki
-
-Visit the [Crowdin Android SDK Wiki](https://github.com/crowdin/mobile-sdk-android/wiki) to see additional project documentation. Here you can find information about the Example project, SDK Controls, and more.
 
 ## Setup
 
