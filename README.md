@@ -244,7 +244,7 @@ All the translations that are done in the Editor can be shown in your version of
                .withDistributionHash(your_distribution_hash)
                .withRealTimeUpdates()
                .withSourceLanguage(source_language)
-               .withAuthConfig(new AuthConfig(client_id, client_secret, organization_name_or_null, request_auth_dialog))
+               .withAuthConfig(new AuthConfig(client_id, client_secret, organization_name, request_auth_dialog))
                .withNetworkType(network_type)                                           // optional
                .withUpdateInterval(interval_in_seconds)                                 // optional
                .build());
@@ -259,7 +259,7 @@ All the translations that are done in the Editor can be shown in your version of
     | `withSourceLanguage`           | Source language code in your Crowdin project | `withSourceLanguage("en")`
     | `withAuthConfig`               | Crowdin authorization config | `withAuthConfig(AuthConfig("client_id", "client_secret", "organization_name"))`
     | `client_id`, `client_secret`   | Crowdin OAuth Client ID and Client Secret  | `"gpY2yC...cx3TYB"`, `"Xz95tfedd0A...TabEDx9T"`
-    | `organization_name`            | An Organization domain name (for Crowdin Enterprise users only) | `"mycompany"` for Crowdin Enterprise or `null` for crowdin.com
+    | `organization_name`            | An Organization domain name<br/>:information_source: for **Crowdin Enterprise users only** | `"mycompany"` for Crowdin Enterprise or `null` for crowdin.com
     | `request_auth_dialog`          | Request authorization dialog 				   | true by default or false
     | `withNetworkType`              | Network type to be used for translations download | Acceptable values are:<br>- `NetworkType.ALL` (default)<br> - `NetworkType.CELLULAR`<br>- `NetworkType.WIFI`
     | `withUpdateInterval`           | Translations update interval in seconds. The minimum and the default value is 15 minutes. Translations will be updated every defined time interval once per application load | `withUpdateInterval(900)`
@@ -352,7 +352,7 @@ To enable the Screenshots feature follow these instructions:
               .withDistributionHash(your_distribution_hash)
               .withScreenshotEnabled()
               .withSourceLanguage(source_language)
-              .withAuthConfig(new AuthConfig(client_id, client_secret, organization_name_or_null, request_auth_dialog))
+              .withAuthConfig(new AuthConfig(client_id, client_secret, organization_name, request_auth_dialog))
               .withNetworkType(network_type)                                           // optional
               .withUpdateInterval(interval_in_seconds)                                 // optional
               .build());
@@ -370,7 +370,7 @@ To enable the Screenshots feature follow these instructions:
    | `withSourceLanguage`           | Source language code in your Crowdin project | `withSourceLanguage("en")`
    | `withAuthConfig`               | Crowdin authorization config | `withAuthConfig(AuthConfig("client_id", "client_secret", "organization_name"))`
    | `client_id`, `client_secret`   | Crowdin OAuth Client ID and Client Secret  | `"gpY2yC...cx3TYB"`, `"Xz95tfedd0A...TabEDx9T"`
-   | `organization_name`            | An Organization domain name (for Crowdin Enterprise users only) | `"mycompany"` for Crowdin Enterprise or `null` for crowdin.com
+   | `organization_name`            | An Organization domain name<br/>:information_source: for **Crowdin Enterprise users only** | `"mycompany"` for Crowdin Enterprise or `null` for crowdin.com
    | `request_auth_dialog`          | Request authorization dialog 				  | true by default or false
    | `withNetworkType`              | Network type to be used for translations download | Acceptable values are:<br>- `NetworkType.ALL` (default)<br> - `NetworkType.CELLULAR`<br>- `NetworkType.WIFI`
    | `withUpdateInterval`           | Translations update interval in seconds. The minimum and the default value is 15 minutes. Translations will be updated every defined time interval once per application load | `withUpdateInterval(900)`
