@@ -566,7 +566,7 @@ You can set file export patterns and check existing ones using *File Settings*. 
    On each shake event it will trigger `Crowdin.forceUpdate(this)` method. You can call this method from your app.
    Also, there are other public methods in `Crowdin` class. You can find details in `kotlin doc` files.
 
-9. You can trigger force upload from Crowdin while launching Splash Activity and after that open Main Activity
+9. Synchronous mode. You can trigger force upload from Crowdin while launching Splash Activity and after that open Main Activity
     ```kotlin
     override fun onCreate(savedInstanceState: Bundle?) {
         Crowdin.forceUpdate(this) {
