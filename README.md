@@ -488,11 +488,30 @@ You can set file export patterns and check existing ones using *File Settings*. 
 
 ## Notes
 
-1. Crowdin works with current locale, so if you change locale with
-   ```java
-   Locale.setDefault(newLocale);
+1. Crowdin works with current locale, if you change locale programmatically use the language plus country format:
+
+   ```kotlin
+   Locale("en", "US")
    ```
-   Crowdin will start using strings of the new locale.
+
+   Example of language change in App.kt:
+    
+   ```kotlin
+   /**
+    * Should be overridden in case you want to change locale programmatically.
+    * For custom language set your application locale taking into account constraints for language and country/region
+    * This should match with `Locale code:` for your custom language on Crowdin platform.
+    *
+    * language - [a-zA-Z]{2,8}
+    * country/region - [a-zA-Z]{2} | [0-9]{3}
+    *
+    * Example: "aa-BB"
+    * */
+   override fun attachBaseContext(newBase: Context) {
+       languagePreferences = LanguagePreferences(newBase)
+       super.attachBaseContext(ContextWrapper(newBase.updateLocale(languagePreferences.getLanguageCode())))
+   }
+   ```
 
 2. For displaying a string, Crowdin tries to find that in dynamic strings, and will use bundled version as fallback. In the other words, Only the new provided strings will be overridden and for the rest the bundled version will be used.
 
