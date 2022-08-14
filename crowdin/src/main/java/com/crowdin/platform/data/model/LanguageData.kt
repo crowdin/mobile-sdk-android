@@ -11,11 +11,9 @@ internal class LanguageData(var language: String) {
     var plurals: MutableList<PluralData> = mutableListOf()
 
     fun updateResources(languageData: LanguageData) {
-        when {
-            languageData.resources.isNotEmpty() -> resources = languageData.resources
-            languageData.arrays.isNotEmpty() -> arrays = languageData.arrays
-            languageData.plurals.isNotEmpty() -> plurals = languageData.plurals
-        }
+        if (languageData.resources.isNotEmpty()) resources = languageData.resources
+        if (languageData.arrays.isNotEmpty()) arrays = languageData.arrays
+        if (languageData.plurals.isNotEmpty()) plurals = languageData.plurals
     }
 
     fun addNewResources(languageData: LanguageData) {
