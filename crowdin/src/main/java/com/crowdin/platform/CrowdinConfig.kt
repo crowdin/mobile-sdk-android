@@ -18,6 +18,7 @@ class CrowdinConfig private constructor() {
     var updateInterval: Long = -1
     var sourceLanguage: String = ""
     var authConfig: AuthConfig? = null
+    var isInitSyncEnabled: Boolean = true
 
     class Builder {
 
@@ -29,6 +30,7 @@ class CrowdinConfig private constructor() {
         private var updateInterval: Long = -1
         private var sourceLanguage: String = ""
         private var authConfig: AuthConfig? = null
+        private var isInitSyncEnabled: Boolean = true
 
         fun persist(isPersist: Boolean): Builder {
             this.isPersist = isPersist
@@ -70,6 +72,11 @@ class CrowdinConfig private constructor() {
             return this
         }
 
+        fun withInitSyncDisabled(): Builder {
+            this.isInitSyncEnabled = false
+            return this
+        }
+
         fun build(): CrowdinConfig {
             val config = CrowdinConfig()
             config.isPersist = isPersist
@@ -105,6 +112,7 @@ class CrowdinConfig private constructor() {
                 }
             }
             config.authConfig = authConfig
+            config.isInitSyncEnabled = isInitSyncEnabled
 
             return config
         }

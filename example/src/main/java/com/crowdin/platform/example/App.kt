@@ -60,7 +60,8 @@ class App : Application() {
                         organizationName = organizationName,
                         requestAuthDialog = true
                     )
-                )                                                                       // optional
+                )
+                .withInitSyncDisabled()                                                 // optional
                 .build()
         )
 

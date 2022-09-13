@@ -80,6 +80,11 @@ object Crowdin {
         initTranslationDataManager()
         initRealTimeUpdates()
         initPeriodicUpdates(context)
+
+        if (config.updateInterval == -1L && config.isInitSyncEnabled && !FeatureFlags.isRealTimeUpdateEnabled) {
+            forceUpdate(context)
+        }
+
         loadMapping()
     }
 
@@ -87,12 +92,7 @@ object Crowdin {
         when {
             config.updateInterval >= RecurringManager.MIN_PERIODIC_INTERVAL_MILLIS ->
                 RecurringManager.setPeriodicUpdates(context, config)
-            else -> {
-                RecurringManager.cancel(context)
-                if (!FeatureFlags.isRealTimeUpdateEnabled) {
-                    forceUpdate(context)
-                }
-            }
+            else -> RecurringManager.cancel(context)
         }
     }
 

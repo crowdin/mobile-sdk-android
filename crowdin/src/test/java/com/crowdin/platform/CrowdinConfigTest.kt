@@ -159,4 +159,16 @@ class CrowdinConfigTest {
         // Then
         Assert.assertTrue(config.authConfig?.requestAuthDialog == true)
     }
+
+    @Test
+    fun whenInitSyncDisabled_isInitSyncEnabledShouldBeFalse() {
+        // When
+        val config = CrowdinConfig.Builder()
+            .withDistributionHash("distributionHash")
+            .withInitSyncDisabled()
+            .build()
+
+        // Then
+        Assert.assertTrue(config.isInitSyncEnabled == false)
+    }
 }

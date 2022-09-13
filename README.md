@@ -587,6 +587,23 @@ You can set file export patterns and check existing ones using *File Settings*. 
    Also, there are other public methods in `Crowdin` class. You can find details in `kotlin doc` files.
 
 9. Synchronous mode. You can trigger force upload from Crowdin while launching Splash Activity and after that open Main Activity
+
+   App.kt:
+
+   ```kotlin
+   override fun onCreate() {
+       super.onCreate()
+
+       Crowdin.init(applicationContext,
+           CrowdinConfig.Builder()
+               .withDistributionHash(your_distribution_hash)
+               .withInitSyncDisabled()  // Initial data synchronization should be disabled in this case.
+               .build())
+   }
+   ```
+
+    YourActivity.kt:
+
     ```kotlin
     override fun onCreate(savedInstanceState: Bundle?) {
         Crowdin.forceUpdate(this) {
