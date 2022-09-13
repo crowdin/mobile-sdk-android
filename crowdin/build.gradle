@@ -16,8 +16,8 @@ plugins {
 apply from: '../jacoco.gradle'
 
 ext {
-    libraryVersionCode = 28
-    libraryVersionName = "1.5.3"
+    libraryVersionCode = 29
+    libraryVersionName = "1.5.4"
 
     publishedGroupId = 'com.crowdin.platform'
     libraryName = 'CrowdinAndroidSdk'
