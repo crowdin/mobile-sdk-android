@@ -17,6 +17,8 @@ import java.util.TimeZone
 
 const val NEW_LINE = "<br>"
 private const val DEFAULT_DATE_TIME_FORMAT = "yyyy_MM_dd-HH_mm_ss"
+private const val HEBREW_LANGUAGE_CODE = "iw"
+private const val HEBREW_CROWDIN_SUPPORTED_LANGUAGE_CODE = "he"
 
 fun MenuInflater.inflateWithCrowdin(@MenuRes menuRes: Int, menu: Menu, resources: Resources) {
     this.inflate(menuRes, menu)
@@ -30,7 +32,13 @@ fun Long.parseToDateTimeFormat(): String {
     return monthDate.format(cal.time)
 }
 
-fun Locale.getFormattedCode(): String = "$language-$country"
+fun Locale.getFormattedCode(): String {
+    var languageCode = language
+    if (languageCode == HEBREW_LANGUAGE_CODE) {
+        languageCode = HEBREW_CROWDIN_SUPPORTED_LANGUAGE_CODE
+    }
+    return "$languageCode-$country"
+}
 
 fun String.getLocaleForLanguageCode(): Locale {
     var code = Locale.getDefault().language
@@ -55,7 +63,11 @@ fun executeIO(function: () -> Unit) {
 }
 
 fun getMatchedCode(list: List<String>?, customLanguages: Map<String, CustomLanguage>?): String? {
-    val code = "${Locale.getDefault().language}-${Locale.getDefault().country}"
+    var languageCode = Locale.getDefault().language
+    if (languageCode == HEBREW_LANGUAGE_CODE) {
+        languageCode = HEBREW_CROWDIN_SUPPORTED_LANGUAGE_CODE
+    }
+    val code = "$languageCode-${Locale.getDefault().country}"
 
     if (customLanguages != null) {
         for (languageData in customLanguages) {
@@ -66,7 +78,6 @@ fun getMatchedCode(list: List<String>?, customLanguages: Map<String, CustomLangu
     }
 
     if (list?.contains(code) == false) {
-        val languageCode = Locale.getDefault().language
         return languageCode.takeIf { list.contains(languageCode) }
     }
     return code
