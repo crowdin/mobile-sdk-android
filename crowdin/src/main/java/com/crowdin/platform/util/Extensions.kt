@@ -32,13 +32,7 @@ fun Long.parseToDateTimeFormat(): String {
     return monthDate.format(cal.time)
 }
 
-fun Locale.getFormattedCode(): String {
-    var languageCode = language
-    if (languageCode == HEBREW_LANGUAGE_CODE) {
-        languageCode = HEBREW_CROWDIN_SUPPORTED_LANGUAGE_CODE
-    }
-    return "$languageCode-$country"
-}
+fun Locale.getFormattedCode(): String = "${language.withCrowdinSupportedCheck()}-$country"
 
 fun String.getLocaleForLanguageCode(): Locale {
     var code = Locale.getDefault().language
@@ -63,10 +57,7 @@ fun executeIO(function: () -> Unit) {
 }
 
 fun getMatchedCode(list: List<String>?, customLanguages: Map<String, CustomLanguage>?): String? {
-    var languageCode = Locale.getDefault().language
-    if (languageCode == HEBREW_LANGUAGE_CODE) {
-        languageCode = HEBREW_CROWDIN_SUPPORTED_LANGUAGE_CODE
-    }
+    val languageCode = Locale.getDefault().language.withCrowdinSupportedCheck()
     val code = "$languageCode-${Locale.getDefault().country}"
 
     if (customLanguages != null) {
@@ -82,6 +73,13 @@ fun getMatchedCode(list: List<String>?, customLanguages: Map<String, CustomLangu
     }
     return code
 }
+
+fun String.withCrowdinSupportedCheck(): String =
+    if (this == HEBREW_LANGUAGE_CODE) {
+        HEBREW_CROWDIN_SUPPORTED_LANGUAGE_CODE
+    } else {
+        this
+    }
 
 fun String.unEscapeQuotes(): String {
     return this.replace("\\\"", "\"")
