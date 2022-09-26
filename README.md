@@ -494,7 +494,7 @@ You can set file export patterns and check existing ones using *File Settings*. 
    Locale("en", "US")
    ```
 
-   Example of language change in App.kt:
+   Example of language change in **App.kt**:
     
    ```kotlin
    /**
@@ -512,6 +512,8 @@ You can set file export patterns and check existing ones using *File Settings*. 
        super.attachBaseContext(ContextWrapper(newBase.updateLocale(languagePreferences.getLanguageCode())))
    }
    ```
+   
+   Please make sure you're added this code to the **App.kt** class.
 
 2. For displaying a string, Crowdin tries to find that in dynamic strings, and will use bundled version as fallback. In the other words, Only the new provided strings will be overridden and for the rest the bundled version will be used.
 
