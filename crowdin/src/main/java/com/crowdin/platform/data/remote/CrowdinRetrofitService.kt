@@ -19,7 +19,7 @@ internal object CrowdinRetrofitService {
 
     private const val BASE_DISTRIBUTION_URL = "https://distributions.crowdin.net/"
     private const val AUTH_API_URL = "https://accounts.crowdin.com/"
-    private const val BASE_API_URL = "https://crowdin.com/"
+    private const val BASE_API_URL = "https://api.crowdin.com/"
 
     private var okHttpClient: OkHttpClient? = null
     private var interceptableOkHttpClient: OkHttpClient? = null
@@ -80,7 +80,7 @@ internal object CrowdinRetrofitService {
 
     fun getCrowdinApi(dataManager: DataManager, organizationName: String?): CrowdinApi {
         var baseUrl = BASE_API_URL
-        organizationName?.let { baseUrl = "https://$organizationName.crowdin.com/" }
+        organizationName?.let { baseUrl = "https://$organizationName.api.crowdin.com/" }
         return crowdinApi
             ?: getCrowdinRetrofit(
                 getInterceptableHttpClient(SessionImpl(dataManager, getCrowdinAuthApi())),
