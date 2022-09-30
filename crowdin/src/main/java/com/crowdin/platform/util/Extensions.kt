@@ -17,8 +17,7 @@ import java.util.TimeZone
 
 const val NEW_LINE = "<br>"
 private const val DEFAULT_DATE_TIME_FORMAT = "yyyy_MM_dd-HH_mm_ss"
-private const val HEBREW_LANGUAGE_CODE = "iw"
-private const val HEBREW_CROWDIN_SUPPORTED_LANGUAGE_CODE = "he"
+private val crowdinCodeMapping = mapOf("iw" to "he")
 
 fun MenuInflater.inflateWithCrowdin(@MenuRes menuRes: Int, menu: Menu, resources: Resources) {
     this.inflate(menuRes, menu)
@@ -74,12 +73,7 @@ fun getMatchedCode(list: List<String>?, customLanguages: Map<String, CustomLangu
     return code
 }
 
-fun String.withCrowdinSupportedCheck(): String =
-    if (this == HEBREW_LANGUAGE_CODE) {
-        HEBREW_CROWDIN_SUPPORTED_LANGUAGE_CODE
-    } else {
-        this
-    }
+fun String.withCrowdinSupportedCheck(): String = crowdinCodeMapping[this] ?: this
 
 fun String.unEscapeQuotes(): String {
     return this.replace("\\\"", "\"")
