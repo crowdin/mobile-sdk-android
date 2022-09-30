@@ -3,6 +3,8 @@ trigger:
     include:
     - refs/heads/*
     - refs/tags/*
+    exclude:
+    - refs/heads/Version-*
   paths:
     exclude:
     - README.md
