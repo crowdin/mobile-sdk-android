@@ -26,6 +26,7 @@ internal class CrowdinLayoutInflater constructor(
     private val supportedCustomViews = listOf(
         "com.google.android.material.bottomnavigation.BottomNavigationView",
         "com.google.android.material.navigation.NavigationView",
+        "androidx.appcompat.widget.AppCompatButton",
         "TextView"
     )
 
