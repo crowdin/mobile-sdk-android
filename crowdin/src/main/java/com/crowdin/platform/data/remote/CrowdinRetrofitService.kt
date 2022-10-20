@@ -19,7 +19,7 @@ internal object CrowdinRetrofitService {
 
     private const val BASE_DISTRIBUTION_URL = "https://distributions.crowdin.net/"
     private const val AUTH_API_URL = "https://accounts.crowdin.com/"
-    private const val BASE_API_URL = "https://crowdin.com/"
+    private const val BASE_API_URL = "https://api.crowdin.com/"
 
     private var okHttpClient: OkHttpClient? = null
     private var interceptableOkHttpClient: OkHttpClient? = null
