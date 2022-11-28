@@ -3,6 +3,7 @@ package com.crowdin.platform.data.remote
 import android.util.Log
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.LanguageDataCallback
+import com.crowdin.platform.data.model.CustomLanguage
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.ManifestData
@@ -52,17 +53,10 @@ internal class StringDataRemoteRepository(
 
         val supportedLanguages = manifest?.languages
         val customLanguages = manifest?.customLanguages
+        val preferredLanguageCode = getSafeLanguageCode(preferredLanguageCode, supportedLanguages, customLanguages)
         if (preferredLanguageCode == null) {
-            preferredLanguageCode = getMatchedCode(supportedLanguages, customLanguages)
-            if (preferredLanguageCode == null) {
-                languageDataCallback?.onFailure(Throwable("Can't find preferred Language"))
-                return
-            }
-        } else {
-            if (supportedLanguages?.contains(preferredLanguageCode) == false) {
-                languageDataCallback?.onFailure(Throwable("Can't find preferred Language"))
-                return
-            }
+            languageDataCallback?.onFailure(Throwable("Can't find preferred Language"))
+            return
         }
 
         // Combine all data before save to storage
@@ -70,14 +64,14 @@ internal class StringDataRemoteRepository(
         val languageInfo = if (customLanguages?.contains(preferredLanguageCode) == true) {
             customLanguages[preferredLanguageCode]?.toLanguageInfo()
         } else {
-            getLanguageInfo(preferredLanguageCode!!)
+            getLanguageInfo(preferredLanguageCode)
         }
 
         languageInfo ?: return
 
         languageData.language = languageInfo.locale
         manifest?.files?.forEach {
-            val filePath = validateFilePath(it, languageInfo, preferredLanguageCode!!, manifest.languageMapping)
+            val filePath = validateFilePath(it, languageInfo, preferredLanguageCode, manifest.languageMapping)
             val eTag = eTagMap[filePath]
             val result = requestStringData(
                 eTag,
@@ -90,6 +84,18 @@ internal class StringDataRemoteRepository(
         }
 
         languageDataCallback?.onDataLoaded(languageData)
+    }
+
+    private fun getSafeLanguageCode(preferredLanguageCode: String?, supportedLanguages: List<String>?, customLanguages: Map<String, CustomLanguage>?): String? {
+        return if (preferredLanguageCode == null) {
+            getMatchedCode(supportedLanguages, customLanguages)
+        } else {
+            if (supportedLanguages?.contains(preferredLanguageCode) == false) {
+                null
+            } else {
+                preferredLanguageCode
+            }
+        }
     }
 
     private fun requestStringData(
