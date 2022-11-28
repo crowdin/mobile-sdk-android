@@ -119,7 +119,12 @@ object Crowdin {
         if (dataManager == null) {
             base
         } else {
-            CrowdinContextWrapper.wrap(base, dataManager, viewTransformerManager)
+            try {
+                CrowdinContextWrapper.wrap(base, dataManager, viewTransformerManager)
+            } catch (ex: Exception) {
+                Log.d(CROWDIN_TAG, "Couldn't wrap context without first calling `Crowdin.init`")
+                base
+            }
         }
 
     /**
