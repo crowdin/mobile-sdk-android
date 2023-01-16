@@ -9,6 +9,7 @@
             android:name=".auth.AuthActivity"
             android:exported="true"
             android:launchMode="singleInstance"
+            android:exported="true"
             android:theme="@style/AuthTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
