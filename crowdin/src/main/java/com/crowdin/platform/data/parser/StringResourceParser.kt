@@ -71,7 +71,15 @@ internal class StringResourceParser : Parser {
                     (isPluralStarted && isItemStarted) ||
                     isStringStarted
                 ) {
-                    content += "<${parser.name}>"
+                    var innerTag = "<${parser.name}"
+                    if (parser.attributeCount > 0) {
+                        for (i in 0 until parser.attributeCount) {
+                            innerTag += " ${parser.getAttributeName(i)}=\"${parser.getAttributeValue(i)}\""
+                        }
+                    }
+                    innerTag += ">"
+
+                    content += innerTag
                     isInnerTagOpened = true
                 }
             }

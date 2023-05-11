@@ -98,6 +98,7 @@ class StringResourceParserTest {
         stringResourceParser.onText(parser)
         // Add inner tag text
         `when`(parser.name).thenReturn("b")
+        `when`(parser.attributeCount).thenReturn(0)
         stringResourceParser.onStartTag(parser)
         `when`(parser.text).thenReturn("test")
         stringResourceParser.onText(parser)
@@ -107,6 +108,36 @@ class StringResourceParserTest {
         stringResourceParser.onEndTag(parser)
         val expectedKey = "stringKey"
         val expectedValue = "test <b>test</b>"
+
+        val stringData = stringResourceParser.getLanguageData().resources.first()
+        assertThat(stringData.stringKey, `is`(expectedKey))
+        assertThat(stringData.stringValue, `is`(expectedValue))
+    }
+
+    @Test
+    fun parseInnerTagWithAttributeTest() {
+        val stringResourceParser = StringResourceParser()
+        val parser = mock(XmlPullParser::class.java)
+        `when`(parser.name).thenReturn("string")
+        `when`(parser.attributeCount).thenReturn(1)
+        `when`(parser.getAttributeValue(0)).thenReturn("stringKey")
+        // Start string
+        `when`(parser.text).thenReturn("test ")
+        stringResourceParser.onStartTag(parser)
+        stringResourceParser.onText(parser)
+        // Add inner tag with attributes text
+        `when`(parser.name).thenReturn("b")
+        `when`(parser.getAttributeName(0)).thenReturn("attrName")
+        `when`(parser.getAttributeValue(0)).thenReturn("attrValue")
+        stringResourceParser.onStartTag(parser)
+        `when`(parser.text).thenReturn("test")
+        stringResourceParser.onText(parser)
+        stringResourceParser.onEndTag(parser)
+        // End string
+        `when`(parser.name).thenReturn("string")
+        stringResourceParser.onEndTag(parser)
+        val expectedKey = "stringKey"
+        val expectedValue = "test <b attrName=\"attrValue\">test</b>"
 
         val stringData = stringResourceParser.getLanguageData().resources.first()
         assertThat(stringData.stringKey, `is`(expectedKey))
