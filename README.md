@@ -30,6 +30,10 @@ The SDK provides:
 
 </div>
 
+## Usage
+
+Visit the official [documentation](https://crowdin.github.io/mobile-sdk-android/) for more details.
+
 ## Contributing
 
 If you would like to contribute, please read the [Contributing](/CONTRIBUTING.md) guidelines.
