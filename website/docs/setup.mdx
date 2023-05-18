@@ -1,0 +1,174 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+# Setup
+
+To configure Android SDK integration you need to:
+
+- Upload your *xml* localization files to Crowdin. If you have existing translations, you can also upload them.
+- Set up Distribution in Crowdin.
+- Set up SDK and enable Over-The-Air Content Delivery feature in your project.
+
+**Distribution** is a CDN vault that mirrors the translated content of your project and is required for integration with Android app.
+
+- [Creating a distribution in crowdin.com](https://support.crowdin.com/content-delivery/)
+- [Creating a distribution in Crowdin Enterprise](https://support.crowdin.com/enterprise/content-delivery/)
+
+:::info
+- By default, the translation downloading happens **asynchronously** after launching the app. The downloaded translations will be used after the next launch of the app or Activity re-render. Otherwise, the previously cached translations will be used (or local translations if a cache does not exist).
+- The CDN feature does not update the localization files. if you want to add new translations to the localization files you need to do it yourself.
+- Once SDK receives the translations, it's stored on the device as application files for further sessions to minimize requests the next time the app starts. Storage time can be configured using `withUpdateInterval` option.
+- CDN caches all the translation in release for up to 1 hour and even when new translations are released in Crowdin, CDN may return it with a delay.
+- To display a string, Crowdin will try to find it in the dynamic strings (from the CDN) and use the bundled version as a fallback. In other words, only the newly provided strings will be overridden and the bundled version will be used for the rest.
+:::
+
+To integrate the SDK with your application, follow the step-by-step instructions:
+
+### Context wrapping
+
+Inject Crowdin translations by adding the *override* method to the *BaseActivity* class to inject Crowdin translations into the Context. If you have already migrated to [AppCompat](https://developer.android.com/jetpack/androidx/releases/appcompat) **1.2.0+** version, use this method:
+
+import sampleContextAppcompat2Kotlin from '!!raw-loader!./code-samples/setup/context-appcompat-1.2.kt';
+import sampleContextAppcompat2Java from '!!raw-loader!./code-samples/setup/context-appcompat-1.2.java';
+
+<Tabs groupId="language">
+  <TabItem value="kotlin" label="Kotlin"><CodeBlock language="kotlin">{sampleContextAppcompat2Kotlin}</CodeBlock></TabItem>
+  <TabItem value="java" label="Java"><CodeBlock language="java">{sampleContextAppcompat2Java}</CodeBlock></TabItem>
+</Tabs>
+
+For AppCompat **1.1.0** and lower use this:
+
+import sampleContextAppcompat1Kotlin from '!!raw-loader!./code-samples/setup/context-appcompat-1.1.kt';
+import sampleContextAppcompat1Java from '!!raw-loader!./code-samples/setup/context-appcompat-1.1.java';
+
+<Tabs groupId="language">
+  <TabItem value="kotlin" label="Kotlin"><CodeBlock language="kotlin">{sampleContextAppcompat1Kotlin}</CodeBlock></TabItem>
+  <TabItem value="java" label="Java"><CodeBlock language="java">{sampleContextAppcompat1Java}</CodeBlock></TabItem>
+</Tabs>
+
+:::info
+If you don't have the *BaseActivity* class, add the above code to all of your activities.
+:::
+
+### Configuring Crowdin SDK
+
+Enable *Over-The-Air Content Delivery* in your project so that the application can pull translations from the CDN vault. Add the following code to the *App*/*Application* class:
+
+import sampleConfiguringKotlin from '!!raw-loader!./code-samples/setup/configuring.kt';
+import sampleConfiguringJava from '!!raw-loader!./code-samples/setup/configuring.java';
+
+<Tabs groupId="language">
+  <TabItem value="kotlin" label="Kotlin"><CodeBlock language="kotlin">{sampleConfiguringKotlin}</CodeBlock></TabItem>
+  <TabItem value="java" label="Java"><CodeBlock language="java">{sampleConfiguringJava}</CodeBlock></TabItem>
+</Tabs>
+
+### Change locale programmatically
+
+Crowdin works with the current locale, if you want to change the locale programmatically use the *language* plus *country* format: `Locale("en", "US")`.
+
+Example of language change in **App.kt/Application.java**:
+
+import sampleLocaleChangeKotlin from '!!raw-loader!./code-samples/setup/locale.kt';
+import sampleLocaleChangeJava from '!!raw-loader!./code-samples/setup/locale.java';
+
+<Tabs groupId="language">
+  <TabItem value="kotlin" label="Kotlin"><CodeBlock language="kotlin">{sampleLocaleChangeKotlin}</CodeBlock></TabItem>
+  <TabItem value="java" label="Java"><CodeBlock language="java">{sampleLocaleChangeJava}</CodeBlock></TabItem>
+</Tabs>
+
+:::caution
+Make sure you've added this code to the **App.kt/Application.java** class.
+:::
+
+### Config options
+
+| Config option          | Description                                                                                                                                                                  | Example                                                                                                         |
+|------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| `withDistributionHash` | Distribution Hash                                                                                                                                                            | `withDistributionHash("7a0c1...7uo3b")`                                                                         |
+| `withNetworkType`      | Network type to be used for translations download                                                                                                                            | Acceptable values are:<br/>- `NetworkType.ALL` (default)<br/> - `NetworkType.CELLULAR`<br/>- `NetworkType.WIFI` |
+| `withUpdateInterval`   | Translations update interval in seconds. The minimum and the default value is 15 minutes. Translations will be updated every defined time interval once per application load | `withUpdateInterval(900)`                                                                                       |
+
+### Tips and tricks
+
+**1.** To translate menu items you need to update your `onCreateOptionsMenu` method:
+
+import sampleMenuItemsKotlin from '!!raw-loader!./code-samples/setup/menu-items.kt';
+import sampleMenuItemsJava from '!!raw-loader!./code-samples/setup/menu-items.java';
+
+<Tabs groupId="language">
+  <TabItem value="kotlin" label="Kotlin"><CodeBlock language="kotlin">{sampleMenuItemsKotlin}</CodeBlock></TabItem>
+  <TabItem value="java" label="Java"><CodeBlock language="java">{sampleMenuItemsJava}</CodeBlock></TabItem>
+</Tabs>
+
+**2.** In case you have custom views that uses `TypedArray` and `stylable` attributes, you will need to use the following approach:
+
+```kotlin
+val textId = typedArray.getResourceId(R.styleable.sample_item, 0)
+ textView.setText(textId)
+```
+
+instead of `typedArray.getString(R.styleable.sample_item)`.
+
+**3.** Activity title defined via *AndroidManifest* won't be translated:
+
+```xml
+<activity
+    android:name=".activities.SampleActivity"
+    android:label="@string/title"/>
+```
+
+You can simply update your `toolbar` inside of activity or fragment:
+
+```java
+toolbar.setTitle(R.string.title);
+```
+
+**4.** In case your project already overrides `attachBaseContext`:
+
+```java
+super.attachBaseContext(Crowdin.wrapContext(SomeLib.wrap(newBase)));
+```
+
+**5.** You can register/unregister observer for data changes by adding this lines:
+
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    Crowdin.registerDataLoadingObserver(this)
+}
+```
+
+It has callback method `onDataChanged()` that can be used to invalidate your UI (TextView/Menu etc.). It will use downloaded resources automatically.
+
+```kotlin
+override fun onDataChanged() {
+    invalidateOptionsMenu()
+    Crowdin.updateMenuItemsText(R.menu.activity_main_drawer, navigationView.menu, resources)
+    toolbarMain.title = getString(R.string.category)
+}
+```
+
+Otherwise, new resources are applied when the activity is restarted.
+
+**6.** ShakeDetector for triggering force upload from Crowdin. It will try to download the latest translations from the distribution:
+
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    Crowdin.registerShakeDetector(this)
+}
+```
+
+On each shake event it will trigger the `Crowdin.forceUpdate(this)` method. You can also call this method from your app code.
+
+**7.** In case you have a custom `TextView` with string specified in xml, make sure you follow this naming convention `PlaceholderTextView` otherwise SDK will skip this view during inflating process and it won't be translated.
+
+### Limitations
+
+1. Plurals are supported from Android SDK version 24.
+2. `TabItem` text added via xml won't be updated. There is workaround: you can store tabItem titles in your string-array and add tabs dynamically.
+3. `PreferenceScreen` defined via XML are not supported.
+
+### See also
+
+- [Real-Time Preview](advanced-features/real-time-preview)
+- [Screenshots](advanced-features/screenshots)
