@@ -1,0 +1,74 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+# SDK Controls
+
+Crowdin SDK Controls - UI widget for easy access to the main features of Crowdin SDK. The component can be dragged and dropped anywhere on the device screen and has two states:
+
+| Collapsed (simple icon)                                                     | Expanded                                                                  |
+|-----------------------------------------------------------------------------|---------------------------------------------------------------------------|
+| ![SDK Controls collapsed](/img/sdk-controls/crowdin_controls_collapsed.png) | ![SDK Controls expanded](/img/sdk-controls/crowdin_controls_expanded.png) |
+
+The expanded state provides the following action buttons:
+
+- Log In/Out: launch authorization flow or clear user authorization data on logout.
+- Real-time preview Enable/Disable: open/close connection that is required to work with Crowdin editor.
+- Capture screenshots: capture a screenshot of the current screen with all tags and upload it to Crowdin.
+- Reload Translations:
+  - Real-Time-Preview ON: it will fetch the latest translations from Crowdin and apply changes to UI.
+  - Real-Time-Preview OFF: it will fetch the content from distribution (it won't update UI instantly. Translations will be updated on the next application load or Activity change).
+
+### Installation
+
+Add it to your root `build.gradle` at the end of repositories:
+
+```groovy
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+Add the dependency:
+
+```groovy
+dependencies {
+    implementation 'com.github.crowdin.mobile-sdk-android:controls:1.4.3'
+}
+```
+
+### Initialization
+
+Add this line to your base Activity onCreate method:
+
+import sampleControlsInitKotlin from '!!raw-loader!../code-samples/sdk-controls/init.kt';
+import sampleControlsInitJava from '!!raw-loader!../code-samples/sdk-controls/init.java';
+
+<Tabs groupId="language">
+  <TabItem value="kotlin" label="Kotlin"><CodeBlock language="kotlin">{sampleControlsInitKotlin}</CodeBlock></TabItem>
+  <TabItem value="java" label="Java"><CodeBlock language="java">{sampleControlsInitJava}</CodeBlock></TabItem>
+</Tabs>
+
+Call the `destroy` method to hide the control component. Also, you can do it by clicking on the close image button:
+
+import sampleControlsDestroyKotlin from '!!raw-loader!../code-samples/sdk-controls/destroy.kt';
+import sampleControlsDestroyJava from '!!raw-loader!../code-samples/sdk-controls/destroy.java';
+
+<Tabs groupId="language">
+  <TabItem value="kotlin" label="Kotlin"><CodeBlock language="kotlin">{sampleControlsDestroyKotlin}</CodeBlock></TabItem>
+  <TabItem value="java" label="Java"><CodeBlock language="java">{sampleControlsDestroyJava}</CodeBlock></TabItem>
+</Tabs>
+
+Starting from Android M - the **Display over other apps** permission is required. You will be redirected to settings automatically. To handle result properly, please add the next lines to your Activity class:
+
+import sampleControlsOnActivityKotlin from '!!raw-loader!../code-samples/sdk-controls/on-activity-result.kt';
+import sampleControlsOnActivityJava from '!!raw-loader!../code-samples/sdk-controls/on-activity-result.java';
+
+<Tabs groupId="language">
+  <TabItem value="kotlin" label="Kotlin"><CodeBlock language="kotlin">{sampleControlsOnActivityKotlin}</CodeBlock></TabItem>
+  <TabItem value="java" label="Java"><CodeBlock language="java">{sampleControlsOnActivityJava}</CodeBlock></TabItem>
+</Tabs>
+

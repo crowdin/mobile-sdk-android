@@ -1,0 +1,71 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+# Screenshots
+
+Enable this option if you want all screenshots taken in the application to be automatically sent to your Crowdin project with tagged strings. This provides additional context for translators.
+
+You can take screenshots and automatically upload them tagged to Crowdin in the following ways:
+
+- using the **system buttons** for taking a screenshot.
+- create your **own handler** (for example, clicking on some button in your application).
+- using the [SDK Controls](/advanced-features/sdk-controls) UI widget.
+
+### Setup
+
+To enable the Screenshots feature, add the following code to the *Application* class:
+
+import sampleScreenshotSetupKotlin from '!!raw-loader!../code-samples/screenshots/setup.kt';
+import sampleScreenshotSetupJava from '!!raw-loader!../code-samples/screenshots/setup.java';
+
+<Tabs groupId="language">
+  <TabItem value="kotlin" label="Kotlin"><CodeBlock language="kotlin">{sampleScreenshotSetupKotlin}</CodeBlock></TabItem>
+  <TabItem value="java" label="Java"><CodeBlock language="java">{sampleScreenshotSetupJava}</CodeBlock></TabItem>
+</Tabs>
+
+### Authorization
+
+import samplePreviewAuthKotlin from '!!raw-loader!../code-samples/real-time-preview/auth.kt';
+import samplePreviewAuthJava from '!!raw-loader!../code-samples/real-time-preview/auth.java';
+
+<Tabs groupId="language">
+  <TabItem value="kotlin" label="Kotlin"><CodeBlock language="kotlin">{samplePreviewAuthKotlin}</CodeBlock></TabItem>
+  <TabItem value="java" label="Java"><CodeBlock language="java">{samplePreviewAuthJava}</CodeBlock></TabItem>
+</Tabs>
+
+### Setting up own handler
+
+If you want to set up your own handler for capturing screenshots, you can do it programmatically with a callback:
+
+import sampleScreenshotHandlerKotlin from '!!raw-loader!../code-samples/screenshots/handler.kt';
+import sampleScreenshotHandlerJava from '!!raw-loader!../code-samples/screenshots/handler.java';
+
+<Tabs groupId="language">
+  <TabItem value="kotlin" label="Kotlin"><CodeBlock language="kotlin">{sampleScreenshotHandlerKotlin}</CodeBlock></TabItem>
+  <TabItem value="java" label="Java"><CodeBlock language="java">{sampleScreenshotHandlerJava}</CodeBlock></TabItem>
+</Tabs>
+
+:::tip Tips
+- To use the Screenshots feature you still need to [wrap context](/setup#context-wrapping) for your activities.
+- The [OAuth App](https://support.crowdin.com/creating-oauth-app/) redirect URL should match your **App scheme**. <br/>E.g., for scheme `<data android:scheme="crowdintest" />` redirect URL in Crowdin should be `crowdintest://`.
+- To easily control the Screenshots feature you could also use the [SDK Controls](/advanced-features/sdk-controls) UI widget.
+:::
+
+### Config options
+
+| Config option                | Description                                                                                                                                                                  | Example                                                                                                         |
+|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| `withDistributionHash`       | Distribution Hash                                                                                                                                                            | `withDistributionHash("7a0c1...7uo3b")`                                                                         |
+| `withScreenshotEnabled`      | Enable Screenshots feature                                                                                                                                                   | `withScreenshotEnabled()`                                                                                       |
+| `withSourceLanguage`         | Source language code in your Crowdin project                                                                                                                                 | `withSourceLanguage("en")`                                                                                      |
+| `withAuthConfig`             | Crowdin authorization config                                                                                                                                                 | `withAuthConfig(AuthConfig("client_id", "client_secret", "organization_name"))`                                 |
+| `client_id`, `client_secret` | Crowdin OAuth Client ID and Client Secret                                                                                                                                    | `"gpY2yC...cx3TYB"`, `"Xz95tfedd0A...TabEDx9T"`                                                                 |
+| `organization_name`          | An Organization domain name<br/>(for **Crowdin Enterprise users only**)                                                                                                      | `"mycompany"` for Crowdin Enterprise or `null` for crowdin.com                                                  |
+| `request_auth_dialog`        | Request authorization dialog                                                                                                                                                 | `true` by default or `false`                                                                                    |
+| `withNetworkType`            | Network type to be used for translations download                                                                                                                            | Acceptable values are:<br/>- `NetworkType.ALL` (default)<br/> - `NetworkType.CELLULAR`<br/>- `NetworkType.WIFI` |
+| `withUpdateInterval`         | Translations update interval in seconds. The minimum and the default value is 15 minutes. Translations will be updated every defined time interval once per application load | `withUpdateInterval(900)`                                                                                       |
+
+:::caution
+Using the `Crowdin.registerScreenShotContentObserver(this)` (system button handler) to send screenshots to Crowdin requires storage permission for your application.
+:::

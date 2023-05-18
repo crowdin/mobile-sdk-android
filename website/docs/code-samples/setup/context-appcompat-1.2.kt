@@ -1,0 +1,1 @@
+override fun getDelegate() = BaseContextWrappingDelegate(super.getDelegate())
