@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.crowdin.platform.example">
-
+    <!--  API < 33  -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!--  API >= 33  -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
         android:name=".App"

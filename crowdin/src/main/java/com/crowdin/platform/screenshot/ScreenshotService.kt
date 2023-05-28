@@ -8,6 +8,7 @@ import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.provider.MediaStore
 import android.text.TextUtils
@@ -27,7 +28,7 @@ import com.karumi.dexter.listener.single.PermissionListener
 internal class ScreenshotService(private val context: Context) : ContentObserver(Handler()) {
 
     companion object {
-        private const val TIME_GAP: Long = 0x4
+        private const val TIME_GAP: Long = 0xA
     }
 
     private var uploading = false
@@ -39,15 +40,21 @@ internal class ScreenshotService(private val context: Context) : ContentObserver
     }
 
     override fun onChange(selfChange: Boolean) {
+        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Manifest.permission.READ_MEDIA_IMAGES
+        } else {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+
         Dexter.withContext(context)
-            .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+            .withPermission(permission)
             .withListener(object : PermissionListener {
                 override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
                     searchAndUploadScreenshot()
                 }
 
                 override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
-                    onErrorListener?.invoke(context.getString(R.string.required_permission_read_storage))
+                    onErrorListener?.invoke(context.getString(R.string.required_permission_read_storage, permission))
                 }
 
                 override fun onPermissionRationaleShouldBeShown(p0: PermissionRequest?, p1: PermissionToken?) {

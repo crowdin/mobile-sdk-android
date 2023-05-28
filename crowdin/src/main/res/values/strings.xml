@@ -5,5 +5,5 @@
     <string name="auth_dialog_desc">The Real-Time Preview and Screenshots features require Crowdin Authorization. You will now be redirected to the Crowdin login page.</string>
     <string name="auth_dialog_cancel">Cancel</string>
     <string name="auth_dialog_ok">OK</string>
-    <string name="required_permission_read_storage">Automatically screenshots sending require Read External Storage permission. Please grant the permission</string>
+    <string name="required_permission_read_storage">Automatically screenshots sending require %s permission. Please grant the permission</string>
 </resources>
