@@ -27,6 +27,36 @@ publishing {
             artifactId artifact
             version this.version
 
+            pom {
+                name = libraryName
+                description = libraryDescription
+                url = siteUrl
+
+                packaging = 'aar'
+                groupId = publishedGroupId
+                artifactId = artifact
+
+                // Set your license
+                licenses {
+                    license {
+                        name = licenseName
+                        url = licenseUrl
+                    }
+                }
+                developers {
+                    developer {
+                        id = developerId
+                        name = developerName
+                        email = developerEmail
+                    }
+                }
+                scm {
+                    connection = gitUrl
+                    developerConnection = gitUrl
+                    url = siteUrl
+                }
+            }
+
             pom.withXml {
                 def dependenciesNode = asNode()['dependencies'][0] ?: asNode().appendNode('dependencies')
                 // Iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
