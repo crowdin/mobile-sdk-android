@@ -16,7 +16,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Crowdin TODO"
+rootProject.name = "Crowdin SDK"
 
 include ':example-info'
 include ':crowdin-controls', ':crowdin'
