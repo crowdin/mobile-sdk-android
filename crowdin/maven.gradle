@@ -21,7 +21,10 @@ artifacts {
 publishing {
     publications {
         Publication(MavenPublication) {
-            artifact("$buildDir/outputs/aar/crowdin-release.aar")
+            artifact("$buildDir/outputs/aar/crowdin-release.aar") {
+                builtBy(tasks.getByName("assemble"))
+            }
+
             groupId publishedGroupId
             artifactId artifact
             version this.version
