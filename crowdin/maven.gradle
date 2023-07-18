@@ -2,7 +2,6 @@ apply plugin: 'maven-publish'
 
 version = libraryVersion
 
-
 if (project.hasProperty("android")) { // Android libraries
     task sourcesJar(type: Jar) {
         archiveClassifier = 'sources'
@@ -22,10 +21,43 @@ artifacts {
 publishing {
     publications {
         Publication(MavenPublication) {
-            artifact("$buildDir/outputs/aar/crowdin-release.aar")
+            artifact("$buildDir/outputs/aar/crowdin-release.aar") {
+                builtBy(tasks.getByName("assemble"))
+            }
+
             groupId publishedGroupId
             artifactId artifact
             version this.version
+
+            pom {
+                name = libraryName
+                description = libraryDescription
+                url = siteUrl
+
+                packaging = 'aar'
+                groupId = publishedGroupId
+                artifactId = artifact
+
+                // Set your license
+                licenses {
+                    license {
+                        name = licenseName
+                        url = licenseUrl
+                    }
+                }
+                developers {
+                    developer {
+                        id = developerId
+                        name = developerName
+                        email = developerEmail
+                    }
+                }
+                scm {
+                    connection = gitUrl
+                    developerConnection = gitUrl
+                    url = siteUrl
+                }
+            }
 
             pom.withXml {
                 def dependenciesNode = asNode()['dependencies'][0] ?: asNode().appendNode('dependencies')

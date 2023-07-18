@@ -1,33 +1,15 @@
-buildscript {
-
-    ext {
-        kotlin_version = '1.5.30'
-    }
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
+plugins {
+    id 'com.android.application' version '8.0.2' apply false
+    id 'com.android.library' version '8.0.2' apply false
+    id 'org.jetbrains.kotlin.android' version '1.8.20' apply false
 }
 
 ext {
     compileSdkVersion = 33
     minSdkVersion = 16
     targetSdkVersion = 33
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
