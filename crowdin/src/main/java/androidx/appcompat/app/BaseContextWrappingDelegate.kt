@@ -102,5 +102,12 @@ class BaseContextWrappingDelegate(private val superDelegate: AppCompatDelegate) 
 
     override fun getLocalNightMode() = superDelegate.localNightMode
 
+    override fun asyncExecuteSyncRequestedAndStoredLocales(context: Context?) =
+        superDelegate.asyncExecuteSyncRequestedAndStoredLocales(context)
+
+    override fun getContextForDelegate(): Context? = superDelegate.contextForDelegate
+
+    override fun applyAppLocales(): Boolean = superDelegate.applyAppLocales()
+
     private fun wrap(context: Context): Context = Crowdin.wrapContext(context)
 }
