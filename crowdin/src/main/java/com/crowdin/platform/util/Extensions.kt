@@ -17,7 +17,7 @@ import java.util.TimeZone
 
 const val NEW_LINE = "<br>"
 private const val DEFAULT_DATE_TIME_FORMAT = "yyyy_MM_dd-HH_mm_ss"
-private val crowdinCodeMapping = mapOf("iw" to "he")
+private val crowdinCodeMapping = mapOf("iw" to "he", "in" to "id")
 
 fun MenuInflater.inflateWithCrowdin(@MenuRes menuRes: Int, menu: Menu, resources: Resources) {
     this.inflate(menuRes, menu)
