@@ -12,9 +12,9 @@ import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.executeIO
-import java.net.HttpURLConnection
 import okhttp3.ResponseBody
 import retrofit2.Response
+import java.net.HttpURLConnection
 
 internal class MappingRepository(
     private val crowdinDistributionApi: CrowdinDistributionApi,
@@ -47,24 +47,19 @@ internal class MappingRepository(
         dataManager.saveData(MANIFEST_DATA, manifest)
         // Combine all data before save to storage
         val languageData = LanguageData(sourceLanguage)
-        val languagesInfo = dataManager.getSupportedLanguages()
-        crowdinLanguages = languagesInfo
-        val languageInfo = getLanguageInfo(sourceLanguage)
-        languageInfo?.let { info ->
-            manifest?.files?.forEach {
-                val filePath = validateFilePath(it, info, sourceLanguage, manifest.languageMapping)
-                val eTag = eTagMap[filePath]
+        crowdinLanguages = dataManager.getSupportedLanguages()
+        manifest?.mapping?.forEach { filePath ->
+            val eTag = eTagMap[filePath]
 
-                val result = requestFileMapping(
-                    eTag,
-                    distributionHash,
-                    filePath,
-                    languageDataCallback
-                )
-                languageData.addNewResources(result)
-            }
-            dataManager.saveMapping(languageData)
+            val result = requestFileMapping(
+                eTag,
+                distributionHash,
+                filePath,
+                languageDataCallback
+            )
+            languageData.addNewResources(result)
         }
+        dataManager.saveMapping(languageData)
     }
 
     private fun requestFileMapping(
