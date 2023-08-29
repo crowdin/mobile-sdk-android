@@ -15,9 +15,9 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
 import retrofit2.Call
 import retrofit2.Response
 
@@ -177,6 +177,7 @@ class MappingRepositoryTest {
     }
 
     private fun givenMockResponse(success: Boolean = true, successCode: Int = 200) {
+        @Suppress("UNCHECKED_CAST")
         val mockedCall = mock(Call::class.java) as Call<ResponseBody>
         `when`(mockDistributionApi.getMappingFile(any(), any(), any())).thenReturn(mockedCall)
 
@@ -189,6 +190,7 @@ class MappingRepositoryTest {
     }
 
     private fun givenMockLanguageResponse() {
+        @Suppress("UNCHECKED_CAST")
         val mockedCall = mock(Call::class.java) as Call<LanguageInfoData>
         val response = Response.success(
             200,
@@ -206,15 +208,4 @@ class MappingRepositoryTest {
 
     private fun givenLanguageInfo(): LanguageInfo =
         LanguageInfo("en", "English", "en", "eng", "en-US", "en-rUS")
-
-    private fun givenLanguageMapping(): Map<String, Map<String, String>> =
-        hashMapOf(
-            Pair(
-                "uk", hashMapOf(
-                    Pair("two_letters_code", "ua"),
-                    Pair("three_letters_code", "ukr"),
-                    Pair("name", "ukrainian")
-                )
-            )
-        )
 }

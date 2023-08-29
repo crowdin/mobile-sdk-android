@@ -4,9 +4,9 @@ import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.google.gson.Gson
 import okhttp3.ResponseBody
+import org.mockito.Mockito.`when`
 import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,6 +30,7 @@ internal fun givenMockMappingFileResponse(
     success: Boolean = true,
     successCode: Int = 200
 ) {
+    @Suppress("UNCHECKED_CAST")
     val mockedCall = mock(Call::class.java) as Call<ResponseBody>
     `when`(mockDistributionApi.getMappingFile(any(), any(), any())).thenReturn(mockedCall)
 
@@ -46,6 +47,7 @@ internal fun givenMockManifestResponse(
     success: Boolean = true,
     successCode: Int = 200
 ) {
+    @Suppress("UNCHECKED_CAST")
     val mockedCall = mock(Call::class.java) as Call<ManifestData>
     `when`(mockDistributionApi.getResourceManifest(any())).thenReturn(mockedCall)
     val response = if (success) {
@@ -69,6 +71,7 @@ internal fun givenMockManifestResponse(
     }
 
     doAnswer {
+        @Suppress("UNCHECKED_CAST")
         val callback = it.getArgument(0, Callback::class.java) as Callback<ManifestData>
         callback.onResponse(mockedCall, response)
     }.`when`(mockedCall).enqueue(any())

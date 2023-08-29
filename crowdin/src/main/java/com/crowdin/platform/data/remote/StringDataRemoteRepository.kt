@@ -23,7 +23,7 @@ internal class StringDataRemoteRepository(
     private val distributionHash: String
 ) : CrowdingRepository(
     crowdinDistributionApi,
-    distributionHash = distributionHash
+    distributionHash
 ) {
 
     private var preferredLanguageCode: String? = null
@@ -37,15 +37,12 @@ internal class StringDataRemoteRepository(
 
         preferredLanguageCode = languageCode
         crowdinLanguages = supportedLanguages
-        getManifest({
+        getManifest(languageDataCallback) {
             onManifestDataReceived(it, languageDataCallback)
-        }, languageDataCallback)
+        }
     }
 
-    override fun onManifestDataReceived(
-        manifest: ManifestData?,
-        languageDataCallback: LanguageDataCallback?
-    ) {
+    override fun onManifestDataReceived(manifest: ManifestData?, languageDataCallback: LanguageDataCallback?) {
         Log.v(
             Crowdin.CROWDIN_TAG,
             "StringDataRemoteRepository. Handling received manifest data. Preferred language: $preferredLanguageCode"
@@ -65,19 +62,17 @@ internal class StringDataRemoteRepository(
             customLanguages[preferredLanguageCode]?.toLanguageInfo()
         } else {
             getLanguageInfo(preferredLanguageCode)
-        }
-
-        languageInfo ?: return
+        } ?: return
 
         languageData.language = languageInfo.locale
         manifest?.content?.get(preferredLanguageCode)?.forEach { filePath ->
             val eTag = eTagMap[filePath]
             val result = requestStringData(
-                eTag,
-                distributionHash,
-                filePath,
-                manifest.timestamp,
-                languageDataCallback
+                eTag = eTag,
+                distributionHash = distributionHash,
+                filePath = filePath,
+                timestamp = manifest.timestamp,
+                languageDataCallback = languageDataCallback
             )
             languageData.addNewResources(result)
         }
@@ -85,7 +80,11 @@ internal class StringDataRemoteRepository(
         languageDataCallback?.onDataLoaded(languageData)
     }
 
-    private fun getSafeLanguageCode(preferredLanguageCode: String?, supportedLanguages: List<String>?, customLanguages: Map<String, CustomLanguage>?): String? {
+    private fun getSafeLanguageCode(
+        preferredLanguageCode: String?,
+        supportedLanguages: List<String>?,
+        customLanguages: Map<String, CustomLanguage>?
+    ): String? {
         return if (preferredLanguageCode == null) {
             getMatchedCode(supportedLanguages, customLanguages)
         } else {
@@ -105,7 +104,7 @@ internal class StringDataRemoteRepository(
         languageDataCallback: LanguageDataCallback?
     ): LanguageData {
         var languageData = LanguageData()
-        var result: Response<ResponseBody>? = null
+        var response: Response<ResponseBody>? = null
 
         Log.v(
             Crowdin.CROWDIN_TAG,
@@ -113,38 +112,39 @@ internal class StringDataRemoteRepository(
         )
 
         executeIO {
-            result = crowdinDistributionApi.getResourceFile(
-                eTag ?: HEADER_ETAG_EMPTY,
-                distributionHash,
-                filePath,
-                timestamp
+            response = crowdinDistributionApi.getResourceFile(
+                eTag = eTag ?: HEADER_ETAG_EMPTY,
+                distributionHash = distributionHash,
+                filePath = filePath,
+                timeStamp = timestamp
             ).execute()
         }
+        val result = response ?: return languageData
 
-        result?.let {
-            val body = it.body()
-            val code = it.code()
-            when {
-                code == HttpURLConnection.HTTP_OK && body != null -> {
-                    languageData = onStringDataReceived(
-                        it.headers()[HEADER_ETAG],
-                        filePath,
-                        body
-                    )
-                }
-                code == HttpURLConnection.HTTP_FORBIDDEN -> {
-                    val errorMessage =
-                        "Translation file $filePath for locale $preferredLanguageCode not found in the distribution"
-                    Log.e(Crowdin.CROWDIN_TAG, errorMessage)
-                    languageDataCallback?.onFailure(Throwable(errorMessage))
-                }
-                code != HttpURLConnection.HTTP_NOT_MODIFIED -> {
-                    Log.v(Crowdin.CROWDIN_TAG, "Not modified resourse file")
-                    languageDataCallback?.onFailure(Throwable("Unexpected http error code $code"))
-                }
-                else -> {
-                }
+        val body = result.body()
+        val code = result.code()
+        when {
+            code == HttpURLConnection.HTTP_OK && body != null -> {
+                languageData = onStringDataReceived(
+                    eTag = result.headers()[HEADER_ETAG],
+                    filePath = filePath,
+                    body = body
+                )
             }
+
+            code == HttpURLConnection.HTTP_FORBIDDEN -> {
+                val errorMessage =
+                    "Translation file $filePath for locale $preferredLanguageCode not found in the distribution"
+                Log.e(Crowdin.CROWDIN_TAG, errorMessage)
+                languageDataCallback?.onFailure(Throwable(errorMessage))
+            }
+
+            code != HttpURLConnection.HTTP_NOT_MODIFIED -> {
+                Log.v(Crowdin.CROWDIN_TAG, "Not modified resourse file")
+                languageDataCallback?.onFailure(Throwable("Unexpected http error code $code"))
+            }
+
+            else -> {}
         }
 
         return languageData
@@ -157,12 +157,13 @@ internal class StringDataRemoteRepository(
     ): LanguageData {
         eTag?.let { eTagMap.put(filePath, eTag) }
 
-        val extension = if (filePath.contains(XML_EXTENSION)) {
-            ReaderFactory.ReaderType.XML
-        } else {
-            ReaderFactory.ReaderType.JSON
-        }
-        val reader = ReaderFactory.createReader(extension)
-        return reader.parseInput(body.byteStream())
+        return ReaderFactory
+            .createReader(
+                when {
+                    filePath.contains(XML_EXTENSION) -> ReaderFactory.ReaderType.XML
+                    else -> ReaderFactory.ReaderType.JSON
+                }
+            )
+            .parseInput(body.byteStream())
     }
 }

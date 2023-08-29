@@ -12,9 +12,9 @@ import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.executeIO
+import java.net.HttpURLConnection
 import okhttp3.ResponseBody
 import retrofit2.Response
-import java.net.HttpURLConnection
 
 internal class MappingRepository(
     private val crowdinDistributionApi: CrowdinDistributionApi,
@@ -34,28 +34,24 @@ internal class MappingRepository(
     ) {
         Log.v(Crowdin.CROWDIN_TAG, "MappingRepository. Fetch data from Api started")
 
-        getManifest({
+        getManifest(languageDataCallback) {
             onManifestDataReceived(it, languageDataCallback)
-        }, languageDataCallback)
+        }
     }
 
     @WorkerThread
-    override fun onManifestDataReceived(
-        manifest: ManifestData?,
-        languageDataCallback: LanguageDataCallback?
-    ) {
+    override fun onManifestDataReceived(manifest: ManifestData?, languageDataCallback: LanguageDataCallback?) {
         dataManager.saveData(MANIFEST_DATA, manifest)
-        // Combine all data before save to storage
+
         val languageData = LanguageData(sourceLanguage)
         crowdinLanguages = dataManager.getSupportedLanguages()
         manifest?.mapping?.forEach { filePath ->
             val eTag = eTagMap[filePath]
-
             val result = requestFileMapping(
-                eTag,
-                distributionHash,
-                filePath,
-                languageDataCallback
+                eTag = eTag,
+                distributionHash = distributionHash,
+                filePath = filePath,
+                languageDataCallback = languageDataCallback
             )
             languageData.addNewResources(result)
         }
@@ -69,38 +65,39 @@ internal class MappingRepository(
         languageDataCallback: LanguageDataCallback?
     ): LanguageData {
         var languageData = LanguageData()
-        var result: Response<ResponseBody>? = null
+        var response: Response<ResponseBody>? = null
 
         executeIO {
-            result = crowdinDistributionApi.getMappingFile(
-                eTag ?: HEADER_ETAG_EMPTY,
-                distributionHash,
-                filePath
+            response = crowdinDistributionApi.getMappingFile(
+                eTag = eTag ?: HEADER_ETAG_EMPTY,
+                distributionHash = distributionHash,
+                filePath = filePath
             ).execute()
         }
 
-        result?.let {
-            val body = it.body()
-            val code = it.code()
-            when {
-                code == HttpURLConnection.HTTP_OK && body != null -> {
-                    languageData = onMappingReceived(
-                        it.headers()[HEADER_ETAG],
-                        filePath,
-                        body,
-                        languageDataCallback
-                    )
-                }
-                code != HttpURLConnection.HTTP_NOT_MODIFIED -> {
-                    languageDataCallback?.onFailure(Throwable("Unexpected http error code $code"))
-                    Log.d(
-                        MappingRepository::class.java.simpleName,
-                        "${Throwable("Unexpected http error code $code")}"
-                    )
-                }
-                else -> {
-                }
+        val result = response ?: return languageData
+
+        val body = result.body()
+        val code = result.code()
+        when {
+            code == HttpURLConnection.HTTP_OK && body != null -> {
+                languageData = onMappingReceived(
+                    eTag = result.headers()[HEADER_ETAG],
+                    filePath = filePath,
+                    body = body,
+                    languageDataCallback = languageDataCallback
+                )
             }
+
+            code != HttpURLConnection.HTTP_NOT_MODIFIED -> {
+                languageDataCallback?.onFailure(Throwable("Unexpected http error code $code"))
+                Log.d(
+                    MappingRepository::class.java.simpleName,
+                    "${Throwable("Unexpected http error code $code")}"
+                )
+            }
+
+            else -> {}
         }
 
         return languageData
