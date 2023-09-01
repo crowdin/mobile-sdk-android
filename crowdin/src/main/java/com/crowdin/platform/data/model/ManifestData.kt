@@ -16,7 +16,13 @@ data class ManifestData(
     val customLanguages: Map<String, CustomLanguage>,
 
     @SerializedName("language_mapping")
-    val languageMapping: Map<String, Map<String, String>>
+    val languageMapping: Map<String, Map<String, String>>,
+
+    @SerializedName("content")
+    val content: Map<String, List<String>>,
+
+    @SerializedName("mapping")
+    val mapping: List<String>
 )
 
 data class CustomLanguage(

@@ -10,7 +10,7 @@ import retrofit2.http.Query
 
 internal interface CrowdinDistributionApi {
 
-    @GET("/{distributionHash}/content{filePath}")
+    @GET("/{distributionHash}{filePath}")
     fun getResourceFile(
         @Header("if-none-match") eTag: String,
         @Path("distributionHash") distributionHash: String,
@@ -23,7 +23,7 @@ internal interface CrowdinDistributionApi {
         @Path("distributionHash") distributionHash: String
     ): Call<ManifestData>
 
-    @GET("/{distributionHash}/mapping{filePath}")
+    @GET("/{distributionHash}{filePath}")
     fun getMappingFile(
         @Header("if-none-match") eTag: String,
         @Path("distributionHash") distributionHash: String,

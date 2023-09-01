@@ -25,7 +25,6 @@ import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.getFormattedCode
 import java.lang.reflect.Type
 import java.util.Locale
-import kotlin.collections.ArrayList
 
 internal class DataManager(
     private val remoteRepository: RemoteRepository,
@@ -138,6 +137,7 @@ internal class DataManager(
                         )
                     }
                 }
+
                 arrayData != null -> {
                     if (localRepository.containsKey(arrayData.name)) {
                         localRepository.setArrayData(
@@ -146,6 +146,7 @@ internal class DataManager(
                         )
                     }
                 }
+
                 pluralData != null -> {
                     if (localRepository.containsKey(pluralData.name)) {
                         localRepository.setPluralData(
@@ -201,10 +202,10 @@ internal class DataManager(
     fun getManifest(): ManifestData? {
         var manifest: ManifestData? = getData(MANIFEST_DATA, ManifestData::class.java)
         if (manifest == null) {
-            remoteRepository.getManifest({
+            remoteRepository.getManifest {
                 saveData(MANIFEST_DATA, it)
                 manifest = it
-            })
+            }
         }
 
         return manifest

@@ -24,11 +24,7 @@ internal abstract class CrowdingRepository(
     var crowdinApi: CrowdinApi? = null
     var crowdinLanguages: LanguagesInfo? = null
 
-    override fun getManifest(
-        function: (ManifestData) -> Unit,
-        languageDataCallback: LanguageDataCallback?
-    ) {
-
+    override fun getManifest(languageDataCallback: LanguageDataCallback?, function: (ManifestData) -> Unit) {
         Log.v(
             Crowdin.CROWDIN_TAG,
             "${javaClass.simpleName}. Loading resource manifest from Api started. Hash: $distributionHash"
@@ -37,10 +33,7 @@ internal abstract class CrowdingRepository(
         crowdinDistributionApi.getResourceManifest(distributionHash)
             .enqueue(object : Callback<ManifestData> {
 
-                override fun onResponse(
-                    call: Call<ManifestData>,
-                    response: Response<ManifestData>
-                ) {
+                override fun onResponse(call: Call<ManifestData>, response: Response<ManifestData>) {
                     Log.v(Crowdin.CROWDIN_TAG, "${javaClass.simpleName}. Manifest received. Body: ${response.body()}")
 
                     val body = response.body()
@@ -56,12 +49,12 @@ internal abstract class CrowdingRepository(
                                 languageDataCallback?.onFailure(throwable)
                             }
                         }
+
                         response.code() == HttpURLConnection.HTTP_FORBIDDEN -> {
                             languageDataCallback?.onFailure(Throwable("Unable to download translations from the distribution. Please check your distribution hash"))
                         }
-                        else -> {
-                            languageDataCallback?.onFailure(Throwable("Network operation failed ${response.code()}"))
-                        }
+
+                        else -> languageDataCallback?.onFailure(Throwable("Network operation failed ${response.code()}"))
                     }
                 }
 
@@ -73,10 +66,7 @@ internal abstract class CrowdingRepository(
     }
 
     @WorkerThread
-    abstract fun onManifestDataReceived(
-        manifest: ManifestData?,
-        languageDataCallback: LanguageDataCallback?
-    )
+    abstract fun onManifestDataReceived(manifest: ManifestData?, languageDataCallback: LanguageDataCallback?)
 
     override fun getSupportedLanguages(): LanguagesInfo? {
         Log.v(Crowdin.CROWDIN_TAG, "Getting supported languages from Api started")

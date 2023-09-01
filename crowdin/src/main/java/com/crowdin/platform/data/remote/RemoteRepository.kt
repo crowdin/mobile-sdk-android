@@ -23,7 +23,7 @@ internal interface RemoteRepository {
         languageDataCallback: LanguageDataCallback? = null
     )
 
-    fun getManifest(function: (ManifestData) -> Unit, languageDataCallback: LanguageDataCallback? = null)
+    fun getManifest(languageDataCallback: LanguageDataCallback? = null, function: (ManifestData) -> Unit)
 
     /**
      * Fetch all supported languages.

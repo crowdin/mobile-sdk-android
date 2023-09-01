@@ -42,16 +42,13 @@ internal class TranslationDataRepository(
         Log.v(Crowdin.CROWDIN_TAG, "TranslationRepository. Fetch data from Api started")
 
         preferredLanguageCode = languageCode
-        getManifest({
+        getManifest(languageDataCallback) {
             onManifestDataReceived(it, languageDataCallback)
-        }, languageDataCallback)
+        }
     }
 
     @WorkerThread
-    override fun onManifestDataReceived(
-        manifest: ManifestData?,
-        languageDataCallback: LanguageDataCallback?
-    ) {
+    override fun onManifestDataReceived(manifest: ManifestData?, languageDataCallback: LanguageDataCallback?) {
         Log.v(Crowdin.CROWDIN_TAG, "Manifest data received")
 
         val supportedLanguages = manifest?.languages
@@ -79,10 +76,10 @@ internal class TranslationDataRepository(
             )?.project?.id?.let {
                 manifest?.files?.let { files ->
                     getFiles(
-                        it,
-                        files,
-                        info.locale,
-                        languageDataCallback
+                        id = it,
+                        files = files,
+                        locale = info.locale,
+                        languageDataCallback = languageDataCallback
                     )
                 }
             }
@@ -118,10 +115,10 @@ internal class TranslationDataRepository(
                 if (fileData.data.path == file) {
                     val eTag = eTagMap[file]
                     val result = requestBuildTranslation(
-                        eTag ?: HEADER_ETAG_EMPTY,
-                        projectId,
-                        fileData.data.id,
-                        file
+                        eTag = eTag ?: HEADER_ETAG_EMPTY,
+                        projectId = projectId,
+                        stringId = fileData.data.id,
+                        file = file
                     )
 
                     languageData.addNewResources(result)
@@ -145,10 +142,10 @@ internal class TranslationDataRepository(
         var languageData = LanguageData()
         executeIO {
             crowdinApi?.getTranslation(
-                eTag,
-                projectId,
-                stringId,
-                BuildTranslationRequest(preferredLanguageCode!!)
+                eTag = eTag,
+                projectId = projectId,
+                fileId = stringId,
+                body = BuildTranslationRequest(preferredLanguageCode!!)
             )?.execute()?.body()?.let {
                 languageData = onTranslationReceived(it.data, file)
             }
@@ -169,7 +166,5 @@ internal class TranslationDataRepository(
         return languageData
     }
 
-    private fun onStringDataReceived(body: ResponseBody): LanguageData {
-        return reader.parseInput(body.byteStream())
-    }
+    private fun onStringDataReceived(body: ResponseBody): LanguageData = reader.parseInput(body.byteStream())
 }
