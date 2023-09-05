@@ -554,6 +554,8 @@ object Crowdin {
 
     internal fun getAuthConfig(): AuthConfig? = config.authConfig
 
+    internal fun getOrganizationName(): String? = config.organizationName
+
     private fun initTranslationDataManager() {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             translationDataRepository = TranslationDataRepository(
@@ -571,7 +573,7 @@ object Crowdin {
     private fun getCrowdinApi(): CrowdinApi =
         CrowdinRetrofitService.getCrowdinApi(
             dataManager!!,
-            config.authConfig?.organizationName
+            config.organizationName
         )
 
     fun getManifest(): ManifestData? {

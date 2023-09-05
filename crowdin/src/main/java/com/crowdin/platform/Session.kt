@@ -11,7 +11,7 @@ internal interface Session {
 
     fun getAccessToken(): String?
 
-    fun refreshToken(authConfig: AuthConfig?): Boolean
+    fun refreshToken(organizationName: String?, authConfig: AuthConfig?): Boolean
 
     /**
      * Executed on background thread.

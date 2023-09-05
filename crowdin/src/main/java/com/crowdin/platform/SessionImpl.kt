@@ -20,18 +20,17 @@ internal class SessionImpl(
 
     override fun getAccessToken(): String? = dataManager.getAccessToken()
 
-    override fun refreshToken(authConfig: AuthConfig?): Boolean {
+    override fun refreshToken(organizationName: String?, authConfig: AuthConfig?): Boolean {
         val refreshToken = dataManager.getRefreshToken()
         refreshToken ?: return false
 
         val clientId = authConfig?.clientId ?: ""
         val clientSecret = authConfig?.clientSecret ?: ""
-        val domain = authConfig?.organizationName
 
         var response: Response<AuthResponse>? = null
         executeIO {
             response = authApi.getToken(
-                RefreshToken("refresh_token", clientId, clientSecret, refreshToken), domain
+                RefreshToken("refresh_token", clientId, clientSecret, refreshToken), organizationName
             ).execute()
         }
 

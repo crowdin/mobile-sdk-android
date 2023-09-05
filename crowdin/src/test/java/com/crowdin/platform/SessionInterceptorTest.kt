@@ -49,7 +49,7 @@ class SessionInterceptorTest {
         sessionInterceptor.intercept(chain)
 
         // Then
-        verify(session).refreshToken(any())
+        verify(session).refreshToken(any(), any())
     }
 
     @Test
@@ -57,7 +57,7 @@ class SessionInterceptorTest {
         // Given
         val session = givenMockSession()
         `when`(session.isTokenExpired()).thenReturn(true)
-        `when`(session.refreshToken(any())).thenReturn(false)
+        `when`(session.refreshToken(any(), any())).thenReturn(false)
         val sessionInterceptor = SessionInterceptor(session)
         val chain = givenMockChain()
 
@@ -74,7 +74,7 @@ class SessionInterceptorTest {
         initCrowdin()
         val session = givenMockSession()
         `when`(session.isTokenExpired()).thenReturn(false)
-        `when`(session.refreshToken(any())).thenReturn(false)
+        `when`(session.refreshToken(any(), any())).thenReturn(false)
         val sessionInterceptor = SessionInterceptor(session)
         val chain = givenMockChain()
         givenFailResponse(chain)
@@ -83,7 +83,7 @@ class SessionInterceptorTest {
         sessionInterceptor.intercept(chain)
 
         // Then
-        verify(session).refreshToken(any())
+        verify(session).refreshToken(any(), any())
     }
 
     @Test
@@ -92,7 +92,7 @@ class SessionInterceptorTest {
         initCrowdin()
         val session = givenMockSession()
         `when`(session.isTokenExpired()).thenReturn(false)
-        `when`(session.refreshToken(any())).thenReturn(false)
+        `when`(session.refreshToken(any(), any())).thenReturn(false)
         val sessionInterceptor = SessionInterceptor(session)
         val chain = givenMockChain()
         givenFailResponse(chain)
@@ -110,7 +110,7 @@ class SessionInterceptorTest {
         initCrowdin()
         val session = givenMockSession()
         `when`(session.isTokenExpired()).thenReturn(false)
-        `when`(session.refreshToken(any())).thenReturn(true)
+        `when`(session.refreshToken(any(), any())).thenReturn(true)
         val sessionInterceptor = SessionInterceptor(session)
         val chain = givenMockChain()
         givenFailResponse(chain)

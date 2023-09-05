@@ -9,9 +9,9 @@ override fun onCreate() {
             .withAuthConfig(AuthConfig(
                 client_id,
                 client_secret,
-                organization_name,
                 request_auth_dialog
             ))
+            .withOrganizationName(organization_name)   // optional
             .withNetworkType(network_type)             // optional
             .withUpdateInterval(interval_in_seconds)   // optional
             .build())
