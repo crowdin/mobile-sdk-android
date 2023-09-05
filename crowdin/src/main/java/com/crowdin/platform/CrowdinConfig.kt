@@ -95,10 +95,12 @@ class CrowdinConfig private constructor() {
 
             config.distributionHash = distributionHash
 
-            if (distributionHash.startsWith(ORGANIZATION_PREFIX)) {
-                require(organizationName.isNullOrEmpty().not()) {
-                    "Crowdin: `organizationName` cannot be empty. Add it to the CrowdingConfig with this method: `.withOrganizationName(...)`"
-                }
+            if (distributionHash.startsWith(ORGANIZATION_PREFIX) && organizationName.isNullOrEmpty()) {
+                Log.w(
+                    Crowdin.CROWDIN_TAG,
+                    "Crowdin: the `organizationName` cannot be empty for Crowdin Enterprise. Add it to the `CrowdingConfig` " +
+                            "using the `.withOrganizationName(...)` method"
+                )
             }
 
             config.organizationName = organizationName

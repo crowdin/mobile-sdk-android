@@ -61,7 +61,7 @@ class App : Application() {
                         requestAuthDialog = requestAuthDialog
                     )
                 )
-                .withOrganizationName(organizationName)
+                .withOrganizationName(organizationName)                                 // required for Crowdin Enterprise
                 .withInitSyncDisabled()                                                 // optional
                 .build()
         )

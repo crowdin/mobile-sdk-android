@@ -12,7 +12,7 @@ protected void onCreate(Bundle savedInstanceState) {
                 client_secret,
                 request_auth_dialog
             ))
-            .withOrganizationName(organization_name)   // optional
+            .withOrganizationName(organization_name)   // required for Crowdin Enterprise
             .withNetworkType(network_type)             // optional
             .withUpdateInterval(interval_in_seconds)   // optional
             .build());
