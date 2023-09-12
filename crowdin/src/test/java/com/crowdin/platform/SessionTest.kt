@@ -78,7 +78,7 @@ class SessionTest {
         `when`(mockDataManager.getRefreshToken()).thenReturn(null)
 
         // When
-        val result = session.refreshToken(mockAuthConfig)
+        val result = session.refreshToken(null, mockAuthConfig)
 
         // Then
         assertThat(result, `is`(false))
@@ -94,7 +94,7 @@ class SessionTest {
         `when`(mockCallResponse.execute()).thenReturn(Response.success(provideAuthResponse()))
 
         // When
-        session.refreshToken(mockAuthConfig)
+        session.refreshToken(null, mockAuthConfig)
 
         // Then
         verify(mockDataManager).getRefreshToken()
@@ -112,7 +112,7 @@ class SessionTest {
         val expectedAuthInfo = AuthInfo(authResponse)
 
         // When
-        val result = session.refreshToken(mockAuthConfig)
+        val result = session.refreshToken(null, mockAuthConfig)
 
         // Then
         assertThat(result, `is`(true))

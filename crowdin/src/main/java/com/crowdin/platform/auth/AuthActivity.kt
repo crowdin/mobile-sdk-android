@@ -63,9 +63,9 @@ internal class AuthActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     private fun requestAuthorization() {
         val authConfig = Crowdin.getAuthConfig()
+        domain = Crowdin.getOrganizationName()
         clientId = authConfig?.clientId ?: ""
         clientSecret = authConfig?.clientSecret ?: ""
-        domain = authConfig?.organizationName
 
         val builder = Uri.Builder()
             .scheme("https")

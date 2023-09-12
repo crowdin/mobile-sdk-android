@@ -19,6 +19,7 @@ class CrowdinConfig private constructor() {
     var sourceLanguage: String = ""
     var authConfig: AuthConfig? = null
     var isInitSyncEnabled: Boolean = true
+    var organizationName: String? = null
 
     class Builder {
 
@@ -31,6 +32,7 @@ class CrowdinConfig private constructor() {
         private var sourceLanguage: String = ""
         private var authConfig: AuthConfig? = null
         private var isInitSyncEnabled: Boolean = true
+        private var organizationName: String? = null
 
         fun persist(isPersist: Boolean): Builder {
             this.isPersist = isPersist
@@ -69,11 +71,20 @@ class CrowdinConfig private constructor() {
 
         fun withAuthConfig(authConfig: AuthConfig): Builder {
             this.authConfig = authConfig
+            // Required for backward compatibility
+            authConfig.organizationName?.let {
+                this.organizationName = it
+            }
             return this
         }
 
         fun withInitSyncDisabled(): Builder {
             this.isInitSyncEnabled = false
+            return this
+        }
+
+        fun withOrganizationName(organizationName: String): Builder {
+            this.organizationName = organizationName
             return this
         }
 
@@ -84,6 +95,15 @@ class CrowdinConfig private constructor() {
 
             config.distributionHash = distributionHash
 
+            if (distributionHash.startsWith(ORGANIZATION_PREFIX) && organizationName.isNullOrEmpty()) {
+                Log.w(
+                    Crowdin.CROWDIN_TAG,
+                    "Crowdin: the `organizationName` cannot be empty for Crowdin Enterprise. Add it to the `CrowdingConfig` " +
+                            "using the `.withOrganizationName(...)` method"
+                )
+            }
+
+            config.organizationName = organizationName
             config.networkType = networkType
             config.isRealTimeUpdateEnabled = isRealTimeUpdateEnabled
             config.isScreenshotEnabled = isScreenshotEnabled
@@ -115,6 +135,10 @@ class CrowdinConfig private constructor() {
             config.isInitSyncEnabled = isInitSyncEnabled
 
             return config
+        }
+
+        companion object {
+            private const val ORGANIZATION_PREFIX = "e-"
         }
     }
 }

@@ -45,7 +45,7 @@ internal class SessionInterceptor(private val session: Session) : Interceptor {
 
     private fun refreshToken(): Boolean {
         return try {
-            session.refreshToken(Crowdin.getAuthConfig())
+            session.refreshToken(Crowdin.getOrganizationName(), Crowdin.getAuthConfig())
         } catch (th: Throwable) {
             false
         }

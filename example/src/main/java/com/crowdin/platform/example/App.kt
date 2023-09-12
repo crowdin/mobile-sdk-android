@@ -41,6 +41,7 @@ class App : Application() {
         val clientId = "your_client_id"                     // "gpY2yC...cx3TYB"
         val clientSecret = "your_client_secret"             // "Xz95tfedd0A...TabEDx9T"
         val organizationName = "your_organization_name"     // for Crowdin Enterprise users only
+        val requestAuthDialog = true                        // Request authorization dialog `true` by default or `false`
 
         // Set custom locale before SDK initialization.
         this.updateLocale(languagePreferences.getLanguageCode())
@@ -57,10 +58,10 @@ class App : Application() {
                     AuthConfig(
                         clientId = clientId,
                         clientSecret = clientSecret,
-                        organizationName = organizationName,
-                        requestAuthDialog = true
+                        requestAuthDialog = requestAuthDialog
                     )
                 )
+                .withOrganizationName(organizationName)                                 // required for Crowdin Enterprise
                 .withInitSyncDisabled()                                                 // optional
                 .build()
         )
