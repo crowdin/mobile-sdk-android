@@ -28,6 +28,7 @@ internal class CrowdinLayoutInflater constructor(
         "com.google.android.material.navigation.NavigationView",
         "com.google.android.material.button.MaterialButton",
         "androidx.appcompat.widget.AppCompatButton",
+        "androidx.appcompat.widget.AppCompatEditText",
         "TextView"
     )
 
