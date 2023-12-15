@@ -239,25 +239,6 @@ internal class DataManager(
         saveData(AUTH_INFO, null)
     }
 
-    fun getResourcesByLocale(languageCode: String, callback: ResourcesCallback) {
-        ThreadUtils.runInBackgroundPool({
-            val languageInfo = getSupportedLanguages()
-            remoteRepository.fetchData(
-                languageCode,
-                languageInfo,
-                languageDataCallback = object : LanguageDataCallback {
-
-                    override fun onDataLoaded(languageData: LanguageData) {
-                        ThreadUtils.executeOnMain { callback.onDataReceived(languageData.toString()) }
-                    }
-
-                    override fun onFailure(throwable: Throwable) {
-                        ThreadUtils.executeOnMain { sendOnFailure(throwable) }
-                    }
-                })
-        }, true)
-    }
-
     @WorkerThread
     fun getSupportedLanguages(): LanguagesInfo? {
         Log.v(CROWDIN_TAG, "Getting supported languages started")
