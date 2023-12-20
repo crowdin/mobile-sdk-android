@@ -7,7 +7,6 @@ import com.crowdin.platform.Crowdin.CROWDIN_TAG
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.LocalDataChangeObserver
 import com.crowdin.platform.Preferences
-import com.crowdin.platform.ResourcesCallback
 import com.crowdin.platform.data.local.LocalRepository
 import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.AuthInfo
@@ -237,25 +236,6 @@ internal class DataManager(
 
     fun invalidateAuthData() {
         saveData(AUTH_INFO, null)
-    }
-
-    fun getResourcesByLocale(languageCode: String, callback: ResourcesCallback) {
-        ThreadUtils.runInBackgroundPool({
-            val languageInfo = getSupportedLanguages()
-            remoteRepository.fetchData(
-                languageCode,
-                languageInfo,
-                languageDataCallback = object : LanguageDataCallback {
-
-                    override fun onDataLoaded(languageData: LanguageData) {
-                        ThreadUtils.executeOnMain { callback.onDataReceived(languageData.toString()) }
-                    }
-
-                    override fun onFailure(throwable: Throwable) {
-                        ThreadUtils.executeOnMain { sendOnFailure(throwable) }
-                    }
-                })
-        }, true)
     }
 
     @WorkerThread
