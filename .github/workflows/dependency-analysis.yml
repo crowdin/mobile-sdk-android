@@ -15,3 +15,4 @@ jobs:
       FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
     with:
       exclude-path: 'website'
+      java-version: '17'
