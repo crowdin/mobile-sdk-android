@@ -14,7 +14,7 @@ internal interface CrowdinDistributionApi {
     fun getResourceFile(
         @Header("if-none-match") eTag: String,
         @Path("distributionHash") distributionHash: String,
-        @Path("filePath") filePath: String,
+        @Path("filePath", encoded = true) filePath: String,
         @Query("timestamp") timeStamp: Long
     ): Call<ResponseBody>
 
@@ -27,6 +27,6 @@ internal interface CrowdinDistributionApi {
     fun getMappingFile(
         @Header("if-none-match") eTag: String,
         @Path("distributionHash") distributionHash: String,
-        @Path("filePath") filePath: String
+        @Path("filePath", encoded = true) filePath: String
     ): Call<ResponseBody>
 }
