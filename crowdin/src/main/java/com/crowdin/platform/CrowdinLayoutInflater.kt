@@ -1,6 +1,5 @@
 package com.crowdin.platform
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
@@ -61,7 +60,7 @@ internal class CrowdinLayoutInflater constructor(
                 }
             } catch (e: ClassNotFoundException) {
                 // In this case we want to let the base class take a crack at it.
-            } catch (inflateException: InflateException) {
+            } catch (_: InflateException) {
             }
         }
         return super.onCreateView(name, attrs)
@@ -71,7 +70,7 @@ internal class CrowdinLayoutInflater constructor(
         return viewTransformerManager.transform(view, attrs)
     }
 
-    private fun createCustomViewInternal(view: View?, name: String, attrs: AttributeSet): View? {
+    private fun createCustomViewInternal(context: Context, view: View?, name: String, attrs: AttributeSet): View? {
         var mainView = view
         // If CustomViewCreation is off skip this.
 
@@ -84,9 +83,13 @@ internal class CrowdinLayoutInflater constructor(
 
         if (isSupported) {
             try {
-                mainView = createView(name, null, attrs)
+                mainView = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    createView(context, name, null, attrs)
+                } else {
+                    createView(name, null, attrs)
+                }
             } catch (ignored: ClassNotFoundException) {
-            } catch (inflateException: InflateException) {
+            } catch (_: InflateException) {
             }
         }
 
@@ -101,7 +104,6 @@ internal class CrowdinLayoutInflater constructor(
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private inner class PrivateWrapperFactory2(val factory2: Factory2?) : Factory2 {
 
         override fun onCreateView(
@@ -111,13 +113,13 @@ internal class CrowdinLayoutInflater constructor(
             attrs: AttributeSet
         ): View? {
             var view = factory2?.onCreateView(parent, name, context, attrs)
-            view = createCustomViewInternal(view, name, attrs)
+            view = createCustomViewInternal(context, view, name, attrs)
             return applyChange(view, attrs)
         }
 
         override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
             var view = factory2?.onCreateView(name, context, attrs)
-            view = createCustomViewInternal(view, name, attrs)
+            view = createCustomViewInternal(context, view, name, attrs)
             return applyChange(view, attrs)
         }
     }
