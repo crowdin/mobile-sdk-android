@@ -197,8 +197,6 @@ internal class CrowdinResources(
         res.getValue(id, outValue, resolveRefs)
     }
 
-    override fun hashCode(): Int = res.hashCode()
-
     @SuppressLint("DiscouragedApi")
     override fun getValue(name: String?, outValue: TypedValue?, resolveRefs: Boolean) {
         res.getValue(name, outValue, resolveRefs)
@@ -217,8 +215,6 @@ internal class CrowdinResources(
     override fun obtainAttributes(set: AttributeSet?, attrs: IntArray?): TypedArray = res.obtainAttributes(set, attrs)
 
     override fun openRawResourceFd(id: Int): AssetFileDescriptor = res.openRawResourceFd(id)
-
-    override fun equals(other: Any?): Boolean = res.equals(other)
 
     override fun openRawResource(id: Int, value: TypedValue?): InputStream = res.openRawResource(id, value)
 
