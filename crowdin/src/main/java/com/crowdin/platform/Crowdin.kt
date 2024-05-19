@@ -51,6 +51,8 @@ import com.crowdin.platform.util.UiUtil
 object Crowdin {
 
     const val CROWDIN_TAG = "CrowdinSDK"
+    private const val MIN_TIME_FOR_UPDATE = 900000L // 15min
+
     private lateinit var viewTransformerManager: ViewTransformerManager
     private lateinit var config: CrowdinConfig
     private lateinit var crowdinPreferences: Preferences
@@ -78,18 +80,27 @@ object Crowdin {
         initTranslationDataManager()
         initRealTimeUpdates()
         initPeriodicUpdates(context)
+        initLoading(context)
+        loadMapping()
+    }
+
+    private fun initLoading(context: Context) {
+        val lastUpdate = crowdinPreferences.getLastUpdate()
+        val timeDiff = System.currentTimeMillis() - lastUpdate
+        if (lastUpdate != 0L && timeDiff < MIN_TIME_FOR_UPDATE) {
+            return
+        }
 
         if (config.updateInterval == -1L && config.isInitSyncEnabled && !FeatureFlags.isRealTimeUpdateEnabled) {
             forceUpdate(context)
         }
-
-        loadMapping()
     }
 
     private fun initPeriodicUpdates(context: Context) {
         when {
             config.updateInterval >= RecurringManager.MIN_PERIODIC_INTERVAL_MILLIS ->
                 RecurringManager.setPeriodicUpdates(context, config)
+
             else -> RecurringManager.cancel(context)
         }
     }
@@ -431,6 +442,7 @@ object Crowdin {
 
     private fun initStringDataManager(context: Context, config: CrowdinConfig) {
         val remoteRepository = StringDataRemoteRepository(
+            crowdinPreferences,
             CrowdinRetrofitService.getCrowdinDistributionApi(),
             config.distributionHash
         )

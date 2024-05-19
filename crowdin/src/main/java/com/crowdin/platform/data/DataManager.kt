@@ -41,6 +41,7 @@ internal class DataManager(
         const val MAPPING_SUF = "-mapping"
         const val SUPPORTED_LANGUAGES = "supported_languages"
         const val MANIFEST_DATA = "manifest_data"
+        const val SYNC_DATA = "sync_data"
     }
 
     private var loadingStateListeners: ArrayList<LoadingStateListener>? = null
@@ -76,7 +77,7 @@ internal class DataManager(
 
                         override fun onDataLoaded(languageData: LanguageData) {
                             Log.v(CROWDIN_TAG, "Update data from Api finished")
-
+                            crowdinPreferences.setLastUpdate(System.currentTimeMillis())
                             refreshData(languageData)
                             ThreadUtils.executeOnMain {
                                 onFinished?.invoke()
