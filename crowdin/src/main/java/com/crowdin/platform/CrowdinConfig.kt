@@ -3,7 +3,6 @@ package com.crowdin.platform
 import android.util.Log
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.remote.NetworkType
-import com.crowdin.platform.recurringwork.RecurringManager
 
 /**
  * Contains configuration properties for initializing Crowdin.
@@ -114,12 +113,12 @@ class CrowdinConfig private constructor() {
                 }
             }
 
-            if ((updateInterval != -1L) and (updateInterval < RecurringManager.MIN_PERIODIC_INTERVAL_MILLIS)) {
+            if (updateInterval < MIN_PERIODIC_INTERVAL_MILLIS) {
                 Log.w(
                     Crowdin.CROWDIN_TAG,
                     "`updateInterval` must be not less than 15 minutes. Will be used default value - 15 minutes"
                 )
-                config.updateInterval = RecurringManager.MIN_PERIODIC_INTERVAL_MILLIS
+                config.updateInterval = MIN_PERIODIC_INTERVAL_MILLIS
             } else {
                 config.updateInterval = updateInterval
             }
@@ -139,6 +138,7 @@ class CrowdinConfig private constructor() {
 
         companion object {
             private const val ORGANIZATION_PREFIX = "e-"
+            private const val MIN_PERIODIC_INTERVAL_MILLIS = 15 * 60 * 1000L // 15 minutes.
         }
     }
 }

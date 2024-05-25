@@ -1,7 +1,6 @@
 package com.crowdin.platform
 
 import com.crowdin.platform.data.model.AuthConfig
-import com.crowdin.platform.recurringwork.RecurringManager
 import org.junit.Assert
 import org.junit.Test
 
@@ -92,7 +91,7 @@ class CrowdinConfigTest {
             .build()
 
         // Then
-        Assert.assertTrue(configWithSmallInterval.updateInterval == RecurringManager.MIN_PERIODIC_INTERVAL_MILLIS)
+        Assert.assertTrue(configWithSmallInterval.updateInterval == 15 * 60 * 1000L)
     }
 
     @Test
