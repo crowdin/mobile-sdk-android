@@ -39,6 +39,7 @@ const sidebars = {
         'guides/synchronous-mode',
       ]
     },
+    'cache',
     'example',
     'security',
     'faq'
