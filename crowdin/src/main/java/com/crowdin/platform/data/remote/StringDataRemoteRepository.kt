@@ -49,6 +49,7 @@ internal class StringDataRemoteRepository(
             val language = Locale.getDefault().language
             if (timestamp == it.timestamp && language == syncData.languageCode) {
                 crowdinPreferences.setLastUpdate(System.currentTimeMillis())
+                languageDataCallback?.onFailure(Throwable("Data is up to date"))
                 return@getManifest
             }
 
