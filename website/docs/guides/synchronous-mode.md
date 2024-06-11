@@ -6,13 +6,13 @@ However, you can switch to synchronous mode if you need to wait for translations
 
 Translations downloaded in synchronous mode will only be applied when the activity is recreated or on the next app launch.
 
-# Switching to Synchronous Mode
+## Switching to Synchronous Mode
 
 To enable synchronous mode, you need to disable the initial data synchronization and manually force an update when required. Here’s how you can set it up:
 
-# Example: Using Synchronous Mode on Splash Screen or Specific Sections
+## Using Synchronous Mode on Splash Screen or Specific Sections
 
-You can wait for translations to be downloaded while launching the Splash Activity and then open the Main Activity. Similarly, you can defer translations loading at any other point in your app, such as when the user navigates to a specific section.
+For example, you can wait for translations to be downloaded while launching the Splash Activity and then open the Main Activity. Similarly, you can defer translations loading at any other point in your app, such as when the user navigates to a specific section.
 
 
 ```kotlin title="App.kt"
