@@ -6,7 +6,7 @@ description: Explore the Crowdin Android SDK FAQ page for quick answers to your 
 
 ### Is there a caching mechanism in the SDK?
 
-Yes, the SDK caches translations locally. The cache TTL can be configured by the developer. There is also a CDN cache. There is not much control over it, but it is usually 1 hour, so there is a possible delay for new translations to appear in the app.
+Yes, the SDK caches translations locally. The cache TTL can be configured by the developer. There is also a CDN cache. There is not much control over it, but it is usually 1 hour, so there is a possible delay for new translations to appear in the app. Visit the [Cache](/cache) page for more details.
 
 ### What translations will be displayed if the current locale is not present in the Crowdin project?
 

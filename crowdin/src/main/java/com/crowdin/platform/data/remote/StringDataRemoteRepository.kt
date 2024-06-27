@@ -2,23 +2,28 @@ package com.crowdin.platform.data.remote
 
 import android.util.Log
 import com.crowdin.platform.Crowdin
+import com.crowdin.platform.Preferences
+import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.CustomLanguage
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.ManifestData
+import com.crowdin.platform.data.model.SyncData
 import com.crowdin.platform.data.model.toLanguageInfo
 import com.crowdin.platform.data.parser.ReaderFactory
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.executeIO
 import com.crowdin.platform.util.getMatchedCode
 import java.net.HttpURLConnection
+import java.util.Locale
 import okhttp3.ResponseBody
 import retrofit2.Response
 
 private const val XML_EXTENSION = ".xml"
 
 internal class StringDataRemoteRepository(
+    private val crowdinPreferences: Preferences,
     private val crowdinDistributionApi: CrowdinDistributionApi,
     private val distributionHash: String
 ) : CrowdingRepository(
@@ -37,7 +42,18 @@ internal class StringDataRemoteRepository(
 
         preferredLanguageCode = languageCode
         crowdinLanguages = supportedLanguages
+
         getManifest(languageDataCallback) {
+            val syncData = crowdinPreferences.getData<SyncData>(DataManager.SYNC_DATA, SyncData::class.java)
+            val timestamp = syncData?.timestamp
+            val language = Locale.getDefault().language
+            if (timestamp == it.timestamp && language == syncData.languageCode) {
+                crowdinPreferences.setLastUpdate(System.currentTimeMillis())
+                languageDataCallback?.onFailure(Throwable("Data is up to date"))
+                return@getManifest
+            }
+
+            crowdinPreferences.saveData(DataManager.SYNC_DATA, SyncData(it.timestamp, language))
             onManifestDataReceived(it, languageDataCallback)
         }
     }

@@ -29,7 +29,6 @@ import com.crowdin.platform.data.remote.TranslationDataRepository
 import com.crowdin.platform.data.remote.TranslationDownloadCallback
 import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager
-import com.crowdin.platform.recurringwork.RecurringManager
 import com.crowdin.platform.screenshot.ScreenshotCallback
 import com.crowdin.platform.screenshot.ScreenshotManager
 import com.crowdin.platform.screenshot.ScreenshotUtils
@@ -51,6 +50,7 @@ import com.crowdin.platform.util.UiUtil
 object Crowdin {
 
     const val CROWDIN_TAG = "CrowdinSDK"
+
     private lateinit var viewTransformerManager: ViewTransformerManager
     private lateinit var config: CrowdinConfig
     private lateinit var crowdinPreferences: Preferences
@@ -77,20 +77,19 @@ object Crowdin {
         initFeatureManagers()
         initTranslationDataManager()
         initRealTimeUpdates()
-        initPeriodicUpdates(context)
-
-        if (config.updateInterval == -1L && config.isInitSyncEnabled && !FeatureFlags.isRealTimeUpdateEnabled) {
-            forceUpdate(context)
-        }
-
+        initLoading(context)
         loadMapping()
     }
 
-    private fun initPeriodicUpdates(context: Context) {
-        when {
-            config.updateInterval >= RecurringManager.MIN_PERIODIC_INTERVAL_MILLIS ->
-                RecurringManager.setPeriodicUpdates(context, config)
-            else -> RecurringManager.cancel(context)
+    private fun initLoading(context: Context) {
+        val lastUpdate = crowdinPreferences.getLastUpdate()
+        val timeDiff = System.currentTimeMillis() - lastUpdate
+        if (lastUpdate != 0L && timeDiff < config.updateInterval) {
+            return
+        }
+
+        if (config.isInitSyncEnabled && !FeatureFlags.isRealTimeUpdateEnabled) {
+            forceUpdate(context)
         }
     }
 
@@ -98,12 +97,6 @@ object Crowdin {
         if (config.isRealTimeUpdateEnabled && isAuthorized()) {
             createRealTimeConnection()
         }
-    }
-
-    internal fun initForUpdate(context: Context) {
-        this.config = RecurringManager.getConfig(context)
-        initStringDataManager(context, config)
-        forceUpdate(context)
     }
 
     /**
@@ -256,16 +249,6 @@ object Crowdin {
     @JvmStatic
     fun unregisterDataLoadingObserver(listener: LoadingStateListener) {
         dataManager?.removeLoadingStateListener(listener)
-    }
-
-    /**
-     * Cancel recurring job defined by interval during sdk init.
-     *
-     * @param context context of an activity.
-     */
-    @JvmStatic
-    fun cancelRecurring(context: Context) {
-        RecurringManager.cancel(context)
     }
 
     /**
@@ -431,6 +414,7 @@ object Crowdin {
 
     private fun initStringDataManager(context: Context, config: CrowdinConfig) {
         val remoteRepository = StringDataRemoteRepository(
+            crowdinPreferences,
             CrowdinRetrofitService.getCrowdinDistributionApi(),
             config.distributionHash
         )

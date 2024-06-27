@@ -40,6 +40,7 @@ const sidebars = {
       ]
     },
     'example',
+    'cache',
     'security',
     'faq'
   ],
