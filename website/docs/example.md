@@ -13,7 +13,7 @@ To connect the project with your Crowdin account and test the content delivery a
 
 * Clone the current repository
 * Crowdin project setup:
-  * Add the resources (`res/values/strings.xml` files) from the **example / example-info** modules to your Crowdin project. If you’d like to use files from the different modules, check out the [instructions](https://put-the-correct-link-here.com)
+  * Add the resources (`res/values/strings.xml` files) from the **example / example-info** modules to your Crowdin project. If you’d like to use files from the different modules, check out the [instructions](/guides/multiple-flavor-app)
   * Translate the resources
   * Create a distribution
 * App setup:
