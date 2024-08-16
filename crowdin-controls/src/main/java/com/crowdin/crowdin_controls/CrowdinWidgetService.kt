@@ -21,6 +21,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import android.widget.ToggleButton
+import androidx.core.content.ContextCompat
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.Crowdin.CROWDIN_TAG
 import com.crowdin.platform.LoadingStateListener
@@ -277,9 +278,16 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
                 }
             }
 
-            activity.get()?.registerReceiver(receiver, IntentFilter().apply {
-                addAction(BROADCAST_SCREENSHOT)
-            })
+            activity.get()?.let {
+                ContextCompat.registerReceiver(
+                    it,
+                    receiver,
+                    IntentFilter().apply {
+                        addAction(BROADCAST_SCREENSHOT)
+                    },
+                    ContextCompat.RECEIVER_NOT_EXPORTED,
+                )
+            }
         }
 
         fun destroyService(activity: Activity) {
