@@ -4,6 +4,8 @@ plugins {
 }
 
 apply from: '../jacoco.gradle'
+apply from: file('publish.gradle')
+
 
 ext {
     libraryVersionCode = 44
@@ -40,6 +42,10 @@ android {
         versionName libraryVersionName
         multiDexEnabled true
 
+        aarMetadata {
+            minCompileSdk = 16
+        }
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "VERSION_NAME", "\"$versionName\""
     }
@@ -56,18 +62,22 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+
+    // Gradle 8 new way of setting java version globally
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
     }
 
     testOptions {
         unitTests.returnDefaultValues = true
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }
 
 dependencies {
@@ -111,4 +121,3 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
     args "-F", "src/**/*.kt"
 }
 
-apply from: 'maven.gradle'

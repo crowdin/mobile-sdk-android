@@ -8,3 +8,5 @@ crowdin-controls/build
 .idea/*
 
 example/src/main/java/com/crowdin/platform/example/App.bak.txt
+
+github.properties

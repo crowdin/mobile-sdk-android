@@ -1,0 +1,72 @@
+apply plugin: 'maven-publish' // Apply this plugin at the top of your library build.gradle
+
+
+android {
+    publishing {
+        singleVariant("release")
+    }
+}
+
+
+def githubProperties = new Properties()
+
+try {
+    githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
+} catch (Exception e) {
+    println("github.properties not found")
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            // Define the artifact
+            groupId = 'app.pago'
+            artifactId = 'crowdin-ota'
+            version ='1.0'
+
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionResult()
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+
+            // Run the actual publishing
+            afterEvaluate {
+                from components.findByName('release')
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            /** Configure path of your package repository on Github
+             *  Replace GITHUB_USERID with your/organisation Github userID and REPOSITORY with the repository name on GitHub
+             */
+            url = uri("https://maven.pkg.github.com/PagoApp/android-crowdin-ota")
+
+            credentials {
+                /**Create github.properties in root project folder file with gpr.usr=GITHUB_USER_ID  & gpr.key=PERSONAL_ACCESS_TOKEN**/
+                username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+                password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+            }
+        }
+    }
+}
+
+// Define a task that sets the version of the build and runs the publishing
+
+task publishGithub {
+    doLast {
+        def version = project.getProperty("versionName")
+        publishing.publications.release.version = version
+        println("Publishing version: ${publishing.publications.release.version}")
+    }
+}
+
+publishGithub.configure{
+    finalizedBy("publish")
+}
+
