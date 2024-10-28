@@ -17,11 +17,11 @@ import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.fromHtml
 import com.crowdin.platform.util.unEscapeQuotes
 import com.google.gson.Gson
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import java.util.Collections
 import java.util.Locale
 import java.util.WeakHashMap
-import okhttp3.WebSocket
-import okhttp3.WebSocketListener
 
 internal class EchoWebSocketListener(
     private var mappingData: LanguageData,

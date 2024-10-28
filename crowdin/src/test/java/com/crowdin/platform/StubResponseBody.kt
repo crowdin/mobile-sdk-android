@@ -1,11 +1,11 @@
 package com.crowdin.platform
 
-import java.io.InputStream
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import okio.BufferedSource
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
+import java.io.InputStream
 
 class StubResponseBody : ResponseBody() {
     override fun contentLength(): Long {

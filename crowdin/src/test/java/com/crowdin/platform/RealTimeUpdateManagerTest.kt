@@ -7,10 +7,10 @@ import com.crowdin.platform.realtimeupdate.RealTimeUpdateManager
 import com.crowdin.platform.transformer.ViewTransformerManager
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoInteractions
+import org.mockito.Mockito.`when`
 
 class RealTimeUpdateManagerTest {
 

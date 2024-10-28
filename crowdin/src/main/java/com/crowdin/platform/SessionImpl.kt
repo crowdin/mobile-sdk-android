@@ -30,7 +30,13 @@ internal class SessionImpl(
         var response: Response<AuthResponse>? = null
         executeIO {
             response = authApi.getToken(
-                RefreshToken("refresh_token", clientId, clientSecret, refreshToken), organizationName
+                RefreshToken(
+                    "refresh_token",
+                    clientId,
+                    clientSecret,
+                    refreshToken
+                ),
+                organizationName
             ).execute()
         }
 

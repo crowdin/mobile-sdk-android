@@ -2,11 +2,11 @@ package com.crowdin.platform.data.remote.interceptor
 
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.Session
-import java.io.IOException
-import java.net.HttpURLConnection
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
+import java.io.IOException
+import java.net.HttpURLConnection
 
 internal class SessionInterceptor(private val session: Session) : Interceptor {
 
@@ -59,8 +59,6 @@ internal class SessionInterceptor(private val session: Session) : Interceptor {
         return requestBuilder.build()
     }
 
-    private fun isAuthErrorCode(response: Response): Boolean {
-        return response.code == HttpURLConnection.HTTP_UNAUTHORIZED ||
-                response.code == HttpURLConnection.HTTP_FORBIDDEN
-    }
+    private fun isAuthErrorCode(response: Response): Boolean =
+        response.code == HttpURLConnection.HTTP_UNAUTHORIZED || response.code == HttpURLConnection.HTTP_FORBIDDEN
 }

@@ -15,10 +15,10 @@ import com.crowdin.platform.data.parser.ReaderFactory
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.executeIO
 import com.crowdin.platform.util.getMatchedCode
-import java.net.HttpURLConnection
-import java.util.Locale
 import okhttp3.ResponseBody
 import retrofit2.Response
+import java.net.HttpURLConnection
+import java.util.Locale
 
 private const val XML_EXTENSION = ".xml"
 

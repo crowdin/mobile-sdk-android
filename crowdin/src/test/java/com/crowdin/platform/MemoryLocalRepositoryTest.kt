@@ -8,11 +8,11 @@ import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.util.getFormattedCode
-import java.util.Locale
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
+import java.util.Locale
 
 class MemoryLocalRepositoryTest {
 
@@ -219,7 +219,10 @@ class MemoryLocalRepositoryTest {
         val memoryLocalRepository = MemoryLocalRepository()
         val expectedAuthInfo = AuthInfo(
             AuthResponse(
-                "", 0, "", ""
+                tokenType = "",
+                expiresIn = 0,
+                accessToken = "",
+                refreshToken = ""
             )
         )
 

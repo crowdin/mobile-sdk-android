@@ -20,7 +20,8 @@ object ScreenshotUtils {
                 root.getLocationInWindow(locationOfViewInWindow)
                 try {
                     PixelCopy.request(
-                        window, Rect(
+                        window,
+                        Rect(
                             locationOfViewInWindow[0],
                             locationOfViewInWindow[1],
                             locationOfViewInWindow[0] + root.width,
@@ -31,7 +32,8 @@ object ScreenshotUtils {
                             if (copyResult == PixelCopy.SUCCESS) {
                                 callback(bitmap)
                             }
-                        }, Handler()
+                        },
+                        Handler()
                     )
                 } catch (e: IllegalArgumentException) {
                     callback(takeScreenshot(root))

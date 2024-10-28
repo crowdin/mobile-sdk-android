@@ -37,10 +37,15 @@ internal class CrowdinContextWrapper private constructor(
             dataManager: DataManager?,
             viewTransformerManager: ViewTransformerManager
         ): Context {
-            return if (dataManager == null) context else CrowdinContextWrapper(
-                context,
-                dataManager, viewTransformerManager
-            )
+            return if (dataManager == null) {
+                context
+            } else {
+                CrowdinContextWrapper(
+                    context,
+                    dataManager,
+                    viewTransformerManager
+                )
+            }
         }
     }
 }

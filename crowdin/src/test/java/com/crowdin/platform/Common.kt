@@ -16,14 +16,14 @@ import com.crowdin.platform.data.remote.CrowdinRetrofitService
 import com.crowdin.platform.data.remote.NetworkType
 import com.crowdin.platform.data.remote.api.CrowdinTranslationApi
 import com.crowdin.platform.util.convertToJson
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 
 class Common {
 

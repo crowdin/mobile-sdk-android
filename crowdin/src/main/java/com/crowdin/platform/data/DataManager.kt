@@ -68,7 +68,6 @@ internal class DataManager(
             val languageInfo = getSupportedLanguages()
             val status = validateData(context, networkType)
             if (status == STATUS_OK) {
-
                 Log.v(CROWDIN_TAG, "Update data from Api started")
 
                 remoteRepository.fetchData(
@@ -92,7 +91,8 @@ internal class DataManager(
                                 onFinished?.invoke()
                             }
                         }
-                    })
+                    }
+                )
             } else {
                 sendOnFailure(Throwable(status))
                 ThreadUtils.executeOnMain {
@@ -115,8 +115,8 @@ internal class DataManager(
         var status: String = STATUS_OK
         when {
             !Connectivity.isOnline(context) -> status = "No internet connection"
-            !Connectivity.isNetworkAllowed(context, networkType) -> status =
-                "Not allowed to load with current network type: ${networkType.name}"
+            !Connectivity.isNetworkAllowed(context, networkType) ->
+                status = "Not allowed to load with current network type: ${networkType.name}"
         }
 
         return status

@@ -431,7 +431,8 @@ object Crowdin {
                             viewTransformerManager.invalidate()
                         }
                     }
-                })
+                }
+            )
         remoteRepository.crowdinApi = getCrowdinApi()
     }
 

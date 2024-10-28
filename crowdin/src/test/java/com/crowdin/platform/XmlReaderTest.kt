@@ -2,12 +2,12 @@ package com.crowdin.platform
 
 import com.crowdin.platform.data.parser.Parser
 import com.crowdin.platform.data.parser.XmlReader
-import java.io.InputStream
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import java.io.InputStream
 
 class XmlReaderTest {
 
