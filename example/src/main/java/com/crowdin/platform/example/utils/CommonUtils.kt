@@ -27,8 +27,8 @@ fun toastMessage(context: Context, message: String) {
  * Convert formatted Date
  */
 fun getFormatDate(inputDate: String): String {
-    val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    val outputFormat = SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault())
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd", Crowdin.locale)
+    val outputFormat = SimpleDateFormat("EEE, d MMM yyyy", Crowdin.locale)
 
     return try {
         inputFormat.parse(inputDate)?.let { outputFormat.format(it) } ?: ""
@@ -42,8 +42,8 @@ fun getFormatDate(inputDate: String): String {
  * Convert formatted Time
  */
 fun getFormatTime(inputTime: String): String {
-    val inputFormat = SimpleDateFormat("HH:mm", Locale.getDefault()) // HH:mm:ss
-    val outputFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
+    val inputFormat = SimpleDateFormat("HH:mm", Crowdin.locale) // HH:mm:ss
+    val outputFormat = SimpleDateFormat("h:mm a", Crowdin.locale)
 
     return try {
         inputFormat.parse(inputTime)?.let { outputFormat.format(it) } ?: ""

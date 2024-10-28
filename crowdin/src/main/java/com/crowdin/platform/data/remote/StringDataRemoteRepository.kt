@@ -16,7 +16,6 @@ import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.executeIO
 import com.crowdin.platform.util.getMatchedCode
 import java.net.HttpURLConnection
-import java.util.Locale
 import okhttp3.ResponseBody
 import retrofit2.Response
 
@@ -46,7 +45,7 @@ internal class StringDataRemoteRepository(
         getManifest(languageDataCallback) {
             val syncData = crowdinPreferences.getData<SyncData>(DataManager.SYNC_DATA, SyncData::class.java)
             val timestamp = syncData?.timestamp
-            val language = Locale.getDefault().language
+            val language = Crowdin.locale.language
             if (timestamp == it.timestamp && language == syncData.languageCode) {
                 crowdinPreferences.setLastUpdate(System.currentTimeMillis())
                 languageDataCallback?.onFailure(Throwable("Data is up to date"))

@@ -26,7 +26,6 @@ import com.crowdin.platform.util.fromHtml
 import com.crowdin.platform.util.getFormattedCode
 import com.crowdin.platform.util.replaceNewLine
 import java.io.InputStream
-import java.util.Locale
 
 /**
  * This is the wrapped resources which will be provided by Crowdin.
@@ -281,7 +280,7 @@ internal class CrowdinResources(
     ) {
         val entryName = getResourceEntryName(id)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val rule = PluralRules.forLocale(Locale.getDefault())
+            val rule = PluralRules.forLocale(Crowdin.locale)
             val ruleName = rule.select(quantity.toDouble())
             val quantityMap = mutableMapOf<String, String>()
             quantityMap[ruleName] = defaultText
@@ -299,7 +298,7 @@ internal class CrowdinResources(
     private fun getStringFromRepository(id: Int): String? =
         try {
             val entryName = getResourceEntryName(id)
-            dataManager.getString(Locale.getDefault().getFormattedCode(), entryName)
+            dataManager.getString(Crowdin.locale.getFormattedCode(), entryName)
         } catch (ex: NotFoundException) {
             null
         }
@@ -312,7 +311,7 @@ internal class CrowdinResources(
     private fun getPluralFromRepository(id: Int, quantity: Int): String? =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val entryName = getResourceEntryName(id)
-            val rule = PluralRules.forLocale(Locale.getDefault())
+            val rule = PluralRules.forLocale(Crowdin.locale)
             val ruleName = rule.select(quantity.toDouble())
             dataManager.getStringPlural(entryName, ruleName)
         } else {

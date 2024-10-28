@@ -8,7 +8,6 @@ import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.util.getFormattedCode
-import java.util.Locale
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -125,7 +124,7 @@ class MemoryLocalRepositoryTest {
     @Test
     fun whenSetArrayData_shouldReturnSameArray() {
         // Given
-        val locale = Locale.getDefault().getFormattedCode()
+        val locale = Crowdin.locale.getFormattedCode()
         val memoryLocalRepository = MemoryLocalRepository()
         val array = arrayOf("array0", "array1")
         val arrayData = ArrayData("arrayKey", array)
@@ -144,7 +143,7 @@ class MemoryLocalRepositoryTest {
     @Test
     fun whenGetUnknownArrayData_shouldReturnNull() {
         // Given
-        val locale = Locale.getDefault().getFormattedCode()
+        val locale = Crowdin.locale.getFormattedCode()
         val memoryLocalRepository = MemoryLocalRepository()
         val arrayData = ArrayData("test key", arrayOf("array0", "array1"))
         memoryLocalRepository.setArrayData(locale, arrayData)
@@ -159,7 +158,7 @@ class MemoryLocalRepositoryTest {
     @Test
     fun whenSetPluralData_shouldReturnSamePlural() {
         // Given
-        val locale = Locale.getDefault().getFormattedCode()
+        val locale = Crowdin.locale.getFormattedCode()
         val memoryLocalRepository = MemoryLocalRepository()
         val resourceKey0 = "test key"
         val resourceKey1 = "test key1"
@@ -187,7 +186,7 @@ class MemoryLocalRepositoryTest {
     @Test
     fun whenGetUnknownPluralData_shouldReturnNull() {
         // Given
-        val locale = Locale.getDefault().getFormattedCode()
+        val locale = Crowdin.locale.getFormattedCode()
         val memoryLocalRepository = MemoryLocalRepository()
         val expectedPlural = mutableMapOf(Pair("key0", "value0"))
         val pluralData = PluralData("test key0", expectedPlural)
@@ -235,7 +234,7 @@ class MemoryLocalRepositoryTest {
     @Test
     fun getTextData_searchPluralTest() {
         // Given
-        val locale = Locale.getDefault().getFormattedCode()
+        val locale = Crowdin.locale.getFormattedCode()
         val memoryLocalRepository = MemoryLocalRepository()
         val languageData = givenLanguageData(locale)
         memoryLocalRepository.saveLanguageData(languageData)
@@ -253,7 +252,7 @@ class MemoryLocalRepositoryTest {
     @Test
     fun getTextData_searchStringTest() {
         // Given
-        val locale = Locale.getDefault().getFormattedCode()
+        val locale = Crowdin.locale.getFormattedCode()
         val memoryLocalRepository = MemoryLocalRepository()
         val languageData = givenLanguageData(locale)
         memoryLocalRepository.saveLanguageData(languageData)
@@ -269,7 +268,7 @@ class MemoryLocalRepositoryTest {
     @Test
     fun getTextData_searchArrayTest() {
         // Given
-        val locale = Locale.getDefault().getFormattedCode()
+        val locale = Crowdin.locale.getFormattedCode()
         val memoryLocalRepository = MemoryLocalRepository()
         val languageData = givenLanguageData(locale)
         memoryLocalRepository.saveLanguageData(languageData)
@@ -290,7 +289,7 @@ class MemoryLocalRepositoryTest {
         val memoryLocalRepository = MemoryLocalRepository()
         val key = "test key"
         val stringData = StringData(key, "empty")
-        memoryLocalRepository.setStringData(Locale.getDefault().getFormattedCode(), stringData)
+        memoryLocalRepository.setStringData(Crowdin.locale.getFormattedCode(), stringData)
 
         // When
         val actualValue = memoryLocalRepository.containsKey(key)
@@ -305,7 +304,7 @@ class MemoryLocalRepositoryTest {
         val memoryLocalRepository = MemoryLocalRepository()
         val key = "test key"
         val arrayData = ArrayData(key, null)
-        memoryLocalRepository.setArrayData(Locale.getDefault().getFormattedCode(), arrayData)
+        memoryLocalRepository.setArrayData(Crowdin.locale.getFormattedCode(), arrayData)
 
         // When
         val actualValue = memoryLocalRepository.containsKey(key)
@@ -320,7 +319,7 @@ class MemoryLocalRepositoryTest {
         val memoryLocalRepository = MemoryLocalRepository()
         val key = "test key"
         val pluralData = PluralData(key)
-        memoryLocalRepository.setPluralData(Locale.getDefault().getFormattedCode(), pluralData)
+        memoryLocalRepository.setPluralData(Crowdin.locale.getFormattedCode(), pluralData)
 
         // When
         val actualValue = memoryLocalRepository.containsKey(key)

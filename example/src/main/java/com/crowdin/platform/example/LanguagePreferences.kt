@@ -17,7 +17,7 @@ class LanguagePreferences(context: Context) {
     }
 
     private fun getDefaultLanguageCode(): String {
-        val defaultLocale = Locale.getDefault()
+        val defaultLocale = Crowdin.locale
 
         val sb = StringBuilder()
             .append(defaultLocale.language)

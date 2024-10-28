@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.crowdin.platform.BuildConfig
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.example.task.OnItemSelectedListener
 import com.crowdin.platform.example.utils.updateLocale
@@ -67,7 +68,7 @@ class SettingsFragment : Fragment(), OnItemSelectedListener.SpinnerItemListener 
             languageInfoData.data.locale == item
         }?.data?.let { languageDescription.text = it.name }
 
-        val defaultLocale = Locale.getDefault()
+        val defaultLocale = Crowdin.locale
         if (item == "${defaultLocale.language}-${defaultLocale.country}") {
             return
         }

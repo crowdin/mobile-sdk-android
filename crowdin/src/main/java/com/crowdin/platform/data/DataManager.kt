@@ -3,6 +3,7 @@ package com.crowdin.platform.data
 import android.content.Context
 import android.util.Log
 import androidx.annotation.WorkerThread
+import com.crowdin.platform.Crowdin
 import com.crowdin.platform.Crowdin.CROWDIN_TAG
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.LocalDataChangeObserver
@@ -23,7 +24,6 @@ import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.getFormattedCode
 import java.lang.reflect.Type
-import java.util.Locale
 
 internal class DataManager(
     private val remoteRepository: RemoteRepository,
@@ -132,7 +132,7 @@ internal class DataManager(
                 stringData != null -> {
                     if (localRepository.containsKey(stringData.stringKey)) {
                         localRepository.setStringData(
-                            Locale.getDefault().getFormattedCode() + SUF_COPY,
+                            Crowdin.locale.getFormattedCode() + SUF_COPY,
                             stringData
                         )
                     }
@@ -141,7 +141,7 @@ internal class DataManager(
                 arrayData != null -> {
                     if (localRepository.containsKey(arrayData.name)) {
                         localRepository.setArrayData(
-                            Locale.getDefault().getFormattedCode() + SUF_COPY,
+                            Crowdin.locale.getFormattedCode() + SUF_COPY,
                             arrayData
                         )
                     }
@@ -150,7 +150,7 @@ internal class DataManager(
                 pluralData != null -> {
                     if (localRepository.containsKey(pluralData.name)) {
                         localRepository.setPluralData(
-                            Locale.getDefault().getFormattedCode() + SUF_COPY,
+                            Crowdin.locale.getFormattedCode() + SUF_COPY,
                             pluralData
                         )
                     }

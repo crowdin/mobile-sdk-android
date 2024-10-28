@@ -1,5 +1,6 @@
 package com.crowdin.platform.data.local
 
+import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.LanguageData
@@ -9,7 +10,6 @@ import com.crowdin.platform.data.model.TextMetaData
 import com.crowdin.platform.util.getFormattedCode
 import java.lang.reflect.Type
 import java.util.IllegalFormatException
-import java.util.Locale
 
 /**
  * A LocalRepository which keeps the stringsData ONLY in memory.
@@ -97,7 +97,7 @@ internal class MemoryLocalRepository : LocalRepository {
         }
 
     override fun getStringArray(key: String): Array<String>? {
-        stringsData[Locale.getDefault().getFormattedCode()]?.arrays?.forEach { array ->
+        stringsData[Crowdin.locale.getFormattedCode()]?.arrays?.forEach { array ->
             if (array.name == key) {
                 return array.values
             }
@@ -106,7 +106,7 @@ internal class MemoryLocalRepository : LocalRepository {
     }
 
     override fun getStringPlural(resourceKey: String, quantityKey: String): String? {
-        stringsData[Locale.getDefault().getFormattedCode()]?.plurals?.forEach { pluralData ->
+        stringsData[Crowdin.locale.getFormattedCode()]?.plurals?.forEach { pluralData ->
             if (pluralData.name == resourceKey) {
                 return pluralData.quantity[quantityKey]
             }
@@ -119,7 +119,7 @@ internal class MemoryLocalRepository : LocalRepository {
     }
 
     override fun containsKey(key: String): Boolean {
-        stringsData[Locale.getDefault().getFormattedCode()]?.let { languageData ->
+        stringsData[Crowdin.locale.getFormattedCode()]?.let { languageData ->
             languageData.resources.forEach {
                 if (it.stringKey == key) {
                     return true
@@ -143,11 +143,11 @@ internal class MemoryLocalRepository : LocalRepository {
     override fun getTextData(text: String): TextMetaData {
         val textMetaData = TextMetaData()
 
-        val languageData = stringsData[Locale.getDefault().getFormattedCode()]
+        val languageData = stringsData[Crowdin.locale.getFormattedCode()]
         searchInResources(languageData, text, textMetaData)
 
         val languageReserveData =
-            stringsData[Locale.getDefault().getFormattedCode() + DataManager.SUF_COPY]
+            stringsData[Crowdin.locale.getFormattedCode() + DataManager.SUF_COPY]
         searchInResources(languageReserveData, text, textMetaData)
 
         return textMetaData
