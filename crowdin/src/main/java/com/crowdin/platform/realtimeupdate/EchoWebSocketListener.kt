@@ -4,6 +4,7 @@ import android.icu.text.PluralRules
 import android.os.Build
 import android.util.Log
 import android.widget.TextView
+import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.getMappingValueForKey
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.TextMetaData
@@ -18,7 +19,6 @@ import com.crowdin.platform.util.fromHtml
 import com.crowdin.platform.util.unEscapeQuotes
 import com.google.gson.Gson
 import java.util.Collections
-import java.util.Locale
 import java.util.WeakHashMap
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
@@ -165,7 +165,7 @@ internal class EchoWebSocketListener(
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 val quantity = textMetaData.pluralQuantity
-                val rule = PluralRules.forLocale(Locale.getDefault())
+                val rule = PluralRules.forLocale(Crowdin.locale)
                 val ruleName = rule.select(quantity.toDouble())
                 if (eventData.pluralForm == ruleName) {
                     updateViewText(view, text, textMetaData.isHint)

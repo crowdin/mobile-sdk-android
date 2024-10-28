@@ -25,7 +25,7 @@ fun MenuInflater.inflateWithCrowdin(@MenuRes menuRes: Int, menu: Menu, resources
 }
 
 fun Long.parseToDateTimeFormat(): String {
-    val monthDate = SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT, Locale.getDefault())
+    val monthDate = SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT, Crowdin.locale)
     val cal = Calendar.getInstance(TimeZone.getDefault())
     cal.timeInMillis = this
     return monthDate.format(cal.time)
@@ -34,7 +34,7 @@ fun Long.parseToDateTimeFormat(): String {
 fun Locale.getFormattedCode(): String = "${language.withCrowdinSupportedCheck()}-$country"
 
 fun String.getLocaleForLanguageCode(): Locale {
-    var code = Locale.getDefault().language
+    var code = Crowdin.locale.language
     return try {
         val localeData = this.split("-").toTypedArray()
         code = localeData[0]
@@ -56,8 +56,8 @@ fun executeIO(function: () -> Unit) {
 }
 
 fun getMatchedCode(list: List<String>?, customLanguages: Map<String, CustomLanguage>?): String? {
-    val languageCode = Locale.getDefault().language.withCrowdinSupportedCheck()
-    val code = "$languageCode-${Locale.getDefault().country}"
+    val languageCode = Crowdin.locale.language.withCrowdinSupportedCheck()
+    val code = "$languageCode-${Crowdin.locale.country}"
 
     if (customLanguages != null) {
         for (languageData in customLanguages) {

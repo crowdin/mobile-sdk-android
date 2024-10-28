@@ -133,7 +133,7 @@ class DataManagerTest {
         val dataManager = givenDataManager()
         val mockStringData = mock(StringData::class.java)
         Locale.setDefault(Locale.US)
-        val expectedLanguage = Locale.getDefault().getFormattedCode() + "-copy"
+        val expectedLanguage = Crowdin.locale.getFormattedCode() + "-copy"
         `when`(mockLocalRepository.containsKey(any())).thenReturn(true)
 
         // When
@@ -152,7 +152,7 @@ class DataManagerTest {
         val dataManager = givenDataManager()
         val mockArrayData = mock(ArrayData::class.java)
         Locale.setDefault(Locale.US)
-        val expectedLanguage = Locale.getDefault().getFormattedCode() + "-copy"
+        val expectedLanguage = Crowdin.locale.getFormattedCode() + "-copy"
         `when`(mockLocalRepository.containsKey(any())).thenReturn(true)
 
         // When
@@ -171,7 +171,7 @@ class DataManagerTest {
         val dataManager = givenDataManager()
         val mockPluralData = mock(PluralData::class.java)
         Locale.setDefault(Locale.US)
-        val expectedLanguage = Locale.getDefault().getFormattedCode() + "-copy"
+        val expectedLanguage = Crowdin.locale.getFormattedCode() + "-copy"
         `when`(mockLocalRepository.containsKey(any())).thenReturn(true)
 
         // When

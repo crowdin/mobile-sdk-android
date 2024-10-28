@@ -3,6 +3,7 @@ package com.crowdin.platform
 import android.util.Log
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.remote.NetworkType
+import java.util.Locale
 
 /**
  * Contains configuration properties for initializing Crowdin.
@@ -19,6 +20,7 @@ class CrowdinConfig private constructor() {
     var authConfig: AuthConfig? = null
     var isInitSyncEnabled: Boolean = true
     var organizationName: String? = null
+    var initLocale: Locale? = null
 
     class Builder {
 
@@ -32,6 +34,7 @@ class CrowdinConfig private constructor() {
         private var authConfig: AuthConfig? = null
         private var isInitSyncEnabled: Boolean = true
         private var organizationName: String? = null
+        private var initLocale: Locale? = null
 
         fun persist(isPersist: Boolean): Builder {
             this.isPersist = isPersist
@@ -40,6 +43,11 @@ class CrowdinConfig private constructor() {
 
         fun withDistributionHash(distributionHash: String): Builder {
             this.distributionHash = distributionHash
+            return this
+        }
+
+        fun withLocale(locale: Locale): Builder {
+            initLocale = locale
             return this
         }
 
@@ -106,6 +114,7 @@ class CrowdinConfig private constructor() {
             config.networkType = networkType
             config.isRealTimeUpdateEnabled = isRealTimeUpdateEnabled
             config.isScreenshotEnabled = isScreenshotEnabled
+            config.initLocale = initLocale
 
             if (isRealTimeUpdateEnabled || isScreenshotEnabled) {
                 require(sourceLanguage.isNotEmpty()) {

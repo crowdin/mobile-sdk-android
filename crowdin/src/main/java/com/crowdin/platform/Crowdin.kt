@@ -43,6 +43,7 @@ import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.TextUtils
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.UiUtil
+import java.util.Locale
 
 /**
  * Entry point for Crowdin. it will be used for setting new strings, wrapping activity context.
@@ -61,6 +62,8 @@ object Crowdin {
     private var shakeDetectorManager: ShakeDetectorManager? = null
     private var translationDataRepository: TranslationDataRepository? = null
 
+    var locale = Locale.getDefault()
+
     /**
      * Initialize Crowdin with the specified configuration.
      *
@@ -70,6 +73,10 @@ object Crowdin {
     @JvmStatic
     fun init(context: Context, config: CrowdinConfig) {
         this.config = config
+
+        if (config.initLocale != null) {
+            this.locale = config.initLocale
+        }
         FeatureFlags.registerConfig(config)
         initPreferences(context)
         initStringDataManager(context, config)
@@ -489,5 +496,9 @@ object Crowdin {
 
     fun getSupportedLanguages(): LanguagesInfo? {
         return dataManager?.getSupportedLanguages()
+    }
+
+    fun updateLocale(locale: Locale) {
+        this.locale = locale
     }
 }
