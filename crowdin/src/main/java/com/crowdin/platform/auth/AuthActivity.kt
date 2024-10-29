@@ -116,8 +116,12 @@ internal class AuthActivity : AppCompatActivity() {
                     val response = apiService.getToken(
                         TokenRequest(
                             GRANT_TYPE,
-                            clientId, clientSecret, REDIRECT_URI, code
-                        ), domain
+                            clientId,
+                            clientSecret,
+                            REDIRECT_URI,
+                            code
+                        ),
+                        domain
                     ).execute()
                     if (response.isSuccessful) {
                         response.body()?.let {

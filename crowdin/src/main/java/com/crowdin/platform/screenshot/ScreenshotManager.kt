@@ -16,14 +16,14 @@ import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.data.remote.api.TagData
 import com.crowdin.platform.data.remote.api.UploadScreenshotResponse
 import com.crowdin.platform.util.parseToDateTimeFormat
-import java.io.ByteArrayOutputStream
-import java.net.HttpURLConnection
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.ByteArrayOutputStream
+import java.net.HttpURLConnection
 
 internal class ScreenshotManager(
     private var crowdinApi: CrowdinApi,
@@ -62,7 +62,6 @@ internal class ScreenshotManager(
     }
 
     fun registerScreenShotContentObserver(context: Context) {
-
         val screenshotService = ScreenshotService(context)
         screenshotService.setOnErrorListener {
             Toast.makeText(context, it, Toast.LENGTH_LONG).show()

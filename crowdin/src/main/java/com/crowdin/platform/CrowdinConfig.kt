@@ -98,7 +98,7 @@ class CrowdinConfig private constructor() {
                 Log.w(
                     Crowdin.CROWDIN_TAG,
                     "Crowdin: the `organizationName` cannot be empty for Crowdin Enterprise. Add it to the `CrowdingConfig` " +
-                            "using the `.withOrganizationName(...)` method"
+                        "using the `.withOrganizationName(...)` method"
                 )
             }
 

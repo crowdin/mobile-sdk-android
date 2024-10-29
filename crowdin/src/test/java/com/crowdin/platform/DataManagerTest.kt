@@ -11,16 +11,16 @@ import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.remote.RemoteRepository
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.getFormattedCode
-import java.lang.reflect.Type
-import java.util.Locale
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoInteractions
+import org.mockito.Mockito.`when`
+import java.lang.reflect.Type
+import java.util.Locale
 
 class DataManagerTest {
 

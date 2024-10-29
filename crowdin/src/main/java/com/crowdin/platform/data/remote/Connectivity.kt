@@ -15,16 +15,10 @@ internal object Connectivity {
         val currentNetworkType = getCurrentNetworkType(context)
         when {
             networkType == NetworkType.ALL &&
-                    (currentNetworkType == NetworkType.WIFI ||
-                            currentNetworkType == NetworkType.CELLULAR) -> {
-                return true
-            }
-            networkType == NetworkType.WIFI && currentNetworkType == NetworkType.WIFI -> {
-                return true
-            }
-            networkType == NetworkType.CELLULAR && currentNetworkType == NetworkType.CELLULAR -> {
-                return true
-            }
+                (currentNetworkType == NetworkType.WIFI || currentNetworkType == NetworkType.CELLULAR) -> return true
+
+            networkType == NetworkType.WIFI && currentNetworkType == NetworkType.WIFI -> return true
+            networkType == NetworkType.CELLULAR && currentNetworkType == NetworkType.CELLULAR -> return true
         }
 
         return false

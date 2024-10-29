@@ -20,7 +20,10 @@ class EchoWebSocketListenerTest {
         val mockDistributionData = mock(DistributionInfoResponse.DistributionData::class.java)
         val mockViewTransformerManager = spy(ViewTransformerManager::class.java)
         val echoWebSocketListener = EchoWebSocketListener(
-            mockMappingData, mockDistributionData, mockViewTransformerManager, "en"
+            mockMappingData,
+            mockDistributionData,
+            mockViewTransformerManager,
+            "en"
         )
 
         // When
@@ -37,7 +40,10 @@ class EchoWebSocketListenerTest {
         val mockDistributionData = mock(DistributionInfoResponse.DistributionData::class.java)
         val mockViewTransformerManager = spy(ViewTransformerManager::class.java)
         val echoWebSocketListener = EchoWebSocketListener(
-            mockMappingData, mockDistributionData, mockViewTransformerManager, "en"
+            mockMappingData,
+            mockDistributionData,
+            mockViewTransformerManager,
+            "en"
         )
         val mockSocket = mock(WebSocket::class.java)
         val expectedReason = "test"

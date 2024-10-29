@@ -42,6 +42,7 @@ internal class MemoryLocalRepository : LocalRepository {
                 languageData.arrays.add(arrayData)
                 stringsData[language] = languageData
             }
+
             else -> {
                 var index = -1
                 data.arrays.forEachIndexed { position, array ->
@@ -65,6 +66,7 @@ internal class MemoryLocalRepository : LocalRepository {
                 languageData.plurals.add(pluralData)
                 stringsData[language] = languageData
             }
+
             else -> {
                 var isExist = false
                 data.plurals.forEach { plural ->
@@ -179,10 +181,12 @@ internal class MemoryLocalRepository : LocalRepository {
             pluralData.quantity.forEach {
                 try {
                     if (it.value == text ||
-                        (pluralData.formatArgs.isNotEmpty() && it.value == String.format(
-                            text,
-                            pluralData.formatArgs
-                        ))
+                        (
+                            pluralData.formatArgs.isNotEmpty() && it.value == String.format(
+                                    text,
+                                    pluralData.formatArgs
+                                )
+                            )
                     ) {
                         searchResultData.pluralName = pluralName
                         searchResultData.pluralQuantity = pluralData.number
@@ -247,6 +251,7 @@ internal class MemoryLocalRepository : LocalRepository {
                 languageData.resources.add(newStringData)
                 stringsData[language] = languageData
             }
+
             else -> {
                 val stringData = getMatch(data.resources, newStringData)
                 if (stringData == null) {
