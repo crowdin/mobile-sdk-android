@@ -5,13 +5,15 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 
 internal object Connectivity {
-
     fun isOnline(context: Context): Boolean {
         val info = getNetworkInfo(context)
         return info != null && info.isConnected
     }
 
-    fun isNetworkAllowed(context: Context, networkType: NetworkType): Boolean {
+    fun isNetworkAllowed(
+        context: Context,
+        networkType: NetworkType,
+    ): Boolean {
         val currentNetworkType = getCurrentNetworkType(context)
         when {
             networkType == NetworkType.ALL &&
@@ -53,5 +55,5 @@ enum class NetworkType {
     UNKNOWN,
     ALL,
     CELLULAR,
-    WIFI;
+    WIFI,
 }

@@ -10,5 +10,5 @@ internal data class AuthResponse(
     @SerializedName("access_token")
     val accessToken: String,
     @SerializedName("refresh_token")
-    val refreshToken: String
+    val refreshToken: String,
 )

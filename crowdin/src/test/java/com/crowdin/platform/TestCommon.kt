@@ -22,53 +22,55 @@ internal fun givenManifestData(): ManifestData =
             "\"es-ES\":[\"\\/content\\/es-ES\\/strings.xml\"]," +
             "\"uk\":[\"\\/content\\/uk\\/strings.xml\"]}," +
             "\"mapping\":[\"\\/mapping\\/en\\/strings.xml\"]}",
-        ManifestData::class.java
+        ManifestData::class.java,
     )
 
 internal fun givenMockMappingFileResponse(
     mockDistributionApi: CrowdinDistributionApi,
     success: Boolean = true,
-    successCode: Int = 200
+    successCode: Int = 200,
 ) {
     @Suppress("UNCHECKED_CAST")
     val mockedCall = mock(Call::class.java) as Call<ResponseBody>
     `when`(mockDistributionApi.getMappingFile(any(), any(), any())).thenReturn(mockedCall)
 
-    val response = if (success) {
-        Response.success<ResponseBody>(successCode, StubResponseBody())
-    } else {
-        Response.error(403, StubResponseBody())
-    }
+    val response =
+        if (success) {
+            Response.success<ResponseBody>(successCode, StubResponseBody())
+        } else {
+            Response.error(403, StubResponseBody())
+        }
     `when`(mockedCall.execute()).thenReturn(response)
 }
 
 internal fun givenMockManifestResponse(
     mockDistributionApi: CrowdinDistributionApi,
     success: Boolean = true,
-    successCode: Int = 200
+    successCode: Int = 200,
 ) {
     @Suppress("UNCHECKED_CAST")
     val mockedCall = mock(Call::class.java) as Call<ManifestData>
     `when`(mockDistributionApi.getResourceManifest(any())).thenReturn(mockedCall)
-    val response = if (success) {
-        Response.success<ManifestData>(
-            successCode,
-            ManifestData(
-                listOf("strings.xml"),
-                123124154L,
-                listOf(),
-                hashMapOf(),
-                hashMapOf(),
-                hashMapOf(
-                    "en" to listOf("/content/en/string.xml"),
-                    "de" to listOf("/content/de/string.xml")
+    val response =
+        if (success) {
+            Response.success<ManifestData>(
+                successCode,
+                ManifestData(
+                    listOf("strings.xml"),
+                    123124154L,
+                    listOf(),
+                    hashMapOf(),
+                    hashMapOf(),
+                    hashMapOf(
+                        "en" to listOf("/content/en/string.xml"),
+                        "de" to listOf("/content/de/string.xml"),
+                    ),
+                    listOf("/mapping/en/string.xml"),
                 ),
-                listOf("/mapping/en/string.xml")
             )
-        )
-    } else {
-        Response.error(403, StubResponseBody())
-    }
+        } else {
+            Response.error(403, StubResponseBody())
+        }
 
     doAnswer {
         @Suppress("UNCHECKED_CAST")

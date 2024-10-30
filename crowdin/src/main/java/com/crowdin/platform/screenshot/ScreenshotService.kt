@@ -25,8 +25,9 @@ import com.karumi.dexter.listener.single.PermissionListener
 /**
  * Creates a content observer.
  */
-internal class ScreenshotService(private val context: Context) : ContentObserver(Handler()) {
-
+internal class ScreenshotService(
+    private val context: Context,
+) : ContentObserver(Handler()) {
     companion object {
         private const val TIME_GAP: Long = 0xA
     }
@@ -40,28 +41,34 @@ internal class ScreenshotService(private val context: Context) : ContentObserver
     }
 
     override fun onChange(selfChange: Boolean) {
-        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Manifest.permission.READ_MEDIA_IMAGES
-        } else {
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        }
+        val permission =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Manifest.permission.READ_MEDIA_IMAGES
+            } else {
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            }
 
-        Dexter.withContext(context)
+        Dexter
+            .withContext(context)
             .withPermission(permission)
-            .withListener(object : PermissionListener {
-                override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                    searchAndUploadScreenshot()
-                }
+            .withListener(
+                object : PermissionListener {
+                    override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
+                        searchAndUploadScreenshot()
+                    }
 
-                override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
-                    onErrorListener?.invoke(context.getString(R.string.required_permission_read_storage, permission))
-                }
+                    override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
+                        onErrorListener?.invoke(context.getString(R.string.required_permission_read_storage, permission))
+                    }
 
-                override fun onPermissionRationaleShouldBeShown(p0: PermissionRequest?, p1: PermissionToken?) {
-                    p1?.continuePermissionRequest()
-                }
-            })
-            .check()
+                    override fun onPermissionRationaleShouldBeShown(
+                        p0: PermissionRequest?,
+                        p1: PermissionToken?,
+                    ) {
+                        p1?.continuePermissionRequest()
+                    }
+                },
+            ).check()
     }
 
     private fun searchAndUploadScreenshot() {
@@ -69,46 +76,49 @@ internal class ScreenshotService(private val context: Context) : ContentObserver
 
         val resolver = context.contentResolver
         val current = System.currentTimeMillis() / 1000
-        val selection = String.format(
-            "date_added > %s and date_added < %s and ( _data like ? or _data like ? or _data like ? )",
-            current - TIME_GAP,
-            current + TIME_GAP
-        )
+        val selection =
+            String.format(
+                "date_added > %s and date_added < %s and ( _data like ? or _data like ? or _data like ? )",
+                current - TIME_GAP,
+                current + TIME_GAP,
+            )
 
         val selectionArgs = arrayOf("%Screenshot%", "%screenshot%", "%\u622a\u5c4f%")
         try {
-            resolver.query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                null,
-                selection,
-                selectionArgs,
-                null
-            ).use { cursor: Cursor? ->
-                if (!cursor?.moveToLast()!!) {
-                    return
+            resolver
+                .query(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    null,
+                    selection,
+                    selectionArgs,
+                    null,
+                ).use { cursor: Cursor? ->
+                    if (!cursor?.moveToLast()!!) {
+                        return
+                    }
+                    val mineTypeIdx = cursor.getColumnIndexOrThrow("mime_type")
+                    val mineType = cursor.getString(mineTypeIdx)
+
+                    if (TextUtils.isEmpty(mineType)) {
+                        return
+                    }
+
+                    val idIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID)
+                    if (idIndex < 0) {
+                        Log.d(ScreenshotService::class.java.simpleName, "Error: screenshot not found")
+                        return@use
+                    }
+
+                    val imageUri: Uri =
+                        ContentUris
+                            .withAppendedId(
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                cursor.getLong(idIndex),
+                            )
+
+                    val bitmap = BitmapFactory.decodeStream(resolver.openInputStream(imageUri))
+                    sendScreenshot(bitmap)
                 }
-                val mineTypeIdx = cursor.getColumnIndexOrThrow("mime_type")
-                val mineType = cursor.getString(mineTypeIdx)
-
-                if (TextUtils.isEmpty(mineType)) {
-                    return
-                }
-
-                val idIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID)
-                if (idIndex < 0) {
-                    Log.d(ScreenshotService::class.java.simpleName, "Error: screenshot not found")
-                    return@use
-                }
-
-                val imageUri: Uri = ContentUris
-                    .withAppendedId(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        cursor.getLong(idIndex)
-                    )
-
-                val bitmap = BitmapFactory.decodeStream(resolver.openInputStream(imageUri))
-                sendScreenshot(bitmap)
-            }
         } catch (tr: Throwable) {
             Log.d(ScreenshotService::class.java.simpleName, "Error: ${tr.message}")
         }
@@ -135,10 +145,10 @@ internal class ScreenshotService(private val context: Context) : ContentObserver
                     uploading = false
                     Log.d(
                         ScreenshotService::class.java.simpleName,
-                        "Screenshot uploading error: ${throwable.localizedMessage}"
+                        "Screenshot uploading error: ${throwable.localizedMessage}",
                     )
                 }
-            }
+            },
         )
     }
 }

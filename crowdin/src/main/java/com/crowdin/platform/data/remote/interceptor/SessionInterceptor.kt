@@ -8,8 +8,9 @@ import okhttp3.Response
 import java.io.IOException
 import java.net.HttpURLConnection
 
-internal class SessionInterceptor(private val session: Session) : Interceptor {
-
+internal class SessionInterceptor(
+    private val session: Session,
+) : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val original: Request = chain.request()
@@ -43,13 +44,12 @@ internal class SessionInterceptor(private val session: Session) : Interceptor {
         return mainResponse
     }
 
-    private fun refreshToken(): Boolean {
-        return try {
+    private fun refreshToken(): Boolean =
+        try {
             session.refreshToken(Crowdin.getOrganizationName(), Crowdin.getAuthConfig())
         } catch (th: Throwable) {
             false
         }
-    }
 
     private fun addHeaderToRequest(original: Request): Request {
         val accessToken = session.getAccessToken()

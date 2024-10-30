@@ -5,6 +5,5 @@ package com.crowdin.platform
  * crowdin platform or empty string on error.
  */
 interface ResourcesCallback {
-
     fun onDataReceived(json: String)
 }

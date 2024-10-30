@@ -3,7 +3,10 @@ package com.crowdin.platform.data
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.TextMetaData
 
-internal fun getMappingValueForKey(textMetaData: TextMetaData, mappingData: LanguageData): Mapping {
+internal fun getMappingValueForKey(
+    textMetaData: TextMetaData,
+    mappingData: LanguageData,
+): Mapping {
     val resources = mappingData.resources
     val arrays = mappingData.arrays
     val plurals = mappingData.plurals
@@ -41,4 +44,7 @@ internal fun getMappingValueForKey(textMetaData: TextMetaData, mappingData: Lang
     return Mapping(null)
 }
 
-data class Mapping(val value: String?, val isHint: Boolean = false)
+data class Mapping(
+    val value: String?,
+    val isHint: Boolean = false,
+)

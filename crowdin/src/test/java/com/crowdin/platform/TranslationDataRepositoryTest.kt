@@ -28,7 +28,6 @@ import retrofit2.Call
 import retrofit2.Response
 
 class TranslationDataRepositoryTest {
-
     private lateinit var mockDistributionApi: CrowdinDistributionApi
     private lateinit var mockCrowdinApi: CrowdinApi
     private lateinit var mockCrowdinTranslationApi: CrowdinTranslationApi
@@ -112,7 +111,7 @@ class TranslationDataRepositoryTest {
             "",
             "testId",
             0,
-            BuildTranslationRequest("en")
+            BuildTranslationRequest("en"),
         )
     }
 
@@ -139,37 +138,40 @@ class TranslationDataRepositoryTest {
     private fun givenSupportedLanguages(): LanguagesInfo {
         val languageInfo = LanguageInfo("en", "name", "qq", "www", "en-US", "en-rUS")
         return LanguagesInfo(
-            mutableListOf(LanguageInfoData(languageInfo))
+            mutableListOf(LanguageInfoData(languageInfo)),
         )
     }
 
     private fun givenMockDistributionData() {
-        val projectData = DistributionInfoResponse.DistributionData.ProjectData(
-            "testId",
-            "hash"
-        )
+        val projectData =
+            DistributionInfoResponse.DistributionData.ProjectData(
+                "testId",
+                "hash",
+            )
         val userData = DistributionInfoResponse.DistributionData.UserData("userId")
-        val distributionData = DistributionInfoResponse.DistributionData(
-            projectData,
-            userData,
-            "url"
-        )
+        val distributionData =
+            DistributionInfoResponse.DistributionData(
+                projectData,
+                userData,
+                "url",
+            )
         `when`(
             mockDataManager.getData<DistributionInfoResponse.DistributionData>(
                 "distribution_data",
-                DistributionInfoResponse.DistributionData::class.java
-            )
+                DistributionInfoResponse.DistributionData::class.java,
+            ),
         ).thenReturn(distributionData)
     }
 
     private fun givenTranslationDataRepository(): TranslationDataRepository {
-        val repository = TranslationDataRepository(
-            mockDistributionApi,
-            mockCrowdinTranslationApi,
-            mockReader,
-            mockDataManager,
-            "hash"
-        )
+        val repository =
+            TranslationDataRepository(
+                mockDistributionApi,
+                mockCrowdinTranslationApi,
+                mockReader,
+                mockDataManager,
+                "hash",
+            )
         repository.crowdinApi = mockCrowdinApi
         return repository
     }
@@ -185,9 +187,10 @@ class TranslationDataRepositoryTest {
     private fun givenMockFilesResponse() {
         val mockedCall = mock(Call::class.java) as Call<FileResponse>
         `when`(mockCrowdinApi.getFiles(any())).thenReturn(mockedCall)
-        val fileResponse = FileResponse(
-            listOf(FileData(File(0, 0, "strings.xml", "title0", "/strings.xml")))
-        )
+        val fileResponse =
+            FileResponse(
+                listOf(FileData(File(0, 0, "strings.xml", "title0", "/strings.xml"))),
+            )
         val response = Response.success<FileResponse>(200, fileResponse)
         `when`(mockedCall.execute()).thenReturn(response)
     }
@@ -199,15 +202,16 @@ class TranslationDataRepositoryTest {
                 "",
                 "testId",
                 0,
-                BuildTranslationRequest("en")
-            )
+                BuildTranslationRequest("en"),
+            ),
         ).thenReturn(mockedCall)
 
-        val translation = if (includeBody) {
-            TranslationResponse(Translation("test_url", "etag"))
-        } else {
-            null
-        }
+        val translation =
+            if (includeBody) {
+                TranslationResponse(Translation("test_url", "etag"))
+            } else {
+                null
+            }
         val response = Response.success<TranslationResponse>(200, translation)
         `when`(mockedCall.execute()).thenReturn(response)
     }

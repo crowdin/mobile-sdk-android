@@ -1,7 +1,6 @@
 package com.crowdin.platform.data
 
 internal interface DistributionInfoCallback {
-
     /**
      * Distribution info response received.
      */

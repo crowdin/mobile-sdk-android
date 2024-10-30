@@ -8,7 +8,6 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
 class FeatureFlagTest {
-
     @Test
     fun whenSetRealtimeUpdatesEnabled_shouldPersistDuringSession() {
         // Given

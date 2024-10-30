@@ -17,7 +17,6 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 
 class SessionInterceptorTest {
-
     @Before
     fun setUp() {
         initCrowdin()
@@ -123,15 +122,17 @@ class SessionInterceptorTest {
     }
 
     private fun initCrowdin() {
-        val config = CrowdinConfig.Builder()
-            .withDistributionHash("test")
-            .build()
+        val config =
+            CrowdinConfig
+                .Builder()
+                .withDistributionHash("test")
+                .build()
         val sharedPrefs = mock(SharedPreferences::class.java)!!
         val context = mock(Context::class.java)
         `when`(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPrefs)
         val connectivityManager = mock(ConnectivityManager::class.java)
         `when`(context.getSystemService(Context.CONNECTIVITY_SERVICE)).thenReturn(
-            connectivityManager
+            connectivityManager,
         )
 
         Crowdin.init(context, config)

@@ -5,24 +5,18 @@ import com.google.gson.annotations.SerializedName
 data class ManifestData(
     @SerializedName("files")
     val files: List<String>,
-
     @SerializedName("timestamp")
     val timestamp: Long,
-
     @SerializedName("languages")
     val languages: List<String>,
-
     @SerializedName("custom_languages")
     val customLanguages: Map<String, CustomLanguage>,
-
     @SerializedName("language_mapping")
     val languageMapping: Map<String, Map<String, String>>,
-
     @SerializedName("content")
     val content: Map<String, List<String>>,
-
     @SerializedName("mapping")
-    val mapping: List<String>
+    val mapping: List<String>,
 )
 
 data class CustomLanguage(
@@ -37,5 +31,5 @@ data class CustomLanguage(
     @SerializedName("android_code")
     val androidCode: String,
     @SerializedName("locale_with_underscore")
-    val localeWithUnderscore: String
+    val localeWithUnderscore: String,
 )

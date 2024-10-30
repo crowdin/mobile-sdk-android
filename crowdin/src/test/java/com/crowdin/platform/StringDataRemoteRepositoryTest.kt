@@ -19,7 +19,6 @@ import retrofit2.Call
 import retrofit2.Response
 
 class StringDataRemoteRepositoryTest {
-
     private lateinit var mockDistributionApi: CrowdinDistributionApi
     private lateinit var mockCrowdinApi: CrowdinApi
     private lateinit var mockReader: Reader
@@ -94,7 +93,7 @@ class StringDataRemoteRepositoryTest {
     private fun givenSupportedLanguages(): LanguagesInfo {
         val languageInfo = LanguageInfo("en", "name", "qq", "www", "en-US", "en-rUS")
         return LanguagesInfo(
-            mutableListOf(LanguageInfoData(languageInfo))
+            mutableListOf(LanguageInfoData(languageInfo)),
         )
     }
 
@@ -105,25 +104,29 @@ class StringDataRemoteRepositoryTest {
         return repository
     }
 
-    private fun givenMockResponse(success: Boolean = true, successCode: Int = 200) {
+    private fun givenMockResponse(
+        success: Boolean = true,
+        successCode: Int = 200,
+    ) {
         val mockedCall = mock(Call::class.java) as Call<ResponseBody>
         `when`(
             mockDistributionApi.getResourceFile(
                 any(),
                 any(),
                 any(),
-                ArgumentMatchers.anyLong()
-            )
+                ArgumentMatchers.anyLong(),
+            ),
         ).thenReturn(
-            mockedCall
+            mockedCall,
         )
 
         val stubResponse = StubResponseBody()
-        val response = if (success) {
-            Response.success<ResponseBody>(successCode, stubResponse)
-        } else {
-            Response.error(403, stubResponse)
-        }
+        val response =
+            if (success) {
+                Response.success<ResponseBody>(successCode, stubResponse)
+            } else {
+                Response.error(403, stubResponse)
+            }
         `when`(mockedCall.execute()).thenReturn(response)
     }
 }

@@ -11,11 +11,13 @@ import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
 internal object XmlParserUtils {
-
     private const val XML_MENU = "menu"
     private const val XML_ITEM = "item"
 
-    fun getMenuItemsStrings(menuRes: Int, resources: Resources): SparseArray<MenuItemStrings> {
+    fun getMenuItemsStrings(
+        menuRes: Int,
+        resources: Resources,
+    ): SparseArray<MenuItemStrings> {
         val xmlResourceParser = resources.getLayout(menuRes)
         val attributeSet = Xml.asAttributeSet(xmlResourceParser)
         return try {
@@ -30,7 +32,7 @@ internal object XmlParserUtils {
     @Throws(XmlPullParserException::class, IOException::class)
     private fun parseMenu(
         xmlPullParser: XmlPullParser,
-        attributeSet: AttributeSet
+        attributeSet: AttributeSet,
     ): SparseArray<MenuItemStrings> {
         var eventType = xmlPullParser.eventType
         var tagName: String

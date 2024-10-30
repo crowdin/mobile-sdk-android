@@ -1,11 +1,11 @@
 package com.crowdin.platform.data.model
 
 internal data class FileResponse(
-    val data: List<FileData>
+    val data: List<FileData>,
 )
 
 internal data class FileData(
-    val data: File
+    val data: File,
 )
 
 internal data class File(
@@ -13,5 +13,5 @@ internal data class File(
     val projectId: Long,
     val name: String,
     val title: String,
-    val path: String
+    val path: String,
 )

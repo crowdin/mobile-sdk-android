@@ -17,12 +17,15 @@ import java.lang.ref.WeakReference
  * A transformer which transforms TextView(or any view extends it like Button, EditText, ...):
  * it transforms "text" & "hint" attributes.
  */
-internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvider) :
-    BaseTransformer() {
-
+internal class TextViewTransformer(
+    val textMetaDataProvider: TextMetaDataProvider,
+) : BaseTransformer() {
     override val viewType = TextView::class.java
 
-    override fun transform(view: View, attrs: AttributeSet): View {
+    override fun transform(
+        view: View,
+        attrs: AttributeSet,
+    ): View {
         if (!viewType.isInstance(view)) {
             return view
         }
@@ -97,7 +100,9 @@ internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvide
         return view
     }
 
-    inner class Watcher(var view: WeakReference<TextView>) : TextWatcher {
+    inner class Watcher(
+        var view: WeakReference<TextView>,
+    ) : TextWatcher {
         // Handle case when @string res set programmatically
         override fun afterTextChanged(s: Editable?) {
             view.get()?.let {
@@ -113,10 +118,20 @@ internal class TextViewTransformer(val textMetaDataProvider: TextMetaDataProvide
             }
         }
 
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        override fun beforeTextChanged(
+            s: CharSequence?,
+            start: Int,
+            count: Int,
+            after: Int,
+        ) {
         }
 
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        override fun onTextChanged(
+            s: CharSequence?,
+            start: Int,
+            before: Int,
+            count: Int,
+        ) {
         }
     }
 }

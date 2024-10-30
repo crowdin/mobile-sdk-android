@@ -10,7 +10,6 @@ import com.crowdin.platform.data.model.ManifestData
  * Repository of strings from network.
  */
 internal interface RemoteRepository {
-
     /**
      * Fetch [LanguageData] for a specific language by language code.
      *
@@ -20,10 +19,13 @@ internal interface RemoteRepository {
     fun fetchData(
         languageCode: String? = null,
         supportedLanguages: LanguagesInfo? = null,
-        languageDataCallback: LanguageDataCallback? = null
+        languageDataCallback: LanguageDataCallback? = null,
     )
 
-    fun getManifest(languageDataCallback: LanguageDataCallback? = null, function: (ManifestData) -> Unit)
+    fun getManifest(
+        languageDataCallback: LanguageDataCallback? = null,
+        function: (ManifestData) -> Unit,
+    )
 
     /**
      * Fetch all supported languages.

@@ -25,18 +25,17 @@ private const val XML_EXTENSION = ".xml"
 internal class StringDataRemoteRepository(
     private val crowdinPreferences: Preferences,
     private val crowdinDistributionApi: CrowdinDistributionApi,
-    private val distributionHash: String
+    private val distributionHash: String,
 ) : CrowdingRepository(
-    crowdinDistributionApi,
-    distributionHash
-) {
-
+        crowdinDistributionApi,
+        distributionHash,
+    ) {
     private var preferredLanguageCode: String? = null
 
     override fun fetchData(
         languageCode: String?,
         supportedLanguages: LanguagesInfo?,
-        languageDataCallback: LanguageDataCallback?
+        languageDataCallback: LanguageDataCallback?,
     ) {
         Log.v(Crowdin.CROWDIN_TAG, "StringDataRemoteRepository. Fetch data from Api started")
 
@@ -58,10 +57,13 @@ internal class StringDataRemoteRepository(
         }
     }
 
-    override fun onManifestDataReceived(manifest: ManifestData?, languageDataCallback: LanguageDataCallback?) {
+    override fun onManifestDataReceived(
+        manifest: ManifestData?,
+        languageDataCallback: LanguageDataCallback?,
+    ) {
         Log.v(
             Crowdin.CROWDIN_TAG,
-            "StringDataRemoteRepository. Handling received manifest data. Preferred language: $preferredLanguageCode"
+            "StringDataRemoteRepository. Handling received manifest data. Preferred language: $preferredLanguageCode",
         )
 
         val supportedLanguages = manifest?.languages
@@ -74,22 +76,24 @@ internal class StringDataRemoteRepository(
 
         // Combine all data before save to storage
         val languageData = LanguageData()
-        val languageInfo = if (customLanguages?.contains(preferredLanguageCode) == true) {
-            customLanguages[preferredLanguageCode]?.toLanguageInfo()
-        } else {
-            getLanguageInfo(preferredLanguageCode)
-        } ?: return
+        val languageInfo =
+            if (customLanguages?.contains(preferredLanguageCode) == true) {
+                customLanguages[preferredLanguageCode]?.toLanguageInfo()
+            } else {
+                getLanguageInfo(preferredLanguageCode)
+            } ?: return
 
         languageData.language = languageInfo.locale
         manifest?.content?.get(preferredLanguageCode)?.forEach { filePath ->
             val eTag = eTagMap[filePath]
-            val result = requestStringData(
-                eTag = eTag,
-                distributionHash = distributionHash,
-                filePath = filePath,
-                timestamp = manifest.timestamp,
-                languageDataCallback = languageDataCallback
-            )
+            val result =
+                requestStringData(
+                    eTag = eTag,
+                    distributionHash = distributionHash,
+                    filePath = filePath,
+                    timestamp = manifest.timestamp,
+                    languageDataCallback = languageDataCallback,
+                )
             languageData.addNewResources(result)
         }
 
@@ -99,9 +103,9 @@ internal class StringDataRemoteRepository(
     private fun getSafeLanguageCode(
         preferredLanguageCode: String?,
         supportedLanguages: List<String>?,
-        customLanguages: Map<String, CustomLanguage>?
-    ): String? {
-        return if (preferredLanguageCode == null) {
+        customLanguages: Map<String, CustomLanguage>?,
+    ): String? =
+        if (preferredLanguageCode == null) {
             getMatchedCode(supportedLanguages, customLanguages)
         } else {
             if (supportedLanguages?.contains(preferredLanguageCode) == false) {
@@ -110,30 +114,31 @@ internal class StringDataRemoteRepository(
                 preferredLanguageCode
             }
         }
-    }
 
     private fun requestStringData(
         eTag: String?,
         distributionHash: String,
         filePath: String,
         timestamp: Long,
-        languageDataCallback: LanguageDataCallback?
+        languageDataCallback: LanguageDataCallback?,
     ): LanguageData {
         var languageData = LanguageData()
         var response: Response<ResponseBody>? = null
 
         Log.v(
             Crowdin.CROWDIN_TAG,
-            "${javaClass.simpleName}. Loading string data from $filePath"
+            "${javaClass.simpleName}. Loading string data from $filePath",
         )
 
         executeIO {
-            response = crowdinDistributionApi.getResourceFile(
-                eTag = eTag ?: HEADER_ETAG_EMPTY,
-                distributionHash = distributionHash,
-                filePath = filePath,
-                timeStamp = timestamp
-            ).execute()
+            response =
+                crowdinDistributionApi
+                    .getResourceFile(
+                        eTag = eTag ?: HEADER_ETAG_EMPTY,
+                        distributionHash = distributionHash,
+                        filePath = filePath,
+                        timeStamp = timestamp,
+                    ).execute()
         }
         val result = response ?: return languageData
 
@@ -141,11 +146,12 @@ internal class StringDataRemoteRepository(
         val code = result.code()
         when {
             code == HttpURLConnection.HTTP_OK && body != null -> {
-                languageData = onStringDataReceived(
-                    eTag = result.headers()[HEADER_ETAG],
-                    filePath = filePath,
-                    body = body
-                )
+                languageData =
+                    onStringDataReceived(
+                        eTag = result.headers()[HEADER_ETAG],
+                        filePath = filePath,
+                        body = body,
+                    )
             }
 
             code == HttpURLConnection.HTTP_FORBIDDEN -> {
@@ -169,7 +175,7 @@ internal class StringDataRemoteRepository(
     private fun onStringDataReceived(
         eTag: String?,
         filePath: String,
-        body: ResponseBody
+        body: ResponseBody,
     ): LanguageData {
         eTag?.let { eTagMap.put(filePath, eTag) }
 
@@ -178,8 +184,7 @@ internal class StringDataRemoteRepository(
                 when {
                     filePath.contains(XML_EXTENSION) -> ReaderFactory.ReaderType.XML
                     else -> ReaderFactory.ReaderType.JSON
-                }
-            )
-            .parseInput(body.byteStream())
+                },
+            ).parseInput(body.byteStream())
     }
 }

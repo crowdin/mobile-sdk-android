@@ -26,21 +26,23 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 
 class Common {
-
     @Test
     fun convertToJsonTest() {
         // Given
         val languageData = LanguageData("en")
-        languageData.resources = mutableListOf(
-            StringData("key0", "value0"),
-            StringData("key1", "value1")
-        )
-        languageData.arrays = mutableListOf(
-            ArrayData("array0", arrayOf("one", "two"))
-        )
-        languageData.plurals = mutableListOf(
-            PluralData("plural", mutableMapOf("one" to "value"))
-        )
+        languageData.resources =
+            mutableListOf(
+                StringData("key0", "value0"),
+                StringData("key1", "value1"),
+            )
+        languageData.arrays =
+            mutableListOf(
+                ArrayData("array0", arrayOf("one", "two")),
+            )
+        languageData.plurals =
+            mutableListOf(
+                PluralData("plural", mutableMapOf("one" to "value")),
+            )
         val expectedJson =
             "{\"language\":\"en\",\"strings\":{\"key0\":\"value0\",\"key1\":\"value1\"},\"arrays\":{\"array0\":[\"one\",\"two\"]},\"plurals\":{\"plural\":{\"one\":\"value\"}}}"
 
@@ -125,8 +127,8 @@ class Common {
         `when`(
             mockContext.getSharedPreferences(
                 "com.crowdin.platform.string.preferences",
-                Context.MODE_PRIVATE
-            )
+                Context.MODE_PRIVATE,
+            ),
         ).thenReturn(mockPref)
         val crowdinPreferences = CrowdinPreferences(mockContext)
 
@@ -146,8 +148,8 @@ class Common {
         `when`(
             mockContext.getSharedPreferences(
                 "com.crowdin.platform.string.preferences",
-                Context.MODE_PRIVATE
-            )
+                Context.MODE_PRIVATE,
+            ),
         ).thenReturn(mockPref)
         val crowdinPreferences = CrowdinPreferences(mockContext)
 
@@ -166,7 +168,7 @@ class Common {
         `when`(mockNetworkInfo.isConnected).thenReturn(true)
         `when`(mockConnectivityManager.activeNetworkInfo).thenReturn(mockNetworkInfo)
         `when`(mockContext.getSystemService(Context.CONNECTIVITY_SERVICE)).thenReturn(
-            mockConnectivityManager
+            mockConnectivityManager,
         )
 
         return mockContext

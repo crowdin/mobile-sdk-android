@@ -7,10 +7,9 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 internal interface AuthApi {
-
     @POST("oauth/token")
     fun getToken(
         @Body tokenRequest: Any,
-        @Query("domain") domain: String?
+        @Query("domain") domain: String?,
     ): Call<AuthResponse>
 }

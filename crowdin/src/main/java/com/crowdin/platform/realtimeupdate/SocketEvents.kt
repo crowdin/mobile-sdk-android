@@ -8,9 +8,8 @@ internal class SubscribeUpdateEvent(
     private var projectId: String,
     private var userId: String,
     private var language: String,
-    private var mappingId: String
+    private var mappingId: String,
 ) {
-
     override fun toString(): String =
         "{" +
             "\"action\":\"subscribe\", " +
@@ -22,9 +21,8 @@ internal class SubscribeSuggestionEvent(
     private var wsHash: String,
     private var projectId: String,
     private var language: String,
-    private var mappingId: String
+    private var mappingId: String,
 ) {
-
     override fun toString(): String =
         "{" +
             "\"action\":\"subscribe\", " +

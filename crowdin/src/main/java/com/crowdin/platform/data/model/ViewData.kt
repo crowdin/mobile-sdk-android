@@ -5,5 +5,5 @@ internal data class ViewData(
     val x: Int,
     val y: Int,
     val width: Int,
-    val height: Int
+    val height: Int,
 )

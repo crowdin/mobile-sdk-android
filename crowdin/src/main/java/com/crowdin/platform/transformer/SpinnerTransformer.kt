@@ -12,12 +12,14 @@ import java.util.WeakHashMap
  * and uses default android.layouts for displaying
  */
 internal class SpinnerTransformer : BaseTransformer() {
-
     private val createdView = WeakHashMap<Spinner, Int>()
 
     override val viewType = Spinner::class.java
 
-    override fun transform(view: View, attrs: AttributeSet): View {
+    override fun transform(
+        view: View,
+        attrs: AttributeSet,
+    ): View {
         if (!viewType.isInstance(view)) {
             return view
         }
@@ -48,14 +50,18 @@ internal class SpinnerTransformer : BaseTransformer() {
         }
     }
 
-    private fun setAdapter(view: Spinner, resId: Int) {
+    private fun setAdapter(
+        view: Spinner,
+        resId: Int,
+    ) {
         val resources = view.context.resources
         val stringArray = resources.getStringArray(resId)
-        val adapter = ArrayAdapter(
-            view.context,
-            android.R.layout.simple_spinner_item,
-            stringArray
-        )
+        val adapter =
+            ArrayAdapter(
+                view.context,
+                android.R.layout.simple_spinner_item,
+                stringArray,
+            )
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         view.adapter = adapter

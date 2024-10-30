@@ -6,36 +6,49 @@ import android.view.Menu
 import com.crowdin.platform.data.parser.XmlParserUtils
 
 internal object TextUtils {
-
-    fun getTextForAttribute(attrs: AttributeSet, index: Int, resources: Resources): CharSequence? {
+    fun getTextForAttribute(
+        attrs: AttributeSet,
+        index: Int,
+        resources: Resources,
+    ): CharSequence? {
         var text: CharSequence? = null
         val value = attrs.getAttributeValue(index)
         if (value != null && value.startsWith("@")) {
-            text = try {
-                resources.getText(attrs.getAttributeResourceValue(index, 0))
-            } catch (exception: Resources.NotFoundException) {
-                null
-            }
+            text =
+                try {
+                    resources.getText(attrs.getAttributeResourceValue(index, 0))
+                } catch (exception: Resources.NotFoundException) {
+                    null
+                }
         }
 
         return text
     }
 
-    fun getTextAttributeKey(res: Resources, attrs: AttributeSet, index: Int): String? {
+    fun getTextAttributeKey(
+        res: Resources,
+        attrs: AttributeSet,
+        index: Int,
+    ): String? {
         var id: String? = null
         val value = attrs.getAttributeValue(index)
         if (value != null && value.startsWith("@")) {
-            id = try {
-                res.getResourceEntryName(attrs.getAttributeResourceValue(index, 0))
-            } catch (exception: Resources.NotFoundException) {
-                null
-            }
+            id =
+                try {
+                    res.getResourceEntryName(attrs.getAttributeResourceValue(index, 0))
+                } catch (exception: Resources.NotFoundException) {
+                    null
+                }
         }
 
         return id
     }
 
-    fun updateMenuItemsText(menuRes: Int, menu: Menu, resources: Resources) {
+    fun updateMenuItemsText(
+        menuRes: Int,
+        menu: Menu,
+        resources: Resources,
+    ) {
         val itemStrings = XmlParserUtils.getMenuItemsStrings(menuRes, resources)
 
         for (i in 0 until itemStrings.size()) {

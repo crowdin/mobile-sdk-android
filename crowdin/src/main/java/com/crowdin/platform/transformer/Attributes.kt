@@ -1,7 +1,6 @@
 package com.crowdin.platform.transformer
 
 internal object Attributes {
-
     const val ATTRIBUTE_MENU = "menu"
     const val ATTRIBUTE_APP_MENU = "app:menu"
     const val ATTRIBUTE_ID = "id"

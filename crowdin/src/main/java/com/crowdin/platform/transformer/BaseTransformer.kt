@@ -10,7 +10,6 @@ import java.util.Collections
 import java.util.WeakHashMap
 
 internal abstract class BaseTransformer : Transformer {
-
     companion object {
         private const val UNKNOWN_ID = 0
         private const val TYPE_STRING = "string"
@@ -58,8 +57,8 @@ internal abstract class BaseTransformer : Transformer {
                         location[0],
                         location[1],
                         view.width,
-                        view.height
-                    )
+                        view.height,
+                    ),
                 )
             }
         }
@@ -67,33 +66,36 @@ internal abstract class BaseTransformer : Transformer {
         return listViewData
     }
 
-    override fun getVisibleViewsWithData(): Map<TextView, TextMetaData> {
-        return createdViews
-    }
+    override fun getVisibleViewsWithData(): Map<TextView, TextMetaData> = createdViews
 
     override fun setOnViewsChangeListener(listener: ViewsChangeListener?) {
         this.listener = listener
     }
 
-    fun addViewWithData(view: TextView, textMetaData: TextMetaData) {
+    fun addViewWithData(
+        view: TextView,
+        textMetaData: TextMetaData,
+    ) {
         createdViews[view] = textMetaData
     }
 
-    fun getViewTextMetaData(view: TextView): TextMetaData? {
-        return createdViews[view]
-    }
+    fun getViewTextMetaData(view: TextView): TextMetaData? = createdViews[view]
 
     fun removeTextViewWithData(child: TextView) {
         createdViews.remove(child)
     }
 
-    private fun invalidateArrayItem(view: TextView, textMetaData: TextMetaData) {
+    private fun invalidateArrayItem(
+        view: TextView,
+        textMetaData: TextMetaData,
+    ) {
         if (textMetaData.isArrayItem) {
-            val id = view.context.resources.getIdentifier(
-                textMetaData.arrayName,
-                TYPE_ARRAYS,
-                view.context.packageName
-            )
+            val id =
+                view.context.resources.getIdentifier(
+                    textMetaData.arrayName,
+                    TYPE_ARRAYS,
+                    view.context.packageName,
+                )
 
             if (id != UNKNOWN_ID) {
                 view.text = view.context.resources.getStringArray(id)[textMetaData.arrayIndex]
@@ -101,26 +103,31 @@ internal abstract class BaseTransformer : Transformer {
         }
     }
 
-    private fun invalidateQuantityText(view: TextView, textMetaData: TextMetaData) {
+    private fun invalidateQuantityText(
+        view: TextView,
+        textMetaData: TextMetaData,
+    ) {
         if (textMetaData.isPluralData) {
             val pluralName = textMetaData.pluralName
             val pluralQuantity = textMetaData.pluralQuantity
             val pluralFormatArgs = textMetaData.pluralFormatArgs
 
-            val id = view.context.resources.getIdentifier(
-                pluralName,
-                TYPE_PLURALS,
-                view.context.packageName
-            )
+            val id =
+                view.context.resources.getIdentifier(
+                    pluralName,
+                    TYPE_PLURALS,
+                    view.context.packageName,
+                )
 
             if (id != UNKNOWN_ID) {
                 when {
                     pluralFormatArgs.isNotEmpty() ->
-                        view.text = view.context.resources.getQuantityString(
-                            id,
-                            pluralQuantity,
-                            *pluralFormatArgs
-                        )
+                        view.text =
+                            view.context.resources.getQuantityString(
+                                id,
+                                pluralQuantity,
+                                *pluralFormatArgs,
+                            )
 
                     else -> view.text = view.context.resources.getQuantityText(id, pluralQuantity)
                 }
@@ -128,13 +135,17 @@ internal abstract class BaseTransformer : Transformer {
         }
     }
 
-    private fun invalidateSimpleText(view: TextView, textMetaData: TextMetaData) {
+    private fun invalidateSimpleText(
+        view: TextView,
+        textMetaData: TextMetaData,
+    ) {
         if (textMetaData.hasAttributeKey) {
-            val id = view.context.resources.getIdentifier(
-                textMetaData.textAttributeKey,
-                TYPE_STRING,
-                view.context.packageName
-            )
+            val id =
+                view.context.resources.getIdentifier(
+                    textMetaData.textAttributeKey,
+                    TYPE_STRING,
+                    view.context.packageName,
+                )
 
             if (id != UNKNOWN_ID) {
                 when {
@@ -150,13 +161,17 @@ internal abstract class BaseTransformer : Transformer {
         }
     }
 
-    private fun invalidateHint(view: TextView, textMetaData: TextMetaData) {
+    private fun invalidateHint(
+        view: TextView,
+        textMetaData: TextMetaData,
+    ) {
         if (textMetaData.hintAttributeKey.isNotEmpty()) {
-            val id = view.context.resources.getIdentifier(
-                textMetaData.hintAttributeKey,
-                TYPE_STRING,
-                view.context.packageName
-            )
+            val id =
+                view.context.resources.getIdentifier(
+                    textMetaData.hintAttributeKey,
+                    TYPE_STRING,
+                    view.context.packageName,
+                )
 
             if (id != UNKNOWN_ID) {
                 view.hint = view.context.resources.getText(id)
@@ -164,13 +179,17 @@ internal abstract class BaseTransformer : Transformer {
         }
     }
 
-    private fun invalidateTextOn(view: TextView, textMetaData: TextMetaData) {
+    private fun invalidateTextOn(
+        view: TextView,
+        textMetaData: TextMetaData,
+    ) {
         if (textMetaData.textOnAttributeKey.isNotEmpty()) {
-            val id = view.context.resources.getIdentifier(
-                textMetaData.textOnAttributeKey,
-                TYPE_STRING,
-                view.context.packageName
-            )
+            val id =
+                view.context.resources.getIdentifier(
+                    textMetaData.textOnAttributeKey,
+                    TYPE_STRING,
+                    view.context.packageName,
+                )
 
             if (id != UNKNOWN_ID) {
                 when (view) {
@@ -181,13 +200,17 @@ internal abstract class BaseTransformer : Transformer {
         }
     }
 
-    private fun invalidateTextOff(view: TextView, textMetaData: TextMetaData) {
+    private fun invalidateTextOff(
+        view: TextView,
+        textMetaData: TextMetaData,
+    ) {
         if (textMetaData.textOffAttributeKey.isNotEmpty()) {
-            val id = view.context.resources.getIdentifier(
-                textMetaData.textOffAttributeKey,
-                TYPE_STRING,
-                view.context.packageName
-            )
+            val id =
+                view.context.resources.getIdentifier(
+                    textMetaData.textOffAttributeKey,
+                    TYPE_STRING,
+                    view.context.packageName,
+                )
 
             if (id != UNKNOWN_ID) {
                 when (view) {

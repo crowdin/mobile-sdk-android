@@ -7,7 +7,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
 class SocketEventsTest {
-
     @Test
     fun updateEventTest() {
         val wsHash = "wsHash"

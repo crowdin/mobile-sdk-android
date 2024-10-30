@@ -4,7 +4,6 @@ package com.crowdin.platform.data.remote
  * Translation download state.
  */
 interface TranslationDownloadCallback {
-
     /**
      * Data loaded successfully.
      */

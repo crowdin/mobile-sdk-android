@@ -25,7 +25,6 @@ import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.executeIO
 
 internal class AuthActivity : AppCompatActivity() {
-
     private lateinit var webView: WebView
     private lateinit var progressView: LinearLayout
     private lateinit var clientId: String
@@ -33,7 +32,6 @@ internal class AuthActivity : AppCompatActivity() {
     private var domain: String? = null
 
     companion object {
-
         private const val DOMAIN = "domain"
         private const val GRANT_TYPE = "authorization_code"
         private const val REDIRECT_URI = "crowdintest://"
@@ -67,12 +65,14 @@ internal class AuthActivity : AppCompatActivity() {
         clientId = authConfig?.clientId ?: ""
         clientSecret = authConfig?.clientSecret ?: ""
 
-        val builder = Uri.Builder()
-            .scheme("https")
-            .authority("accounts.crowdin.com")
-            .appendPath("oauth")
-            .appendPath("authorize")
-            .encodedQuery("client_id=$clientId&response_type=code&scope=project&redirect_uri=$REDIRECT_URI")
+        val builder =
+            Uri
+                .Builder()
+                .scheme("https")
+                .authority("accounts.crowdin.com")
+                .appendPath("oauth")
+                .appendPath("authorize")
+                .encodedQuery("client_id=$clientId&response_type=code&scope=project&redirect_uri=$REDIRECT_URI")
 
         domain?.let { builder.appendQueryParameter(DOMAIN, it) }
         val url = builder.build().toString()
@@ -80,30 +80,40 @@ internal class AuthActivity : AppCompatActivity() {
         webView.settings.userAgentString = System.getProperty("http.agent")
         webView.settings.javaScriptEnabled = true
         webView.webChromeClient = WebChromeClient()
-        webView.webViewClient = object : WebViewClient() {
+        webView.webViewClient =
+            object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(
+                    view: WebView,
+                    url: String,
+                ): Boolean {
+                    if (url.startsWith(REDIRECT_URI)) {
+                        val uri = Uri.parse(url)
+                        val code = uri.getQueryParameter("code") ?: ""
+                        handleCode(code)
+                    }
 
-            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                if (url.startsWith(REDIRECT_URI)) {
-                    val uri = Uri.parse(url)
-                    val code = uri.getQueryParameter("code") ?: ""
-                    handleCode(code)
+                    return false
                 }
 
-                return false
-            }
-
-            override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
-                progressView.visibility = View.VISIBLE
-                super.onPageStarted(view, url, favicon)
-            }
-
-            override fun onPageFinished(view: WebView, url: String) {
-                if (!url.startsWith(REDIRECT_URI)) {
-                    progressView.visibility = View.GONE
+                override fun onPageStarted(
+                    view: WebView,
+                    url: String,
+                    favicon: Bitmap?,
+                ) {
+                    progressView.visibility = View.VISIBLE
+                    super.onPageStarted(view, url, favicon)
                 }
-                super.onPageFinished(view, url)
+
+                override fun onPageFinished(
+                    view: WebView,
+                    url: String,
+                ) {
+                    if (!url.startsWith(REDIRECT_URI)) {
+                        progressView.visibility = View.GONE
+                    }
+                    super.onPageFinished(view, url)
+                }
             }
-        }
         webView.loadUrl(url)
     }
 
@@ -113,16 +123,18 @@ internal class AuthActivity : AppCompatActivity() {
             ThreadUtils.runInBackgroundPool({
                 val apiService = CrowdinRetrofitService.getCrowdinAuthApi()
                 executeIO {
-                    val response = apiService.getToken(
-                        TokenRequest(
-                            GRANT_TYPE,
-                            clientId,
-                            clientSecret,
-                            REDIRECT_URI,
-                            code
-                        ),
-                        domain
-                    ).execute()
+                    val response =
+                        apiService
+                            .getToken(
+                                TokenRequest(
+                                    GRANT_TYPE,
+                                    clientId,
+                                    clientSecret,
+                                    REDIRECT_URI,
+                                    code,
+                                ),
+                                domain,
+                            ).execute()
                     if (response.isSuccessful) {
                         response.body()?.let {
                             saveAuthInfo(it)
@@ -152,21 +164,23 @@ internal class AuthActivity : AppCompatActivity() {
     }
 
     private fun getDistributionInfo() {
-        Crowdin.getDistributionInfo(object : DistributionInfoCallback {
-            override fun onResponse() {
-                close()
-                Crowdin.downloadTranslation()
-            }
+        Crowdin.getDistributionInfo(
+            object : DistributionInfoCallback {
+                override fun onResponse() {
+                    close()
+                    Crowdin.downloadTranslation()
+                }
 
-            override fun onError(throwable: Throwable) {
-                Crowdin.saveAuthInfo(null)
-                close()
-                Log.d(
-                    AuthActivity::class.java.simpleName,
-                    "Get info, onFailure:${throwable.localizedMessage}"
-                )
-            }
-        })
+                override fun onError(throwable: Throwable) {
+                    Crowdin.saveAuthInfo(null)
+                    close()
+                    Log.d(
+                        AuthActivity::class.java.simpleName,
+                        "Get info, onFailure:${throwable.localizedMessage}",
+                    )
+                }
+            },
+        )
     }
 
     private fun close() {

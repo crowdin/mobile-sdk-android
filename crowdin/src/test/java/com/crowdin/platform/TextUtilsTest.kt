@@ -13,7 +13,6 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
 class TextUtilsTest {
-
     private lateinit var mockAttributeSet: AttributeSet
     private lateinit var mockResources: Resources
 
@@ -30,11 +29,12 @@ class TextUtilsTest {
         val expected: CharSequence? = null
 
         // When
-        val actual = TextUtils.getTextForAttribute(
-            mockAttributeSet,
-            index,
-            mockResources
-        )
+        val actual =
+            TextUtils.getTextForAttribute(
+                mockAttributeSet,
+                index,
+                mockResources,
+            )
 
         // Then
         assertThat(actual, `is`(expected))
@@ -49,11 +49,12 @@ class TextUtilsTest {
         val expected: CharSequence? = null
 
         // When
-        val actual = TextUtils.getTextForAttribute(
-            mockAttributeSet,
-            index,
-            mockResources
-        )
+        val actual =
+            TextUtils.getTextForAttribute(
+                mockAttributeSet,
+                index,
+                mockResources,
+            )
 
         // Then
         assertThat(actual, `is`(expected))
@@ -68,17 +69,18 @@ class TextUtilsTest {
         `when`(
             mockAttributeSet.getAttributeResourceValue(
                 index,
-                0
-            )
+                0,
+            ),
         ).thenThrow(Resources.NotFoundException())
         val expected: CharSequence? = null
 
         // When
-        val actual = TextUtils.getTextForAttribute(
-            mockAttributeSet,
-            index,
-            mockResources
-        )
+        val actual =
+            TextUtils.getTextForAttribute(
+                mockAttributeSet,
+                index,
+                mockResources,
+            )
 
         // Then
         assertThat(actual, `is`(expected))
@@ -95,11 +97,12 @@ class TextUtilsTest {
         `when`(mockResources.getText(0)).thenReturn(expectedText)
 
         // When
-        val actual = TextUtils.getTextForAttribute(
-            mockAttributeSet,
-            index,
-            mockResources
-        )
+        val actual =
+            TextUtils.getTextForAttribute(
+                mockAttributeSet,
+                index,
+                mockResources,
+            )
 
         // Then
         assertThat(actual, `is`(expectedText))
@@ -112,11 +115,12 @@ class TextUtilsTest {
         val expected: CharSequence? = null
 
         // When
-        val actual = TextUtils.getTextAttributeKey(
-            mockResources,
-            mockAttributeSet,
-            index
-        )
+        val actual =
+            TextUtils.getTextAttributeKey(
+                mockResources,
+                mockAttributeSet,
+                index,
+            )
 
         // Then
         assertThat(actual, `is`(expected))
@@ -131,11 +135,12 @@ class TextUtilsTest {
         val expected: CharSequence? = null
 
         // When
-        val actual = TextUtils.getTextAttributeKey(
-            mockResources,
-            mockAttributeSet,
-            index
-        )
+        val actual =
+            TextUtils.getTextAttributeKey(
+                mockResources,
+                mockAttributeSet,
+                index,
+            )
 
         // Then
         assertThat(actual, `is`(expected))
@@ -150,17 +155,18 @@ class TextUtilsTest {
         `when`(
             mockAttributeSet.getAttributeResourceValue(
                 index,
-                0
-            )
+                0,
+            ),
         ).thenThrow(Resources.NotFoundException())
         val expected: CharSequence? = null
 
         // When
-        val actual = TextUtils.getTextAttributeKey(
-            mockResources,
-            mockAttributeSet,
-            index
-        )
+        val actual =
+            TextUtils.getTextAttributeKey(
+                mockResources,
+                mockAttributeSet,
+                index,
+            )
 
         // Then
         assertThat(actual, `is`(expected))
@@ -177,11 +183,12 @@ class TextUtilsTest {
         `when`(mockResources.getResourceEntryName(0)).thenReturn(expectedText)
 
         // When
-        val actual = TextUtils.getTextAttributeKey(
-            mockResources,
-            mockAttributeSet,
-            index
-        )
+        val actual =
+            TextUtils.getTextAttributeKey(
+                mockResources,
+                mockAttributeSet,
+                index,
+            )
 
         // Then
         assertThat(actual, `is`(expectedText))

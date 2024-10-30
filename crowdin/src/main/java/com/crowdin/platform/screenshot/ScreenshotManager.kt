@@ -28,9 +28,8 @@ import java.net.HttpURLConnection
 internal class ScreenshotManager(
     private var crowdinApi: CrowdinApi,
     private var dataManager: DataManager,
-    private var sourceLanguage: String
+    private var sourceLanguage: String,
 ) {
-
     companion object {
         private const val MEDIA_TYPE_IMG = "image/png"
         private const val IMG_QUALITY = 100
@@ -43,13 +42,14 @@ internal class ScreenshotManager(
     fun sendScreenshot(
         bitmap: Bitmap,
         viewDataList: MutableList<ViewData>,
-        activityName: String? = null
+        activityName: String? = null,
     ) {
         val mappingData = dataManager.getMapping(sourceLanguage) ?: return
-        val distributionData = dataManager.getData<DistributionInfoResponse.DistributionData>(
-            DataManager.DISTRIBUTION_DATA,
-            DistributionInfoResponse.DistributionData::class.java
-        )
+        val distributionData =
+            dataManager.getData<DistributionInfoResponse.DistributionData>(
+                DataManager.DISTRIBUTION_DATA,
+                DistributionInfoResponse.DistributionData::class.java,
+            )
 
         if (distributionData == null) {
             screenshotCallback?.onFailure(Throwable("Could not send screenshot: not authorized"))
@@ -72,7 +72,7 @@ internal class ScreenshotManager(
             context.contentResolver.registerContentObserver(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 true,
-                it
+                it,
             )
         }
     }
@@ -89,7 +89,7 @@ internal class ScreenshotManager(
         bitmap: Bitmap,
         tags: MutableList<TagData>,
         projectId: String,
-        activityName: String?
+        activityName: String?,
     ) {
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, IMG_QUALITY, stream)
@@ -101,75 +101,94 @@ internal class ScreenshotManager(
         val prefix = activityName?.let { it + "_" } ?: ""
         val fileName =
             "$prefix${System.currentTimeMillis().parseToDateTimeFormat()}$IMAGE_EXTENSION"
-        crowdinApi.uploadScreenshot(fileName, requestBody)
-            .enqueue(object : Callback<UploadScreenshotResponse> {
-
-                override fun onResponse(
-                    call: Call<UploadScreenshotResponse>,
-                    response: Response<UploadScreenshotResponse>
-                ) {
-                    val responseBody = response.body()
-                    if (response.code() == HttpURLConnection.HTTP_CREATED) {
-                        responseBody?.data?.let { data ->
-                            data.id?.let { createScreenshot(it, tags, projectId, data.fileName) }
+        crowdinApi
+            .uploadScreenshot(fileName, requestBody)
+            .enqueue(
+                object : Callback<UploadScreenshotResponse> {
+                    override fun onResponse(
+                        call: Call<UploadScreenshotResponse>,
+                        response: Response<UploadScreenshotResponse>,
+                    ) {
+                        val responseBody = response.body()
+                        if (response.code() == HttpURLConnection.HTTP_CREATED) {
+                            responseBody?.data?.let { data ->
+                                data.id?.let { createScreenshot(it, tags, projectId, data.fileName) }
+                            }
                         }
                     }
-                }
 
-                override fun onFailure(call: Call<UploadScreenshotResponse>, throwable: Throwable) {
-                    screenshotCallback?.onFailure(throwable)
-                }
-            })
+                    override fun onFailure(
+                        call: Call<UploadScreenshotResponse>,
+                        throwable: Throwable,
+                    ) {
+                        screenshotCallback?.onFailure(throwable)
+                    }
+                },
+            )
     }
 
     private fun createScreenshot(
         screenshotId: Int,
         tags: MutableList<TagData>,
         projectId: String,
-        fileName: String
+        fileName: String,
     ) {
         val requestBody = CreateScreenshotRequestBody(screenshotId, fileName)
-        crowdinApi.createScreenshot(projectId, requestBody)
-            .enqueue(object : Callback<CreateScreenshotResponse> {
-
-                override fun onResponse(
-                    call: Call<CreateScreenshotResponse>,
-                    response: Response<CreateScreenshotResponse>
-                ) {
-                    val responseBody = response.body()
-                    if (response.code() == HttpURLConnection.HTTP_CREATED) {
-                        responseBody?.data?.id?.let { screenshotId ->
-                            createTag(screenshotId, tags, projectId)
+        crowdinApi
+            .createScreenshot(projectId, requestBody)
+            .enqueue(
+                object : Callback<CreateScreenshotResponse> {
+                    override fun onResponse(
+                        call: Call<CreateScreenshotResponse>,
+                        response: Response<CreateScreenshotResponse>,
+                    ) {
+                        val responseBody = response.body()
+                        if (response.code() == HttpURLConnection.HTTP_CREATED) {
+                            responseBody?.data?.id?.let { screenshotId ->
+                                createTag(screenshotId, tags, projectId)
+                            }
                         }
                     }
-                }
 
-                override fun onFailure(call: Call<CreateScreenshotResponse>, throwable: Throwable) {
-                    screenshotCallback?.onFailure(throwable)
-                }
-            })
+                    override fun onFailure(
+                        call: Call<CreateScreenshotResponse>,
+                        throwable: Throwable,
+                    ) {
+                        screenshotCallback?.onFailure(throwable)
+                    }
+                },
+            )
     }
 
-    private fun createTag(screenshotId: Int, tags: MutableList<TagData>, projectId: String) {
-        crowdinApi.createTag(projectId, screenshotId, tags)
-            .enqueue(object : Callback<ResponseBody> {
+    private fun createTag(
+        screenshotId: Int,
+        tags: MutableList<TagData>,
+        projectId: String,
+    ) {
+        crowdinApi
+            .createTag(projectId, screenshotId, tags)
+            .enqueue(
+                object : Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>,
+                    ) {
+                        screenshotCallback?.onSuccess()
+                    }
 
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
-                ) {
-                    screenshotCallback?.onSuccess()
-                }
-
-                override fun onFailure(call: Call<ResponseBody>, throwable: Throwable) {
-                    screenshotCallback?.onFailure(throwable)
-                }
-            })
+                    override fun onFailure(
+                        call: Call<ResponseBody>,
+                        throwable: Throwable,
+                    ) {
+                        screenshotCallback?.onFailure(throwable)
+                    }
+                },
+            )
     }
 
     private fun getMappingIds(
         mappingData: LanguageData,
-        viewDataList: List<ViewData>
+        viewDataList: List<ViewData>,
     ): MutableList<TagData> {
         val list = mutableListOf<TagData>()
         for (viewData in viewDataList) {
@@ -178,8 +197,8 @@ internal class ScreenshotManager(
                 list.add(
                     TagData(
                         it.toInt(),
-                        TagData.Position(viewData.x, viewData.y, viewData.width, viewData.height)
-                    )
+                        TagData.Position(viewData.x, viewData.y, viewData.width, viewData.height),
+                    ),
                 )
             }
         }

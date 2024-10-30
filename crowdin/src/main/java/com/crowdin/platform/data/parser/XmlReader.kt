@@ -5,8 +5,9 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.InputStream
 
-internal class XmlReader(private var parser: Parser) : Reader {
-
+internal class XmlReader(
+    private var parser: Parser,
+) : Reader {
     override fun parseInput(byteStream: InputStream): LanguageData {
         try {
             val xmlPullParser = XmlPullParserFactory.newInstance().newPullParser()
@@ -25,7 +26,10 @@ internal class XmlReader(private var parser: Parser) : Reader {
         return LanguageData()
     }
 
-    private fun parseXml(xmlPullParser: XmlPullParser, parser: Parser): LanguageData {
+    private fun parseXml(
+        xmlPullParser: XmlPullParser,
+        parser: Parser,
+    ): LanguageData {
         var eventType = xmlPullParser.eventType
         while (eventType != XmlPullParser.END_DOCUMENT) {
             when (eventType) {

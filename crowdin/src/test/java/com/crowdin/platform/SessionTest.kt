@@ -16,7 +16,6 @@ import retrofit2.Call
 import retrofit2.Response
 
 class SessionTest {
-
     private lateinit var session: Session
     private lateinit var mockCallResponse: Call<AuthResponse>
     private lateinit var mockAuthConfig: AuthConfig
@@ -128,12 +127,11 @@ class SessionTest {
         verify(mockDataManager).saveData(eq("auth_info"), eq(null))
     }
 
-    private fun provideAuthResponse(): AuthResponse {
-        return AuthResponse(
+    private fun provideAuthResponse(): AuthResponse =
+        AuthResponse(
             "token",
             11,
             "access_token",
-            "refresh_token"
+            "refresh_token",
         )
-    }
 }

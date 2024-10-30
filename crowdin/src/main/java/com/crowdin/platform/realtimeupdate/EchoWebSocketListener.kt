@@ -27,12 +27,14 @@ internal class EchoWebSocketListener(
     private var mappingData: LanguageData,
     private var distributionData: DistributionInfoResponse.DistributionData,
     private var viewTransformerManager: ViewTransformerManager,
-    private var languageCode: String
+    private var languageCode: String,
 ) : WebSocketListener() {
-
     private var dataHolderMap = Collections.synchronizedMap(WeakHashMap<TextView, TextMetaData>())
 
-    override fun onOpen(webSocket: WebSocket, response: okhttp3.Response) {
+    override fun onOpen(
+        webSocket: WebSocket,
+        response: okhttp3.Response,
+    ) {
         output("onOpen")
 
         val project = distributionData.project
@@ -41,20 +43,22 @@ internal class EchoWebSocketListener(
         saveMatchedTextViewWithMappingId(mappingData)
         subscribeViews(webSocket, project, user)
 
-        viewTransformerManager.setOnViewsChangeListener(object : ViewsChangeListener {
-            override fun onChange(pair: Pair<TextView, TextMetaData>) {
-                ThreadUtils.runInBackgroundPool({
-                    resubscribeView(pair, webSocket, project, user)
-                }, false)
-            }
-        })
+        viewTransformerManager.setOnViewsChangeListener(
+            object : ViewsChangeListener {
+                override fun onChange(pair: Pair<TextView, TextMetaData>) {
+                    ThreadUtils.runInBackgroundPool({
+                        resubscribeView(pair, webSocket, project, user)
+                    }, false)
+                }
+            },
+        )
     }
 
     private fun resubscribeView(
         pair: Pair<TextView, TextMetaData>,
         webSocket: WebSocket,
         project: DistributionInfoResponse.DistributionData.ProjectData,
-        user: DistributionInfoResponse.DistributionData.UserData
+        user: DistributionInfoResponse.DistributionData.UserData,
     ) {
         dataHolderMap.clear()
         saveMatchedTextViewWithMappingId(mappingData)
@@ -64,11 +68,18 @@ internal class EchoWebSocketListener(
         }
     }
 
-    override fun onMessage(webSocket: WebSocket, text: String) {
+    override fun onMessage(
+        webSocket: WebSocket,
+        text: String,
+    ) {
         handleMessage(text)
     }
 
-    override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+    override fun onClosing(
+        webSocket: WebSocket,
+        code: Int,
+        reason: String,
+    ) {
         dataHolderMap.clear()
         webSocket.close(NORMAL_CLOSURE_STATUS, reason)
         output("Closing : $code / $reason")
@@ -77,7 +88,7 @@ internal class EchoWebSocketListener(
     override fun onFailure(
         webSocket: WebSocket,
         throwable: Throwable,
-        response: okhttp3.Response?
+        response: okhttp3.Response?,
     ) {
         output("Error : " + throwable.message)
     }
@@ -98,7 +109,7 @@ internal class EchoWebSocketListener(
     private fun subscribeViews(
         webSocket: WebSocket,
         project: DistributionInfoResponse.DistributionData.ProjectData,
-        user: DistributionInfoResponse.DistributionData.UserData
+        user: DistributionInfoResponse.DistributionData.UserData,
     ) {
         for (viewDataHolder in dataHolderMap) {
             val mappingValue = viewDataHolder.value.mappingValue
@@ -110,7 +121,7 @@ internal class EchoWebSocketListener(
         webSocket: WebSocket,
         project: DistributionInfoResponse.DistributionData.ProjectData,
         user: DistributionInfoResponse.DistributionData.UserData,
-        mappingValue: String
+        mappingValue: String,
     ) {
         webSocket.send(
             SubscribeUpdateEvent(
@@ -118,9 +129,8 @@ internal class EchoWebSocketListener(
                 project.id,
                 user.id,
                 languageCode,
-                mappingValue
-            )
-                .toString()
+                mappingValue,
+            ).toString(),
         )
 
         webSocket.send(
@@ -128,9 +138,8 @@ internal class EchoWebSocketListener(
                 project.wsHash,
                 project.id,
                 languageCode,
-                mappingValue
-            )
-                .toString()
+                mappingValue,
+            ).toString(),
         )
     }
 
@@ -155,7 +164,7 @@ internal class EchoWebSocketListener(
     private fun updateMatchedView(
         eventData: EventResponse.EventData,
         mutableEntry: MutableMap.MutableEntry<TextView, TextMetaData>,
-        textMetaData: TextMetaData
+        textMetaData: TextMetaData,
     ) {
         val text = eventData.text
         val view = mutableEntry.key
@@ -174,7 +183,11 @@ internal class EchoWebSocketListener(
         }
     }
 
-    private fun updateViewText(view: TextView?, text: String, isHint: Boolean) {
+    private fun updateViewText(
+        view: TextView?,
+        text: String,
+        isHint: Boolean,
+    ) {
         view?.post {
             val textFormatted = text.unEscapeQuotes().fromHtml()
             if (isHint) {
@@ -185,9 +198,7 @@ internal class EchoWebSocketListener(
         }
     }
 
-    private fun parseResponse(response: String): EventResponse {
-        return Gson().fromJson(response, EventResponse::class.java)
-    }
+    private fun parseResponse(response: String): EventResponse = Gson().fromJson(response, EventResponse::class.java)
 
     private fun output(message: String) {
         Log.d(EchoWebSocketListener::class.java.simpleName, message)
