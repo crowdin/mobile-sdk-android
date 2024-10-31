@@ -9,8 +9,7 @@ import android.content.res.Resources
  */
 internal class CustomResourcesContextWrapper(
     base: Context,
-    private val resources: Resources
+    private val resources: Resources,
 ) : ContextWrapper(base) {
-
     override fun getResources(): Resources = resources
 }

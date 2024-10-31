@@ -9,7 +9,6 @@ import android.util.Log
 import kotlin.math.sqrt
 
 internal class ShakeDetectorManager {
-
     private lateinit var shakeDetector: ShakeDetector
     private var sensorManager: SensorManager? = null
 
@@ -17,19 +16,19 @@ internal class ShakeDetectorManager {
         sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         val mAccelerometer = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         shakeDetector = ShakeDetector()
-        val shakeListener = object : ShakeDetector.OnShakeListener {
-
-            override fun onShake(count: Int) {
-                Crowdin.forceUpdate(context)
-                Log.d(ShakeDetectorManager::class.java.simpleName, "Shake: force update")
+        val shakeListener =
+            object : ShakeDetector.OnShakeListener {
+                override fun onShake(count: Int) {
+                    Crowdin.forceUpdate(context)
+                    Log.d(ShakeDetectorManager::class.java.simpleName, "Shake: force update")
+                }
             }
-        }
 
         shakeDetector.setOnShakeListener(shakeListener)
         sensorManager?.registerListener(
             shakeDetector,
             mAccelerometer,
-            SensorManager.SENSOR_DELAY_UI
+            SensorManager.SENSOR_DELAY_UI,
         )
     }
 
@@ -39,7 +38,6 @@ internal class ShakeDetectorManager {
 }
 
 internal class ShakeDetector : SensorEventListener {
-
     private var shakeListener: OnShakeListener? = null
     private var shakeTimestamp: Long = 0
     private var shakeCount: Int = 0
@@ -52,7 +50,10 @@ internal class ShakeDetector : SensorEventListener {
         fun onShake(count: Int)
     }
 
-    override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+    override fun onAccuracyChanged(
+        sensor: Sensor,
+        accuracy: Int,
+    ) {
         // ignore
     }
 
@@ -89,7 +90,6 @@ internal class ShakeDetector : SensorEventListener {
     }
 
     companion object {
-
         /*
          * The gForce that is necessary to register as shake.
          * Must be greater than 1G (one earth gravity unit).

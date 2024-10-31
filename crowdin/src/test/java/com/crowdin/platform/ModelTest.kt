@@ -13,7 +13,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
 class ModelTest {
-
     @Test
     fun tokenRequestTest() {
         // Given

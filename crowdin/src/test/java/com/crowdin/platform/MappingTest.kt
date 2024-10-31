@@ -14,7 +14,6 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
 class MappingTest {
-
     @Test
     fun getMappingValueForStringDataKeyTest() {
         // Given
@@ -22,11 +21,12 @@ class MappingTest {
         `when`(mockTextMetaData.hasAttributeKey).thenReturn(true)
         `when`(mockTextMetaData.textAttributeKey).thenReturn("key1")
         val languageData = LanguageData()
-        languageData.resources = mutableListOf(
-            StringData("key0", "value0"),
-            StringData("key1", "value1"),
-            StringData("key2", "value2")
-        )
+        languageData.resources =
+            mutableListOf(
+                StringData("key0", "value0"),
+                StringData("key1", "value1"),
+                StringData("key2", "value2"),
+            )
         val expectedValue = "value1"
 
         // When
@@ -44,11 +44,12 @@ class MappingTest {
         `when`(mockTextMetaData.hasHintKey).thenReturn(true)
         `when`(mockTextMetaData.hintAttributeKey).thenReturn("key1")
         val languageData = LanguageData()
-        languageData.resources = mutableListOf(
-            StringData("key0", "value0"),
-            StringData("key1", "value1"),
-            StringData("key2", "value2")
-        )
+        languageData.resources =
+            mutableListOf(
+                StringData("key0", "value0"),
+                StringData("key1", "value1"),
+                StringData("key2", "value2"),
+            )
         val expectedValue = "value1"
 
         // When
@@ -67,11 +68,12 @@ class MappingTest {
         `when`(mockTextMetaData.arrayName).thenReturn("key1")
         `when`(mockTextMetaData.arrayIndex).thenReturn(2)
         val languageData = LanguageData()
-        languageData.arrays = mutableListOf(
-            ArrayData("key0", arrayOf("key0_value0", "key0_value1", "key0_value2")),
-            ArrayData("key1", arrayOf("key1_value1", "key1_value1", "key1_value2")),
-            ArrayData("key2", arrayOf("key2_value0", "key2_value1", "key2_value2"))
-        )
+        languageData.arrays =
+            mutableListOf(
+                ArrayData("key0", arrayOf("key0_value0", "key0_value1", "key0_value2")),
+                ArrayData("key1", arrayOf("key1_value1", "key1_value1", "key1_value2")),
+                ArrayData("key2", arrayOf("key2_value0", "key2_value1", "key2_value2")),
+            )
         val expectedValue = "key1_value2"
 
         // When
@@ -89,11 +91,12 @@ class MappingTest {
         `when`(mockTextMetaData.isPluralData).thenReturn(true)
         `when`(mockTextMetaData.pluralName).thenReturn("key1")
         val languageData = LanguageData()
-        languageData.plurals = mutableListOf(
-            PluralData("key0", mutableMapOf(Pair("key0", "value0"))),
-            PluralData("key1", mutableMapOf(Pair("key1", "value1"))),
-            PluralData("key2", mutableMapOf(Pair("key2", "value2")))
-        )
+        languageData.plurals =
+            mutableListOf(
+                PluralData("key0", mutableMapOf(Pair("key0", "value0"))),
+                PluralData("key1", mutableMapOf(Pair("key1", "value1"))),
+                PluralData("key2", mutableMapOf(Pair("key2", "value2"))),
+            )
         val expectedValue = "value1"
 
         // When

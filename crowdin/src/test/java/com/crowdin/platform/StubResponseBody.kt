@@ -8,13 +8,9 @@ import org.mockito.Mockito.`when`
 import java.io.InputStream
 
 class StubResponseBody : ResponseBody() {
-    override fun contentLength(): Long {
-        return 100
-    }
+    override fun contentLength(): Long = 100
 
-    override fun contentType(): MediaType? {
-        return null
-    }
+    override fun contentType(): MediaType? = null
 
     override fun source(): BufferedSource {
         val bufferedSource = mock(BufferedSource::class.java)

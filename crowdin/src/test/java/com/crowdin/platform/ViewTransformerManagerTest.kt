@@ -25,7 +25,6 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 
 class ViewTransformerManagerTest {
-
     private lateinit var textViewTransformer: TextViewTransformer
     private lateinit var toolbarTransformer: ToolbarTransformer
     private lateinit var supportToolbarTransformer: SupportToolbarTransformer
@@ -211,20 +210,22 @@ class ViewTransformerManagerTest {
     }
 
     private fun initCrowdin() {
-        val config = CrowdinConfig.Builder()
-            .withDistributionHash("test")
-            .build()
+        val config =
+            CrowdinConfig
+                .Builder()
+                .withDistributionHash("test")
+                .build()
         val sharedPrefs = mock(SharedPreferences::class.java)!!
         val context = mock(Context::class.java)
         `when`(
             context.getSharedPreferences(
                 ArgumentMatchers.anyString(),
-                ArgumentMatchers.anyInt()
-            )
+                ArgumentMatchers.anyInt(),
+            ),
         ).thenReturn(sharedPrefs)
         val connectivityManager = mock(ConnectivityManager::class.java)
         `when`(context.getSystemService(Context.CONNECTIVITY_SERVICE)).thenReturn(
-            connectivityManager
+            connectivityManager,
         )
 
         Crowdin.init(context, config)

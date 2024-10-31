@@ -4,12 +4,12 @@ import com.google.gson.annotations.SerializedName
 
 data class LanguagesInfo(
     @SerializedName("data")
-    val data: List<LanguageInfoData>
+    val data: List<LanguageInfoData>,
 )
 
 data class LanguageInfoData(
     @SerializedName("data")
-    val data: LanguageInfo
+    val data: LanguageInfo,
 )
 
 data class LanguageInfo(
@@ -24,5 +24,5 @@ data class LanguageInfo(
     @SerializedName("locale")
     val locale: String,
     @SerializedName("androidCode")
-    val androidCode: String
+    val androidCode: String,
 )

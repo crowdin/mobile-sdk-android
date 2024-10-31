@@ -8,7 +8,6 @@ import org.junit.Test
 import org.mockito.Mockito.mock
 
 class CustomResourceContextWrapperTest {
-
     @Test
     fun getResourcesTest() {
         // Given

@@ -11,5 +11,5 @@ internal data class TokenRequest(
     val clientSecret: String,
     @SerializedName("redirect_uri")
     val redirectUri: String,
-    val code: String
+    val code: String,
 )

@@ -7,7 +7,6 @@ import com.crowdin.platform.data.model.LanguageData
  * Callback for transferring language data.
  */
 internal interface LanguageDataCallback {
-
     /**
      * Data loaded successfully.
      *

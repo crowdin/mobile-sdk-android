@@ -10,8 +10,9 @@ import java.lang.reflect.Type
 private const val SHARED_PREF_NAME = "com.crowdin.platform.string.preferences"
 private const val LAST_UPDATE = "com.crowdin.platform.string.preferences.last_update"
 
-internal class CrowdinPreferences(context: Context) : Preferences {
-
+internal class CrowdinPreferences(
+    context: Context,
+) : Preferences {
     private lateinit var sharedPreferences: SharedPreferences
 
     init {
@@ -22,7 +23,10 @@ internal class CrowdinPreferences(context: Context) : Preferences {
         sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
     }
 
-    override fun setString(key: String, value: String) {
+    override fun setString(
+        key: String,
+        value: String,
+    ) {
         sharedPreferences.edit().putString(key, value).apply()
     }
 
@@ -34,7 +38,10 @@ internal class CrowdinPreferences(context: Context) : Preferences {
 
     override fun getLastUpdate(): Long = sharedPreferences.getLong(LAST_UPDATE, 0)
 
-    override fun saveData(type: String, data: Any?) {
+    override fun saveData(
+        type: String,
+        data: Any?,
+    ) {
         try {
             if (data == null) {
                 sharedPreferences.edit().remove(type).apply()
@@ -47,7 +54,10 @@ internal class CrowdinPreferences(context: Context) : Preferences {
         }
     }
 
-    override fun <T> getData(type: String, classType: Type): T? {
+    override fun <T> getData(
+        type: String,
+        classType: Type,
+    ): T? {
         val json = sharedPreferences.getString(type, null)
         json?.let {
             return Gson().fromJson(json, classType)
@@ -58,12 +68,24 @@ internal class CrowdinPreferences(context: Context) : Preferences {
 }
 
 internal interface Preferences {
-
-    fun setString(key: String, value: String)
+    fun setString(
+        key: String,
+        value: String,
+    )
 
     fun getString(key: String): String?
+
     fun setLastUpdate(lastUpdate: Long)
+
     fun getLastUpdate(): Long
-    fun saveData(type: String, data: Any?)
-    fun <T> getData(type: String, classType: Type): T?
+
+    fun saveData(
+        type: String,
+        data: Any?,
+    )
+
+    fun <T> getData(
+        type: String,
+        classType: Type,
+    ): T?
 }

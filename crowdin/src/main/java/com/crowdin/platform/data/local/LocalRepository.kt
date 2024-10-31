@@ -11,7 +11,6 @@ import java.lang.reflect.Type
  * Repository of strings.
  */
 internal interface LocalRepository {
-
     /**
      * Save [LanguageData] for a specific language.
      *
@@ -26,7 +25,11 @@ internal interface LocalRepository {
      * @param key the key of the string which is the string resource id.
      * @param value the new string.
      */
-    fun setString(language: String, key: String, value: String)
+    fun setString(
+        language: String,
+        key: String,
+        value: String,
+    )
 
     /**
      * Set a string data for a specific language.
@@ -34,7 +37,10 @@ internal interface LocalRepository {
      * @param language the string belongs to.
      * @param stringData the new string data.
      */
-    fun setStringData(language: String, stringData: StringData)
+    fun setStringData(
+        language: String,
+        stringData: StringData,
+    )
 
     /**
      * Set a string array data for a specific language.
@@ -42,7 +48,10 @@ internal interface LocalRepository {
      * @param language the string belongs to.
      * @param arrayData the new string array data.
      */
-    fun setArrayData(language: String, arrayData: ArrayData)
+    fun setArrayData(
+        language: String,
+        arrayData: ArrayData,
+    )
 
     /**
      * Set a plural data for a specific language.
@@ -50,7 +59,10 @@ internal interface LocalRepository {
      * @param language the string belongs to.
      * @param pluralData the new plural data.
      */
-    fun setPluralData(language: String, pluralData: PluralData)
+    fun setPluralData(
+        language: String,
+        pluralData: PluralData,
+    )
 
     /**
      * Get a string for a language & key.
@@ -59,7 +71,10 @@ internal interface LocalRepository {
      * @param key the string resource id.
      * @return the string if exists, otherwise NULL.
      */
-    fun getString(language: String, key: String): String?
+    fun getString(
+        language: String,
+        key: String,
+    ): String?
 
     /**
      * Get all resource data for a specific language.
@@ -84,7 +99,10 @@ internal interface LocalRepository {
      * @param quantityKey the key for quantity item defined in plural.
      * @return the string value if exists, otherwise NULL.
      */
-    fun getStringPlural(resourceKey: String, quantityKey: String): String?
+    fun getStringPlural(
+        resourceKey: String,
+        quantityKey: String,
+    ): String?
 
     /**
      * Returns <tt>true</tt> if repository contains the specified data for language.
@@ -116,7 +134,10 @@ internal interface LocalRepository {
      * @param type of data.
      * @param data to be stored.
      */
-    fun saveData(type: String, data: Any?)
+    fun saveData(
+        type: String,
+        data: Any?,
+    )
 
     /**
      * Retrieve any data object from locale storage.
@@ -124,5 +145,8 @@ internal interface LocalRepository {
      * @param type of data.
      * @param classType of data.
      */
-    fun <T> getData(type: String, classType: Type): T?
+    fun <T> getData(
+        type: String,
+        classType: Type,
+    ): T?
 }

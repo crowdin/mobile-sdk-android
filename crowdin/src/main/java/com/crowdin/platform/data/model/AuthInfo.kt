@@ -1,14 +1,13 @@
 package com.crowdin.platform.data.model
 
-internal class AuthInfo(authResponse: AuthResponse) {
-
+internal class AuthInfo(
+    authResponse: AuthResponse,
+) {
     var accessToken = authResponse.accessToken
     var refreshToken = authResponse.refreshToken
     private var expiresIn = System.currentTimeMillis() + (authResponse.expiresIn * 60)
 
-    fun isExpired(): Boolean {
-        return System.currentTimeMillis() > expiresIn
-    }
+    fun isExpired(): Boolean = System.currentTimeMillis() > expiresIn
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

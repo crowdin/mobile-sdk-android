@@ -23,7 +23,6 @@ import java.lang.reflect.Type
 import java.util.Locale
 
 class DataManagerTest {
-
     private lateinit var mockLocalRepository: LocalRepository
     private lateinit var mockRemoteRepository: RemoteRepository
     private lateinit var mockPreferences: Preferences
@@ -246,8 +245,8 @@ class DataManagerTest {
         `when`(
             mockLocalRepository.getData<AuthInfo>(
                 any(),
-                any()
-            )
+                any(),
+            ),
         ).thenReturn(mock(AuthInfo::class.java))
         val expectedResult = true
 
@@ -402,11 +401,12 @@ class DataManagerTest {
         val dataManager = givenDataManager()
         val givenLanguageData = LanguageData("en")
         FeatureFlags.registerConfig(
-            CrowdinConfig.Builder()
+            CrowdinConfig
+                .Builder()
                 .withSourceLanguage("en")
                 .withDistributionHash("test")
                 .withRealTimeUpdates()
-                .build()
+                .build(),
         )
         val mockListener = mock(LoadingStateListener::class.java)
         dataManager.addLoadingStateListener(mockListener)
@@ -442,7 +442,7 @@ class DataManagerTest {
         // Then
         verify(mockLocalRepository).getData<ManifestData>(
             eq("manifest_data"),
-            eq(ManifestData::class.java)
+            eq(ManifestData::class.java),
         )
     }
 
@@ -453,8 +453,8 @@ class DataManagerTest {
         `when`(
             mockLocalRepository.getData<ManifestData>(
                 eq("manifest_data"),
-                eq(ManifestData::class.java)
-            )
+                eq(ManifestData::class.java),
+            ),
         ).thenReturn(null)
 
         // When
@@ -469,6 +469,6 @@ class DataManagerTest {
             mockRemoteRepository,
             mockLocalRepository,
             mockPreferences,
-            mockLocalDataChangeObserver
+            mockLocalDataChangeObserver,
         )
 }

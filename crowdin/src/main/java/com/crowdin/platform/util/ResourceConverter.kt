@@ -19,5 +19,5 @@ data class ResourcesData(
     val language: String,
     val strings: MutableMap<String, String>,
     val arrays: MutableMap<String, Array<String>>,
-    val plurals: MutableMap<String, MutableMap<String, String>>
+    val plurals: MutableMap<String, MutableMap<String, String>>,
 )

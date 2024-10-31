@@ -12,19 +12,19 @@ import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 
 class EchoWebSocketListenerTest {
-
     @Test
     fun whenOnOpen_shouldRegisterViewChangeListener() {
         // Given
         val mockMappingData = spy(LanguageData::class.java)
         val mockDistributionData = mock(DistributionInfoResponse.DistributionData::class.java)
         val mockViewTransformerManager = spy(ViewTransformerManager::class.java)
-        val echoWebSocketListener = EchoWebSocketListener(
-            mockMappingData,
-            mockDistributionData,
-            mockViewTransformerManager,
-            "en"
-        )
+        val echoWebSocketListener =
+            EchoWebSocketListener(
+                mockMappingData,
+                mockDistributionData,
+                mockViewTransformerManager,
+                "en",
+            )
 
         // When
         echoWebSocketListener.onOpen(mock(WebSocket::class.java), mock(Response::class.java))
@@ -39,12 +39,13 @@ class EchoWebSocketListenerTest {
         val mockMappingData = spy(LanguageData::class.java)
         val mockDistributionData = mock(DistributionInfoResponse.DistributionData::class.java)
         val mockViewTransformerManager = spy(ViewTransformerManager::class.java)
-        val echoWebSocketListener = EchoWebSocketListener(
-            mockMappingData,
-            mockDistributionData,
-            mockViewTransformerManager,
-            "en"
-        )
+        val echoWebSocketListener =
+            EchoWebSocketListener(
+                mockMappingData,
+                mockDistributionData,
+                mockViewTransformerManager,
+                "en",
+            )
         val mockSocket = mock(WebSocket::class.java)
         val expectedReason = "test"
 

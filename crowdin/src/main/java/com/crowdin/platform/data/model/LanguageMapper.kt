@@ -8,6 +8,6 @@ fun CustomLanguage?.toLanguageInfo(): LanguageInfo? =
             twoLettersCode = twoLettersCode,
             threeLettersCode = threeLettersCode,
             locale = locale,
-            androidCode = androidCode
+            androidCode = androidCode,
         )
     }

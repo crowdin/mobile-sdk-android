@@ -21,16 +21,15 @@ internal class MappingRepository(
     private val reader: Reader,
     private val dataManager: DataManager,
     private val distributionHash: String,
-    private val sourceLanguage: String
+    private val sourceLanguage: String,
 ) : CrowdingRepository(
-    crowdinDistributionApi,
-    distributionHash
-) {
-
+        crowdinDistributionApi,
+        distributionHash,
+    ) {
     override fun fetchData(
         languageCode: String?,
         supportedLanguages: LanguagesInfo?,
-        languageDataCallback: LanguageDataCallback?
+        languageDataCallback: LanguageDataCallback?,
     ) {
         Log.v(Crowdin.CROWDIN_TAG, "MappingRepository. Fetch data from Api started")
 
@@ -40,19 +39,23 @@ internal class MappingRepository(
     }
 
     @WorkerThread
-    override fun onManifestDataReceived(manifest: ManifestData?, languageDataCallback: LanguageDataCallback?) {
+    override fun onManifestDataReceived(
+        manifest: ManifestData?,
+        languageDataCallback: LanguageDataCallback?,
+    ) {
         dataManager.saveData(MANIFEST_DATA, manifest)
 
         val languageData = LanguageData(sourceLanguage)
         crowdinLanguages = dataManager.getSupportedLanguages()
         manifest?.mapping?.forEach { filePath ->
             val eTag = eTagMap[filePath]
-            val result = requestFileMapping(
-                eTag = eTag,
-                distributionHash = distributionHash,
-                filePath = filePath,
-                languageDataCallback = languageDataCallback
-            )
+            val result =
+                requestFileMapping(
+                    eTag = eTag,
+                    distributionHash = distributionHash,
+                    filePath = filePath,
+                    languageDataCallback = languageDataCallback,
+                )
             languageData.addNewResources(result)
         }
         dataManager.saveMapping(languageData)
@@ -62,17 +65,19 @@ internal class MappingRepository(
         eTag: String?,
         distributionHash: String,
         filePath: String,
-        languageDataCallback: LanguageDataCallback?
+        languageDataCallback: LanguageDataCallback?,
     ): LanguageData {
         var languageData = LanguageData()
         var response: Response<ResponseBody>? = null
 
         executeIO {
-            response = crowdinDistributionApi.getMappingFile(
-                eTag = eTag ?: HEADER_ETAG_EMPTY,
-                distributionHash = distributionHash,
-                filePath = filePath
-            ).execute()
+            response =
+                crowdinDistributionApi
+                    .getMappingFile(
+                        eTag = eTag ?: HEADER_ETAG_EMPTY,
+                        distributionHash = distributionHash,
+                        filePath = filePath,
+                    ).execute()
         }
 
         val result = response ?: return languageData
@@ -81,19 +86,20 @@ internal class MappingRepository(
         val code = result.code()
         when {
             code == HttpURLConnection.HTTP_OK && body != null -> {
-                languageData = onMappingReceived(
-                    eTag = result.headers()[HEADER_ETAG],
-                    filePath = filePath,
-                    body = body,
-                    languageDataCallback = languageDataCallback
-                )
+                languageData =
+                    onMappingReceived(
+                        eTag = result.headers()[HEADER_ETAG],
+                        filePath = filePath,
+                        body = body,
+                        languageDataCallback = languageDataCallback,
+                    )
             }
 
             code != HttpURLConnection.HTTP_NOT_MODIFIED -> {
                 languageDataCallback?.onFailure(Throwable("Unexpected http error code $code"))
                 Log.d(
                     MappingRepository::class.java.simpleName,
-                    "${Throwable("Unexpected http error code $code")}"
+                    "${Throwable("Unexpected http error code $code")}",
                 )
             }
 
@@ -107,7 +113,7 @@ internal class MappingRepository(
         eTag: String?,
         filePath: String,
         body: ResponseBody,
-        languageDataCallback: LanguageDataCallback?
+        languageDataCallback: LanguageDataCallback?,
     ): LanguageData {
         eTag?.let { eTagMap.put(filePath, eTag) }
 

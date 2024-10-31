@@ -9,9 +9,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.max
 
 internal object ThreadUtils {
-
-    var DEFAULT_BACKGROUND_PRIORITY = max(Thread.NORM_PRIORITY - 1, Thread.MIN_PRIORITY)
-    private var NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors()
+    var defaultBackgroundPriority = max(Thread.NORM_PRIORITY - 1, Thread.MIN_PRIORITY)
+    private var numberOfCores = Runtime.getRuntime().availableProcessors()
     private var sLocalWorkPool: ExecutorService? = null
 
     private fun ensurePoolCreated() {
@@ -21,14 +20,15 @@ internal object ThreadUtils {
             // the actual number of cores on teh device if some are asleep.  A minor variance of one gives us potentially
             // one more thread than cores, but also gives us an extra thread when we've created a thread pool that doesn't
             // represent the actual number of cores.
-            sLocalWorkPool = ThreadPoolExecutor(
-                NUMBER_OF_CORES / 2,
-                NUMBER_OF_CORES + 1,
-                15L,
-                TimeUnit.SECONDS,
-                LinkedBlockingDeque(),
-                NamedThreadPoolFactory("LocalWorkThreadPool")
-            )
+            sLocalWorkPool =
+                ThreadPoolExecutor(
+                    numberOfCores / 2,
+                    numberOfCores + 1,
+                    15L,
+                    TimeUnit.SECONDS,
+                    LinkedBlockingDeque(),
+                    NamedThreadPoolFactory("LocalWorkThreadPool"),
+                )
         }
     }
 
@@ -41,14 +41,17 @@ internal object ThreadUtils {
      *
      * @return If a new thread is started, returns the new [Thread]. If ran in the current thread, returns null.
      */
-    fun runInBackground(runnable: Runnable, name: String): Thread? {
+    fun runInBackground(
+        runnable: Runnable,
+        name: String,
+    ): Thread? {
         if (Looper.myLooper() != Looper.getMainLooper()) {
             runnable.run()
             return null
         }
 
         val newThread = Thread(runnable)
-        newThread.priority = DEFAULT_BACKGROUND_PRIORITY
+        newThread.priority = defaultBackgroundPriority
         newThread.name = name
         newThread.start()
         return newThread
@@ -61,7 +64,10 @@ internal object ThreadUtils {
      * [ThreadUtils.runInBackground].  Blocking the thread will hijack a thread from the pool and prevent future work from
      * being able to execute (ultimately waiting in the queue for a thread).
      */
-    fun runInBackgroundPool(runnable: Runnable, allowInCurrentThread: Boolean) {
+    fun runInBackgroundPool(
+        runnable: Runnable,
+        allowInCurrentThread: Boolean,
+    ) {
         ensurePoolCreated()
         if (allowInCurrentThread && Looper.myLooper() != Looper.getMainLooper()) {
             runnable.run()

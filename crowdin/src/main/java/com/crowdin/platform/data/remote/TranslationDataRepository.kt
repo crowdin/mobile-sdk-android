@@ -26,18 +26,17 @@ internal class TranslationDataRepository(
     private val crowdinTranslationApi: CrowdinTranslationApi,
     private val reader: Reader,
     private val dataManager: DataManager,
-    distributionHash: String
+    distributionHash: String,
 ) : CrowdingRepository(
-    crowdinDistributionApi,
-    distributionHash
-) {
-
+        crowdinDistributionApi,
+        distributionHash,
+    ) {
     private var preferredLanguageCode: String? = null
 
     override fun fetchData(
         languageCode: String?,
         supportedLanguages: LanguagesInfo?,
-        languageDataCallback: LanguageDataCallback?
+        languageDataCallback: LanguageDataCallback?,
     ) {
         Log.v(Crowdin.CROWDIN_TAG, "TranslationRepository. Fetch data from Api started")
 
@@ -48,7 +47,10 @@ internal class TranslationDataRepository(
     }
 
     @WorkerThread
-    override fun onManifestDataReceived(manifest: ManifestData?, languageDataCallback: LanguageDataCallback?) {
+    override fun onManifestDataReceived(
+        manifest: ManifestData?,
+        languageDataCallback: LanguageDataCallback?,
+    ) {
         Log.v(Crowdin.CROWDIN_TAG, "Manifest data received")
 
         val supportedLanguages = manifest?.languages
@@ -63,26 +65,30 @@ internal class TranslationDataRepository(
 
         val languagesInfo = dataManager.getSupportedLanguages()
         crowdinLanguages = languagesInfo
-        val languageInfo = if (customLanguages?.contains(preferredLanguageCode) == true) {
-            customLanguages[preferredLanguageCode]?.toLanguageInfo()
-        } else {
-            getLanguageInfo(preferredLanguageCode!!)
-        }
+        val languageInfo =
+            if (customLanguages?.contains(preferredLanguageCode) == true) {
+                customLanguages[preferredLanguageCode]?.toLanguageInfo()
+            } else {
+                getLanguageInfo(preferredLanguageCode!!)
+            }
 
         languageInfo?.let { info ->
-            dataManager.getData<DistributionInfoResponse.DistributionData>(
-                DataManager.DISTRIBUTION_DATA,
-                DistributionInfoResponse.DistributionData::class.java
-            )?.project?.id?.let {
-                manifest?.files?.let { files ->
-                    getFiles(
-                        id = it,
-                        files = files,
-                        locale = info.locale,
-                        languageDataCallback = languageDataCallback
-                    )
+            dataManager
+                .getData<DistributionInfoResponse.DistributionData>(
+                    DataManager.DISTRIBUTION_DATA,
+                    DistributionInfoResponse.DistributionData::class.java,
+                )?.project
+                ?.id
+                ?.let {
+                    manifest?.files?.let { files ->
+                        getFiles(
+                            id = it,
+                            files = files,
+                            locale = info.locale,
+                            languageDataCallback = languageDataCallback,
+                        )
+                    }
                 }
-            }
         }
     }
 
@@ -90,7 +96,7 @@ internal class TranslationDataRepository(
         id: String,
         files: List<String>,
         locale: String,
-        languageDataCallback: LanguageDataCallback?
+        languageDataCallback: LanguageDataCallback?,
     ) {
         executeIO {
             Log.v(Crowdin.CROWDIN_TAG, "Get files started from project id: $id")
@@ -107,19 +113,20 @@ internal class TranslationDataRepository(
         body: FileResponse,
         projectId: String,
         locale: String,
-        languageDataCallback: LanguageDataCallback? = null
+        languageDataCallback: LanguageDataCallback? = null,
     ) {
         val languageData = LanguageData(locale)
         loop@ for (file in files) {
             for (fileData in body.data) {
                 if (fileData.data.path == file) {
                     val eTag = eTagMap[file]
-                    val result = requestBuildTranslation(
-                        eTag = eTag ?: HEADER_ETAG_EMPTY,
-                        projectId = projectId,
-                        stringId = fileData.data.id,
-                        file = file
-                    )
+                    val result =
+                        requestBuildTranslation(
+                            eTag = eTag ?: HEADER_ETAG_EMPTY,
+                            projectId = projectId,
+                            stringId = fileData.data.id,
+                            file = file,
+                        )
 
                     languageData.addNewResources(result)
                     continue@loop
@@ -137,24 +144,30 @@ internal class TranslationDataRepository(
         eTag: String,
         projectId: String,
         stringId: Long,
-        file: String
+        file: String,
     ): LanguageData {
         var languageData = LanguageData()
         executeIO {
-            crowdinApi?.getTranslation(
-                eTag = eTag,
-                projectId = projectId,
-                fileId = stringId,
-                body = BuildTranslationRequest(preferredLanguageCode!!)
-            )?.execute()?.body()?.let {
-                languageData = onTranslationReceived(it.data, file)
-            }
+            crowdinApi
+                ?.getTranslation(
+                    eTag = eTag,
+                    projectId = projectId,
+                    fileId = stringId,
+                    body = BuildTranslationRequest(preferredLanguageCode!!),
+                )?.execute()
+                ?.body()
+                ?.let {
+                    languageData = onTranslationReceived(it.data, file)
+                }
         }
 
         return languageData
     }
 
-    private fun onTranslationReceived(translation: Translation, file: String): LanguageData {
+    private fun onTranslationReceived(
+        translation: Translation,
+        file: String,
+    ): LanguageData {
         eTagMap[file] = translation.etag
         var languageData = LanguageData()
         executeIO {

@@ -93,22 +93,25 @@ configurations {
 }
 
 dependencies {
-    ktlint "com.pinterest:ktlint:0.47.1"
+    ktlint("com.pinterest.ktlint:ktlint-cli:1.4.0")
 }
 
-task ktlint(type: JavaExec, group: "verification") {
-    description = "Check Kotlin code style."
+tasks.register("ktlint", JavaExec) {
+    group = "verification"
+    description = "Check Kotlin code style with ktlint."
     classpath = configurations.ktlint
-    main = "com.pinterest.ktlint.Main"
-    args "src/**/*.kt"
+    mainClass.set("com.pinterest.ktlint.Main")
+    args = ["format", "src/**/*.kt"] // use 'check' instead of 'format' for lint check only
 }
-check.dependsOn ktlint
 
-task ktlintFormat(type: JavaExec, group: "formatting") {
+check.dependsOn "ktlint"
+
+tasks.register("ktlintFormat", JavaExec) {
+    group = "formatting"
     description = "Fix Kotlin code style deviations."
     classpath = configurations.ktlint
-    main = "com.pinterest.ktlint.Main"
-    args "-F", "src/**/*.kt"
+    mainClass.set("com.pinterest.ktlint.Main") // use `mainClass.set()` instead of `main`
+    args = ["-F", "src/**/*.kt"] // `-F` enables formatting
 }
 
 apply from: 'maven.gradle'

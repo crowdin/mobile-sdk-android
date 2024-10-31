@@ -10,7 +10,6 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
 class NavigationViewTransformerTest {
-
     @Test
     fun getMenuTest() {
         // Given

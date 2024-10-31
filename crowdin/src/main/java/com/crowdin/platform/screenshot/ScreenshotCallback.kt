@@ -4,7 +4,6 @@ package com.crowdin.platform.screenshot
  * Provides information about screenshot creating status.
  */
 interface ScreenshotCallback {
-
     /**
      * Screenshot with tags successfully added to `crowdin` project.
      */

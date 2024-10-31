@@ -1,7 +1,6 @@
 package com.crowdin.platform.data.model
 
 internal class TextMetaData {
-
     var textAttributeKey: String = ""
     var hintAttributeKey: String = ""
     var textOnAttributeKey: String = ""

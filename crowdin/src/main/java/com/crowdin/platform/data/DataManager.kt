@@ -29,9 +29,8 @@ internal class DataManager(
     private val remoteRepository: RemoteRepository,
     private val localRepository: LocalRepository,
     private val crowdinPreferences: Preferences,
-    private val dataChangeObserver: LocalDataChangeObserver
+    private val dataChangeObserver: LocalDataChangeObserver,
 ) : TextMetaDataProvider {
-
     companion object {
         private const val STATUS_OK = "ok"
         const val SUF_COPY = "-copy"
@@ -48,22 +47,33 @@ internal class DataManager(
 
     override fun provideTextMetaData(text: String): TextMetaData = localRepository.getTextData(text)
 
-    fun getLanguageData(language: String): LanguageData? =
-        localRepository.getLanguageData(language)
+    fun getLanguageData(language: String): LanguageData? = localRepository.getLanguageData(language)
 
-    fun getString(language: String, stringKey: String): String? =
-        localRepository.getString(language, stringKey)
+    fun getString(
+        language: String,
+        stringKey: String,
+    ): String? = localRepository.getString(language, stringKey)
 
-    fun setString(language: String, key: String, value: String) {
+    fun setString(
+        language: String,
+        key: String,
+        value: String,
+    ) {
         localRepository.setString(language, key, value)
     }
 
     fun getStringArray(key: String): Array<String>? = localRepository.getStringArray(key)
 
-    fun getStringPlural(resourceKey: String, quantityKey: String): String? =
-        localRepository.getStringPlural(resourceKey, quantityKey)
+    fun getStringPlural(
+        resourceKey: String,
+        quantityKey: String,
+    ): String? = localRepository.getStringPlural(resourceKey, quantityKey)
 
-    fun updateData(context: Context, networkType: NetworkType, onFinished: (() -> Unit)? = null) {
+    fun updateData(
+        context: Context,
+        networkType: NetworkType,
+        onFinished: (() -> Unit)? = null,
+    ) {
         ThreadUtils.runInBackgroundPool({
             val languageInfo = getSupportedLanguages()
             val status = validateData(context, networkType)
@@ -72,26 +82,26 @@ internal class DataManager(
 
                 remoteRepository.fetchData(
                     supportedLanguages = languageInfo,
-                    languageDataCallback = object : LanguageDataCallback {
-
-                        override fun onDataLoaded(languageData: LanguageData) {
-                            Log.v(CROWDIN_TAG, "Update data from Api finished")
-                            crowdinPreferences.setLastUpdate(System.currentTimeMillis())
-                            refreshData(languageData)
-                            ThreadUtils.executeOnMain {
-                                onFinished?.invoke()
+                    languageDataCallback =
+                        object : LanguageDataCallback {
+                            override fun onDataLoaded(languageData: LanguageData) {
+                                Log.v(CROWDIN_TAG, "Update data from Api finished")
+                                crowdinPreferences.setLastUpdate(System.currentTimeMillis())
+                                refreshData(languageData)
+                                ThreadUtils.executeOnMain {
+                                    onFinished?.invoke()
+                                }
                             }
-                        }
 
-                        override fun onFailure(throwable: Throwable) {
-                            Log.e(CROWDIN_TAG, "Update data from Api failed. ${throwable.message}")
+                            override fun onFailure(throwable: Throwable) {
+                                Log.e(CROWDIN_TAG, "Update data from Api failed. ${throwable.message}")
 
-                            sendOnFailure(throwable)
-                            ThreadUtils.executeOnMain {
-                                onFinished?.invoke()
+                                sendOnFailure(throwable)
+                                ThreadUtils.executeOnMain {
+                                    onFinished?.invoke()
+                                }
                             }
-                        }
-                    }
+                        },
                 )
             } else {
                 sendOnFailure(Throwable(status))
@@ -111,7 +121,10 @@ internal class DataManager(
         sendOnDataChanged()
     }
 
-    private fun validateData(context: Context, networkType: NetworkType): String {
+    private fun validateData(
+        context: Context,
+        networkType: NetworkType,
+    ): String {
         var status: String = STATUS_OK
         when {
             !Connectivity.isOnline(context) -> status = "No internet connection"
@@ -125,7 +138,7 @@ internal class DataManager(
     fun saveReserveResources(
         stringData: StringData? = null,
         arrayData: ArrayData? = null,
-        pluralData: PluralData? = null
+        pluralData: PluralData? = null,
     ) {
         if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             when {
@@ -133,7 +146,7 @@ internal class DataManager(
                     if (localRepository.containsKey(stringData.stringKey)) {
                         localRepository.setStringData(
                             Locale.getDefault().getFormattedCode() + SUF_COPY,
-                            stringData
+                            stringData,
                         )
                     }
                 }
@@ -142,7 +155,7 @@ internal class DataManager(
                     if (localRepository.containsKey(arrayData.name)) {
                         localRepository.setArrayData(
                             Locale.getDefault().getFormattedCode() + SUF_COPY,
-                            arrayData
+                            arrayData,
                         )
                     }
                 }
@@ -151,7 +164,7 @@ internal class DataManager(
                     if (localRepository.containsKey(pluralData.name)) {
                         localRepository.setPluralData(
                             Locale.getDefault().getFormattedCode() + SUF_COPY,
-                            pluralData
+                            pluralData,
                         )
                     }
                 }
@@ -167,8 +180,7 @@ internal class DataManager(
         loadingStateListeners?.add(listener)
     }
 
-    fun removeLoadingStateListener(listener: LoadingStateListener): Boolean =
-        loadingStateListeners?.remove(listener) ?: false
+    fun removeLoadingStateListener(listener: LoadingStateListener): Boolean = loadingStateListeners?.remove(listener) ?: false
 
     private fun sendOnFailure(throwable: Throwable) {
         loadingStateListeners?.let { listeners ->
@@ -195,8 +207,7 @@ internal class DataManager(
         localRepository.saveLanguageData(languageData)
     }
 
-    fun getMapping(sourceLanguage: String): LanguageData? =
-        localRepository.getLanguageData(sourceLanguage + MAPPING_SUF)
+    fun getMapping(sourceLanguage: String): LanguageData? = localRepository.getLanguageData(sourceLanguage + MAPPING_SUF)
 
     @WorkerThread
     fun getManifest(): ManifestData? {
@@ -211,23 +222,25 @@ internal class DataManager(
         return manifest
     }
 
-    fun saveData(type: String, data: Any?) {
+    fun saveData(
+        type: String,
+        data: Any?,
+    ) {
         localRepository.saveData(type, data)
     }
 
-    fun <T> getData(type: String, classType: Type): T? = localRepository.getData(type, classType)
+    fun <T> getData(
+        type: String,
+        classType: Type,
+    ): T? = localRepository.getData(type, classType)
 
-    fun isAuthorized(): Boolean =
-        (getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?) != null
+    fun isAuthorized(): Boolean = (getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?) != null
 
-    fun isTokenExpired(): Boolean =
-        (getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?)?.isExpired() ?: true
+    fun isTokenExpired(): Boolean = (getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?)?.isExpired() ?: true
 
-    fun getAccessToken(): String? =
-        (getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?)?.accessToken
+    fun getAccessToken(): String? = (getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?)?.accessToken
 
-    fun getRefreshToken(): String? =
-        (getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?)?.refreshToken
+    fun getRefreshToken(): String? = (getData(AUTH_INFO, AuthInfo::class.java) as AuthInfo?)?.refreshToken
 
     fun saveDistributionHash(distributionHash: String) {
         crowdinPreferences.setString(DISTRIBUTION_HASH, distributionHash)

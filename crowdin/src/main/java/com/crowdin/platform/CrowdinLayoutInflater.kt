@@ -18,21 +18,20 @@ import com.crowdin.platform.transformer.ViewTransformerManager
 internal class CrowdinLayoutInflater constructor(
     context: Context,
     parent: LayoutInflater = from(context),
-    private val viewTransformerManager: ViewTransformerManager
+    private val viewTransformerManager: ViewTransformerManager,
 ) : LayoutInflater(parent, context) {
-
     private val classPrefixList = listOf("android.widget.", "android.webkit.", "android.app.")
-    private val supportedCustomViews = listOf(
-        "com.google.android.material.bottomnavigation.BottomNavigationView",
-        "com.google.android.material.navigation.NavigationView",
-        "com.google.android.material.button.MaterialButton",
-        "androidx.appcompat.widget.AppCompatButton",
-        "androidx.appcompat.widget.AppCompatEditText",
-        "TextView"
-    )
+    private val supportedCustomViews =
+        listOf(
+            "com.google.android.material.bottomnavigation.BottomNavigationView",
+            "com.google.android.material.navigation.NavigationView",
+            "com.google.android.material.button.MaterialButton",
+            "androidx.appcompat.widget.AppCompatButton",
+            "androidx.appcompat.widget.AppCompatEditText",
+            "TextView",
+        )
 
-    override fun cloneInContext(newContext: Context): LayoutInflater =
-        CrowdinLayoutInflater(newContext, this, viewTransformerManager)
+    override fun cloneInContext(newContext: Context): LayoutInflater = CrowdinLayoutInflater(newContext, this, viewTransformerManager)
 
     override fun setFactory(factory: Factory?) {
         if (factory is WrapperFactory) {
@@ -51,7 +50,10 @@ internal class CrowdinLayoutInflater constructor(
     }
 
     @Throws(ClassNotFoundException::class)
-    override fun onCreateView(name: String, attrs: AttributeSet): View? {
+    override fun onCreateView(
+        name: String,
+        attrs: AttributeSet,
+    ): View? {
         for (prefix in classPrefixList) {
             try {
                 val view = createView(name, prefix, attrs)
@@ -66,11 +68,17 @@ internal class CrowdinLayoutInflater constructor(
         return super.onCreateView(name, attrs)
     }
 
-    private fun applyChange(view: View?, attrs: AttributeSet): View? {
-        return viewTransformerManager.transform(view, attrs)
-    }
+    private fun applyChange(
+        view: View?,
+        attrs: AttributeSet,
+    ): View? = viewTransformerManager.transform(view, attrs)
 
-    private fun createCustomViewInternal(context: Context, view: View?, name: String, attrs: AttributeSet): View? {
+    private fun createCustomViewInternal(
+        context: Context,
+        view: View?,
+        name: String,
+        attrs: AttributeSet,
+    ): View? {
         var mainView = view
         // If CustomViewCreation is off skip this.
 
@@ -83,11 +91,12 @@ internal class CrowdinLayoutInflater constructor(
 
         if (isSupported) {
             try {
-                mainView = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    createView(context, name, null, attrs)
-                } else {
-                    createView(name, null, attrs)
-                }
+                mainView =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        createView(context, name, null, attrs)
+                    } else {
+                        createView(name, null, attrs)
+                    }
             } catch (ignored: ClassNotFoundException) {
             } catch (_: InflateException) {
             }
@@ -96,28 +105,38 @@ internal class CrowdinLayoutInflater constructor(
         return mainView
     }
 
-    private inner class WrapperFactory(val factory: Factory?) : Factory {
-
-        override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+    private inner class WrapperFactory(
+        val factory: Factory?,
+    ) : Factory {
+        override fun onCreateView(
+            name: String,
+            context: Context,
+            attrs: AttributeSet,
+        ): View? {
             val view = factory?.onCreateView(name, context, attrs)
             return applyChange(view, attrs)
         }
     }
 
-    private inner class PrivateWrapperFactory2(val factory2: Factory2?) : Factory2 {
-
+    private inner class PrivateWrapperFactory2(
+        val factory2: Factory2?,
+    ) : Factory2 {
         override fun onCreateView(
             parent: View?,
             name: String,
             context: Context,
-            attrs: AttributeSet
+            attrs: AttributeSet,
         ): View? {
             var view = factory2?.onCreateView(parent, name, context, attrs)
             view = createCustomViewInternal(context, view, name, attrs)
             return applyChange(view, attrs)
         }
 
-        override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+        override fun onCreateView(
+            name: String,
+            context: Context,
+            attrs: AttributeSet,
+        ): View? {
             var view = factory2?.onCreateView(name, context, attrs)
             view = createCustomViewInternal(context, view, name, attrs)
             return applyChange(view, attrs)

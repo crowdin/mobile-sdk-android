@@ -10,7 +10,6 @@ import org.mockito.Mockito.verify
 import java.io.InputStream
 
 class XmlReaderTest {
-
     @Test
     fun clearDataTest() {
         // Given

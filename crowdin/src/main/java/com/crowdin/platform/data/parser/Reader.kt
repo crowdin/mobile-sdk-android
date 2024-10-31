@@ -4,7 +4,6 @@ import com.crowdin.platform.data.model.LanguageData
 import java.io.InputStream
 
 internal interface Reader {
-
     /**
      * Converts input stream to language data object.
      *

@@ -13,7 +13,6 @@ import java.util.WeakHashMap
  * Layout inflater will ask this manager to transform the inflating views.
  */
 internal class ViewTransformerManager {
-
     private val transformers = ArrayList<Pair<Class<out View>, Transformer>>()
 
     /**
@@ -21,8 +20,7 @@ internal class ViewTransformerManager {
      *
      * @param transformer to be added to transformers list.
      */
-    fun registerTransformer(transformer: Transformer) =
-        transformers.add(Pair(transformer.viewType, transformer))
+    fun registerTransformer(transformer: Transformer) = transformers.add(Pair(transformer.viewType, transformer))
 
     /**
      * Transforms a view.
@@ -33,7 +31,10 @@ internal class ViewTransformerManager {
      * @param attrs attributes of the view.
      * @return the transformed view.
      */
-    fun transform(view: View?, attrs: AttributeSet): View? {
+    fun transform(
+        view: View?,
+        attrs: AttributeSet,
+    ): View? {
         view ?: return null
         var newView: View = view
         for (pair in transformers) {
@@ -84,7 +85,6 @@ internal class ViewTransformerManager {
  * A view transformer skeleton.
  */
 internal interface Transformer {
-
     /**
      * The type of view this transformer is for.
      *
@@ -99,7 +99,10 @@ internal interface Transformer {
      * @param attrs attributes of the view.
      * @return the transformed view.
      */
-    fun transform(view: View, attrs: AttributeSet): View
+    fun transform(
+        view: View,
+        attrs: AttributeSet,
+    ): View
 
     /**
      * Update text attributes.
@@ -133,7 +136,6 @@ internal interface Transformer {
  * Allows to track when new view created or text has changed.
  */
 internal interface ViewsChangeListener {
-
     /**
      * View created or text has changed.
      */

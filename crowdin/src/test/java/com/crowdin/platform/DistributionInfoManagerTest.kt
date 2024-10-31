@@ -16,7 +16,6 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class DistributionInfoManagerTest {
-
     private lateinit var mockCrowdinApi: CrowdinApi
     private lateinit var mockDataManager: DataManager
     private lateinit var callback: DistributionInfoCallback
@@ -80,10 +79,12 @@ class DistributionInfoManagerTest {
         verify(callback).onError(any())
     }
 
-    private fun givenDistributionManager(): DistributionInfoManager =
-        DistributionInfoManager(mockCrowdinApi, mockDataManager, "hashTest")
+    private fun givenDistributionManager(): DistributionInfoManager = DistributionInfoManager(mockCrowdinApi, mockDataManager, "hashTest")
 
-    private fun givenMockResponse(success: Boolean = true, successCode: Int = 200) {
+    private fun givenMockResponse(
+        success: Boolean = true,
+        successCode: Int = 200,
+    ) {
         val mockedCall = mock(Call::class.java) as Call<DistributionInfoResponse>
         `when`(mockCrowdinApi.getInfo(any())).thenReturn(mockedCall)
         doAnswer {
@@ -94,8 +95,8 @@ class DistributionInfoManagerTest {
                     mockedCall,
                     Response.success(
                         successCode,
-                        mock(DistributionInfoResponse::class.java)
-                    )
+                        mock(DistributionInfoResponse::class.java),
+                    ),
                 )
             } else {
                 callback.onFailure(mockedCall, Throwable())

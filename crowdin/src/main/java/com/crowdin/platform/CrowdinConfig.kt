@@ -8,7 +8,6 @@ import com.crowdin.platform.data.remote.NetworkType
  * Contains configuration properties for initializing Crowdin.
  */
 class CrowdinConfig private constructor() {
-
     var isPersist: Boolean = true
     var distributionHash: String = ""
     var networkType: NetworkType = NetworkType.ALL
@@ -21,7 +20,6 @@ class CrowdinConfig private constructor() {
     var organizationName: String? = null
 
     class Builder {
-
         private var isPersist: Boolean = true
         private var distributionHash: String = ""
         private var networkType: NetworkType = NetworkType.ALL
@@ -98,7 +96,7 @@ class CrowdinConfig private constructor() {
                 Log.w(
                     Crowdin.CROWDIN_TAG,
                     "Crowdin: the `organizationName` cannot be empty for Crowdin Enterprise. Add it to the `CrowdingConfig` " +
-                        "using the `.withOrganizationName(...)` method"
+                        "using the `.withOrganizationName(...)` method",
                 )
             }
 
@@ -116,7 +114,7 @@ class CrowdinConfig private constructor() {
             if (updateInterval < MIN_PERIODIC_INTERVAL_MILLIS) {
                 Log.w(
                     Crowdin.CROWDIN_TAG,
-                    "`updateInterval` must be not less than 15 minutes. Will be used default value - 15 minutes"
+                    "`updateInterval` must be not less than 15 minutes. Will be used default value - 15 minutes",
                 )
                 config.updateInterval = MIN_PERIODIC_INTERVAL_MILLIS
             } else {

@@ -22,7 +22,6 @@ import retrofit2.Call
 import retrofit2.Response
 
 class MappingRepositoryTest {
-
     private lateinit var mockDistributionApi: CrowdinDistributionApi
     private lateinit var mockCrowdinApi: CrowdinApi
     private lateinit var mockReader: Reader
@@ -165,47 +164,52 @@ class MappingRepositoryTest {
     }
 
     private fun givenMappingRepository(): MappingRepository {
-        val repository = MappingRepository(
-            mockDistributionApi,
-            mockReader,
-            mockDataManager,
-            "hash",
-            "en"
-        )
+        val repository =
+            MappingRepository(
+                mockDistributionApi,
+                mockReader,
+                mockDataManager,
+                "hash",
+                "en",
+            )
         repository.crowdinApi = mockCrowdinApi
         return repository
     }
 
-    private fun givenMockResponse(success: Boolean = true, successCode: Int = 200) {
+    private fun givenMockResponse(
+        success: Boolean = true,
+        successCode: Int = 200,
+    ) {
         @Suppress("UNCHECKED_CAST")
         val mockedCall = mock(Call::class.java) as Call<ResponseBody>
         `when`(mockDistributionApi.getMappingFile(any(), any(), any())).thenReturn(mockedCall)
 
-        val response = if (success) {
-            Response.success<ResponseBody>(successCode, StubResponseBody())
-        } else {
-            Response.error(403, StubResponseBody())
-        }
+        val response =
+            if (success) {
+                Response.success<ResponseBody>(successCode, StubResponseBody())
+            } else {
+                Response.error(403, StubResponseBody())
+            }
         `when`(mockedCall.execute()).thenReturn(response)
     }
 
     private fun givenMockLanguageResponse() {
         @Suppress("UNCHECKED_CAST")
         val mockedCall = mock(Call::class.java) as Call<LanguageInfoData>
-        val response = Response.success(
-            200,
-            LanguageInfoData(givenLanguageInfo())
-        )
+        val response =
+            Response.success(
+                200,
+                LanguageInfoData(givenLanguageInfo()),
+            )
         `when`(mockedCall.execute()).thenReturn(response)
     }
 
     private fun givenSupportedLanguages(): LanguagesInfo {
         val languageInfo = LanguageInfo("en", "name", "qq", "www", "en-US", "en-rUS")
         return LanguagesInfo(
-            mutableListOf(LanguageInfoData(languageInfo))
+            mutableListOf(LanguageInfoData(languageInfo)),
         )
     }
 
-    private fun givenLanguageInfo(): LanguageInfo =
-        LanguageInfo("en", "English", "en", "eng", "en-US", "en-rUS")
+    private fun givenLanguageInfo(): LanguageInfo = LanguageInfo("en", "English", "en", "eng", "en-US", "en-rUS")
 }

@@ -16,7 +16,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 internal object CrowdinRetrofitService {
-
     private const val BASE_DISTRIBUTION_URL = "https://distributions.crowdin.net/"
     private const val AUTH_API_URL = "https://accounts.crowdin.com/"
     private const val BASE_API_URL = "https://api.crowdin.com/"
@@ -29,15 +28,15 @@ internal object CrowdinRetrofitService {
     private val authApi: AuthApi? = null
     private val crowdinTranslationApi: CrowdinTranslationApi? = null
 
-    private fun getHttpClient(): OkHttpClient {
-        return if (okHttpClient == null) {
+    private fun getHttpClient(): OkHttpClient =
+        if (okHttpClient == null) {
             val builder = OkHttpClient.Builder()
             builder.addInterceptor(HeaderInterceptor())
             if (BuildConfig.DEBUG) {
                 builder.addInterceptor(
                     HttpLoggingInterceptor().apply {
                         level = HttpLoggingInterceptor.Level.BODY
-                    }
+                    },
                 )
             }
             okHttpClient = builder.build()
@@ -45,10 +44,9 @@ internal object CrowdinRetrofitService {
         } else {
             okHttpClient!!
         }
-    }
 
-    private fun getInterceptableHttpClient(session: Session): OkHttpClient {
-        return if (interceptableOkHttpClient == null) {
+    private fun getInterceptableHttpClient(session: Session): OkHttpClient =
+        if (interceptableOkHttpClient == null) {
             val builder = OkHttpClient.Builder()
             builder.addInterceptor(SessionInterceptor(session))
             builder.addInterceptor(HeaderInterceptor())
@@ -56,7 +54,7 @@ internal object CrowdinRetrofitService {
                 builder.addInterceptor(
                     HttpLoggingInterceptor().apply {
                         level = HttpLoggingInterceptor.Level.BODY
-                    }
+                    },
                 )
             }
 
@@ -65,39 +63,45 @@ internal object CrowdinRetrofitService {
         } else {
             interceptableOkHttpClient!!
         }
-    }
 
-    private fun getCrowdinRetrofit(okHttpClient: OkHttpClient, url: String): Retrofit {
-        return Retrofit.Builder()
+    private fun getCrowdinRetrofit(
+        okHttpClient: OkHttpClient,
+        url: String,
+    ): Retrofit =
+        Retrofit
+            .Builder()
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(url)
             .build()
-    }
 
-    fun getCrowdinDistributionApi(): CrowdinDistributionApi {
-        return crowdinDistributionApi
+    fun getCrowdinDistributionApi(): CrowdinDistributionApi =
+        crowdinDistributionApi
             ?: getCrowdinRetrofit(getHttpClient(), BASE_DISTRIBUTION_URL).create(
-                CrowdinDistributionApi::class.java
+                CrowdinDistributionApi::class.java,
             )
-    }
 
-    fun getCrowdinApi(dataManager: DataManager, organizationName: String?): CrowdinApi {
+    fun getCrowdinApi(
+        dataManager: DataManager,
+        organizationName: String?,
+    ): CrowdinApi {
         var baseUrl = BASE_API_URL
         organizationName?.let { baseUrl = "https://$organizationName.api.crowdin.com/" }
         return crowdinApi
             ?: getCrowdinRetrofit(
                 getInterceptableHttpClient(SessionImpl(dataManager, getCrowdinAuthApi())),
-                baseUrl
+                baseUrl,
             ).create(CrowdinApi::class.java)
     }
 
-    fun getCrowdinAuthApi(): AuthApi = authApi
-        ?: getCrowdinRetrofit(getHttpClient(), AUTH_API_URL).create(AuthApi::class.java)
+    fun getCrowdinAuthApi(): AuthApi =
+        authApi
+            ?: getCrowdinRetrofit(getHttpClient(), AUTH_API_URL).create(AuthApi::class.java)
 
-    fun getCrowdinTranslationApi(): CrowdinTranslationApi = crowdinTranslationApi
-        ?: getCrowdinRetrofit(
-            getHttpClient(),
-            BASE_API_URL
-        ).create(CrowdinTranslationApi::class.java)
+    fun getCrowdinTranslationApi(): CrowdinTranslationApi =
+        crowdinTranslationApi
+            ?: getCrowdinRetrofit(
+                getHttpClient(),
+                BASE_API_URL,
+            ).create(CrowdinTranslationApi::class.java)
 }

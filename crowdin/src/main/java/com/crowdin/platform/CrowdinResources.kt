@@ -35,14 +35,12 @@ import java.util.Locale
  */
 internal class CrowdinResources(
     private val res: Resources,
-    private val dataManager: DataManager
-) :
-    Resources(
+    private val dataManager: DataManager,
+) : Resources(
         res.assets,
         res.displayMetrics,
-        res.configuration
+        res.configuration,
     ) {
-
     @Throws(NotFoundException::class)
     override fun getString(id: Int): String {
         val entryName = getResourceEntryName(id)
@@ -53,7 +51,10 @@ internal class CrowdinResources(
     }
 
     @Throws(NotFoundException::class)
-    override fun getString(id: Int, vararg formatArgs: Any): String {
+    override fun getString(
+        id: Int,
+        vararg formatArgs: Any,
+    ): String {
         val entryName = getResourceEntryName(id)
         val string = getStringFromRepository(id)?.replaceNewLine()
         val formattedString =
@@ -91,7 +92,10 @@ internal class CrowdinResources(
         return formattedString
     }
 
-    override fun getText(id: Int, default: CharSequence): CharSequence {
+    override fun getText(
+        id: Int,
+        default: CharSequence,
+    ): CharSequence {
         val entryName = getResourceEntryName(id)
         val string = getStringFromRepository(id)
         val formattedString = string?.fromHtml() ?: res.getText(id, default)
@@ -101,7 +105,10 @@ internal class CrowdinResources(
     }
 
     @Throws(NotFoundException::class)
-    override fun getQuantityText(id: Int, quantity: Int): CharSequence {
+    override fun getQuantityText(
+        id: Int,
+        quantity: Int,
+    ): CharSequence {
         val plural = getPluralFromRepository(id, quantity)
         val formattedPlural = plural?.fromHtml() ?: res.getQuantityText(id, quantity)
         savePluralToCopy(id, quantity, formattedPlural.toString())
@@ -110,7 +117,11 @@ internal class CrowdinResources(
     }
 
     @Throws(NotFoundException::class)
-    override fun getQuantityString(id: Int, quantity: Int, vararg formatArgs: Any?): String {
+    override fun getQuantityString(
+        id: Int,
+        quantity: Int,
+        vararg formatArgs: Any?,
+    ): String {
         val plural = getPluralFromRepository(id, quantity)
         val formattedPlural =
             if (plural == null) {
@@ -142,10 +153,16 @@ internal class CrowdinResources(
     override fun getDisplayMetrics(): DisplayMetrics = res.displayMetrics
 
     @RequiresApi(Build.VERSION_CODES.M)
-    override fun getColor(id: Int, theme: Theme?): Int = res.getColor(id, theme)
+    override fun getColor(
+        id: Int,
+        theme: Theme?,
+    ): Int = res.getColor(id, theme)
 
     @RequiresApi(Build.VERSION_CODES.M)
-    override fun getColorStateList(id: Int, theme: Theme?): ColorStateList = res.getColorStateList(id, theme)
+    override fun getColorStateList(
+        id: Int,
+        theme: Theme?,
+    ): ColorStateList = res.getColorStateList(id, theme)
 
     override fun getDimension(id: Int): Float = res.getDimension(id)
 
@@ -155,11 +172,17 @@ internal class CrowdinResources(
 
     @SuppressLint("UseCompatLoadingForDrawables")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    override fun getDrawable(id: Int, theme: Theme?): Drawable = res.getDrawable(id, theme)
+    override fun getDrawable(
+        id: Int,
+        theme: Theme?,
+    ): Drawable = res.getDrawable(id, theme)
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    override fun getDrawableForDensity(id: Int, density: Int, theme: Theme?): Drawable? =
-        res.getDrawableForDensity(id, density, theme)
+    override fun getDrawableForDensity(
+        id: Int,
+        density: Int,
+        theme: Theme?,
+    ): Drawable? = res.getDrawableForDensity(id, density, theme)
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun getFloat(id: Int): Float = res.getFloat(id)
@@ -167,7 +190,11 @@ internal class CrowdinResources(
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getFont(id: Int): Typeface = res.getFont(id)
 
-    override fun getFraction(id: Int, base: Int, pbase: Int): Float = res.getFraction(id, base, pbase)
+    override fun getFraction(
+        id: Int,
+        base: Int,
+        pbase: Int,
+    ): Float = res.getFraction(id, base, pbase)
 
     override fun getIntArray(id: Int): IntArray = res.getIntArray(id)
 
@@ -176,8 +203,11 @@ internal class CrowdinResources(
     override fun getLayout(id: Int): XmlResourceParser = res.getLayout(id)
 
     @SuppressLint("DiscouragedApi")
-    override fun getIdentifier(name: String?, defType: String?, defPackage: String?): Int =
-        res.getIdentifier(name, defType, defPackage)
+    override fun getIdentifier(
+        name: String?,
+        defType: String?,
+        defPackage: String?,
+    ): Int = res.getIdentifier(name, defType, defPackage)
 
     override fun getResourceEntryName(resid: Int): String = res.getResourceEntryName(resid)
 
@@ -189,22 +219,38 @@ internal class CrowdinResources(
 
     override fun getTextArray(id: Int): Array<CharSequence> = res.getTextArray(id)
 
-    override fun getQuantityString(id: Int, quantity: Int): String = res.getQuantityString(id, quantity)
+    override fun getQuantityString(
+        id: Int,
+        quantity: Int,
+    ): String = res.getQuantityString(id, quantity)
 
     override fun toString(): String = res.toString()
 
-    override fun getValue(id: Int, outValue: TypedValue?, resolveRefs: Boolean) {
+    override fun getValue(
+        id: Int,
+        outValue: TypedValue?,
+        resolveRefs: Boolean,
+    ) {
         res.getValue(id, outValue, resolveRefs)
     }
 
     @SuppressLint("DiscouragedApi")
-    override fun getValue(name: String?, outValue: TypedValue?, resolveRefs: Boolean) {
+    override fun getValue(
+        name: String?,
+        outValue: TypedValue?,
+        resolveRefs: Boolean,
+    ) {
         res.getValue(name, outValue, resolveRefs)
     }
 
     override fun getXml(id: Int): XmlResourceParser = res.getXml(id)
 
-    override fun getValueForDensity(id: Int, density: Int, outValue: TypedValue?, resolveRefs: Boolean) {
+    override fun getValueForDensity(
+        id: Int,
+        density: Int,
+        outValue: TypedValue?,
+        resolveRefs: Boolean,
+    ) {
         res.getValueForDensity(id, density, outValue, resolveRefs)
     }
 
@@ -212,13 +258,23 @@ internal class CrowdinResources(
 
     override fun openRawResource(id: Int): InputStream = res.openRawResource(id)
 
-    override fun obtainAttributes(set: AttributeSet?, attrs: IntArray?): TypedArray = res.obtainAttributes(set, attrs)
+    override fun obtainAttributes(
+        set: AttributeSet?,
+        attrs: IntArray?,
+    ): TypedArray = res.obtainAttributes(set, attrs)
 
     override fun openRawResourceFd(id: Int): AssetFileDescriptor = res.openRawResourceFd(id)
 
-    override fun openRawResource(id: Int, value: TypedValue?): InputStream = res.openRawResource(id, value)
+    override fun openRawResource(
+        id: Int,
+        value: TypedValue?,
+    ): InputStream = res.openRawResource(id, value)
 
-    override fun parseBundleExtra(tagName: String?, attrs: AttributeSet?, outBundle: Bundle?) {
+    override fun parseBundleExtra(
+        tagName: String?,
+        attrs: AttributeSet?,
+        outBundle: Bundle?,
+    ) {
         res.parseBundleExtra(tagName, attrs, outBundle)
     }
 
@@ -227,7 +283,10 @@ internal class CrowdinResources(
         res.removeLoaders(*loaders)
     }
 
-    override fun parseBundleExtras(parser: XmlResourceParser?, outBundle: Bundle?) {
+    override fun parseBundleExtras(
+        parser: XmlResourceParser?,
+        outBundle: Bundle?,
+    ) {
         res.parseBundleExtras(parser, outBundle)
     }
 
@@ -246,10 +305,16 @@ internal class CrowdinResources(
     override fun getMovie(id: Int): Movie = res.getMovie(id)
 
     @Deprecated("Deprecated in Java")
-    override fun getDrawableForDensity(id: Int, density: Int): Drawable? = res.getDrawableForDensity(id, density)
+    override fun getDrawableForDensity(
+        id: Int,
+        density: Int,
+    ): Drawable? = res.getDrawableForDensity(id, density)
 
     @Deprecated("Deprecated in Java")
-    override fun updateConfiguration(config: Configuration?, metrics: DisplayMetrics?) {
+    override fun updateConfiguration(
+        config: Configuration?,
+        metrics: DisplayMetrics?,
+    ) {
         res.updateConfiguration(config, metrics)
     }
 
@@ -257,19 +322,22 @@ internal class CrowdinResources(
         entryName: String,
         string: String,
         formatArgs: Array<out Any?> = arrayOf(),
-        default: CharSequence = ""
+        default: CharSequence = "",
     ) {
         dataManager.saveReserveResources(
             StringData(
                 entryName,
                 string,
                 formatArgs,
-                StringBuilder(default)
-            )
+                StringBuilder(default),
+            ),
         )
     }
 
-    private fun saveStringArrayDataToCopy(key: String, resultText: Array<String>) {
+    private fun saveStringArrayDataToCopy(
+        key: String,
+        resultText: Array<String>,
+    ) {
         dataManager.saveReserveResources(arrayData = ArrayData(key, resultText))
     }
 
@@ -277,7 +345,7 @@ internal class CrowdinResources(
         id: Int,
         quantity: Int,
         defaultText: String,
-        formatArgs: Array<out Any?> = arrayOf()
+        formatArgs: Array<out Any?> = arrayOf(),
     ) {
         val entryName = getResourceEntryName(id)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -285,12 +353,13 @@ internal class CrowdinResources(
             val ruleName = rule.select(quantity.toDouble())
             val quantityMap = mutableMapOf<String, String>()
             quantityMap[ruleName] = defaultText
-            val pluralData = PluralData(
-                entryName,
-                quantityMap,
-                quantity,
-                formatArgs
-            )
+            val pluralData =
+                PluralData(
+                    entryName,
+                    quantityMap,
+                    quantity,
+                    formatArgs,
+                )
 
             dataManager.saveReserveResources(pluralData = pluralData)
         }
@@ -309,7 +378,10 @@ internal class CrowdinResources(
         return dataManager.getStringArray(entryName)
     }
 
-    private fun getPluralFromRepository(id: Int, quantity: Int): String? =
+    private fun getPluralFromRepository(
+        id: Int,
+        quantity: Int,
+    ): String? =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val entryName = getResourceEntryName(id)
             val rule = PluralRules.forLocale(Locale.getDefault())

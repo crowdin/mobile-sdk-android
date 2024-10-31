@@ -13,9 +13,11 @@ import android.widget.Button
 import com.crowdin.platform.R
 
 object UiUtil {
-
     @SuppressLint("InflateParams")
-    fun createAuthDialog(context: Context, positiveAction: () -> Unit) {
+    fun createAuthDialog(
+        context: Context,
+        positiveAction: () -> Unit,
+    ) {
         try {
             createAuthDialogViaAlertDialog(context, positiveAction)
         } catch (ex: Exception) {
@@ -30,23 +32,28 @@ object UiUtil {
     }
 
     @SuppressLint("InflateParams")
-    private fun createAuthDialogViaOverlayWindow(context: Context, positiveAction: (() -> Unit)) {
+    private fun createAuthDialogViaOverlayWindow(
+        context: Context,
+        positiveAction: (() -> Unit),
+    ) {
         val floatingView = LayoutInflater.from(context).inflate(R.layout.auth_dialog, null)
 
-        val layoutFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-        } else {
-            WindowManager.LayoutParams.TYPE_PHONE
-        }
+        val layoutFlag: Int =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            } else {
+                WindowManager.LayoutParams.TYPE_PHONE
+            }
 
         // Add the view to the window.
-        val params = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT,
-            layoutFlag,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            PixelFormat.TRANSLUCENT
-        )
+        val params =
+            WindowManager.LayoutParams(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                layoutFlag,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT,
+            )
 
         // Specify the view position
         // Initially view will be added to top-left corner
@@ -68,18 +75,20 @@ object UiUtil {
         }
     }
 
-    private fun createAuthDialogViaAlertDialog(context: Context, positiveAction: () -> Unit) {
-        AlertDialog.Builder(context)
+    private fun createAuthDialogViaAlertDialog(
+        context: Context,
+        positiveAction: () -> Unit,
+    ) {
+        AlertDialog
+            .Builder(context)
             .setTitle(context.getString(R.string.auth_dialog_title))
             .setMessage(context.getString(R.string.auth_dialog_desc))
             .setNegativeButton(context.getString(R.string.auth_dialog_cancel)) { dialog, _ ->
                 dialog?.dismiss()
-            }
-            .setPositiveButton(context.getString(R.string.auth_dialog_ok)) { dialog, _ ->
+            }.setPositiveButton(context.getString(R.string.auth_dialog_ok)) { dialog, _ ->
                 dialog?.dismiss()
                 positiveAction.invoke()
-            }
-            .create()
+            }.create()
             .show()
     }
 }

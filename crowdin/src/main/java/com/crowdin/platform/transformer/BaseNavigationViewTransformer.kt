@@ -9,10 +9,12 @@ import com.crowdin.platform.util.TextUtils
  * A transformer which transforms navigation views: it transforms the texts coming from the menu.
  */
 internal abstract class BaseNavigationViewTransformer : BaseTransformer() {
-
     abstract fun getMenu(view: View): Menu
 
-    override fun transform(view: View, attrs: AttributeSet): View {
+    override fun transform(
+        view: View,
+        attrs: AttributeSet,
+    ): View {
         if (!viewType.isInstance(view)) {
             return view
         }
@@ -27,7 +29,11 @@ internal abstract class BaseNavigationViewTransformer : BaseTransformer() {
         return view
     }
 
-    private fun updateText(view: View, attrs: AttributeSet, index: Int) {
+    private fun updateText(
+        view: View,
+        attrs: AttributeSet,
+        index: Int,
+    ) {
         val resources = view.context.resources
         val value = attrs.getAttributeValue(index)
         if (value == null || !value.startsWith("@")) return

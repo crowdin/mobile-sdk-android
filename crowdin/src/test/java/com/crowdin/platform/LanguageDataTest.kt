@@ -9,17 +9,17 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
 class LanguageDataTest {
-
     @Test
     fun updateLanguageDataResourcesTest() {
         // Given
         val actualLanguageData = LanguageData()
         val secondLanguageData = LanguageData()
-        val expectedListOfStringData = mutableListOf(
-            StringData("Key0"),
-            StringData("Key1"),
-            StringData("Key2")
-        )
+        val expectedListOfStringData =
+            mutableListOf(
+                StringData("Key0"),
+                StringData("Key1"),
+                StringData("Key2"),
+            )
         secondLanguageData.resources = expectedListOfStringData
 
         // When
@@ -34,11 +34,12 @@ class LanguageDataTest {
         // Given
         val actualLanguageData = LanguageData()
         val secondLanguageData = LanguageData()
-        val expectedListOfArrayData = mutableListOf(
-            ArrayData("Key0"),
-            ArrayData("Key1"),
-            ArrayData("Key2")
-        )
+        val expectedListOfArrayData =
+            mutableListOf(
+                ArrayData("Key0"),
+                ArrayData("Key1"),
+                ArrayData("Key2"),
+            )
         secondLanguageData.arrays = expectedListOfArrayData
 
         // When
@@ -53,11 +54,12 @@ class LanguageDataTest {
         // Given
         val actualLanguageData = LanguageData()
         val secondLanguageData = LanguageData()
-        val expectedListOfPluralData = mutableListOf(
-            PluralData("Key0"),
-            PluralData("Key1"),
-            PluralData("Key2")
-        )
+        val expectedListOfPluralData =
+            mutableListOf(
+                PluralData("Key0"),
+                PluralData("Key1"),
+                PluralData("Key2"),
+            )
         secondLanguageData.plurals = expectedListOfPluralData
 
         // When

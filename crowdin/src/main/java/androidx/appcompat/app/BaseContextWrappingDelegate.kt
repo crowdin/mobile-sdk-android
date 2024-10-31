@@ -11,9 +11,9 @@ import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.Toolbar
 import com.crowdin.platform.Crowdin
 
-class BaseContextWrappingDelegate(private val superDelegate: AppCompatDelegate) :
-    AppCompatDelegate() {
-
+class BaseContextWrappingDelegate(
+    private val superDelegate: AppCompatDelegate,
+) : AppCompatDelegate() {
     override fun getSupportActionBar() = superDelegate.supportActionBar
 
     override fun setSupportActionBar(toolbar: Toolbar?) = superDelegate.setSupportActionBar(toolbar)
@@ -26,11 +26,9 @@ class BaseContextWrappingDelegate(private val superDelegate: AppCompatDelegate) 
         addActiveDelegate(this)
     }
 
-    override fun onPostCreate(savedInstanceState: Bundle?) =
-        superDelegate.onPostCreate(savedInstanceState)
+    override fun onPostCreate(savedInstanceState: Bundle?) = superDelegate.onPostCreate(savedInstanceState)
 
-    override fun onConfigurationChanged(newConfig: Configuration?) =
-        superDelegate.onConfigurationChanged(newConfig)
+    override fun onConfigurationChanged(newConfig: Configuration?) = superDelegate.onConfigurationChanged(newConfig)
 
     override fun onStart() = superDelegate.onStart()
 
@@ -46,14 +44,17 @@ class BaseContextWrappingDelegate(private val superDelegate: AppCompatDelegate) 
 
     override fun setContentView(resId: Int) = superDelegate.setContentView(resId)
 
-    override fun setContentView(v: View?, lp: ViewGroup.LayoutParams?) =
-        superDelegate.setContentView(v, lp)
+    override fun setContentView(
+        v: View?,
+        lp: ViewGroup.LayoutParams?,
+    ) = superDelegate.setContentView(v, lp)
 
-    override fun addContentView(v: View?, lp: ViewGroup.LayoutParams?) =
-        superDelegate.addContentView(v, lp)
+    override fun addContentView(
+        v: View?,
+        lp: ViewGroup.LayoutParams?,
+    ) = superDelegate.addContentView(v, lp)
 
-    override fun attachBaseContext2(context: Context) =
-        wrap(superDelegate.attachBaseContext2(super.attachBaseContext2(context)))
+    override fun attachBaseContext2(context: Context) = wrap(superDelegate.attachBaseContext2(super.attachBaseContext2(context)))
 
     override fun setTitle(title: CharSequence?) = superDelegate.setTitle(title)
 
@@ -66,13 +67,11 @@ class BaseContextWrappingDelegate(private val superDelegate: AppCompatDelegate) 
 
     override fun getDrawerToggleDelegate() = superDelegate.drawerToggleDelegate
 
-    override fun requestWindowFeature(featureId: Int) =
-        superDelegate.requestWindowFeature(featureId)
+    override fun requestWindowFeature(featureId: Int) = superDelegate.requestWindowFeature(featureId)
 
     override fun hasWindowFeature(featureId: Int) = superDelegate.hasWindowFeature(featureId)
 
-    override fun startSupportActionMode(callback: ActionMode.Callback) =
-        superDelegate.startSupportActionMode(callback)
+    override fun startSupportActionMode(callback: ActionMode.Callback) = superDelegate.startSupportActionMode(callback)
 
     override fun installViewFactory() = superDelegate.installViewFactory()
 
@@ -80,7 +79,7 @@ class BaseContextWrappingDelegate(private val superDelegate: AppCompatDelegate) 
         parent: View?,
         name: String?,
         context: Context,
-        attrs: AttributeSet
+        attrs: AttributeSet,
     ): View? = superDelegate.createView(parent, name, context, attrs)
 
     override fun setHandleNativeActionModesEnabled(enabled: Boolean) {
@@ -89,8 +88,7 @@ class BaseContextWrappingDelegate(private val superDelegate: AppCompatDelegate) 
 
     override fun isHandleNativeActionModesEnabled() = superDelegate.isHandleNativeActionModesEnabled
 
-    override fun onSaveInstanceState(outState: Bundle?) =
-        superDelegate.onSaveInstanceState(outState)
+    override fun onSaveInstanceState(outState: Bundle?) = superDelegate.onSaveInstanceState(outState)
 
     override fun applyDayNight() = superDelegate.applyDayNight()
 

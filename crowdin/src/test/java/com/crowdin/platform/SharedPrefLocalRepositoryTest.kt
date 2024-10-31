@@ -22,7 +22,6 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 
 class SharedPrefLocalRepositoryTest {
-
     private lateinit var mockMemoryLocalRepository: MemoryLocalRepository
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
