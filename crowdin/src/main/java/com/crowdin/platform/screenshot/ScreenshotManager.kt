@@ -128,7 +128,7 @@ internal class ScreenshotManager(
     }
 
     private fun createScreenshot(
-        screenshotId: Int,
+        screenshotId: Long,
         tags: MutableList<TagData>,
         projectId: String,
         fileName: String,
@@ -161,7 +161,7 @@ internal class ScreenshotManager(
     }
 
     private fun createTag(
-        screenshotId: Int,
+        screenshotId: Long,
         tags: MutableList<TagData>,
         projectId: String,
     ) {

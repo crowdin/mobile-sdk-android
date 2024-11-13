@@ -5,9 +5,9 @@ plugins {
 }
 
 ext {
-    compileSdkVersion = 33
+    compileSdkVersion = 34
     minSdkVersion = 16
-    targetSdkVersion = 33
+    targetSdkVersion = 35
 }
 
 task clean(type: Delete) {

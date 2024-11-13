@@ -3,7 +3,7 @@ package com.crowdin.platform.data.remote.api
 import com.google.gson.annotations.SerializedName
 
 internal data class CreateScreenshotRequestBody(
-    var storageId: Int,
+    var storageId: Long,
     var name: String,
 )
 
@@ -28,7 +28,7 @@ internal data class UploadScreenshotResponse(
 )
 
 internal data class Data(
-    var id: Int? = null,
+    var id: Long? = null,
     val fileName: String,
 )
 

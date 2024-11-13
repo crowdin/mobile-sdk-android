@@ -32,7 +32,7 @@ internal interface CrowdinApi {
     @POST("api/v2/projects/{projectId}/screenshots/{screenshotId}/tags")
     fun createTag(
         @Path("projectId") projectId: String,
-        @Path("screenshotId") screenshotId: Int,
+        @Path("screenshotId") screenshotId: Long,
         @Body tags: MutableList<TagData>,
     ): Call<ResponseBody>
 
