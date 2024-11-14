@@ -395,15 +395,15 @@ object Crowdin {
         if (FeatureFlags.isRealTimeUpdateEnabled && dataManager?.isAuthorized() == true) {
             translationDataRepository?.fetchData(
                 languageDataCallback =
-                object : LanguageDataCallback {
-                    override fun onDataLoaded(languageData: LanguageData) {
-                        callback?.onSuccess()
-                    }
+                    object : LanguageDataCallback {
+                        override fun onDataLoaded(languageData: LanguageData) {
+                            callback?.onSuccess()
+                        }
 
-                    override fun onFailure(throwable: Throwable) {
-                        callback?.onFailure(throwable)
-                    }
-                },
+                        override fun onFailure(throwable: Throwable) {
+                            callback?.onFailure(throwable)
+                        }
+                    },
             )
         } else {
             val error =
