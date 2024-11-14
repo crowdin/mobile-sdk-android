@@ -51,6 +51,13 @@ internal interface CrowdinApi {
         @Body tags: MutableList<TagData>,
     ): Call<ResponseBody>
 
+    @PUT("api/v2/projects/{projectId}/screenshots/{screenshotId}/tags")
+    fun replaceTag(
+        @Path("projectId") projectId: String,
+        @Path("screenshotId") screenshotId: Long,
+        @Body tags: MutableList<TagData>,
+    ): Call<ResponseBody>
+
     @GET("/api/v2/distributions/metadata")
     fun getInfo(
         @Query("hash") distributionHash: String,

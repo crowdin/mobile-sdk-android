@@ -158,7 +158,7 @@ internal class ScreenshotManager(
                 storageId = data.id!!,
                 screenshotId = screenshot.id.toString(),
                 fileName = screenshot.name,
-                onSuccess = { replaceTags() }, // TODO: add replace tags
+                onSuccess = { replaceTags(it, tags, projectId) },
                 onFailure = onFailure,
             )
         } else {
@@ -170,11 +170,6 @@ internal class ScreenshotManager(
                 onFailure = onFailure,
             )
         }
-    }
-
-    private fun replaceTags() {
-        //  4. після апдейту, викликаємо метод Replace Tags і передаємо нові координати текстів на тому скріні
-//        createTag(screenshotId, tags, projectId)
     }
 
     fun registerScreenShotContentObserver(context: Context) {
@@ -307,6 +302,32 @@ internal class ScreenshotManager(
     ) {
         crowdinApi
             .createTag(projectId, screenshotId, tags)
+            .enqueue(
+                object : Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>,
+                    ) {
+                        screenshotCallback?.onSuccess()
+                    }
+
+                    override fun onFailure(
+                        call: Call<ResponseBody>,
+                        throwable: Throwable,
+                    ) {
+                        screenshotCallback?.onFailure(throwable)
+                    }
+                },
+            )
+    }
+
+    private fun replaceTags(
+        screenshotId: Long,
+        tags: MutableList<TagData>,
+        projectId: String,
+    ) {
+        crowdinApi
+            .replaceTag(projectId, screenshotId, tags)
             .enqueue(
                 object : Callback<ResponseBody> {
                     override fun onResponse(
