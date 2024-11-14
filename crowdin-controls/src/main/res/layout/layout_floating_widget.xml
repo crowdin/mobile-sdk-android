@@ -79,6 +79,20 @@
             android:textOn="@string/realtimepreview_on"
             android:textSize="@dimen/text_size" />
 
+        <EditText
+            android:id="@+id/screenshotEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Screenshot name"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:focusable="true"
+            android:clickable="true"
+            android:maxLines="1"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF"
+            android:textSize="@dimen/text_size" />
+
         <Button
             android:id="@+id/screenshotBtn"
             android:layout_width="match_parent"

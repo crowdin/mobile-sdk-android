@@ -183,16 +183,23 @@ object Crowdin {
     }
 
     /**
-     * Send screenshot of current screen to the crowdin platform.
-     * Will attach tags (keys and position) related to UI components from the screen.
+     * Sends a screenshot of the current screen to the Crowdin platform.
+     * The screenshot will include tags with keys and positions related to UI components on the screen.
+     *
+     * If a screenshot with the same name already exists, it will be updated. Otherwise, a new screenshot
+     * entry will be created on the platform.
      *
      * @param activity required for accessing current window.
-     * @param screenshotCallback optional, will provide status of screenshot creating process.
+     * @param screenshotName Optional name to identify the screenshot on the platform. If a screenshot with
+     *                       this name already exists, it will be updated. This name should not include any file extensions.
+     * @param screenshotCallback Optional callback that provides the status of the screenshot upload process,
+     *                           including success or failure details.
      */
     @JvmStatic
     @JvmOverloads
     fun sendScreenshot(
         activity: Activity,
+        screenshotName: String? = null,
         screenshotCallback: ScreenshotCallback? = null,
     ) {
         screenshotManager?.let {
@@ -202,30 +209,38 @@ object Crowdin {
                 it.sendScreenshot(
                     bitmap,
                     viewTransformerManager.getViewData(),
-                    activity.localClassName,
+                    screenshotName,
                 )
             }
         }
     }
 
     /**
-     * Send screenshot of current screen to the crowdin platform.
-     * Will attach tags (keys and position) related to UI components from the screen.
+     * Sends a screenshot of the current screen to the Crowdin platform.
+     * The screenshot will include tags with keys and positions related to UI components on the screen.
      *
-     * @param bitmap screenshot.
-     * @param screenshotCallback optional, will provide status of screenshot creating process.
+     * If a screenshot with the same name already exists, it will be updated. Otherwise, a new screenshot
+     * entry will be created on the platform.
+     *
+     * @param bitmap The screenshot image as a `Bitmap`.
+     * @param screenshotName Optional name to identify the screenshot on the platform. If a screenshot with
+     *                       this name already exists, it will be updated. This name should not include any file extensions.
+     * @param screenshotCallback Optional callback that provides the status of the screenshot upload process,
+     *                           including success or failure details.
      */
     @JvmStatic
     @JvmOverloads
     fun sendScreenshot(
         bitmap: Bitmap,
+        screenshotName: String? = null,
         screenshotCallback: ScreenshotCallback? = null,
     ) {
         screenshotManager?.let {
             it.setScreenshotCallback(screenshotCallback)
             it.sendScreenshot(
-                bitmap,
-                viewTransformerManager.getViewData(),
+                bitmap = bitmap,
+                viewDataList = viewTransformerManager.getViewData(),
+                name = screenshotName,
             )
         }
     }
@@ -380,15 +395,15 @@ object Crowdin {
         if (FeatureFlags.isRealTimeUpdateEnabled && dataManager?.isAuthorized() == true) {
             translationDataRepository?.fetchData(
                 languageDataCallback =
-                    object : LanguageDataCallback {
-                        override fun onDataLoaded(languageData: LanguageData) {
-                            callback?.onSuccess()
-                        }
+                object : LanguageDataCallback {
+                    override fun onDataLoaded(languageData: LanguageData) {
+                        callback?.onSuccess()
+                    }
 
-                        override fun onFailure(throwable: Throwable) {
-                            callback?.onFailure(throwable)
-                        }
-                    },
+                    override fun onFailure(throwable: Throwable) {
+                        callback?.onFailure(throwable)
+                    }
+                },
             )
         } else {
             val error =

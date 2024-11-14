@@ -134,21 +134,22 @@ internal class ScreenshotService(
         Log.d(ScreenshotService::class.java.simpleName, "Screenshot uploading started")
 
         Crowdin.sendScreenshot(
-            bitmap,
-            object : ScreenshotCallback {
-                override fun onSuccess() {
-                    uploading = false
-                    Log.d(ScreenshotService::class.java.simpleName, "Screenshot uploaded")
-                }
+            bitmap = bitmap,
+            screenshotCallback =
+                object : ScreenshotCallback {
+                    override fun onSuccess() {
+                        uploading = false
+                        Log.d(ScreenshotService::class.java.simpleName, "Screenshot uploaded")
+                    }
 
-                override fun onFailure(throwable: Throwable) {
-                    uploading = false
-                    Log.d(
-                        ScreenshotService::class.java.simpleName,
-                        "Screenshot uploading error: ${throwable.localizedMessage}",
-                    )
-                }
-            },
+                    override fun onFailure(throwable: Throwable) {
+                        uploading = false
+                        Log.d(
+                            ScreenshotService::class.java.simpleName,
+                            "Screenshot uploading error: ${throwable.localizedMessage}",
+                        )
+                    }
+                },
         )
     }
 }

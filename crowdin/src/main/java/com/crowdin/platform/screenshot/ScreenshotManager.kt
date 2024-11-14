@@ -20,6 +20,7 @@ import com.crowdin.platform.data.remote.api.Data
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.data.remote.api.TagData
 import com.crowdin.platform.data.remote.api.UploadScreenshotResponse
+import com.crowdin.platform.util.parseToDateTimeFormat
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
@@ -36,7 +37,7 @@ internal class ScreenshotManager(
     companion object {
         private const val MEDIA_TYPE_IMG = "image/png"
         private const val IMG_QUALITY = 100
-        private const val IMAGE_EXTENSION = ".png"
+        const val IMAGE_EXTENSION = ".png"
     }
 
     private var screenshotCallback: ScreenshotCallback? = null
@@ -45,8 +46,12 @@ internal class ScreenshotManager(
     fun sendScreenshot(
         bitmap: Bitmap,
         viewDataList: MutableList<ViewData>,
-        activityName: String? = null,
+        name: String? = null,
     ) {
+        val screenshotName =
+            name?.let { it + IMAGE_EXTENSION }
+                ?: (System.currentTimeMillis().parseToDateTimeFormat() + IMAGE_EXTENSION)
+
         val mappingData = dataManager.getMapping(sourceLanguage) ?: return
         val distributionData =
             dataManager.getData<DistributionInfoResponse.DistributionData>(
@@ -62,12 +67,10 @@ internal class ScreenshotManager(
         val projectId = distributionData.project.id
         val tags = getMappingIds(mappingData, viewDataList)
 
-        // TODO: replace with names
-        val name = "test1Screenshot$IMAGE_EXTENSION"
         // 1. Get List Screenshots by search query
         getScreenshotsList(
             projectId = projectId,
-            name = name,
+            screenshotName = screenshotName,
             onResult = { screenshot ->
                 Log.d(CROWDIN_TAG, "Screenshot search result:  $screenshot")
                 // 2. Add to storage
@@ -75,7 +78,7 @@ internal class ScreenshotManager(
                     bitmap = bitmap,
                     tags = tags,
                     projectId = projectId,
-                    name = name,
+                    screenshotName = screenshotName,
                     screenshot = screenshot,
                     onFailure = { screenshotCallback?.onFailure(it) },
                 )
@@ -85,11 +88,11 @@ internal class ScreenshotManager(
 
     private fun getScreenshotsList(
         projectId: String,
-        name: String,
+        screenshotName: String,
         onResult: (Screenshot?) -> Unit,
     ) {
         crowdinApi
-            .getScreenshotsList(projectId, name)
+            .getScreenshotsList(projectId, screenshotName)
             .enqueue(
                 object : Callback<ListScreenshotsResponse> {
                     override fun onResponse(
@@ -123,13 +126,13 @@ internal class ScreenshotManager(
         bitmap: Bitmap,
         tags: MutableList<TagData>,
         projectId: String,
-        name: String,
+        screenshotName: String,
         screenshot: Screenshot?,
         onFailure: (Throwable) -> Unit,
     ) {
         addScreenshotToStorage(
             bitmap = bitmap,
-            activityName = name,
+            screenshotName = screenshotName,
             onResult = {
                 it?.let {
                     // 3. Update or create screenshot
@@ -198,7 +201,7 @@ internal class ScreenshotManager(
 
     private fun addScreenshotToStorage(
         bitmap: Bitmap,
-        activityName: String,
+        screenshotName: String,
         onResult: (Data?) -> Unit,
         onFailure: (Throwable) -> Unit,
     ) {
@@ -209,11 +212,8 @@ internal class ScreenshotManager(
             byteArray.toRequestBody(MEDIA_TYPE_IMG.toMediaTypeOrNull(), 0, byteArray.size)
         bitmap.recycle()
 
-        val prefix = activityName?.let { it + "_" } ?: ""
-        val fileName = activityName // + IMAGE_EXTENSION
-//            "$prefix${System.currentTimeMillis().parseToDateTimeFormat()}$IMAGE_EXTENSION"
         crowdinApi
-            .addToStorage(fileName, requestBody)
+            .addToStorage(screenshotName, requestBody)
             .enqueue(
                 object : Callback<UploadScreenshotResponse> {
                     override fun onResponse(

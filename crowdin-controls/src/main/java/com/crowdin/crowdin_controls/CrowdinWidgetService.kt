@@ -17,11 +17,15 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.Crowdin.CROWDIN_TAG
 import com.crowdin.platform.LoadingStateListener
@@ -38,6 +42,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
     private lateinit var authBtn: ToggleButton
     private lateinit var captureScreenshotBtn: Button
     private lateinit var realTimeBtn: ToggleButton
+    private lateinit var screenshotEt: EditText
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -58,7 +63,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             layoutFlag,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL, // Allow focusable with input
             PixelFormat.TRANSLUCENT
         )
 
@@ -89,6 +94,22 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
 
         captureScreenshotBtn = floatingView.findViewById(R.id.screenshotBtn)
 
+        screenshotEt = floatingView.findViewById(R.id.screenshotEt)
+        screenshotEt.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+            }
+        }
+        screenshotEt.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                hideKeyboard(screenshotEt)
+                true
+            } else {
+                false
+            }
+        }
+
         floatingView.findViewById<Button>(R.id.screenshotBtn)
             .setOnClickListener { captureScreenshot() }
 
@@ -116,6 +137,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
                             initialTouchY = event.rawY
                             return true
                         }
+
                         MotionEvent.ACTION_UP -> {
                             val xDiff = (event.rawX - initialTouchX).toInt()
                             val yDiff = (event.rawY - initialTouchY).toInt()
@@ -129,6 +151,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
                             }
                             return true
                         }
+
                         MotionEvent.ACTION_MOVE -> {
                             // Calculate the X and Y coordinates of the view.
                             params.x = initialX + (event.rawX - initialTouchX).toInt()
@@ -182,6 +205,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
             showToast("Screenshot uploading in progress")
             sendBroadcast(Intent().apply {
                 action = BROADCAST_SCREENSHOT
+                putExtra(SCREENSHOT_NAME_KEY, screenshotEt.text.toString())
             })
         } else {
             showToast(AUTH_REQUIRED)
@@ -224,7 +248,9 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
         realTimeBtn.isEnabled = Crowdin.isRealTimeUpdatesEnabled()
         realTimeBtn.isChecked = Crowdin.isRealTimeUpdatesConnected()
 
-        captureScreenshotBtn.isEnabled = Crowdin.isCaptureScreenshotEnabled()
+        val isEnabled = Crowdin.isCaptureScreenshotEnabled()
+        captureScreenshotBtn.isEnabled = isEnabled
+        screenshotEt.isVisible = isEnabled
     }
 
     private fun collapseView() {
@@ -245,6 +271,11 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
         windowManager.removeView(floatingView)
     }
 
+    private fun hideKeyboard(view: View) {
+        val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
     companion object {
 
         private const val AUTH_REQUIRED =
@@ -253,6 +284,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
             "Translations successfully reloaded from the distribution"
         private const val TRANSLATION_RELOADED = "The latest translations successfully reloaded"
         private const val RELOAD_FAILED = "Data reload failed"
+        private const val SCREENSHOT_NAME_KEY = "screenshot_name_key"
 
         private const val BROADCAST_SCREENSHOT = "com.crowdin.crowdin_controls.broadcast.SCREENSHOT"
         private lateinit var receiver: BroadcastReceiver
@@ -264,15 +296,18 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
                 override fun onReceive(context: Context, intent: Intent) {
                     if (intent.action == BROADCAST_SCREENSHOT) {
                         activity.get()?.let {
-                            Crowdin.sendScreenshot(it, object : ScreenshotCallback {
-                                override fun onSuccess() {
-                                    it.showToast("Screenshot uploaded")
-                                }
+                            Crowdin.sendScreenshot(
+                                activity = it,
+                                screenshotName = intent.getStringExtra(SCREENSHOT_NAME_KEY),
+                                screenshotCallback = object : ScreenshotCallback {
+                                    override fun onSuccess() {
+                                        it.showToast("Screenshot uploaded")
+                                    }
 
-                                override fun onFailure(throwable: Throwable) {
-                                    it.showToast("Screenshot upload failed")
-                                }
-                            })
+                                    override fun onFailure(throwable: Throwable) {
+                                        it.showToast("Screenshot upload failed")
+                                    }
+                                })
                         }
                     }
                 }
