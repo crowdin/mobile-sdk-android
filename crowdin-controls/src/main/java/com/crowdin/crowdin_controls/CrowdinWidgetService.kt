@@ -295,10 +295,11 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
             receiver = object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
                     if (intent.action == BROADCAST_SCREENSHOT) {
-                        activity.get()?.let {
+                        activity.get()?.let { it ->
+                            val name = intent.getStringExtra(SCREENSHOT_NAME_KEY).takeIf { it?.isNotEmpty() == true }
                             Crowdin.sendScreenshot(
                                 activity = it,
-                                screenshotName = intent.getStringExtra(SCREENSHOT_NAME_KEY),
+                                screenshotName = name,
                                 screenshotCallback = object : ScreenshotCallback {
                                     override fun onSuccess() {
                                         it.showToast("Screenshot uploaded")

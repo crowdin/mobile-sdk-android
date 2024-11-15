@@ -43,6 +43,7 @@ import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.TextUtils
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.UiUtil
+import com.crowdin.platform.util.parseToDateTimeFormat
 
 /**
  * Entry point for Crowdin. it will be used for setting new strings, wrapping activity context.
@@ -204,12 +205,13 @@ object Crowdin {
     ) {
         screenshotManager?.let {
             val view = activity.window.decorView.rootView
+            val name = screenshotName ?: (activity.localClassName + "-" + System.currentTimeMillis().parseToDateTimeFormat())
             ScreenshotUtils.getBitmapFromView(view, activity) { bitmap ->
                 it.setScreenshotCallback(screenshotCallback)
                 it.sendScreenshot(
                     bitmap,
                     viewTransformerManager.getViewData(),
-                    screenshotName,
+                    name,
                 )
             }
         }
