@@ -25,7 +25,7 @@ class ScreenshotAutomationTest {
         }
 
         // Wait for the latch to be decremented, or timeout after 5 seconds
-        latch.await(5, TimeUnit.SECONDS)
+        latch.await(30, TimeUnit.SECONDS)
         activityScenario.close()
     }
 
@@ -37,16 +37,19 @@ class ScreenshotAutomationTest {
         rootView.isDrawingCacheEnabled = false
 
         // Upload the screenshot to Crowdin using Crowdin SDK
-        Crowdin.sendScreenshot(bitmap, object : ScreenshotCallback {
-            override fun onSuccess() {
-                activity.showToast("Screenshot uploaded")
-                latch.countDown()
-            }
+        Crowdin.sendScreenshot(
+            bitmap = bitmap,
+            screenshotName = "dashboard",
+            screenshotCallback = object : ScreenshotCallback {
+                override fun onSuccess() {
+                    activity.showToast("Screenshot uploaded")
+                    latch.countDown()
+                }
 
-            override fun onFailure(throwable: Throwable) {
-                activity.showToast("Screenshot upload failed")
-                latch.countDown()
-            }
-        })
+                override fun onFailure(throwable: Throwable) {
+                    activity.showToast("Screenshot upload failed")
+                    latch.countDown()
+                }
+            })
     }
 }

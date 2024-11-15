@@ -12,7 +12,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="40dp"
-        android:src="@drawable/ic_crowdin_logo_icon" />
+        android:src="@drawable/ic_crowdin_logo" />
 
     <TextView
         android:layout_width="match_parent"

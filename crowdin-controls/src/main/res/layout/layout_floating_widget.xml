@@ -9,7 +9,7 @@
     <!--View while view is collapsed-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/collapse_view"
-        android:layout_width="60dp"
+        android:layout_width="75dp"
         android:layout_height="60dp"
         android:orientation="vertical"
         android:visibility="visible">
@@ -19,7 +19,7 @@
             android:layout_height="60dp"
             android:layout_marginTop="8dp"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_crowdin_logo_icon"
+            android:src="@drawable/ic_crowdin_logo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -54,19 +54,6 @@
             android:src="@android:drawable/ic_menu_close_clear_cancel" />
 
         <ToggleButton
-            android:id="@+id/authBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:padding="15dp"
-            android:textAllCaps="false"
-            android:textOff="@string/log_in"
-            android:textOn="@string/log_out"
-            android:textSize="@dimen/text_size" />
-
-        <ToggleButton
             android:id="@+id/realTimeBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -83,11 +70,11 @@
             android:id="@+id/screenshotEt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
             android:hint="Screenshot name"
             android:imeOptions="actionDone"
             android:inputType="text"
-            android:focusable="true"
-            android:clickable="true"
             android:maxLines="1"
             android:textColor="#FFFFFF"
             android:textColorHint="#FFFFFF"
@@ -111,6 +98,19 @@
             android:minHeight="48dp"
             android:text="@string/reload_translations"
             android:textAllCaps="false"
+            android:textSize="@dimen/text_size" />
+
+        <ToggleButton
+            android:id="@+id/authBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:padding="15dp"
+            android:textAllCaps="false"
+            android:textOff="@string/log_in"
+            android:textOn="@string/log_out"
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>

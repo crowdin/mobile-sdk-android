@@ -8,7 +8,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center"
-        android:src="@drawable/ic_crowdin_logo_icon" />
+        android:src="@drawable/ic_crowdin_logo" />
 
     <ProgressBar
         android:layout_gravity="bottom"
