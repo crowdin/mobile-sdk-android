@@ -12,18 +12,21 @@ data class AuthConfig
         @Deprecated("Use CrowdinConfig property instead")
         val organizationName: String? = null,
         val requestAuthDialog: Boolean = true,
+        val apiToken: String? = null,
     ) {
-        constructor(clientId: String, clientSecret: String) : this(
+        constructor(clientId: String, clientSecret: String, apiToken: String? = null) : this(
             clientId = clientId,
             clientSecret = clientSecret,
             organizationName = null,
             requestAuthDialog = true,
+            apiToken = apiToken,
         )
 
-        constructor(clientId: String, clientSecret: String, requestAuthDialog: Boolean) : this(
+        constructor(clientId: String, clientSecret: String, requestAuthDialog: Boolean, apiToken: String? = null) : this(
             clientId = clientId,
             clientSecret = clientSecret,
             organizationName = null,
             requestAuthDialog = requestAuthDialog,
+            apiToken = apiToken,
         )
     }

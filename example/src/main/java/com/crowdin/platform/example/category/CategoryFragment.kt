@@ -30,6 +30,7 @@ class CategoryFragment : Fragment(), View.OnClickListener, CategoryAdd, Category
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().setTitle(R.string.category)
         addCategoryFAB = view.findViewById(R.id.addCategoryFAB)
         emptyView = view.findViewById(R.id.emptyView)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)

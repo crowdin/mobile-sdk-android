@@ -82,6 +82,8 @@ object Crowdin {
         initRealTimeUpdates()
         initLoading(context)
         loadMapping()
+
+        initDistributionInfo()
     }
 
     private fun initLoading(context: Context) {
@@ -536,4 +538,22 @@ object Crowdin {
     fun getManifest(): ManifestData? = dataManager?.getManifest()
 
     fun getSupportedLanguages(): LanguagesInfo? = dataManager?.getSupportedLanguages()
+
+    private fun initDistributionInfo() {
+        if (config.authConfig?.apiToken == null) {
+            return
+        }
+
+        getDistributionInfo(
+            object : DistributionInfoCallback {
+                override fun onResponse() {
+                    Log.d(CROWDIN_TAG, "Distribution info loaded")
+                }
+
+                override fun onError(throwable: Throwable) {
+                    Log.e(CROWDIN_TAG, "Distribution info not loaded", throwable)
+                }
+            },
+        )
+    }
 }

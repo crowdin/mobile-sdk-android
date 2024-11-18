@@ -29,6 +29,7 @@ class SettingsFragment : Fragment(), OnItemSelectedListener.SpinnerItemListener 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().setTitle(R.string.settings)
         spinnerLanguages = view.findViewById(R.id.spinnerLanguages)
         languageDescription = view.findViewById(R.id.languageDescriptionTv)
         loadDataInSpinner()
