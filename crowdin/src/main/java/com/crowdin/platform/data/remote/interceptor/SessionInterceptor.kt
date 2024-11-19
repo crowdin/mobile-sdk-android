@@ -14,7 +14,7 @@ internal class SessionInterceptor(
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val original: Request = chain.request()
-        val apiToken = Crowdin.getAuthConfig()?.apiToken
+        val apiToken = Crowdin.getApiAuthConfig()?.apiToken
 
         // Update expired token
         if (apiToken == null && session.isTokenExpired()) {

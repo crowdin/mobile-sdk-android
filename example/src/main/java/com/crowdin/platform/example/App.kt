@@ -59,12 +59,12 @@ class App : Application() {
                     AuthConfig(
                         clientId = clientId,
                         clientSecret = clientSecret,
-                        requestAuthDialog = requestAuthDialog,
-                        apiToken = apiToken
+                        requestAuthDialog = requestAuthDialog
                     )
                 )
                 .withOrganizationName(organizationName)                                 // required for Crowdin Enterprise
                 .withInitSyncDisabled()                                                 // optional
+                .withApiAuthConfig(ApiAuthConfig(apiToken))
                 .build()
         )
 

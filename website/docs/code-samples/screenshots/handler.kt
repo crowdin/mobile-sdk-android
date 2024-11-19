@@ -1,4 +1,4 @@
-Crowdin.sendScreenshot(activity!!, object : ScreenshotCallback {
+Crowdin.sendScreenshot(activity!!, screenshotName, object : ScreenshotCallback {
     override fun onSuccess() {
         Log.d(TAG, "Screenshot uploaded")
     }

@@ -26,12 +26,44 @@ import sampleScreenshotSetupJava from '!!raw-loader!../code-samples/screenshots/
 
 ### Authorization
 
+You can configure API authorization in two ways:
+	1.	OAuth-Based Authorization: Use client_id and client_secret for web-based authorization.
+	2.	API Token Authorization: Use the ApiAuthConfig class to pass an apiToken directly. This method is designed for automation workflows where no user interaction is needed.
+
+OAuth-Based:
+
 import samplePreviewAuthKotlin from '!!raw-loader!../code-samples/real-time-preview/auth.kt';
 import samplePreviewAuthJava from '!!raw-loader!../code-samples/real-time-preview/auth.java';
 
+API Token Authorization:
+
+You can configure API authorization using the `ApiAuthConfig` class. This allows you to directly pass an API token for seamless and secure integration, bypassing OAuth-based `client_id` and `client_secret` authorization.
+
+Example Usage:
+
 <Tabs groupId="language">
-  <TabItem value="kotlin" label="Kotlin"><CodeBlock language="kotlin">{samplePreviewAuthKotlin}</CodeBlock></TabItem>
-  <TabItem value="java" label="Java"><CodeBlock language="java">{samplePreviewAuthJava}</CodeBlock></TabItem>
+  <TabItem value="kotlin" label="Kotlin">
+  <CodeBlock language="kotlin">
+{`
+.withApiAuthConfig(
+    ApiAuthConfig(
+        apiToken = "your_api_token_here"
+    )
+)
+`}
+  </CodeBlock>
+  </TabItem>
+  <TabItem value="java" label="Java">
+  <CodeBlock language="java">
+{`
+.withApiAuthConfig(
+    new ApiAuthConfig(
+        "your_api_token_here"
+    )
+)
+`}
+  </CodeBlock>
+  </TabItem>
 </Tabs>
 
 ### Setting up own handler
@@ -59,8 +91,10 @@ import sampleScreenshotHandlerJava from '!!raw-loader!../code-samples/screenshot
 | `withDistributionHash`       | Distribution Hash                                                                                                                                                            | `withDistributionHash("7a0c1...7uo3b")`                                                                         |
 | `withScreenshotEnabled`      | Enable Screenshots feature                                                                                                                                                   | `withScreenshotEnabled()`                                                                                       |
 | `withSourceLanguage`         | Source language code in your Crowdin project                                                                                                                                 | `withSourceLanguage("en")`                                                                                      |
-| `withAuthConfig`             | Crowdin authorization config                                                                                                                                                 | `withAuthConfig(AuthConfig("client_id", "client_secret"))`                                 |
+| `withAuthConfig`             | Crowdin authorization config                                                                                                                                                 | `withAuthConfig(AuthConfig("client_id", "client_secret"))`                                                      |
 | `client_id`, `client_secret` | Crowdin OAuth Client ID and Client Secret                                                                                                                                    | `"gpY2yC...cx3TYB"`, `"Xz95tfedd0A...TabEDx9T"`                                                                 |
+| `withApiAuthConfig`          | Crowdin authorization API config                                                                                                                                             | `withApiAuthConfig(ApiAuthConfig("api_token"))`                                                                 |
+| `apiToken`                   | Crowdin authorization token                                                                                                                                                  | `"gpY2yC...cx3TYB"`                                                                                             |
 | `request_auth_dialog`        | Request authorization dialog                                                                                                                                                 | `true` by default or `false`                                                                                    |
 | `withOrganizationName`       | An Organization domain name<br/>(for **Crowdin Enterprise users only**)                                                                                                      | `"mycompany"` for Crowdin Enterprise or `null` for crowdin.com                                                  |
 

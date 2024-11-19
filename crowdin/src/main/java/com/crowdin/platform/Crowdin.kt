@@ -13,6 +13,7 @@ import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.TextMetaDataProvider
 import com.crowdin.platform.data.local.LocalStringRepositoryFactory
+import com.crowdin.platform.data.model.ApiAuthConfig
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.LanguageData
@@ -512,6 +513,8 @@ object Crowdin {
 
     internal fun getAuthConfig(): AuthConfig? = config.authConfig
 
+    internal fun getApiAuthConfig(): ApiAuthConfig? = config.apiAuthConfig
+
     internal fun getOrganizationName(): String? = config.organizationName
 
     private fun initTranslationDataManager() {
@@ -540,7 +543,7 @@ object Crowdin {
     fun getSupportedLanguages(): LanguagesInfo? = dataManager?.getSupportedLanguages()
 
     private fun initDistributionInfo() {
-        if (config.authConfig?.apiToken == null) {
+        if (config.apiAuthConfig?.apiToken == null) {
             return
         }
 
