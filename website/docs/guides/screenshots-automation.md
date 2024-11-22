@@ -1,16 +1,15 @@
+# Screenshots Automation
 
-# Screenshot Automation Testing
-
-This guide explains how to automate screenshot generation and upload them to Crowdin for localization purposes. It covers the required setup, usage of the Crowdin SDK, and an example automation test.
+This guide shows how to automate the process of taking screenshots and uploading them to Crowdin to provide context for translators or AI. It covers the necessary setup, how to use the Crowdin SDK, and a sample automation test.
 
 ## Prerequisites
 
 Before you start, ensure the following:
 
-1. **Crowdin SDK Integration:** The Crowdin SDK should be integrated into your project. (See [Setting Up the Crowdin SDK](#setting-up-the-crowdin-sdk)).
+1. **Crowdin SDK Integration:** The Crowdin SDK should be integrated into your project (See [Setting Up the Crowdin SDK](#setting-up-the-crowdin-sdk)).
 2. **Android Testing Dependencies:** Add the following dependencies to your `build.gradle` file:
 
-   ```groovy
+   ```groovy title="build.gradle"
    dependencies {
        androidTestImplementation "androidx.test.ext:junit:1.2.1"
        androidTestImplementation "androidx.test.espresso:espresso-core:3.6.1"
@@ -24,16 +23,18 @@ Before you start, ensure the following:
 To use the Crowdin SDK for automation testing, configure it as follows:
 
 1. **Add the Crowdin SDK to Your Dependencies:**
+
    Add the necessary dependency to your `build.gradle` file:
 
-   ```groovy
+   ```groovy title="build.gradle"
    implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.10.1'
    ```
 
-2. **Initialize the SDK in Your Application Class:**
-   Use the following code to initialize the Crowdin SDK, ensuring you include the `withApiAuthConfig` configuration for automation.
+2. **Initialize the SDK:**
 
-   ```kotlin
+   Use the following code to initialize the Crowdin SDK, ensuring you include the `withApiAuthConfig` configuration for automation:
+
+   ```kotlin title="Application.kt"
    class MyApplication : Application() {
        override fun onCreate() {
            super.onCreate()
@@ -52,13 +53,18 @@ To use the Crowdin SDK for automation testing, configure it as follows:
    ```
 
 ### Key Configuration Options
-- **`withApiAuthConfig(ApiAuthConfig)`:** Configures API token-based authentication, ideal for automation workflows.
-- **`withDistributionHash(String)`:** Specifies the Crowdin distribution hash.
-- **`withScreenshotEnabled()`:** Enables the Screenshots feature for capturing and uploading screenshots.
+
+- `withApiAuthConfig(ApiAuthConfig)` - Sets up API token-based authentication for automated workflows. This method is essential for CI/CD pipelines and scenarios where user interaction isn't required.
+- `withDistributionHash(String)` - Defines the unique distribution hash from your Crowdin project.
+- `withScreenshotEnabled()` - Activates the Screenshots feature in your application, enabling automatic capture and upload of tagged screenshots.
+
+:::tip
+See the [Screenshots](/advanced-features/screenshots) guide for more information on setting up the Crowdin SDK for screenshots.
+:::
 
 ## Capturing Screenshots with Crowdin SDK
 
-Screenshots can be automatically uploaded to Crowdin by invoking the `Crowdin.sendScreenshot()` method.
+Screenshots can be automatically uploaded to Crowdin by calling the `Crowdin.sendScreenshot()` method. This method requires a bitmap image, a screenshot name, and a `ScreenshotCallback` (optional) to handle success or failure.
 
 ## Example Automation Test
 
@@ -107,10 +113,13 @@ private fun captureAndSendScreenshot(activity: Activity, name: String) {
 ```
 
 ### Key Points
+
 1. **Bitmap Generation:** Screenshots are captured by drawing the root view onto a Canvas.
 2. **Crowdin SDK Integration:** Use `Crowdin.sendScreenshot()` to upload screenshots with metadata.
 3. **Custom View Actions:** Handle RecyclerView actions like editing or deleting items using custom `ViewAction`.
 
 ## Conclusion
 
-This guide demonstrates how to create automation tests that capture and upload screenshots using Crowdin SDK. You can check more details in the **ScreenshotAutomationTest.kt** file.
+This guide demonstrates how to create automation tests that capture and upload screenshots using the Crowdin SDK. More details can be found in the [`ScreenshotAutomationTest.kt`](https://github.com/crowdin/mobile-sdk-android/blob/master/example/src/androidTest/java/com/crowdin/platform/example/ScreenshotAutomationTest.kt) file of the Crowdin SDK Example project.
+
+As a result, you can provide translators with visual context, ensuring more accurate and contextually appropriate translations.

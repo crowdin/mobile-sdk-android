@@ -12,9 +12,6 @@ protected void onCreate(Bundle savedInstanceState) {
                 client_secret,
                 request_auth_dialog
             ))
-            .withApiAuthConfig(new ApiAuthConfig(
-                api_token
-            ))
             .withOrganizationName(organization_name)   // required for Crowdin Enterprise
             .withNetworkType(network_type)             // optional
             .withUpdateInterval(interval_in_seconds)   // optional
