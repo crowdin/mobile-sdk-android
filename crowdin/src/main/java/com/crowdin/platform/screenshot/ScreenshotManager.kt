@@ -21,6 +21,7 @@ import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.data.remote.api.TagData
 import com.crowdin.platform.data.remote.api.UploadScreenshotResponse
 import com.crowdin.platform.util.parseToDateTimeFormat
+import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
@@ -221,6 +222,13 @@ internal class ScreenshotManager(
                         response: Response<UploadScreenshotResponse>,
                     ) {
                         val responseBody = response.body()
+                        if (responseBody == null) {
+                            response.errorBody()?.let {
+                                onFailure(Throwable(handleErrorResponse(it)))
+                                return
+                            }
+                        }
+
                         onResult(responseBody?.data)
                     }
 
@@ -366,4 +374,28 @@ internal class ScreenshotManager(
 
         return list
     }
+
+    // Parse error response
+    private fun handleErrorResponse(errorBody: ResponseBody): String {
+        var errorMessage = "Error occurred while uploading screenshot"
+        val errorResponse = parseErrorBody(errorBody)
+        errorResponse?.errors?.forEach { error ->
+            error.error.errors.forEach { errorItem ->
+                // Log or display the error messages
+                errorMessage += "\nError Code: ${errorItem.code}"
+                errorMessage += "\nError Message: ${errorItem.message}"
+            }
+        }
+        return errorMessage
+    }
+
+    // Parse the error body into the custom data structure
+    private fun parseErrorBody(errorBody: ResponseBody): UploadScreenshotResponse? =
+        try {
+            val gson = Gson()
+            gson.fromJson(errorBody.charStream(), UploadScreenshotResponse::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
 }

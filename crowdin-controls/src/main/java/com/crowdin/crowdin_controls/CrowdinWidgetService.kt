@@ -306,6 +306,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
                                     }
 
                                     override fun onFailure(throwable: Throwable) {
+                                        Log.d(CROWDIN_TAG, throwable.message ?: "Screenshot upload failed")
                                         it.showToast("Screenshot upload failed")
                                     }
                                 })

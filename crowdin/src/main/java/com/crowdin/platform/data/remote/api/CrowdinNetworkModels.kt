@@ -25,7 +25,22 @@ internal data class TagData(
 
 internal data class UploadScreenshotResponse(
     var data: Data? = null,
+    var errors: List<Error>? = null,
 )
+
+data class Error(
+    var error: ErrorData,
+) {
+    data class ErrorData(
+        var key: String,
+        var errors: List<ErrorItem>,
+    )
+
+    data class ErrorItem(
+        var code: String,
+        var message: String,
+    )
+}
 
 internal data class Data(
     var id: Long? = null,
