@@ -10,6 +10,7 @@ import android.content.IntentFilter
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.IBinder
+import android.text.InputFilter
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -22,6 +23,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.core.content.ContextCompat
@@ -101,6 +103,14 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
                 imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
             }
         }
+        screenshotEt.filters = arrayOf(InputFilter { source, _, _, _, _, _ ->
+            if (source != null && !source.matches(Regex("^[^\\\\/:*?\"<>|]*$"))) {
+                showToast("Invalid character removed. Please avoid: \\\\ / : * ? \\\" < > |")
+                "" // Reject the invalid input
+            } else {
+                null
+            }
+        })
         screenshotEt.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 hideKeyboard(screenshotEt)
@@ -201,11 +211,17 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
     }
 
     private fun captureScreenshot() {
+        val screenshotName = screenshotEt.text.trim().toString()
+        if (screenshotName.isEmpty()) {
+            showToast("Screenshot name is empty")
+            return
+        }
+
         if (Crowdin.isAuthorized()) {
             showToast("Screenshot uploading in progress")
             sendBroadcast(Intent().apply {
                 action = BROADCAST_SCREENSHOT
-                putExtra(SCREENSHOT_NAME_KEY, screenshotEt.text.toString())
+                putExtra(SCREENSHOT_NAME_KEY, screenshotName)
             })
         } else {
             showToast(AUTH_REQUIRED)
@@ -338,5 +354,12 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
 }
 
 fun Context.showToast(message: String) {
+    val toast = Toast(this)
+    val toastView = LayoutInflater.from(this).inflate(R.layout.custom_toast_layout, null)
+    toast.view = toastView
+    toastView.findViewById<TextView>(R.id.toast_message).text = message
+    toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 100)
+    toast.duration = Toast.LENGTH_SHORT
+    toast.show()
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
