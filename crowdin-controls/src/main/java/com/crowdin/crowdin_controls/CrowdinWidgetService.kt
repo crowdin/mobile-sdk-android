@@ -361,5 +361,4 @@ fun Context.showToast(message: String) {
     toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 100)
     toast.duration = Toast.LENGTH_SHORT
     toast.show()
-    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
