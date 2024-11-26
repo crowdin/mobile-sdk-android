@@ -103,13 +103,14 @@ internal class ScreenshotManager(
                         val responseBody = response.body()
                         val list = responseBody?.data
 
-                        if (list != null && list.size > 1) {
+                        val filteredList = list?.filter { it.data.name == screenshotName }
+                        if (filteredList != null && filteredList.size > 1) {
                             Log.v(
                                 CROWDIN_TAG,
                                 "Encountered multiple screenshots with the same name; only one will be updated.",
                             )
                         }
-                        onResult(list?.lastOrNull()?.data)
+                        onResult(filteredList?.lastOrNull()?.data)
                     }
 
                     override fun onFailure(
