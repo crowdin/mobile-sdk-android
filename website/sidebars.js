@@ -34,6 +34,7 @@ const sidebars = {
       collapsible: true,
       collapsed: false,
       items: [
+        'guides/screenshots-automation',
         'guides/multiple-flavor-app',
         'guides/platforms-support',
         'guides/synchronous-mode',

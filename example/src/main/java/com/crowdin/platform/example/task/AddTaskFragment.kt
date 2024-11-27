@@ -1,20 +1,18 @@
 package com.crowdin.platform.example.task
 
-import android.app.Activity
-import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
-import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.crowdin.platform.example.BaseActivity
+import androidx.fragment.app.Fragment
 import com.crowdin.platform.example.R
 import com.crowdin.platform.example.category.CategoryAdd
 import com.crowdin.platform.example.category.DBManagerCategory
@@ -24,7 +22,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class AddTaskActivity : BaseActivity(), View.OnClickListener, CategoryAdd,
+class AddTaskFragment : Fragment(), View.OnClickListener, CategoryAdd,
     OnItemSelectedListener.SpinnerItemListener {
 
     private lateinit var edtTitle: EditText
@@ -45,23 +43,27 @@ class AddTaskActivity : BaseActivity(), View.OnClickListener, CategoryAdd,
     private var task = ""
     private var categoryName = ""
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_task)
-        val toolbarAddTask = findViewById<Toolbar>(R.id.toolbarAddTask)
-        edtTitle = findViewById(R.id.edtTitle)
-        edtTask = findViewById(R.id.edtTask)
-        edtSetDate = findViewById(R.id.edtSetDate)
-        edtSetTime = findViewById(R.id.edtSetTime)
-        imgCancelDate = findViewById(R.id.imgCancelDate)
-        imgCancelTime = findViewById(R.id.imgCancelTime)
-        imgAddCategory = findViewById(R.id.imgAddCategory)
-        spinnerCategory = findViewById(R.id.spinnerCategory)
-        timeLayout = findViewById(R.id.timeLayout)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_add_task, container, false)
+    }
 
-        setSupportActionBar(toolbarAddTask)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireActivity().setTitle(R.string.add_task)
+        edtTitle = view.findViewById(R.id.edtTitle)
+        edtTask = view.findViewById(R.id.edtTask)
+        edtSetDate = view.findViewById(R.id.edtSetDate)
+        edtSetTime = view.findViewById(R.id.edtSetTime)
+        imgCancelDate = view.findViewById(R.id.imgCancelDate)
+        imgCancelTime = view.findViewById(R.id.imgCancelTime)
+        imgAddCategory = view.findViewById(R.id.imgAddCategory)
+        spinnerCategory = view.findViewById(R.id.spinnerCategory)
+        timeLayout = view.findViewById(R.id.timeLayout)
+        view.findViewById<Button>(R.id.btnSaveTask).setOnClickListener { addTask() }
 
         edtSetDate.setOnClickListener(this)
         edtSetTime.setOnClickListener(this)
@@ -72,56 +74,13 @@ class AddTaskActivity : BaseActivity(), View.OnClickListener, CategoryAdd,
         loadDataInSpinner()
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        checkTask()
-        return super.onSupportNavigateUp()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_add_task, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_done -> {
-                addTask()
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onBackPressed() {
-        checkTask()
-    }
-
-    private fun checkTask() {
-        title = edtTitle.text.toString().trim()
-        task = edtTask.text.toString().trim()
-
-        if (title != "" && task != "") {
-            AlertDialog.Builder(this).apply {
-                setTitle(getString(R.string.save_task))
-                setMessage(getString(R.string.do_you_want_to_save_this_task))
-                setPositiveButton(R.string.save) { _, _ -> addTask() }
-                setNegativeButton(R.string.cancel) { _, _ -> finish() }
-                create()
-                show()
-            }
-
-        } else {
-            finish()
-        }
-    }
-
     private fun addTask() {
         title = edtTitle.text.toString().trim()
         task = edtTask.text.toString().trim()
 
         when {
-            title.isEmpty() -> toastMessage(this, getString(R.string.please_add_title))
-            task.isEmpty() -> toastMessage(this, getString(R.string.please_add_task))
+            title.isEmpty() -> toastMessage(requireContext(), getString(R.string.please_add_title))
+            task.isEmpty() -> toastMessage(requireContext(), getString(R.string.please_add_task))
             else -> insertAndFinish(title, task, categoryName, date, time)
         }
     }
@@ -133,7 +92,7 @@ class AddTaskActivity : BaseActivity(), View.OnClickListener, CategoryAdd,
         date: String,
         time: String
     ) {
-        val dbManager = DBManagerTask(this)
+        val dbManager = DBManagerTask(requireContext())
         dbManager.insert(
             title,
             task,
@@ -141,12 +100,11 @@ class AddTaskActivity : BaseActivity(), View.OnClickListener, CategoryAdd,
             date,
             time
         )
-        setResult(Activity.RESULT_OK)
-        finish()
+        requireActivity().onBackPressed()
     }
 
     private fun loadDataInSpinner() {
-        val dbManager = DBManagerCategory(this)
+        val dbManager = DBManagerCategory(requireContext())
         var labels = dbManager.getListOfCategory()
 
         if (labels.isEmpty()) {
@@ -155,7 +113,7 @@ class AddTaskActivity : BaseActivity(), View.OnClickListener, CategoryAdd,
             labels = arrayList.sorted()
         }
 
-        val dataAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, labels)
+        val dataAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, labels)
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerCategory.adapter = dataAdapter
         spinnerCategory.onItemSelectedListener = OnItemSelectedListener(this)
@@ -175,10 +133,12 @@ class AddTaskActivity : BaseActivity(), View.OnClickListener, CategoryAdd,
                 dateAndTime()
                 setDate()
             }
+
             edtSetTime -> {
                 dateAndTime()
                 setTime()
             }
+
             imgCancelDate -> {
                 edtSetDate.setText("")
                 date = ""
@@ -191,12 +151,14 @@ class AddTaskActivity : BaseActivity(), View.OnClickListener, CategoryAdd,
                 }
 
             }
+
             imgCancelTime -> {
                 edtSetTime.setText("")
                 time = ""
                 imgCancelTime.visibility = View.GONE
             }
-            imgAddCategory -> dialogAddCategory(this, this)
+
+            imgAddCategory -> dialogAddCategory(requireContext(), this)
         }
     }
 
@@ -218,7 +180,7 @@ class AddTaskActivity : BaseActivity(), View.OnClickListener, CategoryAdd,
 
     private fun setDate() {
         DatePickerDialog(
-            this, dateSetListener, calendar.get(Calendar.YEAR),
+            requireContext(), dateSetListener, calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)
         ).apply {
             datePicker.minDate = System.currentTimeMillis() - 1000
@@ -228,7 +190,7 @@ class AddTaskActivity : BaseActivity(), View.OnClickListener, CategoryAdd,
 
     private fun setTime() {
         TimePickerDialog(
-            this, timeSetListener, calendar.get(Calendar.HOUR_OF_DAY),
+            requireContext(), timeSetListener, calendar.get(Calendar.HOUR_OF_DAY),
             calendar.get(Calendar.MINUTE), false
         ).show()
     }

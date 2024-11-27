@@ -1,7 +1,7 @@
 View.OnClickListener oclBtnOk = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
-        Crowdin.sendScreenshot(YourActivity.this, new ScreenshotCallback() {
+        Crowdin.sendScreenshot(YourActivity.this, screenshotName, new ScreenshotCallback() {
             @Override
             public void onSuccess() {
                 Log.d("", "Screenshot uploaded");

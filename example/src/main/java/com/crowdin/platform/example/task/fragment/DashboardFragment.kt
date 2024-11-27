@@ -1,6 +1,5 @@
 package com.crowdin.platform.example.task.fragment
 
-import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -21,23 +20,13 @@ import com.crowdin.platform.example.task.TaskAdapter
 import com.crowdin.platform.example.task.model.TaskModel
 import com.crowdin.platform.example.utils.convertDpToPx
 import com.crowdin.platform.example.utils.views.OnStartDragListener
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlin.math.abs
 
-class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener {
-
-    private var addTaskActivityLauncher =
-        registerForActivityResult(AddTaskActivityContract()) { result ->
-            if (result == Activity.RESULT_OK) {
-                dashboardRecyclerViewRefresh()
-            }
-        }
-
+class DashboardFragment : Fragment(), OnStartDragListener {
     private lateinit var dbManager: DBManagerTask
     private lateinit var taskAdapter: TaskAdapter
     private lateinit var mItemTouchHelper: ItemTouchHelper
     private lateinit var recyclerView: RecyclerView
-    private lateinit var fabAddTask: FloatingActionButton
     private lateinit var emptyStateView: TextView
     private var taskList: ArrayList<TaskModel> = ArrayList()
 
@@ -56,9 +45,6 @@ class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener 
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
-
-        fabAddTask = view.findViewById(R.id.fabAddTask)
-        fabAddTask.setOnClickListener(this)
 
         dbManager = DBManagerTask(requireActivity())
         taskList = dbManager.getTaskList()
@@ -80,12 +66,6 @@ class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener 
     override fun onResume() {
         super.onResume()
         updateEmptyStateView()
-    }
-
-    override fun onClick(view: View?) {
-        if (view == fabAddTask) {
-            addTaskActivityLauncher.launch(null)
-        }
     }
 
     private fun initSwipe() {
@@ -187,12 +167,6 @@ class DashboardFragment : Fragment(), View.OnClickListener, OnStartDragListener 
         } else {
             emptyStateView.visibility = View.GONE
         }
-    }
-
-    private fun dashboardRecyclerViewRefresh() {
-        taskList = dbManager.getTaskList()
-        taskAdapter.clearAdapter()
-        taskAdapter.setList(taskList)
     }
 
     private fun addDefaultTask() {

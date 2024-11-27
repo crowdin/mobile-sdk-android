@@ -7,6 +7,13 @@
             android:checked="true"
             android:icon="@drawable/ic_dashboard_black_24dp"
             android:title="@string/dashboard" />
+
+        <item
+            android:id="@id/nav_add_task"
+            android:checked="true"
+            android:icon="@drawable/ic_add_black_24dp"
+            android:title="@string/add_task" />
+
         <item
             android:id="@id/nav_category"
             android:icon="@drawable/ic_assignment_black_24dp"

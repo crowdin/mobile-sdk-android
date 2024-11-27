@@ -13,6 +13,7 @@ import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.TextMetaDataProvider
 import com.crowdin.platform.data.local.LocalStringRepositoryFactory
+import com.crowdin.platform.data.model.ApiAuthConfig
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.LanguageData
@@ -82,6 +83,8 @@ object Crowdin {
         initRealTimeUpdates()
         initLoading(context)
         loadMapping()
+
+        initDistributionInfo()
     }
 
     private fun initLoading(context: Context) {
@@ -510,6 +513,8 @@ object Crowdin {
 
     internal fun getAuthConfig(): AuthConfig? = config.authConfig
 
+    internal fun getApiAuthConfig(): ApiAuthConfig? = config.apiAuthConfig
+
     internal fun getOrganizationName(): String? = config.organizationName
 
     private fun initTranslationDataManager() {
@@ -536,4 +541,22 @@ object Crowdin {
     fun getManifest(): ManifestData? = dataManager?.getManifest()
 
     fun getSupportedLanguages(): LanguagesInfo? = dataManager?.getSupportedLanguages()
+
+    private fun initDistributionInfo() {
+        if (config.apiAuthConfig?.apiToken == null) {
+            return
+        }
+
+        getDistributionInfo(
+            object : DistributionInfoCallback {
+                override fun onResponse() {
+                    Log.d(CROWDIN_TAG, "Distribution info loaded")
+                }
+
+                override fun onError(throwable: Throwable) {
+                    Log.e(CROWDIN_TAG, "Distribution info not loaded", throwable)
+                }
+            },
+        )
+    }
 }
