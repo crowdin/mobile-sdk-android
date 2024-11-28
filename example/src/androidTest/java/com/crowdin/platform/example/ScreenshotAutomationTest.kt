@@ -28,11 +28,13 @@ import com.crowdin.platform.Crowdin
 import com.crowdin.platform.screenshot.ScreenshotCallback
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
+@Ignore("This test is for screenshot automation")
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class ScreenshotAutomationTest {
