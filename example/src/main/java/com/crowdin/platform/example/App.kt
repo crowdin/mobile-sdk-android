@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
+import com.crowdin.platform.ApiAuthConfig
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.CrowdinConfig
 import com.crowdin.platform.data.model.AuthConfig
