@@ -1,6 +1,7 @@
 package com.crowdin.platform
 
 import android.util.Log
+import com.crowdin.platform.data.model.ApiAuthConfig
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.remote.NetworkType
 
@@ -16,6 +17,7 @@ class CrowdinConfig private constructor() {
     var updateInterval: Long = -1
     var sourceLanguage: String = ""
     var authConfig: AuthConfig? = null
+    var apiAuthConfig: ApiAuthConfig? = null
     var isInitSyncEnabled: Boolean = true
     var organizationName: String? = null
 
@@ -28,6 +30,7 @@ class CrowdinConfig private constructor() {
         private var updateInterval: Long = -1
         private var sourceLanguage: String = ""
         private var authConfig: AuthConfig? = null
+        private var apiAuthConfig: ApiAuthConfig? = null
         private var isInitSyncEnabled: Boolean = true
         private var organizationName: String? = null
 
@@ -72,6 +75,11 @@ class CrowdinConfig private constructor() {
             authConfig.organizationName?.let {
                 this.organizationName = it
             }
+            return this
+        }
+
+        fun withApiAuthConfig(apiAuthConfig: ApiAuthConfig): Builder {
+            this.apiAuthConfig = apiAuthConfig
             return this
         }
 
@@ -129,6 +137,7 @@ class CrowdinConfig private constructor() {
                 }
             }
             config.authConfig = authConfig
+            config.apiAuthConfig = apiAuthConfig
             config.isInitSyncEnabled = isInitSyncEnabled
 
             return config

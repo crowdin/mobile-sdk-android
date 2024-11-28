@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
+import com.crowdin.platform.data.model.ApiAuthConfig
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.CrowdinConfig
 import com.crowdin.platform.data.model.AuthConfig
@@ -42,6 +43,7 @@ class App : Application() {
         val clientSecret = "your_client_secret"             // "Xz95tfedd0A...TabEDx9T"
         val organizationName = "your_organization_name"     // for Crowdin Enterprise users only
         val requestAuthDialog = true                        // Request authorization dialog `true` by default or `false`
+        val apiToken = "your_api_token"
 
         // Set custom locale before SDK initialization.
         this.updateLocale(languagePreferences.getLanguageCode())
@@ -63,6 +65,7 @@ class App : Application() {
                 )
                 .withOrganizationName(organizationName)                                 // required for Crowdin Enterprise
                 .withInitSyncDisabled()                                                 // optional
+                .withApiAuthConfig(ApiAuthConfig(apiToken))
                 .build()
         )
 

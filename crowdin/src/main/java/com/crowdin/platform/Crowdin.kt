@@ -13,6 +13,7 @@ import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.TextMetaDataProvider
 import com.crowdin.platform.data.local.LocalStringRepositoryFactory
+import com.crowdin.platform.data.model.ApiAuthConfig
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.LanguageData
@@ -43,6 +44,7 @@ import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.TextUtils
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.UiUtil
+import com.crowdin.platform.util.parseToDateTimeFormat
 
 /**
  * Entry point for Crowdin. it will be used for setting new strings, wrapping activity context.
@@ -81,6 +83,8 @@ object Crowdin {
         initRealTimeUpdates()
         initLoading(context)
         loadMapping()
+
+        initDistributionInfo()
     }
 
     private fun initLoading(context: Context) {
@@ -183,49 +187,65 @@ object Crowdin {
     }
 
     /**
-     * Send screenshot of current screen to the crowdin platform.
-     * Will attach tags (keys and position) related to UI components from the screen.
+     * Sends a screenshot of the current screen to the Crowdin platform.
+     * The screenshot will include tags with keys and positions related to UI components on the screen.
+     *
+     * If a screenshot with the same name already exists, it will be updated. Otherwise, a new screenshot
+     * entry will be created on the platform.
      *
      * @param activity required for accessing current window.
-     * @param screenshotCallback optional, will provide status of screenshot creating process.
+     * @param screenshotName Optional name to identify the screenshot on the platform. If a screenshot with
+     *                       this name already exists, it will be updated. This name should not include any file extensions.
+     * @param screenshotCallback Optional callback that provides the status of the screenshot upload process,
+     *                           including success or failure details.
      */
     @JvmStatic
     @JvmOverloads
     fun sendScreenshot(
         activity: Activity,
+        screenshotName: String? = null,
         screenshotCallback: ScreenshotCallback? = null,
     ) {
         screenshotManager?.let {
             val view = activity.window.decorView.rootView
+            val name = screenshotName ?: (activity.localClassName + "-" + System.currentTimeMillis().parseToDateTimeFormat())
             ScreenshotUtils.getBitmapFromView(view, activity) { bitmap ->
                 it.setScreenshotCallback(screenshotCallback)
                 it.sendScreenshot(
                     bitmap,
                     viewTransformerManager.getViewData(),
-                    activity.localClassName,
+                    name,
                 )
             }
         }
     }
 
     /**
-     * Send screenshot of current screen to the crowdin platform.
-     * Will attach tags (keys and position) related to UI components from the screen.
+     * Sends a screenshot of the current screen to the Crowdin platform.
+     * The screenshot will include tags with keys and positions related to UI components on the screen.
      *
-     * @param bitmap screenshot.
-     * @param screenshotCallback optional, will provide status of screenshot creating process.
+     * If a screenshot with the same name already exists, it will be updated. Otherwise, a new screenshot
+     * entry will be created on the platform.
+     *
+     * @param bitmap The screenshot image as a `Bitmap`.
+     * @param screenshotName Optional name to identify the screenshot on the platform. If a screenshot with
+     *                       this name already exists, it will be updated. This name should not include any file extensions.
+     * @param screenshotCallback Optional callback that provides the status of the screenshot upload process,
+     *                           including success or failure details.
      */
     @JvmStatic
     @JvmOverloads
     fun sendScreenshot(
         bitmap: Bitmap,
+        screenshotName: String? = null,
         screenshotCallback: ScreenshotCallback? = null,
     ) {
         screenshotManager?.let {
             it.setScreenshotCallback(screenshotCallback)
             it.sendScreenshot(
-                bitmap,
-                viewTransformerManager.getViewData(),
+                bitmap = bitmap,
+                viewDataList = viewTransformerManager.getViewData(),
+                name = screenshotName,
             )
         }
     }
@@ -493,6 +513,8 @@ object Crowdin {
 
     internal fun getAuthConfig(): AuthConfig? = config.authConfig
 
+    internal fun getApiAuthConfig(): ApiAuthConfig? = config.apiAuthConfig
+
     internal fun getOrganizationName(): String? = config.organizationName
 
     private fun initTranslationDataManager() {
@@ -519,4 +541,22 @@ object Crowdin {
     fun getManifest(): ManifestData? = dataManager?.getManifest()
 
     fun getSupportedLanguages(): LanguagesInfo? = dataManager?.getSupportedLanguages()
+
+    private fun initDistributionInfo() {
+        if (config.apiAuthConfig?.apiToken == null) {
+            return
+        }
+
+        getDistributionInfo(
+            object : DistributionInfoCallback {
+                override fun onResponse() {
+                    Log.d(CROWDIN_TAG, "Distribution info loaded")
+                }
+
+                override fun onError(throwable: Throwable) {
+                    Log.e(CROWDIN_TAG, "Distribution info not loaded", throwable)
+                }
+            },
+        )
+    }
 }

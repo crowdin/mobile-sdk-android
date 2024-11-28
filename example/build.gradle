@@ -13,8 +13,9 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "AVAILABLE_LOCAL_LANGUAGE_CODES", '"en-US;uk-UA"'
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -40,6 +41,12 @@ android {
     packagingOptions {
         exclude 'META-INF/crowdin_release.kotlin_module'
     }
+
+    configurations.configureEach {
+        resolutionStrategy {
+            force "androidx.tracing:tracing:1.2.0"
+        }
+    }
 }
 
 dependencies {
@@ -55,4 +62,9 @@ dependencies {
 
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+
+    androidTestImplementation "androidx.test.ext:junit:1.2.1"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.6.1"
+    androidTestImplementation "androidx.tracing:tracing:1.2.0"
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.6.1'
 }

@@ -6,6 +6,8 @@ import android.graphics.Bitmap
 import android.provider.MediaStore
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.ListScreenshotsResponse
+import com.crowdin.platform.data.model.Pagination
 import com.crowdin.platform.data.remote.api.CreateScreenshotResponse
 import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.Data
@@ -83,6 +85,7 @@ class ScreenshotManagerTest {
             ),
         ).thenReturn(distributionData)
         val screenshotManager = ScreenshotManager(mockCrowdinApi, mockDataManager, sourceLanguage)
+        givenScreenshotListMockResponse()
         givenUploadScreenshotMockResponse()
         givenCreateScreenshotMockResponse()
         givenCreateTagMockResponse()
@@ -92,7 +95,8 @@ class ScreenshotManagerTest {
 
         // Then
         val inOrder = inOrder(mockCrowdinApi)
-        inOrder.verify(mockCrowdinApi).uploadScreenshot(any(), any())
+        inOrder.verify(mockCrowdinApi).getScreenshotsList(any(), any())
+        inOrder.verify(mockCrowdinApi).addToStorage(any(), any())
         inOrder.verify(mockCrowdinApi).createScreenshot(any(), any())
         inOrder.verify(mockCrowdinApi).createTag("projectIdTest", 10, mutableListOf())
     }
@@ -110,6 +114,7 @@ class ScreenshotManagerTest {
             ),
         ).thenReturn(distributionData)
         val screenshotManager = ScreenshotManager(mockCrowdinApi, mockDataManager, sourceLanguage)
+        givenScreenshotListMockResponse()
         givenUploadScreenshotMockResponse()
         givenCreateScreenshotMockResponse()
         givenCreateTagMockResponse()
@@ -136,6 +141,7 @@ class ScreenshotManagerTest {
             ),
         ).thenReturn(distributionData)
         val screenshotManager = ScreenshotManager(mockCrowdinApi, mockDataManager, sourceLanguage)
+        givenScreenshotListMockResponse()
         givenUploadScreenshotMockResponse(false)
         val mockCallback = mock(ScreenshotCallback::class.java)
 
@@ -193,12 +199,35 @@ class ScreenshotManagerTest {
             "wsUrlTest",
         )
 
+    private fun givenScreenshotListMockResponse(
+        success: Boolean = true,
+        successCode: Int = 201,
+    ) {
+        val mockedCall = mock(Call::class.java) as Call<ListScreenshotsResponse>
+        `when`(mockCrowdinApi.getScreenshotsList(any(), any())).thenReturn(mockedCall)
+        doAnswer {
+            val callback =
+                it.getArgument(0, Callback::class.java) as Callback<ListScreenshotsResponse>
+            if (success) {
+                callback.onResponse(
+                    mockedCall,
+                    Response.success(
+                        successCode,
+                        ListScreenshotsResponse(emptyList(), Pagination(0, 0)),
+                    ),
+                )
+            } else {
+                callback.onFailure(mockedCall, Throwable())
+            }
+        }.`when`(mockedCall).enqueue(any())
+    }
+
     private fun givenUploadScreenshotMockResponse(
         success: Boolean = true,
         successCode: Int = 201,
     ) {
         val mockedCall = mock(Call::class.java) as Call<UploadScreenshotResponse>
-        `when`(mockCrowdinApi.uploadScreenshot(any(), any())).thenReturn(mockedCall)
+        `when`(mockCrowdinApi.addToStorage(any(), any())).thenReturn(mockedCall)
         doAnswer {
             val callback =
                 it.getArgument(0, Callback::class.java) as Callback<UploadScreenshotResponse>

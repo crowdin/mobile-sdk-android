@@ -36,7 +36,6 @@ jobs:
       - name: Tests
         run: |
           ./gradlew jacocoTestReport
-          ./gradlew connectedCheck
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4

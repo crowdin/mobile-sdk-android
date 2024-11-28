@@ -43,6 +43,7 @@ class HistoryFragment : Fragment(), OnStartDragListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().setTitle(R.string.history)
         txtNoHistory = view.findViewById(R.id.txtNoHistory)
         recyclerViewHistory = view.findViewById(R.id.recyclerViewHistory)
         recyclerViewHistory.setHasFixedSize(true)

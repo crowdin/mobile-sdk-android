@@ -3,6 +3,7 @@ package com.crowdin.platform.data.remote.api
 import com.crowdin.platform.data.model.BuildTranslationRequest
 import com.crowdin.platform.data.model.FileResponse
 import com.crowdin.platform.data.model.LanguagesInfo
+import com.crowdin.platform.data.model.ListScreenshotsResponse
 import com.crowdin.platform.data.model.TranslationResponse
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -11,14 +12,21 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 private const val LANGUAGE_COUNT = 500
 
 internal interface CrowdinApi {
+    @GET("/api/v2/projects/{projectId}/screenshots")
+    fun getScreenshotsList(
+        @Path("projectId") projectId: String,
+        @Query("search") search: String,
+    ): Call<ListScreenshotsResponse>
+
     @POST("api/v2/storages")
-    fun uploadScreenshot(
+    fun addToStorage(
         @Header("Crowdin-API-FileName") fileName: String,
         @Body requestBody: RequestBody,
     ): Call<UploadScreenshotResponse>
@@ -29,10 +37,24 @@ internal interface CrowdinApi {
         @Body requestBody: CreateScreenshotRequestBody,
     ): Call<CreateScreenshotResponse>
 
+    @PUT("api/v2/projects/{projectId}/screenshots/{screenshotId}")
+    fun updateScreenshot(
+        @Path("projectId") projectId: String,
+        @Path("screenshotId") screenshotId: String,
+        @Body requestBody: CreateScreenshotRequestBody,
+    ): Call<CreateScreenshotResponse>
+
     @POST("api/v2/projects/{projectId}/screenshots/{screenshotId}/tags")
     fun createTag(
         @Path("projectId") projectId: String,
-        @Path("screenshotId") screenshotId: Int,
+        @Path("screenshotId") screenshotId: Long,
+        @Body tags: MutableList<TagData>,
+    ): Call<ResponseBody>
+
+    @PUT("api/v2/projects/{projectId}/screenshots/{screenshotId}/tags")
+    fun replaceTag(
+        @Path("projectId") projectId: String,
+        @Path("screenshotId") screenshotId: Long,
         @Body tags: MutableList<TagData>,
     ): Call<ResponseBody>
 

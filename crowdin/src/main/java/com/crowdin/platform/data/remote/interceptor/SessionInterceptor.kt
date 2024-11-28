@@ -14,8 +14,10 @@ internal class SessionInterceptor(
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val original: Request = chain.request()
+        val apiToken = Crowdin.getApiAuthConfig()?.apiToken
+
         // Update expired token
-        if (session.isTokenExpired()) {
+        if (apiToken == null && session.isTokenExpired()) {
             val isRefreshed = refreshToken()
             if (!isRefreshed) {
                 session.invalidate()
@@ -23,17 +25,17 @@ internal class SessionInterceptor(
         }
 
         // Original request.
-        val request = addHeaderToRequest(original)
+        val request = addHeaderToRequest(original, getAccessToken())
         var mainResponse = chain.proceed(request)
 
         // Token can be revoked remotely. Should refresh token and retry silently.
-        if (isAuthErrorCode(mainResponse)) {
+        if (apiToken == null && isAuthErrorCode(mainResponse)) {
             val isRefreshed = refreshToken()
             if (!isRefreshed) {
                 session.invalidate()
             } else {
                 // retry original request
-                val requestUpdated = addHeaderToRequest(original)
+                val requestUpdated = addHeaderToRequest(original, getAccessToken())
                 mainResponse.close()
                 mainResponse = chain.proceed(requestUpdated)
                 if (isAuthErrorCode(mainResponse)) {
@@ -51,13 +53,17 @@ internal class SessionInterceptor(
             false
         }
 
-    private fun addHeaderToRequest(original: Request): Request {
-        val accessToken = session.getAccessToken()
+    private fun addHeaderToRequest(
+        original: Request,
+        accessToken: String?,
+    ): Request {
         val requestBuilder = original.newBuilder()
         accessToken ?: return requestBuilder.build()
         requestBuilder.header("Authorization", "Bearer $accessToken")
         return requestBuilder.build()
     }
+
+    private fun getAccessToken(): String? = Crowdin.getApiAuthConfig()?.apiToken ?: session.getAccessToken()
 
     private fun isAuthErrorCode(response: Response): Boolean =
         response.code == HttpURLConnection.HTTP_UNAUTHORIZED || response.code == HttpURLConnection.HTTP_FORBIDDEN
