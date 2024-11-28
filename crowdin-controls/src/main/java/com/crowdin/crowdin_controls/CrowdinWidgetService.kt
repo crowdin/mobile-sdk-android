@@ -219,10 +219,12 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
 
         if (Crowdin.isAuthorized()) {
             showToast("Screenshot uploading in progress")
-            sendBroadcast(Intent().apply {
-                action = BROADCAST_SCREENSHOT
-                putExtra(SCREENSHOT_NAME_KEY, screenshotName)
-            })
+            sendBroadcast(
+                Intent().apply {
+                    setPackage(packageName)
+                    action = BROADCAST_SCREENSHOT
+                    putExtra(SCREENSHOT_NAME_KEY, screenshotName)
+                })
         } else {
             showToast(AUTH_REQUIRED)
         }
