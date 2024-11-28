@@ -24,9 +24,8 @@ internal class SessionInterceptor(
             }
         }
 
-        val accessToken = apiToken ?: session.getAccessToken()
         // Original request.
-        val request = addHeaderToRequest(original, accessToken)
+        val request = addHeaderToRequest(original, getAccessToken())
         var mainResponse = chain.proceed(request)
 
         // Token can be revoked remotely. Should refresh token and retry silently.
@@ -36,7 +35,7 @@ internal class SessionInterceptor(
                 session.invalidate()
             } else {
                 // retry original request
-                val requestUpdated = addHeaderToRequest(original, accessToken)
+                val requestUpdated = addHeaderToRequest(original, getAccessToken())
                 mainResponse.close()
                 mainResponse = chain.proceed(requestUpdated)
                 if (isAuthErrorCode(mainResponse)) {
@@ -63,6 +62,8 @@ internal class SessionInterceptor(
         requestBuilder.header("Authorization", "Bearer $accessToken")
         return requestBuilder.build()
     }
+
+    private fun getAccessToken(): String? = Crowdin.getApiAuthConfig()?.apiToken ?: session.getAccessToken()
 
     private fun isAuthErrorCode(response: Response): Boolean =
         response.code == HttpURLConnection.HTTP_UNAUTHORIZED || response.code == HttpURLConnection.HTTP_FORBIDDEN
