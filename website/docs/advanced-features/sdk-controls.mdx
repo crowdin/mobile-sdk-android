@@ -4,7 +4,7 @@ import CodeBlock from '@theme/CodeBlock';
 
 # SDK Controls
 
-Crowdin SDK Controls - UI widget for easy access to the main features of Crowdin SDK. The component can be dragged and dropped anywhere on the device screen and has two states:
+Crowdin Controls Widget - UI widget that provides quick access to core SDK functionality. This floating widget can be positioned anywhere on the screen and features both expanded and collapsed states. The widget enables direct interaction with key SDK features like translation preview and screenshot capture.
 
 | Collapsed (simple icon)                                                     | Expanded                                                                  |
 |-----------------------------------------------------------------------------|---------------------------------------------------------------------------|
@@ -12,12 +12,12 @@ Crowdin SDK Controls - UI widget for easy access to the main features of Crowdin
 
 The expanded state provides the following action buttons:
 
-- Log In/Out: launch authorization flow or clear user authorization data on logout.
-- Real-time preview Enable/Disable: open/close connection that is required to work with Crowdin editor.
-- Capture screenshots: capture a screenshot of the current screen with all tags and upload it to Crowdin.
+- Real-time Preview Enable/Disable: open/close the connection that is required to work with Crowdin Editor.
+- Capture Screenshots: capture a screenshot of the current screen with all tags and upload it to Crowdin. It's also possible to specify the name of the screenshot in the input field above.
 - Reload Translations:
-  - Real-Time-Preview ON: it will fetch the latest translations from Crowdin and apply changes to UI.
-  - Real-Time-Preview OFF: it will fetch the content from distribution (it won't update UI instantly. Translations will be updated on the next application load or Activity change).
+  - Real-Time Preview ON: it will fetch the latest translations from Crowdin and apply changes to UI.
+  - Real-Time Preview OFF: it will fetch the content from distribution (it won't update UI instantly. Translations will be updated on the next application load or Activity change).
+- Log In/Out: launch authorization flow or clear user authorization data on logout.
 
 ### Installation
 
@@ -36,7 +36,7 @@ Add the dependency:
 
 ```groovy
 dependencies {
-    implementation 'com.github.crowdin.mobile-sdk-android:controls:1.4.3'
+    implementation 'com.github.crowdin.mobile-sdk-android:controls:1.11.1'
 }
 ```
 
@@ -71,4 +71,3 @@ import sampleControlsOnActivityJava from '!!raw-loader!../code-samples/sdk-contr
   <TabItem value="kotlin" label="Kotlin"><CodeBlock language="kotlin">{sampleControlsOnActivityKotlin}</CodeBlock></TabItem>
   <TabItem value="java" label="Java"><CodeBlock language="java">{sampleControlsOnActivityJava}</CodeBlock></TabItem>
 </Tabs>
-
