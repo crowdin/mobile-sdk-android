@@ -5,6 +5,7 @@ import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.ManifestData
+import com.crowdin.platform.data.model.TicketResponseBody
 
 /**
  * Repository of strings from network.
@@ -32,4 +33,10 @@ internal interface RemoteRepository {
      */
     @WorkerThread
     fun getSupportedLanguages(): LanguagesInfo?
+
+    /**
+     * Fetch ticket for WebSocket connection.
+     */
+    @WorkerThread
+    fun getTicket(event: String): TicketResponseBody?
 }

@@ -7,6 +7,8 @@ import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageInfo
 import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.ManifestData
+import com.crowdin.platform.data.model.TicketRequestBody
+import com.crowdin.platform.data.model.TicketResponseBody
 import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.ThreadUtils
@@ -92,6 +94,14 @@ internal abstract class CrowdingRepository(
         Log.v(Crowdin.CROWDIN_TAG, "Supported languages from Api: $info")
 
         return info
+    }
+
+    @WorkerThread
+    override fun getTicket(event: String): TicketResponseBody? {
+        Log.v(Crowdin.CROWDIN_TAG, "Get access to the websocket")
+        var result: TicketResponseBody? = null
+        executeIO { result = crowdinApi?.getTicket(TicketRequestBody(event))?.execute()?.body() }
+        return result
     }
 
     fun getLanguageInfo(sourceLanguage: String): LanguageInfo? {

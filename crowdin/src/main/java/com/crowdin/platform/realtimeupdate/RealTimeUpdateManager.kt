@@ -59,6 +59,7 @@ internal class RealTimeUpdateManager(
                 val languageCode = getMatchedCode(it.languages, it.customLanguages) ?: return@let
                 val listener =
                     EchoWebSocketListener(
+                        dataManager,
                         mappingData,
                         distributionData,
                         viewTransformerManager,

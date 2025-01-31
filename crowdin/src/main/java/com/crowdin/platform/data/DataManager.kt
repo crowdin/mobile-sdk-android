@@ -16,6 +16,7 @@ import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.model.TextMetaData
+import com.crowdin.platform.data.model.TicketResponseBody
 import com.crowdin.platform.data.remote.Connectivity
 import com.crowdin.platform.data.remote.NetworkType
 import com.crowdin.platform.data.remote.RemoteRepository
@@ -266,4 +267,7 @@ internal class DataManager(
 
         return info
     }
+
+    @WorkerThread
+    fun getTicket(event: String): TicketResponseBody? = remoteRepository.getTicket(event)
 }

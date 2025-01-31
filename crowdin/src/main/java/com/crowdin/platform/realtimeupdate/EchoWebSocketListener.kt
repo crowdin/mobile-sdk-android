@@ -4,6 +4,7 @@ import android.icu.text.PluralRules
 import android.os.Build
 import android.util.Log
 import android.widget.TextView
+import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.getMappingValueForKey
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.TextMetaData
@@ -23,7 +24,11 @@ import java.util.Collections
 import java.util.Locale
 import java.util.WeakHashMap
 
+private const val UPDATE_DRAFT = "update-draft"
+private const val TOP_SUGGESTION = "top-suggestion"
+
 internal class EchoWebSocketListener(
+    private val dataManager: DataManager,
     private var mappingData: LanguageData,
     private var distributionData: DistributionInfoResponse.DistributionData,
     private var viewTransformerManager: ViewTransformerManager,
@@ -41,7 +46,9 @@ internal class EchoWebSocketListener(
         val user = distributionData.user
 
         saveMatchedTextViewWithMappingId(mappingData)
-        subscribeViews(webSocket, project, user)
+        ThreadUtils.runInBackgroundPool({
+            subscribeViews(webSocket, project, user)
+        }, false)
 
         viewTransformerManager.setOnViewsChangeListener(
             object : ViewsChangeListener {
@@ -123,25 +130,34 @@ internal class EchoWebSocketListener(
         user: DistributionInfoResponse.DistributionData.UserData,
         mappingValue: String,
     ) {
-        webSocket.send(
-            SubscribeUpdateEvent(
-                project.wsHash,
-                project.id,
-                user.id,
-                languageCode,
-                mappingValue,
-            ).toString(),
-        )
+        try {
+            val updateEvent = "$UPDATE_DRAFT:${project.wsHash}:${project.id}:${user.id}:$languageCode:$mappingValue"
+            dataManager.getTicket(updateEvent)?.data?.let {
+                webSocket.send(getSubscribeEventJson(updateEvent, it.ticket))
+            }
+        } catch (e: Exception) {
+            Log.e("SubscribeView", "Get ticket for update event failed", e)
+        }
 
-        webSocket.send(
-            SubscribeSuggestionEvent(
-                project.wsHash,
-                project.id,
-                languageCode,
-                mappingValue,
-            ).toString(),
-        )
+        try {
+            val suggestionEvent = "$TOP_SUGGESTION:${project.wsHash}:${project.id}:$languageCode:$mappingValue"
+            dataManager.getTicket(suggestionEvent)?.data?.let {
+                webSocket.send(getSubscribeEventJson(suggestionEvent, it.ticket))
+            }
+        } catch (e: Exception) {
+            Log.e("SubscribeView", "Get ticket for suggestion event failed", e)
+        }
     }
+
+    private fun getSubscribeEventJson(
+        eventType: String,
+        ticket: String,
+    ): String =
+        "{" +
+            "\"action\":\"subscribe\", " +
+            "\"event\":\"$eventType\", " +
+            "\"ticket\": \"$ticket\"" +
+            "}"
 
     private fun handleMessage(message: String?) {
         message?.let {

@@ -1,5 +1,6 @@
 package com.crowdin.platform
 
+import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.realtimeupdate.EchoWebSocketListener
@@ -17,9 +18,11 @@ class EchoWebSocketListenerTest {
         // Given
         val mockMappingData = spy(LanguageData::class.java)
         val mockDistributionData = mock(DistributionInfoResponse.DistributionData::class.java)
+        val mockDataManager = mock(DataManager::class.java)
         val mockViewTransformerManager = spy(ViewTransformerManager::class.java)
         val echoWebSocketListener =
             EchoWebSocketListener(
+                mockDataManager,
                 mockMappingData,
                 mockDistributionData,
                 mockViewTransformerManager,
@@ -38,9 +41,11 @@ class EchoWebSocketListenerTest {
         // Given
         val mockMappingData = spy(LanguageData::class.java)
         val mockDistributionData = mock(DistributionInfoResponse.DistributionData::class.java)
+        val mockDataManager = mock(DataManager::class.java)
         val mockViewTransformerManager = spy(ViewTransformerManager::class.java)
         val echoWebSocketListener =
             EchoWebSocketListener(
+                mockDataManager,
                 mockMappingData,
                 mockDistributionData,
                 mockViewTransformerManager,
