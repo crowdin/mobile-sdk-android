@@ -98,7 +98,6 @@ internal abstract class CrowdingRepository(
 
     @WorkerThread
     override fun getTicket(event: String): TicketResponseBody? {
-        Log.v(Crowdin.CROWDIN_TAG, "Get access to the websocket")
         var result: TicketResponseBody? = null
         executeIO { result = crowdinApi?.getTicket(TicketRequestBody(event))?.execute()?.body() }
         return result

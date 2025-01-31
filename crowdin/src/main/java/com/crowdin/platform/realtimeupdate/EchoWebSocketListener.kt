@@ -4,6 +4,7 @@ import android.icu.text.PluralRules
 import android.os.Build
 import android.util.Log
 import android.widget.TextView
+import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.getMappingValueForKey
 import com.crowdin.platform.data.model.LanguageData
@@ -136,7 +137,7 @@ internal class EchoWebSocketListener(
                 webSocket.send(getSubscribeEventJson(updateEvent, it.ticket))
             }
         } catch (e: Exception) {
-            Log.e("SubscribeView", "Get ticket for update event failed", e)
+            Log.e(Crowdin.CROWDIN_TAG, "Get ticket for update event failed", e)
         }
 
         try {
@@ -145,7 +146,7 @@ internal class EchoWebSocketListener(
                 webSocket.send(getSubscribeEventJson(suggestionEvent, it.ticket))
             }
         } catch (e: Exception) {
-            Log.e("SubscribeView", "Get ticket for suggestion event failed", e)
+            Log.e(Crowdin.CROWDIN_TAG, "Get ticket for suggestion event failed", e)
         }
     }
 
