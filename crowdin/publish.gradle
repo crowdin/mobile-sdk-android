@@ -1,6 +1,5 @@
 apply plugin: 'maven-publish' // Apply this plugin at the top of your library build.gradle
-
-
+apply plugin: 'com.jfrog.artifactory'
 android {
     publishing {
         singleVariant("release")
@@ -16,6 +15,7 @@ try {
     println("github.properties not found")
 }
 
+
 publishing {
     publications {
         release(MavenPublication) {
@@ -23,6 +23,7 @@ publishing {
             groupId = 'app.pago'
             artifactId = 'crowdin-ota'
             version ='1.0'
+            artifact("$buildDir/outputs/aar/crowdin-release.aar")
 
             versionMapping {
                 usage('java-api') {
@@ -35,22 +36,67 @@ publishing {
 
             // Run the actual publishing
             afterEvaluate {
-                from components.findByName('release')
+                from components.release
             }
         }
     }
+
+    artifactory {
+        contextUrl = 'https://artifactory.pago.cloud';
+        publish {
+            repository {
+                repoKey = 'android-pago' // The Artifactory repository key to publish to
+                username = githubProperties['gpr.artifactory_user'] ?: System.getenv("GPR_ARTIFACTORY_USER")
+                password = githubProperties['gpr.artifactory_password'] ?: System.getenv("GPR_ARTIFACTORY_PASSWORD") // The publisher password
+                // This is an optional section for configuring Ivy publication (when publishIvy = true).
+            }
+            defaults {
+                // Reference to Gradle publications defined in the build script.
+                // This is how we tell the Artifactory Plugin which artifacts should be
+                // published to Artifactory.
+                publications('release')
+                publishArtifacts = true
+                publishPom = true // Publish generated POM files to Artifactory (true by default)
+            }
+        }
+    }
+
     repositories {
         maven {
             name = "GitHubPackages"
             /** Configure path of your package repository on Github
              *  Replace GITHUB_USERID with your/organisation Github userID and REPOSITORY with the repository name on GitHub
              */
-            url = uri("https://maven.pkg.github.com/PagoApp/android-crowdin-ota")
+            url = uri("https://maven.pkg.github.com/PagoApp/android-bills")
 
             credentials {
                 /**Create github.properties in root project folder file with gpr.usr=GITHUB_USER_ID  & gpr.key=PERSONAL_ACCESS_TOKEN**/
                 username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
                 password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+            }
+        }
+    }
+
+
+
+    artifactoryPublish {
+        publications(publishing.publications.release)
+    }
+
+
+
+    repositories {
+        maven {
+            name = "Artifactory"
+            /** Configure path of your package repository on Github
+             *  Replace GITHUB_USERID with your/organisation Github userID and REPOSITORY with the repository name on GitHub
+             */
+            url = uri("https://artifactory.pago.cloud/artifactory/android-pago")
+
+            credentials {
+                /**Create github.properties in root project folder file with gpr.usr=GITHUB_USER_ID  & gpr.key=PERSONAL_ACCESS_TOKEN**/
+                username = githubProperties['gpr.artifactory_user'] ?: System.getenv("GPR_ARTIFACTORY_USER")
+                password = githubProperties['gpr.artifactory_password'] ?: System.getenv("GPR_ARTIFACTORY_PASSWORD")
             }
         }
     }
