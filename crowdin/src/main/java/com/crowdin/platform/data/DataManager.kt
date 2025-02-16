@@ -16,13 +16,13 @@ import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.model.TextMetaData
-import com.crowdin.platform.data.model.TicketResponseBody
 import com.crowdin.platform.data.remote.Connectivity
 import com.crowdin.platform.data.remote.NetworkType
 import com.crowdin.platform.data.remote.RemoteRepository
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.getFormattedCode
+import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 import java.util.Locale
 
@@ -42,6 +42,8 @@ internal class DataManager(
         const val SUPPORTED_LANGUAGES = "supported_languages"
         const val MANIFEST_DATA = "manifest_data"
         const val SYNC_DATA = "sync_data"
+        const val EVENT_TICKETS = "event_tickets"
+        const val EVENT_TICKETS_EXPIRATION = 1000 * 60 * 4
     }
 
     private var loadingStateListeners: ArrayList<LoadingStateListener>? = null
@@ -269,5 +271,38 @@ internal class DataManager(
     }
 
     @WorkerThread
-    fun getTicket(event: String): TicketResponseBody? = remoteRepository.getTicket(event)
+    fun getTicket(event: String): String? {
+        var ticketValue: String? = null
+        val type = object : TypeToken<MutableMap<String, TicketItem>>() {}.type
+        var ticketsMap: MutableMap<String, TicketItem>? = localRepository.getData(EVENT_TICKETS, type)
+        if (ticketsMap == null) {
+            ticketsMap = mutableMapOf()
+        }
+
+        val ticketItem = ticketsMap[event]
+        if (ticketItem == null || ticketItem.isExpired()) {
+            Log.d(CROWDIN_TAG, "Ticket expired for event: $event")
+            remoteRepository.getTicket(event)?.data?.ticket?.let {
+                ticketsMap[event] = TicketItem(it, System.currentTimeMillis() + EVENT_TICKETS_EXPIRATION)
+                localRepository.saveData(EVENT_TICKETS, ticketsMap)
+                ticketValue = it
+            }
+        } else {
+            Log.d(CROWDIN_TAG, "Ticket not expired for event: $event")
+            ticketValue = ticketItem.ticket
+        }
+
+        return ticketValue
+    }
+
+    fun clearSocketData() {
+        localRepository.saveData(EVENT_TICKETS, null)
+    }
+
+    data class TicketItem(
+        val ticket: String,
+        val expirationTime: Long,
+    ) {
+        fun isExpired(): Boolean = System.currentTimeMillis() > expirationTime
+    }
 }

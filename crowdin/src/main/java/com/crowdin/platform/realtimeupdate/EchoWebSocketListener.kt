@@ -88,6 +88,7 @@ internal class EchoWebSocketListener(
         code: Int,
         reason: String,
     ) {
+        dataManager.clearSocketData()
         dataHolderMap.clear()
         webSocket.close(NORMAL_CLOSURE_STATUS, reason)
         output("Closing : $code / $reason")
@@ -133,8 +134,8 @@ internal class EchoWebSocketListener(
     ) {
         try {
             val updateEvent = "$UPDATE_DRAFT:${project.wsHash}:${project.id}:${user.id}:$languageCode:$mappingValue"
-            dataManager.getTicket(updateEvent)?.data?.let {
-                webSocket.send(getSubscribeEventJson(updateEvent, it.ticket))
+            dataManager.getTicket(updateEvent)?.let {
+                webSocket.send(getSubscribeEventJson(updateEvent, it))
             }
         } catch (e: Exception) {
             Log.e(Crowdin.CROWDIN_TAG, "Get ticket for update event failed", e)
@@ -142,8 +143,8 @@ internal class EchoWebSocketListener(
 
         try {
             val suggestionEvent = "$TOP_SUGGESTION:${project.wsHash}:${project.id}:$languageCode:$mappingValue"
-            dataManager.getTicket(suggestionEvent)?.data?.let {
-                webSocket.send(getSubscribeEventJson(suggestionEvent, it.ticket))
+            dataManager.getTicket(suggestionEvent)?.let {
+                webSocket.send(getSubscribeEventJson(suggestionEvent, it))
             }
         } catch (e: Exception) {
             Log.e(Crowdin.CROWDIN_TAG, "Get ticket for suggestion event failed", e)
