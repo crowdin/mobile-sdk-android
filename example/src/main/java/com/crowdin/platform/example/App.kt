@@ -66,7 +66,16 @@ class App : Application() {
                 .withOrganizationName(organizationName)                                 // required for Crowdin Enterprise
                 .withInitSyncDisabled()                                                 // optional
                 .withApiAuthConfig(ApiAuthConfig(apiToken))
-                .build()
+                .build(),
+            loadingStateListener = object : LoadingStateListener {
+                override fun onDataChanged() {
+                    Log.d("TAG", "Crowdin: onDataChanged")
+                }
+
+                override fun onFailure(throwable: Throwable) {
+                    Log.d("TAG", "Crowdin: onFailure")
+                }
+            }
         )
 
         // Using system buttons to take screenshot automatically will upload them to crowdin.
