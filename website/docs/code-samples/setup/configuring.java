@@ -8,5 +8,16 @@ protected void onCreate() {
             .withOrganizationName(organization_name)      // required for Crowdin Enterprise
             .withNetworkType(network_type)                // optional
             .withUpdateInterval(interval_in_seconds)      // optional
-            .build());
+            .build(),
+        new LoadingStateListener() {                      // optional
+            @Override
+            public void onDataChanged() {
+                // Handle data changes
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                // Handle failures
+            }
+        });
 }

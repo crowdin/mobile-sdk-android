@@ -134,8 +134,24 @@ toolbar.setTitle(R.string.title);
 super.attachBaseContext(Crowdin.wrapContext(SomeLib.wrap(newBase)));
 ```
 
-**5.** You can register/unregister observer for data changes by adding this lines:
+**5.** You can receive callbacks about data changes in two ways:
 
+a) During initialization using `LoadingStateListener`:
+```kotlin
+Crowdin.init(applicationContext,
+    crowdinConfig,
+    loadingStateListener = object : LoadingStateListener {
+        override fun onDataChanged() {
+            // Called when new translation data is updated
+        }
+
+        override fun onFailure(throwable: Throwable) {
+            // Handle failures
+        }
+    })
+```
+
+b) By registering/unregistering an observer:
 ```kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
     Crowdin.registerDataLoadingObserver(this)
