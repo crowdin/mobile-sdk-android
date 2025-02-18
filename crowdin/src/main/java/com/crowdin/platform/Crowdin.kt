@@ -67,16 +67,18 @@ object Crowdin {
      *
      * @param context of the application.
      * @param config of the Crowdin.
+     * @param loadingStateListener callback for tracking loading state.
      */
     @JvmStatic
     fun init(
         context: Context,
         config: CrowdinConfig,
+        loadingStateListener: LoadingStateListener? = null,
     ) {
         this.config = config
         FeatureFlags.registerConfig(config)
         initPreferences(context)
-        initStringDataManager(context, config)
+        initStringDataManager(context, config, loadingStateListener)
         initViewTransformer()
         initFeatureManagers()
         initTranslationDataManager()
@@ -461,6 +463,7 @@ object Crowdin {
     private fun initStringDataManager(
         context: Context,
         config: CrowdinConfig,
+        callback: LoadingStateListener? = null,
     ) {
         val remoteRepository =
             StringDataRemoteRepository(
@@ -483,6 +486,7 @@ object Crowdin {
                     }
                 },
             )
+        callback?.let { dataManager?.addLoadingStateListener(it) }
         remoteRepository.crowdinApi = getCrowdinApi()
     }
 

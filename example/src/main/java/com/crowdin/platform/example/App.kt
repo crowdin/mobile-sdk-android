@@ -4,9 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
-import com.crowdin.platform.data.model.ApiAuthConfig
+import android.util.Log
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.CrowdinConfig
+import com.crowdin.platform.LoadingStateListener
+import com.crowdin.platform.data.model.ApiAuthConfig
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.remote.NetworkType
 import com.crowdin.platform.example.utils.updateLocale
@@ -66,7 +68,16 @@ class App : Application() {
                 .withOrganizationName(organizationName)                                 // required for Crowdin Enterprise
                 .withInitSyncDisabled()                                                 // optional
                 .withApiAuthConfig(ApiAuthConfig(apiToken))
-                .build()
+                .build(),
+            loadingStateListener = object : LoadingStateListener {
+                override fun onDataChanged() {
+                    Log.d("TAG", "Crowdin: onDataChanged")
+                }
+
+                override fun onFailure(throwable: Throwable) {
+                    Log.d("TAG", "Crowdin: onFailure")
+                }
+            }
         )
 
         // Using system buttons to take screenshot automatically will upload them to crowdin.

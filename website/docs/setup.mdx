@@ -134,7 +134,19 @@ toolbar.setTitle(R.string.title);
 super.attachBaseContext(Crowdin.wrapContext(SomeLib.wrap(newBase)));
 ```
 
-**5.** You can register/unregister observer for data changes by adding this lines:
+**5.** You can receive callbacks about data changes in two ways:
+
+a) During initialization using `LoadingStateListener`:
+
+import sampleLoadingStateListenerKotlin from '!!raw-loader!./code-samples/setup/loading-state-listener.kt';
+import sampleLoadingStateListenerJava from '!!raw-loader!./code-samples/setup/loading-state-listener.java';
+
+<Tabs groupId="language">
+  <TabItem value="kotlin" label="Kotlin"><CodeBlock language="kotlin">{sampleLoadingStateListenerKotlin}</CodeBlock></TabItem>
+  <TabItem value="java" label="Java"><CodeBlock language="java">{sampleLoadingStateListenerJava}</CodeBlock></TabItem>
+</Tabs>
+
+b) By registering/unregistering an observer:
 
 ```kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
