@@ -4,6 +4,8 @@ import com.crowdin.platform.data.model.BuildTranslationRequest
 import com.crowdin.platform.data.model.FileResponse
 import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.ListScreenshotsResponse
+import com.crowdin.platform.data.model.TicketRequestBody
+import com.crowdin.platform.data.model.TicketResponseBody
 import com.crowdin.platform.data.model.TranslationResponse
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -80,4 +82,9 @@ internal interface CrowdinApi {
     fun getLanguagesInfo(
         @Query("limit") limit: Int = LANGUAGE_COUNT,
     ): Call<LanguagesInfo>
+
+    @POST("/api/v2/user/websocket-ticket")
+    fun getTicket(
+        @Body body: TicketRequestBody,
+    ): Call<TicketResponseBody>
 }
