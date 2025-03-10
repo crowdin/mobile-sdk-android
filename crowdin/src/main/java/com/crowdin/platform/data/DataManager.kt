@@ -296,7 +296,7 @@ internal class DataManager(
             return ticketValue
         } catch (throwable: Throwable) {
             Log.e(CROWDIN_TAG, "Ticket failed", throwable)
-            return ""
+            return null
         }
     }
 
