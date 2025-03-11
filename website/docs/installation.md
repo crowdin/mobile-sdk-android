@@ -15,7 +15,7 @@ Add the dependency:
 
 ```groovy
 dependencies {
-   implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.13.0'
+   implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.13.1'
 }
 ```
 
