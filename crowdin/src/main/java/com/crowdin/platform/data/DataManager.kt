@@ -272,27 +272,32 @@ internal class DataManager(
 
     @WorkerThread
     fun getTicket(event: String): String? {
-        var ticketValue: String? = null
-        val type = object : TypeToken<MutableMap<String, TicketItem>>() {}.type
-        var ticketsMap: MutableMap<String, TicketItem>? = localRepository.getData(EVENT_TICKETS, type)
-        if (ticketsMap == null) {
-            ticketsMap = mutableMapOf()
-        }
-
-        val ticketItem = ticketsMap[event]
-        if (ticketItem == null || ticketItem.isExpired()) {
-            Log.d(CROWDIN_TAG, "Ticket expired for event: $event")
-            remoteRepository.getTicket(event)?.data?.ticket?.let {
-                ticketsMap[event] = TicketItem(it, System.currentTimeMillis() + EVENT_TICKETS_EXPIRATION)
-                localRepository.saveData(EVENT_TICKETS, ticketsMap)
-                ticketValue = it
+        try {
+            var ticketValue: String? = null
+            val type = object : TypeToken<MutableMap<String, TicketItem>>() {}.type
+            var ticketsMap: MutableMap<String, TicketItem>? = localRepository.getData(EVENT_TICKETS, type)
+            if (ticketsMap == null) {
+                ticketsMap = mutableMapOf()
             }
-        } else {
-            Log.d(CROWDIN_TAG, "Ticket not expired for event: $event")
-            ticketValue = ticketItem.ticket
-        }
 
-        return ticketValue
+            val ticketItem = ticketsMap[event]
+            if (ticketItem == null || ticketItem.isExpired()) {
+                Log.d(CROWDIN_TAG, "Ticket expired for event: $event")
+                remoteRepository.getTicket(event)?.data?.ticket?.let {
+                    ticketsMap[event] = TicketItem(it, System.currentTimeMillis() + EVENT_TICKETS_EXPIRATION)
+                    localRepository.saveData(EVENT_TICKETS, ticketsMap)
+                    ticketValue = it
+                }
+            } else {
+                Log.d(CROWDIN_TAG, "Ticket not expired for event: $event")
+                ticketValue = ticketItem.ticket
+            }
+
+            return ticketValue
+        } catch (throwable: Throwable) {
+            Log.e(CROWDIN_TAG, "Ticket failed", throwable)
+            return null
+        }
     }
 
     fun clearSocketData() {

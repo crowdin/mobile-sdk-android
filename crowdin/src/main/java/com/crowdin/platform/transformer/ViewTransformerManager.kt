@@ -1,8 +1,10 @@
 package com.crowdin.platform.transformer
 
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.widget.TextView
+import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.model.TextMetaData
 import com.crowdin.platform.data.model.ViewData
 import java.util.Collections
@@ -67,8 +69,12 @@ internal class ViewTransformerManager {
 
     fun getVisibleViewsWithData(): Map<TextView, TextMetaData> {
         val concurrentHashMap = Collections.synchronizedMap(WeakHashMap<TextView, TextMetaData>())
-        transformers.forEach {
-            concurrentHashMap.putAll(it.second.getVisibleViewsWithData())
+        try {
+            transformers.forEach {
+                concurrentHashMap.putAll(it.second.getVisibleViewsWithData())
+            }
+        } catch (throwable: Throwable) {
+            Log.e(Crowdin.CROWDIN_TAG, "ViewTransformerManager exception", throwable)
         }
 
         return concurrentHashMap

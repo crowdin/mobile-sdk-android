@@ -80,6 +80,7 @@ internal class EchoWebSocketListener(
         webSocket: WebSocket,
         text: String,
     ) {
+        Log.d(Crowdin.CROWDIN_TAG, "EchoWebSocket. onMessage: $text")
         handleMessage(text)
     }
 
@@ -120,9 +121,13 @@ internal class EchoWebSocketListener(
         project: DistributionInfoResponse.DistributionData.ProjectData,
         user: DistributionInfoResponse.DistributionData.UserData,
     ) {
-        for (viewDataHolder in dataHolderMap) {
-            val mappingValue = viewDataHolder.value.mappingValue
-            subscribeView(webSocket, project, user, mappingValue)
+        try {
+            for (viewDataHolder in dataHolderMap) {
+                val mappingValue = viewDataHolder.value.mappingValue
+                subscribeView(webSocket, project, user, mappingValue)
+            }
+        } catch (exception: Exception) {
+            Log.e(Crowdin.CROWDIN_TAG, "EchoWebSocketListener Exception", exception)
         }
     }
 
@@ -137,8 +142,8 @@ internal class EchoWebSocketListener(
             dataManager.getTicket(updateEvent)?.let {
                 webSocket.send(getSubscribeEventJson(updateEvent, it))
             }
-        } catch (e: Exception) {
-            Log.e(Crowdin.CROWDIN_TAG, "Get ticket for update event failed", e)
+        } catch (throwable: Throwable) {
+            Log.e(Crowdin.CROWDIN_TAG, "Get ticket for update event failed", throwable)
         }
 
         try {
@@ -146,8 +151,8 @@ internal class EchoWebSocketListener(
             dataManager.getTicket(suggestionEvent)?.let {
                 webSocket.send(getSubscribeEventJson(suggestionEvent, it))
             }
-        } catch (e: Exception) {
-            Log.e(Crowdin.CROWDIN_TAG, "Get ticket for suggestion event failed", e)
+        } catch (throwable: Throwable) {
+            Log.e(Crowdin.CROWDIN_TAG, "Get ticket for suggestion event failed", throwable)
         }
     }
 
