@@ -334,7 +334,7 @@ object Crowdin {
             val newHash = config.distributionHash
             it.saveDistributionHash(newHash)
 
-            return it.isAuthorized() && (oldHash == null || oldHash == newHash)
+            return (config.apiAuthConfig?.apiToken != null || it.isAuthorized()) && (oldHash == null || oldHash == newHash)
         }
 
         return false
