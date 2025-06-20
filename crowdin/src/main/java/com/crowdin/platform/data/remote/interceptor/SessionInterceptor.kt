@@ -16,8 +16,8 @@ internal class SessionInterceptor(
         val original: Request = chain.request()
         val apiToken = Crowdin.getApiAuthConfig()?.apiToken
 
-        // Update expired token
-        if (apiToken == null && session.isTokenExpired()) {
+        // Update expired token - check for null or blank API token
+        if (apiToken.isNullOrBlank() && session.isTokenExpired()) {
             val isRefreshed = refreshToken()
             if (!isRefreshed) {
                 session.invalidate()
@@ -29,7 +29,7 @@ internal class SessionInterceptor(
         var mainResponse = chain.proceed(request)
 
         // Token can be revoked remotely. Should refresh token and retry silently.
-        if (apiToken == null && isAuthErrorCode(mainResponse)) {
+        if (apiToken.isNullOrBlank() && isAuthErrorCode(mainResponse)) {
             val isRefreshed = refreshToken()
             if (!isRefreshed) {
                 session.invalidate()
@@ -58,12 +58,21 @@ internal class SessionInterceptor(
         accessToken: String?,
     ): Request {
         val requestBuilder = original.newBuilder()
-        accessToken ?: return requestBuilder.build()
-        requestBuilder.header("Authorization", "Bearer $accessToken")
+        // Only add authorization header if token is not null and not blank
+        if (!accessToken.isNullOrBlank()) {
+            requestBuilder.header("Authorization", "Bearer $accessToken")
+        }
         return requestBuilder.build()
     }
 
-    private fun getAccessToken(): String? = Crowdin.getApiAuthConfig()?.apiToken ?: session.getAccessToken()
+    private fun getAccessToken(): String? {
+        val apiToken = Crowdin.getApiAuthConfig()?.apiToken
+        return if (!apiToken.isNullOrBlank()) {
+            apiToken
+        } else {
+            session.getAccessToken()
+        }
+    }
 
     private fun isAuthErrorCode(response: Response): Boolean =
         response.code == HttpURLConnection.HTTP_UNAUTHORIZED || response.code == HttpURLConnection.HTTP_FORBIDDEN

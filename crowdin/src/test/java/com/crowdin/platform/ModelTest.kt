@@ -1,5 +1,6 @@
 package com.crowdin.platform
 
+import com.crowdin.platform.data.model.ApiAuthConfig
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.AuthResponse
@@ -105,24 +106,79 @@ class ModelTest {
         assertThat(token.refreshToken, `is`(refreshToken))
     }
 
+    @Test(expected = IllegalArgumentException::class)
+    fun crowdinConfig_whenApiTokenIsEmpty_shouldThrowException() {
+        // When & Then
+        CrowdinConfig.Builder()
+            .withDistributionHash("test")
+            .withSourceLanguage("en")
+            .withApiAuthConfig(ApiAuthConfig(""))
+            .build()
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun crowdinConfig_whenApiTokenIsBlank_shouldThrowException() {
+        // When & Then
+        CrowdinConfig.Builder()
+            .withDistributionHash("test")
+            .withSourceLanguage("en")
+            .withApiAuthConfig(ApiAuthConfig("   "))
+            .build()
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun crowdinConfig_whenApiTokenIsWhitespace_shouldThrowException() {
+        // When & Then
+        CrowdinConfig.Builder()
+            .withDistributionHash("test")
+            .withSourceLanguage("en")
+            .withApiAuthConfig(ApiAuthConfig("\t\n "))
+            .build()
+    }
+
+    @Test
+    fun crowdinConfig_whenApiTokenIsValid_shouldBuildSuccessfully() {
+        // When
+        val config = CrowdinConfig.Builder()
+            .withDistributionHash("test")
+            .withSourceLanguage("en")
+            .withApiAuthConfig(ApiAuthConfig("valid_token_123"))
+            .build()
+
+        // Then
+        assertThat(config.apiAuthConfig?.apiToken, `is`("valid_token_123"))
+    }
+
     @Test
     fun viewDataTest() {
         // Given
-        val textMetaData = TextMetaData()
-        val x = 2
-        val y = 4
-        val width = 5
-        val height = 10
+        val id = 10
+        val text = "text"
+        val textMetaData = TextMetaData("key", "value", arrayOf("args"))
 
         // When
-        val viewData = ViewData(textMetaData, x, y, width, height)
+        val viewData = ViewData(id, text, textMetaData)
 
         // Then
+        assertThat(viewData.id, `is`(id))
+        assertThat(viewData.text, `is`(text))
         assertThat(viewData.textMetaData, `is`(textMetaData))
-        assertThat(viewData.x, `is`(x))
-        assertThat(viewData.y, `is`(y))
-        assertThat(viewData.width, `is`(width))
-        assertThat(viewData.height, `is`(height))
+    }
+
+    @Test
+    fun textMetaDataTest() {
+        // Given
+        val key = "key"
+        val value = "value"
+        val args = arrayOf("args")
+
+        // When
+        val textMetaData = TextMetaData(key, value, args)
+
+        // Then
+        assertThat(textMetaData.key, `is`(key))
+        assertThat(textMetaData.text, `is`(value))
+        assertThat(textMetaData.args, `is`(args))
     }
 
     @Test
@@ -179,13 +235,16 @@ class ModelTest {
     }
 
     @Test
-    fun menuItemStingsTest() {
-        val menuItemStrings = MenuItemStrings(2, 5)
-        val menuItemStrings1 = MenuItemStrings(2, 5)
+    fun menuItemStringsTest() {
+        // Given
+        val items: MutableMap<Int, String> = mutableMapOf()
+        items[1] = "item1"
+        items[2] = "item2"
 
-        assertThat(menuItemStrings, `is`(menuItemStrings1))
-        assertThat(menuItemStrings.hashCode(), `is`(menuItemStrings1.hashCode()))
-        assertThat(menuItemStrings.title, `is`(2))
-        assertThat(menuItemStrings.titleCondensed, `is`(5))
+        // When
+        val menuItemStrings = MenuItemStrings(items)
+
+        // Then
+        assertThat(menuItemStrings.items, `is`(items))
     }
 }

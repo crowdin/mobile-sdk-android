@@ -137,6 +137,13 @@ class CrowdinConfig private constructor() {
                 }
             }
             config.authConfig = authConfig
+
+            // Validate ApiAuthConfig to prevent authentication bypass
+            apiAuthConfig?.let {
+                require(it.apiToken.trim().isNotEmpty()) {
+                    "Crowdin: `ApiAuthConfig.apiToken` cannot be empty or blank"
+                }
+            }
             config.apiAuthConfig = apiAuthConfig
             config.isInitSyncEnabled = isInitSyncEnabled
 

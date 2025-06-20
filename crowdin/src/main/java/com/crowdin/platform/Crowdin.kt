@@ -334,7 +334,8 @@ object Crowdin {
             val newHash = config.distributionHash
             it.saveDistributionHash(newHash)
 
-            return (config.apiAuthConfig?.apiToken != null || it.isAuthorized()) && (oldHash == null || oldHash == newHash)
+            val apiToken = config.apiAuthConfig?.apiToken
+            return (!apiToken.isNullOrBlank() || it.isAuthorized()) && (oldHash == null || oldHash == newHash)
         }
 
         return false
@@ -547,7 +548,8 @@ object Crowdin {
     fun getSupportedLanguages(): LanguagesInfo? = dataManager?.getSupportedLanguages()
 
     private fun initDistributionInfo() {
-        if (config.apiAuthConfig?.apiToken == null) {
+        val apiToken = config.apiAuthConfig?.apiToken
+        if (apiToken.isNullOrBlank()) {
             return
         }
 
