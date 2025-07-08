@@ -28,7 +28,7 @@ class RealTimeUpdateManagerTest {
         val realTimeUpdateManager = RealTimeUpdateManager("EN", null, mockViewTransformer)
 
         // When
-        realTimeUpdateManager.openConnection()
+        realTimeUpdateManager.openConnection(null)
 
         // Then
         verifyNoInteractions(mockViewTransformer)
@@ -41,7 +41,7 @@ class RealTimeUpdateManagerTest {
             RealTimeUpdateManager("EN", mockDataManager, mockViewTransformer)
 
         // When
-        realTimeUpdateManager.openConnection()
+        realTimeUpdateManager.openConnection(null)
 
         // Then
         verify(mockDataManager).getData<DistributionInfoResponse.DistributionData>(
@@ -66,7 +66,7 @@ class RealTimeUpdateManagerTest {
         `when`(mockDataManager.getMapping("EN")).thenReturn(LanguageData())
 
         // When
-        realTimeUpdateManager.openConnection()
+        realTimeUpdateManager.openConnection(null)
 
         // Then
         verify(mockDataManager).getMapping("EN")

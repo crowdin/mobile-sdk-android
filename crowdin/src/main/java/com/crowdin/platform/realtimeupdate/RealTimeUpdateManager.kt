@@ -1,6 +1,6 @@
 package com.crowdin.platform.realtimeupdate
 
-import android.content.Context
+import android.content.res.Configuration
 import android.util.Log
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.DataManager
@@ -25,7 +25,7 @@ internal class RealTimeUpdateManager(
     private var socket: WebSocket? = null
     var isConnectionCreated = false
 
-    fun openConnection(context: Context) {
+    fun openConnection(configuration: Configuration?) {
         dataManager ?: return
         val distributionData =
             dataManager.getData(
@@ -34,7 +34,7 @@ internal class RealTimeUpdateManager(
             ) as DistributionInfoResponse.DistributionData?
         distributionData ?: return
 
-        createConnection(context, distributionData)
+        createConnection(configuration, distributionData)
     }
 
     fun closeConnection() {
@@ -46,7 +46,7 @@ internal class RealTimeUpdateManager(
     }
 
     private fun createConnection(
-        context: Context,
+        configuration: Configuration?,
         distributionData: DistributionInfoResponse.DistributionData,
     ) {
         val mappingData = dataManager?.getMapping(sourceLanguage) ?: return
@@ -60,7 +60,7 @@ internal class RealTimeUpdateManager(
                         .url(distributionData.wsUrl)
                         .build()
 
-                val languageCode = getMatchedCode(context.resources.configuration, it.languages, it.customLanguages) ?: return@let
+                val languageCode = getMatchedCode(configuration, it.languages, it.customLanguages) ?: return@let
                 val listener =
                     EchoWebSocketListener(
                         dataManager,

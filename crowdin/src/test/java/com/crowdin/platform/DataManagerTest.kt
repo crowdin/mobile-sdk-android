@@ -41,12 +41,13 @@ class DataManagerTest {
         // Given
         val dataManager = givenDataManager()
         val expectedText = "Text_Test"
+        val expectedLocaleCode = "en-US"
 
         // When
-        dataManager.provideTextMetaData("Text_Test")
+        dataManager.provideTextMetaData("en-US", "Text_Test")
 
         // Then
-        verify(mockLocalRepository).getTextData(expectedText)
+        verify(mockLocalRepository).getTextData(expectedLocaleCode, expectedText)
     }
 
     @Test
@@ -83,12 +84,13 @@ class DataManagerTest {
         // Given
         val dataManager = givenDataManager()
         val expectedStringKey = "Key_Test"
+        val expectedLocaleCode = "en-US"
 
         // When
-        dataManager.getStringArray("Key_Test")
+        dataManager.getStringArray("en-US", "Key_Test")
 
         // Then
-        verify(mockLocalRepository).getStringArray(expectedStringKey)
+        verify(mockLocalRepository).getStringArray(expectedLocaleCode, expectedStringKey)
     }
 
     @Test
@@ -97,12 +99,13 @@ class DataManagerTest {
         val dataManager = givenDataManager()
         val expectedResourceKey = "Key_Resource"
         val expectedQuantityKey = "Key_Quantity"
+        val expectedLocaleCode = "en-US"
 
         // When
-        dataManager.getStringPlural("Key_Resource", "Key_Quantity")
+        dataManager.getStringPlural("en-US", "Key_Resource", "Key_Quantity")
 
         // Then
-        verify(mockLocalRepository).getStringPlural(expectedResourceKey, expectedQuantityKey)
+        verify(mockLocalRepository).getStringPlural(expectedLocaleCode, expectedResourceKey, expectedQuantityKey)
     }
 
     @Test
@@ -115,7 +118,7 @@ class DataManagerTest {
         val mockStringData = mock(StringData::class.java)
 
         // When
-        dataManager.saveReserveResources(mockStringData)
+        dataManager.saveReserveResources(Locale.getDefault(), mockStringData)
 
         // Then
         verifyNoInteractions(mockLocalRepository)
@@ -132,11 +135,12 @@ class DataManagerTest {
         val dataManager = givenDataManager()
         val mockStringData = mock(StringData::class.java)
         Locale.setDefault(Locale.US)
-        val expectedLanguage = Locale.getDefault().getFormattedCode() + "-copy"
-        `when`(mockLocalRepository.containsKey(any())).thenReturn(true)
+        val formattedLocaleCode = Locale.getDefault().getFormattedCode()
+        val expectedLanguage = "$formattedLocaleCode-copy"
+        `when`(mockLocalRepository.containsKey(eq(formattedLocaleCode), any())).thenReturn(true)
 
         // When
-        dataManager.saveReserveResources(mockStringData)
+        dataManager.saveReserveResources(Locale.getDefault(), mockStringData)
 
         // Then
         verify(mockLocalRepository).setStringData(expectedLanguage, mockStringData)
@@ -151,11 +155,12 @@ class DataManagerTest {
         val dataManager = givenDataManager()
         val mockArrayData = mock(ArrayData::class.java)
         Locale.setDefault(Locale.US)
-        val expectedLanguage = Locale.getDefault().getFormattedCode() + "-copy"
-        `when`(mockLocalRepository.containsKey(any())).thenReturn(true)
+        val formattedLocaleCode = Locale.getDefault().getFormattedCode()
+        val expectedLanguage = "$formattedLocaleCode-copy"
+        `when`(mockLocalRepository.containsKey(eq(formattedLocaleCode), any())).thenReturn(true)
 
         // When
-        dataManager.saveReserveResources(arrayData = mockArrayData)
+        dataManager.saveReserveResources(Locale.getDefault(), arrayData = mockArrayData)
 
         // Then
         verify(mockLocalRepository).setArrayData(expectedLanguage, mockArrayData)
@@ -170,11 +175,12 @@ class DataManagerTest {
         val dataManager = givenDataManager()
         val mockPluralData = mock(PluralData::class.java)
         Locale.setDefault(Locale.US)
-        val expectedLanguage = Locale.getDefault().getFormattedCode() + "-copy"
-        `when`(mockLocalRepository.containsKey(any())).thenReturn(true)
+        val formattedLocaleCode = Locale.getDefault().getFormattedCode()
+        val expectedLanguage = "$formattedLocaleCode-copy"
+        `when`(mockLocalRepository.containsKey(eq(formattedLocaleCode), any())).thenReturn(true)
 
         // When
-        dataManager.saveReserveResources(pluralData = mockPluralData)
+        dataManager.saveReserveResources(Locale.getDefault(), pluralData = mockPluralData)
 
         // Then
         verify(mockLocalRepository).setPluralData(expectedLanguage, mockPluralData)

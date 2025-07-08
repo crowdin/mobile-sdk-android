@@ -349,7 +349,7 @@ object Crowdin {
     fun createRealTimeConnection(context: Context) {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             Log.v(CROWDIN_TAG, "Creating realtime connection")
-            realTimeUpdateManager?.openConnection(context)
+            realTimeUpdateManager?.openConnection(context.resources.configuration)
         } else {
             Log.v(CROWDIN_TAG, "Creating realtime connection skipped. Flag doesn't used")
         }
