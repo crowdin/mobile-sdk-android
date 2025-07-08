@@ -10,7 +10,6 @@ import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.data.model.ApiAuthConfig
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.remote.NetworkType
-import com.crowdin.platform.example.utils.updateLocale
 
 class App : Application() {
 
