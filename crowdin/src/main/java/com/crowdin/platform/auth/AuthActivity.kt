@@ -160,7 +160,7 @@ internal class AuthActivity : AppCompatActivity() {
     }
 
     private fun initRealtimePreview() {
-        Crowdin.createRealTimeConnection()
+        Crowdin.createRealTimeConnection(this)
     }
 
     private fun getDistributionInfo() {

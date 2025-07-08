@@ -1,5 +1,6 @@
 package com.crowdin.platform.data.remote
 
+import android.content.res.Configuration
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.crowdin.platform.Crowdin
@@ -27,6 +28,7 @@ internal class MappingRepository(
         distributionHash,
     ) {
     override fun fetchData(
+        configuration: Configuration?,
         languageCode: String?,
         supportedLanguages: LanguagesInfo?,
         languageDataCallback: LanguageDataCallback?,
@@ -34,12 +36,13 @@ internal class MappingRepository(
         Log.v(Crowdin.CROWDIN_TAG, "MappingRepository. Fetch data from Api started")
 
         getManifest(languageDataCallback) {
-            onManifestDataReceived(it, languageDataCallback)
+            onManifestDataReceived(configuration, it, languageDataCallback)
         }
     }
 
     @WorkerThread
     override fun onManifestDataReceived(
+        configuration: Configuration?,
         manifest: ManifestData?,
         languageDataCallback: LanguageDataCallback?,
     ) {

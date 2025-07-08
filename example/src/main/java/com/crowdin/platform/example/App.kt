@@ -2,7 +2,6 @@ package com.crowdin.platform.example
 
 import android.app.Application
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.res.Configuration
 import android.util.Log
 import com.crowdin.platform.Crowdin
@@ -29,7 +28,7 @@ class App : Application() {
      * */
     override fun attachBaseContext(newBase: Context) {
         languagePreferences = LanguagePreferences(newBase)
-        super.attachBaseContext(ContextWrapper(newBase.updateLocale(languagePreferences.getLanguageCode())))
+        super.attachBaseContext(newBase)
     }
 
     override fun onCreate() {

@@ -1,5 +1,6 @@
 package com.crowdin.platform.util
 
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
 import android.text.Html
@@ -37,18 +38,6 @@ fun Long.parseToDateTimeFormat(): String {
 
 fun Locale.getFormattedCode(): String = "${language.withCrowdinSupportedCheck()}-$country"
 
-fun String.getLocaleForLanguageCode(): Locale {
-    var code = Locale.getDefault().language
-    return try {
-        val localeData = this.split("-").toTypedArray()
-        code = localeData[0]
-        val region = localeData[1]
-        Locale(code, region)
-    } catch (ex: Exception) {
-        Locale(code)
-    }
-}
-
 fun executeIO(function: () -> Unit) {
     try {
         function.invoke()
@@ -60,10 +49,11 @@ fun executeIO(function: () -> Unit) {
 }
 
 fun getMatchedCode(
+    configuration: Configuration?,
     list: List<String>?,
     customLanguages: Map<String, CustomLanguage>?,
 ): String? {
-    val languageCode = Locale.getDefault().language.withCrowdinSupportedCheck()
+    val languageCode = configuration.getLocale().language.withCrowdinSupportedCheck()
     val code = "$languageCode-${Locale.getDefault().country}"
 
     if (customLanguages != null) {
@@ -100,3 +90,18 @@ fun String.fromHtml(): CharSequence? =
     }
 
 fun String.replaceNewLine(): String = replace(NEW_LINE, NEW_LINE.fromHtml()?.toString() ?: "")
+
+fun Configuration?.getLocale(): Locale {
+    this ?: return Locale.getDefault()
+
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (locales.isEmpty) {
+            Locale.getDefault()
+        } else {
+            locales.get(0)
+        }
+    } else {
+        @Suppress("DEPRECATION")
+        locale ?: Locale.getDefault()
+    }
+}

@@ -26,6 +26,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.crowdin.platform.Crowdin
@@ -202,13 +203,37 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
             Crowdin.disconnectRealTimeUpdates()
         } else {
             if (Crowdin.isAuthorized()) {
-                Crowdin.createRealTimeConnection()
+                val localizedContext = getLocalizedContext()
+                Crowdin.createRealTimeConnection(localizedContext)
             } else {
                 showToast(AUTH_REQUIRED)
                 realTimeBtn.isChecked = false
             }
         }
     }
+
+    private fun getLocalizedContext(): Context =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // API 33+ automatically handles locale in services
+            this
+        } else {
+            // For API 31 and below, manually apply locale
+            val locale = AppCompatDelegate.getApplicationLocales().takeIf { !it.isEmpty }?.get(0)
+            if (locale != null) {
+                val config = resources.configuration
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    config.setLocale(locale)
+                    createConfigurationContext(config)
+                } else {
+                    // For API 16, use deprecated method
+                    @Suppress("DEPRECATION")
+                    config.locale = locale
+                    this
+                }
+            } else {
+                this
+            }
+        }
 
     private fun captureScreenshot() {
         val screenshotName = screenshotEt.text.trim().toString()

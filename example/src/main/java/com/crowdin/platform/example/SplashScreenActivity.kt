@@ -14,10 +14,10 @@ class SplashScreenActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
 
         //Comment if you want open Main Activity after time span
-//        startMainActivityAfterTimeSpan()
+        startMainActivityAfterTimeSpan()
 
         //Uncomment if you want load translations and after that open Main Activity
-        startMainActivityAfterLoadingTranslations()
+//        startMainActivityAfterLoadingTranslations()
     }
 
     private fun startMainActivityAfterTimeSpan() {

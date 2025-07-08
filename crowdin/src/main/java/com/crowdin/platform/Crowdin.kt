@@ -82,7 +82,7 @@ object Crowdin {
         initViewTransformer()
         initFeatureManagers()
         initTranslationDataManager()
-        initRealTimeUpdates()
+        initRealTimeUpdates(context)
         initLoading(context)
         loadMapping()
 
@@ -101,9 +101,9 @@ object Crowdin {
         }
     }
 
-    private fun initRealTimeUpdates() {
+    private fun initRealTimeUpdates(context: Context) {
         if (config.isRealTimeUpdateEnabled && isAuthorized()) {
-            createRealTimeConnection()
+            createRealTimeConnection(context)
         }
     }
 
@@ -303,7 +303,7 @@ object Crowdin {
         Log.d(CROWDIN_TAG, "Authorize started")
 
         if (isAuthorized()) {
-            createRealTimeConnection()
+            createRealTimeConnection(context)
         } else if ((FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) &&
             !isAuthorized()
         ) {
@@ -342,12 +342,14 @@ object Crowdin {
 
     /**
      * Create realtime update connection.
+     *
+     * @param context the application context.
      */
     @JvmStatic
-    fun createRealTimeConnection() {
+    fun createRealTimeConnection(context: Context) {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             Log.v(CROWDIN_TAG, "Creating realtime connection")
-            realTimeUpdateManager?.openConnection()
+            realTimeUpdateManager?.openConnection(context)
         } else {
             Log.v(CROWDIN_TAG, "Creating realtime connection skipped. Flag doesn't used")
         }
