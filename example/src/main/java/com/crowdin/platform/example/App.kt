@@ -45,8 +45,6 @@ class App : Application() {
         val requestAuthDialog = true                        // Request authorization dialog `true` by default or `false`
         val apiToken = "your_api_token"
 
-        // Set custom locale before SDK initialization.
-        this.updateLocale(languagePreferences.getLanguageCode())
         Crowdin.init(
             applicationContext,
             CrowdinConfig.Builder()
