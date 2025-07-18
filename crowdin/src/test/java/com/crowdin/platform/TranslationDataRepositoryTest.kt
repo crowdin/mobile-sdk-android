@@ -68,7 +68,7 @@ class TranslationDataRepositoryTest {
         val manifestData = givenManifestData()
 
         // When
-        repository.onManifestDataReceived(manifestData, mockCallback)
+        repository.onManifestDataReceived(null, manifestData, mockCallback)
 
         // Then
         verify(mockDataManager).getData<DistributionInfoResponse.DistributionData>(any(), any())
@@ -86,7 +86,7 @@ class TranslationDataRepositoryTest {
         givenMockEmptyFileResponse()
 
         // When
-        repository.onManifestDataReceived(manifestData, mockCallback)
+        repository.onManifestDataReceived(null, manifestData, mockCallback)
 
         // Then
         verify(mockCrowdinApi).getFiles("testId")
@@ -104,7 +104,7 @@ class TranslationDataRepositoryTest {
         givenMockTranslationResponse()
 
         // When
-        repository.onManifestDataReceived(manifestData, mockCallback)
+        repository.onManifestDataReceived(null, manifestData, mockCallback)
 
         // Then
         verify(mockCrowdinApi).getTranslation(
@@ -128,7 +128,7 @@ class TranslationDataRepositoryTest {
         givenMockTranslationResource()
 
         // When
-        repository.onManifestDataReceived(manifestData, mockCallback)
+        repository.onManifestDataReceived(null, manifestData, mockCallback)
 
         // Then
         verify(mockCrowdinTranslationApi).getTranslationResource("test_url")

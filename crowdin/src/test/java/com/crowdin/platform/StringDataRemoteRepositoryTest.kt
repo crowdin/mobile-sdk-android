@@ -54,7 +54,7 @@ class StringDataRemoteRepositoryTest {
         givenMockResponse()
 
         // When
-        repository.onManifestDataReceived(manifestData, mockCallback)
+        repository.onManifestDataReceived(null, manifestData, mockCallback)
 
         // Then
         verify(mockDistributionApi).getResourceFile(any(), any(), any(), ArgumentMatchers.anyLong())
@@ -69,7 +69,7 @@ class StringDataRemoteRepositoryTest {
         givenMockResponse(false)
 
         // When
-        repository.onManifestDataReceived(manifestData, mockCallback)
+        repository.onManifestDataReceived(null, manifestData, mockCallback)
 
         // Then
         verify(mockCallback).onFailure(any())
@@ -84,7 +84,7 @@ class StringDataRemoteRepositoryTest {
         givenMockResponse(successCode = 204)
 
         // When
-        repository.onManifestDataReceived(manifestData, mockCallback)
+        repository.onManifestDataReceived(null, manifestData, mockCallback)
 
         // Then
         verify(mockCallback).onFailure(any())

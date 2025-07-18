@@ -6,10 +6,8 @@ import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.data.model.TextMetaData
-import com.crowdin.platform.util.getFormattedCode
 import java.lang.reflect.Type
 import java.util.IllegalFormatException
-import java.util.Locale
 
 /**
  * A LocalRepository which keeps the stringsData ONLY in memory.
@@ -113,8 +111,11 @@ internal class MemoryLocalRepository : LocalRepository {
             else -> stringsData[language]
         }
 
-    override fun getStringArray(key: String): Array<String>? {
-        stringsData[Locale.getDefault().getFormattedCode()]?.arrays?.forEach { array ->
+    override fun getStringArray(
+        localeCode: String,
+        key: String,
+    ): Array<String>? {
+        stringsData[localeCode]?.arrays?.forEach { array ->
             if (array.name == key) {
                 return array.values
             }
@@ -123,10 +124,11 @@ internal class MemoryLocalRepository : LocalRepository {
     }
 
     override fun getStringPlural(
+        localeCode: String,
         resourceKey: String,
         quantityKey: String,
     ): String? {
-        stringsData[Locale.getDefault().getFormattedCode()]?.plurals?.forEach { pluralData ->
+        stringsData[localeCode]?.plurals?.forEach { pluralData ->
             if (pluralData.name == resourceKey) {
                 return pluralData.quantity[quantityKey]
             }
@@ -136,8 +138,11 @@ internal class MemoryLocalRepository : LocalRepository {
 
     override fun isExist(language: String): Boolean = stringsData[language] != null
 
-    override fun containsKey(key: String): Boolean {
-        stringsData[Locale.getDefault().getFormattedCode()]?.let { languageData ->
+    override fun containsKey(
+        localeCode: String,
+        key: String,
+    ): Boolean {
+        stringsData[localeCode]?.let { languageData ->
             languageData.resources.forEach {
                 if (it.stringKey == key) {
                     return true
@@ -158,14 +163,17 @@ internal class MemoryLocalRepository : LocalRepository {
         return false
     }
 
-    override fun getTextData(text: String): TextMetaData {
+    override fun getTextData(
+        localeCode: String,
+        text: String,
+    ): TextMetaData {
         val textMetaData = TextMetaData()
 
-        val languageData = stringsData[Locale.getDefault().getFormattedCode()]
+        val languageData = stringsData[localeCode]
         searchInResources(languageData, text, textMetaData)
 
         val languageReserveData =
-            stringsData[Locale.getDefault().getFormattedCode() + DataManager.SUF_COPY]
+            stringsData[localeCode + DataManager.SUF_COPY]
         searchInResources(languageReserveData, text, textMetaData)
 
         return textMetaData

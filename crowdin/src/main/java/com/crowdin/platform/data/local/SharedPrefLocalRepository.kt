@@ -79,18 +79,28 @@ internal class SharedPrefLocalRepository internal constructor(
 
     override fun getLanguageData(language: String): LanguageData? = memoryLocalRepository.getLanguageData(language)
 
-    override fun getStringArray(key: String): Array<String>? = memoryLocalRepository.getStringArray(key)
+    override fun getStringArray(
+        localeCode: String,
+        key: String,
+    ): Array<String>? = memoryLocalRepository.getStringArray(localeCode, key)
 
     override fun getStringPlural(
+        localeCode: String,
         resourceKey: String,
         quantityKey: String,
-    ): String? = memoryLocalRepository.getStringPlural(resourceKey, quantityKey)
+    ): String? = memoryLocalRepository.getStringPlural(localeCode, resourceKey, quantityKey)
 
     override fun isExist(language: String): Boolean = memoryLocalRepository.isExist(language)
 
-    override fun containsKey(key: String): Boolean = memoryLocalRepository.containsKey(key)
+    override fun containsKey(
+        localeCode: String,
+        key: String,
+    ): Boolean = memoryLocalRepository.containsKey(localeCode, key)
 
-    override fun getTextData(text: String): TextMetaData = memoryLocalRepository.getTextData(text)
+    override fun getTextData(
+        localeCode: String,
+        text: String,
+    ): TextMetaData = memoryLocalRepository.getTextData(localeCode, text)
 
     override fun saveData(
         type: String,

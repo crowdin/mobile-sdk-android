@@ -48,7 +48,10 @@ internal class DataManager(
 
     private var loadingStateListeners: ArrayList<LoadingStateListener>? = null
 
-    override fun provideTextMetaData(text: String): TextMetaData = localRepository.getTextData(text)
+    override fun provideTextMetaData(
+        localeCode: String,
+        text: String,
+    ): TextMetaData = localRepository.getTextData(localeCode, text)
 
     fun getLanguageData(language: String): LanguageData? = localRepository.getLanguageData(language)
 
@@ -65,12 +68,16 @@ internal class DataManager(
         localRepository.setString(language, key, value)
     }
 
-    fun getStringArray(key: String): Array<String>? = localRepository.getStringArray(key)
+    fun getStringArray(
+        localeCode: String,
+        key: String,
+    ): Array<String>? = localRepository.getStringArray(localeCode, key)
 
     fun getStringPlural(
+        localeCode: String,
         resourceKey: String,
         quantityKey: String,
-    ): String? = localRepository.getStringPlural(resourceKey, quantityKey)
+    ): String? = localRepository.getStringPlural(localeCode, resourceKey, quantityKey)
 
     fun updateData(
         context: Context,
@@ -84,6 +91,7 @@ internal class DataManager(
                 Log.v(CROWDIN_TAG, "Update data from Api started")
 
                 remoteRepository.fetchData(
+                    context.resources.configuration,
                     supportedLanguages = languageInfo,
                     languageDataCallback =
                         object : LanguageDataCallback {
@@ -139,34 +147,36 @@ internal class DataManager(
     }
 
     fun saveReserveResources(
+        locale: Locale,
         stringData: StringData? = null,
         arrayData: ArrayData? = null,
         pluralData: PluralData? = null,
     ) {
         if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
+            val localeCode = locale.getFormattedCode()
             when {
                 stringData != null -> {
-                    if (localRepository.containsKey(stringData.stringKey)) {
+                    if (localRepository.containsKey(localeCode, stringData.stringKey)) {
                         localRepository.setStringData(
-                            Locale.getDefault().getFormattedCode() + SUF_COPY,
+                            localeCode + SUF_COPY,
                             stringData,
                         )
                     }
                 }
 
                 arrayData != null -> {
-                    if (localRepository.containsKey(arrayData.name)) {
+                    if (localRepository.containsKey(localeCode, arrayData.name)) {
                         localRepository.setArrayData(
-                            Locale.getDefault().getFormattedCode() + SUF_COPY,
+                            localeCode + SUF_COPY,
                             arrayData,
                         )
                     }
                 }
 
                 pluralData != null -> {
-                    if (localRepository.containsKey(pluralData.name)) {
+                    if (localRepository.containsKey(localeCode, pluralData.name)) {
                         localRepository.setPluralData(
-                            Locale.getDefault().getFormattedCode() + SUF_COPY,
+                            localeCode + SUF_COPY,
                             pluralData,
                         )
                     }

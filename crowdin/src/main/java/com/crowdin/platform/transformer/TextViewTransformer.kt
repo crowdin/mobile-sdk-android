@@ -11,6 +11,8 @@ import com.crowdin.platform.data.TextMetaDataProvider
 import com.crowdin.platform.data.model.TextMetaData
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.TextUtils
+import com.crowdin.platform.util.getFormattedCode
+import com.crowdin.platform.util.getLocale
 import java.lang.ref.WeakReference
 
 /**
@@ -49,6 +51,7 @@ internal class TextViewTransformer(
                         }
                     }
                 }
+
                 Attributes.ATTRIBUTE_ANDROID_HINT, Attributes.ATTRIBUTE_HINT -> {
                     val hint = TextUtils.getTextForAttribute(attrs, index, resources)
                     if (hint != null) {
@@ -60,6 +63,7 @@ internal class TextViewTransformer(
                         }
                     }
                 }
+
                 Attributes.ATTRIBUTE_TEXT_ON, Attributes.ATTRIBUTE_ANDROID_TEXT_ON -> {
                     val textOn = TextUtils.getTextForAttribute(attrs, index, resources)
                     if (textOn != null) {
@@ -74,6 +78,7 @@ internal class TextViewTransformer(
                         }
                     }
                 }
+
                 Attributes.ATTRIBUTE_TEXT_OFF, Attributes.ATTRIBUTE_ANDROID_TEXT_OFF -> {
                     val textOff = TextUtils.getTextForAttribute(attrs, index, resources)
                     if (textOff != null) {
@@ -106,7 +111,11 @@ internal class TextViewTransformer(
         // Handle case when @string res set programmatically
         override fun afterTextChanged(s: Editable?) {
             view.get()?.let {
-                val resultData = textMetaDataProvider.provideTextMetaData(s.toString())
+                val localeCode =
+                    it.resources.configuration
+                        .getLocale()
+                        .getFormattedCode()
+                val resultData = textMetaDataProvider.provideTextMetaData(localeCode, s.toString())
                 var textMetaData = getViewTextMetaData(it)
                 if (textMetaData == null) {
                     textMetaData = TextMetaData()

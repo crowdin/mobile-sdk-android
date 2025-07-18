@@ -21,9 +21,9 @@ class BaseContextWrappingDelegate(
     override fun getMenuInflater(): MenuInflater? = superDelegate.menuInflater
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        superDelegate.onCreate(savedInstanceState)
         removeActivityDelegate(superDelegate)
         addActiveDelegate(this)
+        superDelegate.onCreate(savedInstanceState)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) = superDelegate.onPostCreate(savedInstanceState)

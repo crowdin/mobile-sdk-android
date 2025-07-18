@@ -9,8 +9,12 @@ internal interface TextMetaDataProvider {
     /**
      * Provides meta data related to text.
      *
+     * @param localeCode locale code for the text.
      * @param text searchable text.
      * @see TextMetaData
      * */
-    fun provideTextMetaData(text: String): TextMetaData
+    fun provideTextMetaData(
+        localeCode: String,
+        text: String,
+    ): TextMetaData
 }

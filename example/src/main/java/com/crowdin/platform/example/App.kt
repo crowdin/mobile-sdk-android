@@ -2,7 +2,6 @@ package com.crowdin.platform.example
 
 import android.app.Application
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.res.Configuration
 import android.util.Log
 import com.crowdin.platform.Crowdin
@@ -11,7 +10,6 @@ import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.data.model.ApiAuthConfig
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.remote.NetworkType
-import com.crowdin.platform.example.utils.updateLocale
 
 class App : Application() {
 
@@ -29,7 +27,7 @@ class App : Application() {
      * */
     override fun attachBaseContext(newBase: Context) {
         languagePreferences = LanguagePreferences(newBase)
-        super.attachBaseContext(ContextWrapper(newBase.updateLocale(languagePreferences.getLanguageCode())))
+        super.attachBaseContext(newBase)
     }
 
     override fun onCreate() {
@@ -47,8 +45,6 @@ class App : Application() {
         val requestAuthDialog = true                        // Request authorization dialog `true` by default or `false`
         val apiToken = "your_api_token"
 
-        // Set custom locale before SDK initialization.
-        this.updateLocale(languagePreferences.getLanguageCode())
         Crowdin.init(
             applicationContext,
             CrowdinConfig.Builder()

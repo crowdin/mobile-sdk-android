@@ -1,5 +1,6 @@
 package com.crowdin.platform.data.remote
 
+import android.content.res.Configuration
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.crowdin.platform.Crowdin
@@ -34,6 +35,7 @@ internal class TranslationDataRepository(
     private var preferredLanguageCode: String? = null
 
     override fun fetchData(
+        configuration: Configuration?,
         languageCode: String?,
         supportedLanguages: LanguagesInfo?,
         languageDataCallback: LanguageDataCallback?,
@@ -42,12 +44,13 @@ internal class TranslationDataRepository(
 
         preferredLanguageCode = languageCode
         getManifest(languageDataCallback) {
-            onManifestDataReceived(it, languageDataCallback)
+            onManifestDataReceived(configuration, it, languageDataCallback)
         }
     }
 
     @WorkerThread
     override fun onManifestDataReceived(
+        configuration: Configuration?,
         manifest: ManifestData?,
         languageDataCallback: LanguageDataCallback?,
     ) {
@@ -56,7 +59,7 @@ internal class TranslationDataRepository(
         val supportedLanguages = manifest?.languages
         val customLanguages = manifest?.customLanguages
         if (preferredLanguageCode == null) {
-            preferredLanguageCode = getMatchedCode(supportedLanguages, customLanguages) ?: return
+            preferredLanguageCode = getMatchedCode(configuration, supportedLanguages, customLanguages) ?: return
         } else {
             if (supportedLanguages?.contains(preferredLanguageCode) == false) {
                 return

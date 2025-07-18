@@ -1,10 +1,12 @@
 package com.crowdin.platform.example
 
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.BaseContextWrappingDelegate
 import com.crowdin.crowdin_controls.OverlayActivityContract
 import com.crowdin.crowdin_controls.destroyCrowdinControl
 import com.crowdin.crowdin_controls.initCrowdinControl
+import com.crowdin.platform.Crowdin
 
 abstract class BaseActivity : AppCompatActivity() {
 
@@ -18,6 +20,11 @@ abstract class BaseActivity : AppCompatActivity() {
      */
     override fun getDelegate() = BaseContextWrappingDelegate(super.getDelegate())
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initializeSavedLocale(savedInstanceState)
+    }
+
     override fun onResume() {
         super.onResume()
         // Init Crowdin SDK overlay controls
@@ -28,6 +35,17 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onPause()
         // Destroy crowdin overlay view.
         destroyCrowdinControl(this)
+    }
+
+    private fun initializeSavedLocale(savedInstanceState: Bundle?) {
+        val app = application as App
+        val isRecreatedForLocaleChange = savedInstanceState != null && app.languagePreferences.getLocaleChangeFlag()
+
+        if (isRecreatedForLocaleChange) {
+            // Clear the flag and force update
+            app.languagePreferences.setLocaleChangeFlag(false)
+            Crowdin.forceUpdate(this)
+        }
     }
 }
 

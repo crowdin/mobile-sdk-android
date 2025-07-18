@@ -1,5 +1,6 @@
 package com.crowdin.platform.data.remote
 
+import android.content.res.Configuration
 import android.util.Log
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.Preferences
@@ -14,11 +15,11 @@ import com.crowdin.platform.data.model.toLanguageInfo
 import com.crowdin.platform.data.parser.ReaderFactory
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.executeIO
+import com.crowdin.platform.util.getLocale
 import com.crowdin.platform.util.getMatchedCode
 import okhttp3.ResponseBody
 import retrofit2.Response
 import java.net.HttpURLConnection
-import java.util.Locale
 
 private const val XML_EXTENSION = ".xml"
 
@@ -33,6 +34,7 @@ internal class StringDataRemoteRepository(
     private var preferredLanguageCode: String? = null
 
     override fun fetchData(
+        configuration: Configuration?,
         languageCode: String?,
         supportedLanguages: LanguagesInfo?,
         languageDataCallback: LanguageDataCallback?,
@@ -45,7 +47,7 @@ internal class StringDataRemoteRepository(
         getManifest(languageDataCallback) {
             val syncData = crowdinPreferences.getData<SyncData>(DataManager.SYNC_DATA, SyncData::class.java)
             val timestamp = syncData?.timestamp
-            val language = Locale.getDefault().language
+            val language = configuration.getLocale().language
             if (timestamp == it.timestamp && language == syncData.languageCode) {
                 crowdinPreferences.setLastUpdate(System.currentTimeMillis())
                 languageDataCallback?.onFailure(Throwable("Data is up to date"))
@@ -53,11 +55,12 @@ internal class StringDataRemoteRepository(
             }
 
             crowdinPreferences.saveData(DataManager.SYNC_DATA, SyncData(it.timestamp, language))
-            onManifestDataReceived(it, languageDataCallback)
+            onManifestDataReceived(configuration, it, languageDataCallback)
         }
     }
 
     override fun onManifestDataReceived(
+        configuration: Configuration?,
         manifest: ManifestData?,
         languageDataCallback: LanguageDataCallback?,
     ) {
@@ -68,7 +71,7 @@ internal class StringDataRemoteRepository(
 
         val supportedLanguages = manifest?.languages
         val customLanguages = manifest?.customLanguages
-        val preferredLanguageCode = getSafeLanguageCode(preferredLanguageCode, supportedLanguages, customLanguages)
+        val preferredLanguageCode = getSafeLanguageCode(configuration, preferredLanguageCode, supportedLanguages, customLanguages)
         if (preferredLanguageCode == null) {
             languageDataCallback?.onFailure(Throwable("Can't find preferred Language"))
             return
@@ -101,12 +104,13 @@ internal class StringDataRemoteRepository(
     }
 
     private fun getSafeLanguageCode(
+        configuration: Configuration?,
         preferredLanguageCode: String?,
         supportedLanguages: List<String>?,
         customLanguages: Map<String, CustomLanguage>?,
     ): String? =
         if (preferredLanguageCode == null) {
-            getMatchedCode(supportedLanguages, customLanguages)
+            getMatchedCode(configuration, supportedLanguages, customLanguages)
         } else {
             if (supportedLanguages?.contains(preferredLanguageCode) == false) {
                 null

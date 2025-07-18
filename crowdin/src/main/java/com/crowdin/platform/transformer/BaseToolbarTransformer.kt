@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.crowdin.platform.data.TextMetaDataProvider
 import com.crowdin.platform.data.model.TextMetaData
+import com.crowdin.platform.util.getFormattedCode
+import com.crowdin.platform.util.getLocale
 
 internal abstract class BaseToolbarTransformer(
     val textMetaDataProvider: TextMetaDataProvider,
@@ -51,7 +53,11 @@ internal abstract class BaseToolbarTransformer(
         textView?.addTextChangedListener(
             object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    val resultData = textMetaDataProvider.provideTextMetaData(s.toString())
+                    val localeCode =
+                        textView.resources.configuration
+                            .getLocale()
+                            .getFormattedCode()
+                    val resultData = textMetaDataProvider.provideTextMetaData(localeCode, s.toString())
                     var textMetaData = getViewTextMetaData(textView)
                     if (textMetaData == null) {
                         textMetaData = TextMetaData()

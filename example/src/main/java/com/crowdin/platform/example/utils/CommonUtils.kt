@@ -1,7 +1,6 @@
 package com.crowdin.platform.example.utils
 
 import android.content.Context
-import android.content.res.Configuration
 import android.content.res.Resources
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -12,7 +11,6 @@ import com.crowdin.platform.example.category.CategoryAdd
 import com.crowdin.platform.example.category.CategoryDelete
 import com.crowdin.platform.example.category.CategoryUpdate
 import com.crowdin.platform.example.category.DBManagerCategory
-import com.crowdin.platform.util.getLocaleForLanguageCode
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -137,11 +135,3 @@ fun dialogDeleteCategory(context: Context, id: Int, categoryDelete: CategoryDele
 
 fun Int.convertDpToPx(resources: Resources): Int =
     (this * (resources.displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
-
-fun Context.updateLocale(newLocaleCode: String): Context {
-    val newLocale = newLocaleCode.getLocaleForLanguageCode()
-    Locale.setDefault(newLocale)
-    val configuration = Configuration(this.resources.configuration)
-    configuration.setLocale(newLocale)
-    return this.createConfigurationContext(configuration)
-}
