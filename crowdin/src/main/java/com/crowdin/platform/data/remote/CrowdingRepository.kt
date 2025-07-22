@@ -1,5 +1,6 @@
 package com.crowdin.platform.data.remote
 
+import android.content.res.Configuration
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.crowdin.platform.Crowdin
@@ -81,6 +82,7 @@ internal abstract class CrowdingRepository(
 
     @WorkerThread
     abstract fun onManifestDataReceived(
+        configuration: Configuration? = null,
         manifest: ManifestData?,
         languageDataCallback: LanguageDataCallback?,
     )

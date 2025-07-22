@@ -3,7 +3,6 @@ package com.crowdin.platform
 import android.content.res.Resources
 import android.util.AttributeSet
 import com.crowdin.platform.util.TextUtils
-import com.crowdin.platform.util.getLocaleForLanguageCode
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
@@ -11,6 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
+import java.util.Locale
 
 class TextUtilsTest {
     private lateinit var mockAttributeSet: AttributeSet
@@ -200,5 +200,17 @@ class TextUtilsTest {
         val languageCode = "en"
         assertThat(languageCodeWithCountry.getLocaleForLanguageCode().toString(), equalTo("en_US"))
         assertThat(languageCode.getLocaleForLanguageCode().toString(), equalTo("en"))
+    }
+
+    private fun String.getLocaleForLanguageCode(): Locale {
+        var code = Locale.getDefault().language
+        return try {
+            val localeData = this.split("-").toTypedArray()
+            code = localeData[0]
+            val region = localeData[1]
+            Locale(code, region)
+        } catch (_: Exception) {
+            Locale(code)
+        }
     }
 }

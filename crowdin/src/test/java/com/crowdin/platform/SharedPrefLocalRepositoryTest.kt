@@ -163,12 +163,13 @@ class SharedPrefLocalRepositoryTest {
         val sharedPrefLocalRepository =
             SharedPrefLocalRepository(context, mockMemoryLocalRepository)
         val expectedKey = "key"
+        val localeCode = "en-US"
 
         // When
-        sharedPrefLocalRepository.getStringArray("key")
+        sharedPrefLocalRepository.getStringArray("en-US", "key")
 
         // Then
-        verify(mockMemoryLocalRepository).getStringArray(expectedKey)
+        verify(mockMemoryLocalRepository).getStringArray(localeCode, expectedKey)
     }
 
     @Test
@@ -178,12 +179,13 @@ class SharedPrefLocalRepositoryTest {
             SharedPrefLocalRepository(context, mockMemoryLocalRepository)
         val expectedResourceKey = "resourceKey"
         val expectedQuantityKey = "quantityKey"
+        val localeCode = "en-US"
 
         // When
-        sharedPrefLocalRepository.getStringPlural("resourceKey", "quantityKey")
+        sharedPrefLocalRepository.getStringPlural("en-US", "resourceKey", "quantityKey")
 
         // Then
-        verify(mockMemoryLocalRepository).getStringPlural(expectedResourceKey, expectedQuantityKey)
+        verify(mockMemoryLocalRepository).getStringPlural(localeCode, expectedResourceKey, expectedQuantityKey)
     }
 
     @Test
@@ -205,12 +207,13 @@ class SharedPrefLocalRepositoryTest {
         // Given
         val sharedPrefLocalRepository =
             SharedPrefLocalRepository(context, mockMemoryLocalRepository)
+        val localeCode = "en-US"
 
         // When
-        sharedPrefLocalRepository.containsKey("key")
+        sharedPrefLocalRepository.containsKey(localeCode, "key")
 
         // Then
-        verify(mockMemoryLocalRepository).containsKey("key")
+        verify(mockMemoryLocalRepository).containsKey(localeCode, "key")
     }
 
     @Test
@@ -219,12 +222,13 @@ class SharedPrefLocalRepositoryTest {
         val sharedPrefLocalRepository =
             SharedPrefLocalRepository(context, mockMemoryLocalRepository)
         val expectedText = "text"
+        val localeCode = "en-US"
 
         // When
-        sharedPrefLocalRepository.getTextData("text")
+        sharedPrefLocalRepository.getTextData(localeCode, "text")
 
         // Then
-        verify(mockMemoryLocalRepository).getTextData(expectedText)
+        verify(mockMemoryLocalRepository).getTextData(localeCode, expectedText)
     }
 
     @Test

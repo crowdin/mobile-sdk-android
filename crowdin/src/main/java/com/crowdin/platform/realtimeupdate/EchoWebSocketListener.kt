@@ -17,12 +17,12 @@ import com.crowdin.platform.transformer.ViewTransformerManager
 import com.crowdin.platform.transformer.ViewsChangeListener
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.fromHtml
+import com.crowdin.platform.util.getLocale
 import com.crowdin.platform.util.unEscapeQuotes
 import com.google.gson.Gson
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import java.util.Collections
-import java.util.Locale
 import java.util.WeakHashMap
 
 private const val UPDATE_DRAFT = "update-draft"
@@ -196,8 +196,9 @@ internal class EchoWebSocketListener(
             updateViewText(view, text, textMetaData.isHint)
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                val locale = view.resources.configuration.getLocale()
                 val quantity = textMetaData.pluralQuantity
-                val rule = PluralRules.forLocale(Locale.getDefault())
+                val rule = PluralRules.forLocale(locale)
                 val ruleName = rule.select(quantity.toDouble())
                 if (eventData.pluralForm == ruleName) {
                     updateViewText(view, text, textMetaData.isHint)

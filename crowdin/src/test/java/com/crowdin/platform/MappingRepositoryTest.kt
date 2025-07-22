@@ -62,7 +62,7 @@ class MappingRepositoryTest {
         givenMockResponse()
 
         // When
-        mappingRepository.onManifestDataReceived(manifestData, mockCallback)
+        mappingRepository.onManifestDataReceived(null, manifestData, mockCallback)
 
         // Then
         verify(mockDistributionApi).getMappingFile(any(), any(), eq(manifestData.mapping.first()))
@@ -79,7 +79,7 @@ class MappingRepositoryTest {
         givenMockResponse()
 
         // When
-        mappingRepository.onManifestDataReceived(manifestData, mockCallback)
+        mappingRepository.onManifestDataReceived(null, manifestData, mockCallback)
 
         // Then
         verify(mockReader).parseInput(any())
@@ -96,7 +96,7 @@ class MappingRepositoryTest {
         givenMockResponse()
 
         // When
-        mappingRepository.onManifestDataReceived(manifestData, mockCallback)
+        mappingRepository.onManifestDataReceived(null, manifestData, mockCallback)
 
         // Then
         verify(mockDataManager).saveMapping(any())
@@ -113,7 +113,7 @@ class MappingRepositoryTest {
         givenMockResponse(false)
 
         // When
-        mappingRepository.onManifestDataReceived(manifestData, mockCallback)
+        mappingRepository.onManifestDataReceived(null, manifestData, mockCallback)
 
         // Then
         verify(mockCallback).onFailure(any())
@@ -130,7 +130,7 @@ class MappingRepositoryTest {
         givenMockResponse(successCode = 204)
 
         // When
-        mappingRepository.onManifestDataReceived(manifestData, mockCallback)
+        mappingRepository.onManifestDataReceived(null, manifestData, mockCallback)
 
         // Then
         verify(mockCallback).onFailure(any())

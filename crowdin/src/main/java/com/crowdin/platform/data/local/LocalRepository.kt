@@ -87,19 +87,25 @@ internal interface LocalRepository {
     /**
      * Get a string array for a current language & key.
      *
+     * @param localeCode the locale code of the string.
      * @param key the string resource id.
      * @return the string array if exists, otherwise NULL.
      */
-    fun getStringArray(key: String): Array<String>?
+    fun getStringArray(
+        localeCode: String,
+        key: String,
+    ): Array<String>?
 
     /**
      * Get a string value from plural resource defined by PluralRules for a current language.
      *
+     * @param localeCode the locale code of the string.
      * @param resourceKey the plural resource id.
      * @param quantityKey the key for quantity item defined in plural.
      * @return the string value if exists, otherwise NULL.
      */
     fun getStringPlural(
+        localeCode: String,
         resourceKey: String,
         quantityKey: String,
     ): String?
@@ -115,18 +121,26 @@ internal interface LocalRepository {
     /**
      * Returns <tt>true</tt> if repository contains resource key.
      *
+     * @param localeCode the locale code of the string.
      * @param key to compare.
      * @return true if exist, otherwise false.
      */
-    fun containsKey(key: String): Boolean
+    fun containsKey(
+        localeCode: String,
+        key: String,
+    ): Boolean
 
     /**
      * Retrieves text related meta data.
      *
+     * @param localeCode the locale code of the string.
      * @param text searchable text.
      * @return TextMetaData meta data.
      */
-    fun getTextData(text: String): TextMetaData = TextMetaData()
+    fun getTextData(
+        localeCode: String,
+        text: String,
+    ): TextMetaData = TextMetaData()
 
     /**
      * Save any data object to local storage.

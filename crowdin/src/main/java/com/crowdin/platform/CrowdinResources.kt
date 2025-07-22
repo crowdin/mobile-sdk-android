@@ -24,9 +24,9 @@ import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
 import com.crowdin.platform.util.fromHtml
 import com.crowdin.platform.util.getFormattedCode
+import com.crowdin.platform.util.getLocale
 import com.crowdin.platform.util.replaceNewLine
 import java.io.InputStream
-import java.util.Locale
 
 /**
  * This is the wrapped resources which will be provided by Crowdin.
@@ -325,12 +325,14 @@ internal class CrowdinResources(
         default: CharSequence = "",
     ) {
         dataManager.saveReserveResources(
-            StringData(
-                entryName,
-                string,
-                formatArgs,
-                StringBuilder(default),
-            ),
+            locale = configuration.getLocale(),
+            stringData =
+                StringData(
+                    entryName,
+                    string,
+                    formatArgs,
+                    StringBuilder(default),
+                ),
         )
     }
 
@@ -338,7 +340,7 @@ internal class CrowdinResources(
         key: String,
         resultText: Array<String>,
     ) {
-        dataManager.saveReserveResources(arrayData = ArrayData(key, resultText))
+        dataManager.saveReserveResources(locale = configuration.getLocale(), arrayData = ArrayData(key, resultText))
     }
 
     private fun savePluralToCopy(
@@ -349,7 +351,7 @@ internal class CrowdinResources(
     ) {
         val entryName = getResourceEntryName(id)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val rule = PluralRules.forLocale(Locale.getDefault())
+            val rule = PluralRules.forLocale(configuration.getLocale())
             val ruleName = rule.select(quantity.toDouble())
             val quantityMap = mutableMapOf<String, String>()
             quantityMap[ruleName] = defaultText
@@ -361,21 +363,23 @@ internal class CrowdinResources(
                     formatArgs,
                 )
 
-            dataManager.saveReserveResources(pluralData = pluralData)
+            dataManager.saveReserveResources(locale = configuration.getLocale(), pluralData = pluralData)
         }
     }
 
     private fun getStringFromRepository(id: Int): String? =
         try {
             val entryName = getResourceEntryName(id)
-            dataManager.getString(Locale.getDefault().getFormattedCode(), entryName)
+            dataManager.getString(configuration.getLocale().getFormattedCode(), entryName)
         } catch (ex: NotFoundException) {
             null
         }
 
     private fun getStringArrayFromRepository(id: Int): Array<String>? {
         val entryName = getResourceEntryName(id)
-        return dataManager.getStringArray(entryName)
+        val localeCode = configuration.getLocale().getFormattedCode()
+
+        return dataManager.getStringArray(localeCode, entryName)
     }
 
     private fun getPluralFromRepository(
@@ -383,10 +387,12 @@ internal class CrowdinResources(
         quantity: Int,
     ): String? =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val locale = configuration.getLocale()
+            val localeCode = locale.getFormattedCode()
             val entryName = getResourceEntryName(id)
-            val rule = PluralRules.forLocale(Locale.getDefault())
+            val rule = PluralRules.forLocale(locale)
             val ruleName = rule.select(quantity.toDouble())
-            dataManager.getStringPlural(entryName, ruleName)
+            dataManager.getStringPlural(localeCode, entryName, ruleName)
         } else {
             null
         }

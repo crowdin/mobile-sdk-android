@@ -134,7 +134,7 @@ class MemoryLocalRepositoryTest {
         memoryLocalRepository.setArrayData(locale, arrayData)
         memoryLocalRepository.setArrayData(locale, arrayData)
         memoryLocalRepository.setArrayData(locale, arrayData1)
-        val actualValue = memoryLocalRepository.getStringArray("arrayKey")
+        val actualValue = memoryLocalRepository.getStringArray(locale, "arrayKey")
 
         // Then
         assertThat(actualValue, `is`(array))
@@ -149,7 +149,7 @@ class MemoryLocalRepositoryTest {
         memoryLocalRepository.setArrayData(locale, arrayData)
 
         // When
-        val actualValue = memoryLocalRepository.getStringArray("randomKey")
+        val actualValue = memoryLocalRepository.getStringArray(locale, "randomKey")
 
         // Then
         assertThat(actualValue, nullValue())
@@ -177,9 +177,9 @@ class MemoryLocalRepositoryTest {
         memoryLocalRepository.setPluralData(locale, pluralData1)
 
         // Then
-        val value1 = memoryLocalRepository.getStringPlural(resourceKey0, quantityKey0)
+        val value1 = memoryLocalRepository.getStringPlural(locale, resourceKey0, quantityKey0)
         assertThat(value1, `is`(expectedValue))
-        val value2 = memoryLocalRepository.getStringPlural(resourceKey1, quantityKey1)
+        val value2 = memoryLocalRepository.getStringPlural(locale, resourceKey1, quantityKey1)
         assertThat(value2, `is`(expectedValue1))
     }
 
@@ -193,7 +193,7 @@ class MemoryLocalRepositoryTest {
         memoryLocalRepository.setPluralData(locale, pluralData)
 
         // When
-        val value = memoryLocalRepository.getStringPlural("randomKey", "randomKey")
+        val value = memoryLocalRepository.getStringPlural(locale, "randomKey", "randomKey")
 
         // Then
         assertThat(value, nullValue())
@@ -246,7 +246,7 @@ class MemoryLocalRepositoryTest {
         val expectedNumber = 1
 
         // When
-        val textMetaData = memoryLocalRepository.getTextData("pluralValue1")
+        val textMetaData = memoryLocalRepository.getTextData(locale, "pluralValue1")
 
         // Then
         assertThat(textMetaData.pluralName, `is`(expectedPluralName))
@@ -263,7 +263,7 @@ class MemoryLocalRepositoryTest {
         val expectedTextKey = "String1"
 
         // When
-        val textMetaData = memoryLocalRepository.getTextData("string1")
+        val textMetaData = memoryLocalRepository.getTextData(locale, "string1")
 
         // Then
         assertThat(textMetaData.textAttributeKey, `is`(expectedTextKey))
@@ -280,7 +280,7 @@ class MemoryLocalRepositoryTest {
         val expectedIndex = 1
 
         // When
-        val textMetaData = memoryLocalRepository.getTextData("array1:1")
+        val textMetaData = memoryLocalRepository.getTextData(locale, "array1:1")
 
         // Then
         assertThat(textMetaData.arrayName, `is`(expectedTextKey))
@@ -293,10 +293,11 @@ class MemoryLocalRepositoryTest {
         val memoryLocalRepository = MemoryLocalRepository()
         val key = "test key"
         val stringData = StringData(key, "empty")
-        memoryLocalRepository.setStringData(Locale.getDefault().getFormattedCode(), stringData)
+        val formattedCode = Locale.getDefault().getFormattedCode()
+        memoryLocalRepository.setStringData(formattedCode, stringData)
 
         // When
-        val actualValue = memoryLocalRepository.containsKey(key)
+        val actualValue = memoryLocalRepository.containsKey(formattedCode, key)
 
         // Then
         assertThat(actualValue, `is`(true))
@@ -308,10 +309,11 @@ class MemoryLocalRepositoryTest {
         val memoryLocalRepository = MemoryLocalRepository()
         val key = "test key"
         val arrayData = ArrayData(key, null)
-        memoryLocalRepository.setArrayData(Locale.getDefault().getFormattedCode(), arrayData)
+        val formattedCode = Locale.getDefault().getFormattedCode()
+        memoryLocalRepository.setArrayData(formattedCode, arrayData)
 
         // When
-        val actualValue = memoryLocalRepository.containsKey(key)
+        val actualValue = memoryLocalRepository.containsKey(formattedCode, key)
 
         // Then
         assertThat(actualValue, `is`(true))
@@ -323,10 +325,11 @@ class MemoryLocalRepositoryTest {
         val memoryLocalRepository = MemoryLocalRepository()
         val key = "test key"
         val pluralData = PluralData(key)
-        memoryLocalRepository.setPluralData(Locale.getDefault().getFormattedCode(), pluralData)
+        val formattedCode = Locale.getDefault().getFormattedCode()
+        memoryLocalRepository.setPluralData(formattedCode, pluralData)
 
         // When
-        val actualValue = memoryLocalRepository.containsKey(key)
+        val actualValue = memoryLocalRepository.containsKey(formattedCode, key)
 
         // Then
         assertThat(actualValue, `is`(true))
@@ -337,9 +340,10 @@ class MemoryLocalRepositoryTest {
         // Given
         val memoryLocalRepository = MemoryLocalRepository()
         val key = "test key"
+        val formattedCode = Locale.getDefault().getFormattedCode()
 
         // When
-        val actualValue = memoryLocalRepository.containsKey(key)
+        val actualValue = memoryLocalRepository.containsKey(formattedCode, key)
 
         // Then
         assertThat(actualValue, `is`(false))

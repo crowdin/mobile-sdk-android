@@ -1,5 +1,6 @@
 package com.crowdin.platform.data.remote
 
+import android.content.res.Configuration
 import androidx.annotation.WorkerThread
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
@@ -14,10 +15,12 @@ internal interface RemoteRepository {
     /**
      * Fetch [LanguageData] for a specific language by language code.
      *
+     * @param configuration device configuration for locale context.
      * @param languageCode code to be user for search data.
      * @param languageDataCallback delivers data back to caller.
      */
     fun fetchData(
+        configuration: Configuration? = null,
         languageCode: String? = null,
         supportedLanguages: LanguagesInfo? = null,
         languageDataCallback: LanguageDataCallback? = null,
