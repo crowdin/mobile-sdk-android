@@ -48,6 +48,14 @@ fun executeIO(function: () -> Unit) {
     }
 }
 
+fun Locale.toLanguageTagCompat(): String =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        toLanguageTag()
+    } else {
+        val language = language.withCrowdinSupportedCheck()
+        if (country.isNotEmpty()) "$language-$country" else language
+    }
+
 fun getMatchedCode(
     configuration: Configuration?,
     list: List<String>?,
