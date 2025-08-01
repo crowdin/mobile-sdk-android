@@ -18,6 +18,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.LoadingStateListener
 import com.crowdin.platform.util.inflateWithCrowdin
+import com.example.example_info.InfoActivity
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : BaseActivity(), LoadingStateListener {
@@ -73,14 +74,18 @@ class MainActivity : BaseActivity(), LoadingStateListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == R.id.menuInfo) {
-            startActivity(Intent().apply {
-                setClassName(this@MainActivity, "com.example.example_info.InfoActivity")
-            })
+        return when (item.itemId) {
+            R.id.menuInfo -> {
+                startActivity(Intent(this, InfoActivity::class.java))
+                true
+            }
 
-            true
-        } else {
-            super.onOptionsItemSelected(item)
+            R.id.menuCompose -> {
+                startActivity(Intent(this, SampleComposeActivity::class.java))
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
