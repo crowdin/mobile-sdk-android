@@ -14,6 +14,7 @@ import android.webkit.WebViewClient
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.R
 import com.crowdin.platform.data.DistributionInfoCallback
@@ -34,12 +35,16 @@ internal class AuthActivity : AppCompatActivity() {
     companion object {
         private const val DOMAIN = "domain"
         private const val GRANT_TYPE = "authorization_code"
-        private const val REDIRECT_URI = "crowdintest://"
+        private const val EXTRA_REDIRECT_URI = "redirectURI"
 
         @JvmStatic
-        fun launchActivity(context: Context) {
+        fun launchActivity(
+            context: Context,
+            redirectURI: String,
+        ) {
             val intent = Intent(context, AuthActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            intent.putExtra(EXTRA_REDIRECT_URI, redirectURI)
             context.startActivity(intent)
         }
     }
@@ -51,15 +56,16 @@ internal class AuthActivity : AppCompatActivity() {
         webView = findViewById(R.id.webView)
         progressView = findViewById(R.id.progressView)
 
-        if (Crowdin.isAuthorized()) {
+        val redirectUri = intent.getStringExtra(EXTRA_REDIRECT_URI) ?: ""
+        if (Crowdin.isAuthorized() || redirectUri.isEmpty()) {
             close()
         } else {
-            requestAuthorization()
+            requestAuthorization(redirectUri)
         }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun requestAuthorization() {
+    private fun requestAuthorization(redirectUri: String) {
         val authConfig = Crowdin.getAuthConfig()
         domain = Crowdin.getOrganizationName()
         clientId = authConfig?.clientId ?: ""
@@ -72,7 +78,7 @@ internal class AuthActivity : AppCompatActivity() {
                 .authority("accounts.crowdin.com")
                 .appendPath("oauth")
                 .appendPath("authorize")
-                .encodedQuery("client_id=$clientId&response_type=code&scope=project&redirect_uri=$REDIRECT_URI")
+                .encodedQuery("client_id=$clientId&response_type=code&scope=project&redirect_uri=$redirectUri")
 
         domain?.let { builder.appendQueryParameter(DOMAIN, it) }
         val url = builder.build().toString()
@@ -86,10 +92,10 @@ internal class AuthActivity : AppCompatActivity() {
                     view: WebView,
                     url: String,
                 ): Boolean {
-                    if (url.startsWith(REDIRECT_URI)) {
-                        val uri = Uri.parse(url)
+                    if (url.startsWith(redirectUri)) {
+                        val uri = url.toUri()
                         val code = uri.getQueryParameter("code") ?: ""
-                        handleCode(code)
+                        handleCode(code, redirectUri)
                     }
 
                     return false
@@ -108,7 +114,7 @@ internal class AuthActivity : AppCompatActivity() {
                     view: WebView,
                     url: String,
                 ) {
-                    if (!url.startsWith(REDIRECT_URI)) {
+                    if (!url.startsWith(redirectUri)) {
                         progressView.visibility = View.GONE
                     }
                     super.onPageFinished(view, url)
@@ -117,7 +123,10 @@ internal class AuthActivity : AppCompatActivity() {
         webView.loadUrl(url)
     }
 
-    private fun handleCode(code: String) {
+    private fun handleCode(
+        code: String,
+        redirectUri: String,
+    ) {
         if (code.isNotEmpty()) {
             progressView.visibility = View.VISIBLE
             ThreadUtils.runInBackgroundPool({
@@ -130,7 +139,7 @@ internal class AuthActivity : AppCompatActivity() {
                                     GRANT_TYPE,
                                     clientId,
                                     clientSecret,
-                                    REDIRECT_URI,
+                                    redirectUri,
                                     code,
                                 ),
                                 domain,

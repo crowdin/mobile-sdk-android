@@ -312,10 +312,15 @@ object Crowdin {
                 return
             }
 
-            if (config.authConfig?.requestAuthDialog == false) {
-                AuthActivity.launchActivity(context)
+            val authConfig = config.authConfig
+            if (authConfig == null) {
+                onErrorAction?.invoke("AuthConfig not provided")
             } else {
-                UiUtil.createAuthDialog(context) { AuthActivity.launchActivity(context) }
+                if (authConfig.requestAuthDialog) {
+                    UiUtil.createAuthDialog(context) { AuthActivity.launchActivity(context, authConfig.redirectURI) }
+                } else {
+                    AuthActivity.launchActivity(context, authConfig.redirectURI)
+                }
             }
         }
     }
