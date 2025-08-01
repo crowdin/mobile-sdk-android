@@ -44,6 +44,7 @@ class App : Application() {
         val organizationName = "your_organization_name"     // for Crowdin Enterprise users only
         val requestAuthDialog = true                        // Request authorization dialog `true` by default or `false`
         val apiToken = "your_api_token"
+        val redirectURI = "crowdinuri://"
 
         Crowdin.init(
             applicationContext,
@@ -58,6 +59,7 @@ class App : Application() {
                     AuthConfig(
                         clientId = clientId,
                         clientSecret = clientSecret,
+                        redirectURI = redirectURI,
                         requestAuthDialog = requestAuthDialog
                     )
                 )

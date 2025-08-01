@@ -66,7 +66,7 @@ class CrowdinConfigTest {
     @Test
     fun whenAuthConfigEmptyValues_shouldThrowException() {
         // Given
-        val authConfig = AuthConfig(" ", "")
+        val authConfig = AuthConfig(" ", "", "")
 
         // When
         try {
@@ -123,7 +123,7 @@ class CrowdinConfigTest {
             CrowdinConfig
                 .Builder()
                 .withDistributionHash("distributionHash")
-                .withAuthConfig(AuthConfig("clientId", "cliendSecret", requestAuthDialog = true))
+                .withAuthConfig(AuthConfig("clientId", "cliendSecret", "redirectURI", requestAuthDialog = true))
                 .build()
 
         // Then
@@ -137,7 +137,7 @@ class CrowdinConfigTest {
             CrowdinConfig
                 .Builder()
                 .withDistributionHash("distributionHash")
-                .withAuthConfig(AuthConfig("clientId", "cliendSecret", requestAuthDialog = false))
+                .withAuthConfig(AuthConfig("clientId", "cliendSecret", "redirectURI", requestAuthDialog = false))
                 .build()
 
         // Then
@@ -167,7 +167,7 @@ class CrowdinConfigTest {
             CrowdinConfig
                 .Builder()
                 .withDistributionHash("distributionHash")
-                .withAuthConfig(AuthConfig("clientId", "cliendSecret"))
+                .withAuthConfig(AuthConfig("clientId", "cliendSecret", "redirectURI"))
                 .build()
 
         // Then
