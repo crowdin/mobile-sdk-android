@@ -5,4 +5,9 @@
         android:id="@+id/menuInfo"
         android:icon="@android:drawable/ic_menu_info_details"
         android:title="@string/menu_info" />
+
+    <item
+        android:id="@+id/menuCompose"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="@string/menu_compose" />
 </menu>
