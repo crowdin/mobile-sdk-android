@@ -46,4 +46,5 @@
     <string name="settings">Налаштування</string>
     <string name="app_language">Поточна мова</string>
     <string name="menu_info">Інформація</string>
+    <string name="menu_compose">Compose</string>
 </resources>

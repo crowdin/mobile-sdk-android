@@ -32,6 +32,8 @@
 
         <activity android:name=".MainActivity" />
 
+        <activity android:name=".SampleComposeActivity" />
+
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"
