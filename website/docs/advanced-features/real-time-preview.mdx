@@ -42,18 +42,29 @@ import samplePreviewDisconnectJava from '!!raw-loader!../code-samples/real-time-
 
 :::tip Tips
 - To use the Real-Time Preview feature you still need to [wrap context](/setup#context-wrapping) for your activities.
-- The [OAuth App](https://support.crowdin.com/creating-oauth-app/) redirect URL should match your **App scheme**. <br/>E.g., for scheme `<data android:scheme="crowdintest" />` redirect URL in Crowdin should be `crowdintest://`.
 - To easily control the Real-Time Preview feature you could also use the [SDK Controls](/advanced-features/sdk-controls) UI widget.
 :::
 
 ### Config options
 
-| Config option                | Description                                                                                                                                                                  | Example                                                                                                         |
-|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| `withDistributionHash`       | Distribution Hash                                                                                                                                                            | `withDistributionHash("7a0c1...7uo3b")`                                                                         |
-| `withRealTimeUpdates`        | Enable Real-Time Preview feature                                                                                                                                             | `withRealTimeUpdates()`                                                                                         |
-| `withSourceLanguage`         | Source language code in your Crowdin project                                                                                                                                 | `withSourceLanguage("en")`                                                                                      |
-| `withAuthConfig`             | Crowdin authorization config                                                                                                                                                 | `withAuthConfig(AuthConfig("client_id", "client_secret"))`                                                      |
-| `client_id`, `client_secret` | Crowdin OAuth Client ID and Client Secret                                                                                                                                    | `"gpY2yC...cx3TYB"`, `"Xz95tfedd0A...TabEDx9T"`                                                                 |
-| `request_auth_dialog`        | Request authorization dialog 				                                                                                                                                  | `true` by default or `false`                                                                                    |
-| `withOrganizationName`       | An Organization domain name<br/>(for **Crowdin Enterprise users only**)                                                                                                      | `"mycompany"` for Crowdin Enterprise or `null` for crowdin.com                                                  |
+| Config option                | Description                                                             | Example                                                                    |
+|------------------------------|-------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| `withDistributionHash`       | Distribution Hash                                                       | `withDistributionHash("7a0c1...7uo3b")`                                    |
+| `withRealTimeUpdates`        | Enable Real-Time Preview feature                                        | `withRealTimeUpdates()`                                                    |
+| `withSourceLanguage`         | Source language code in your Crowdin project                            | `withSourceLanguage("en")`                                                 |
+| `withAuthConfig`             | Crowdin authorization config                                            | `withAuthConfig(AuthConfig("client_id", "client_secret", "redirect_uri"))` |
+| `client_id`, `client_secret` | Crowdin OAuth Client ID and Client Secret                               | `"gpY2yC...cx3TYB"`, `"Xz95tfedd0A...TabEDx9T"`                            |
+| `redirect_uri`               | OAuth redirect URI (optional, defaults to `"crowdintest://"`)           | `"your-custom://redirect"` or `"crowdintest://"`                           |
+| `request_auth_dialog`        | Request authorization dialog                                            | `true` by default or `false`                                               |
+| `withOrganizationName`       | An Organization domain name<br/>(for **Crowdin Enterprise users only**) | `"mycompany"` for Crowdin Enterprise or `null` for crowdin.com             |
+
+### Redirect URI Configuration
+
+You can configure the OAuth redirect URI for authorization in two ways:
+
+- Via `AuthConfig` (Recommended): Specify the redirect URI directly in your `AuthConfig`. This method provides more flexibility and doesn't require manifest configuration.
+- Via App Scheme in Manifest: Configure the redirect URI using app scheme in your `AndroidManifest.xml`. When using this method, the redirect URL in your Crowdin OAuth app should be `crowdintest://`.
+
+The [OAuth App](https://support.crowdin.com/creating-oauth-app/) redirect URL should match your configured redirect URI:
+  - When using **AuthConfig method**: Set the redirect URL to match the `redirect_uri` parameter value (e.g., `"your-custom://redirect"`)
+  - When using **App scheme method**: Set the redirect URL to match your app scheme (e.g., for scheme `<data android:scheme="crowdintest" />` use `crowdintest://`)

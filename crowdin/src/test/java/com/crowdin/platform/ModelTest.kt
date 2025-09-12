@@ -38,14 +38,16 @@ class ModelTest {
         // Given
         val clientId = "213455asc112"
         val clientSecret = "lad12141ax"
+        val redirectURI = "redirectURI"
         val organizationName = "Test"
 
         // When
-        val authConfig = AuthConfig(clientId, clientSecret, organizationName)
+        val authConfig = AuthConfig(clientId, clientSecret, redirectURI, organizationName)
 
         // Then
         assertThat(authConfig.clientId, `is`(clientId))
         assertThat(authConfig.clientSecret, `is`(clientSecret))
+        assertThat(authConfig.redirectURI, `is`(redirectURI))
         assertThat(authConfig.organizationName, `is`(organizationName))
     }
 

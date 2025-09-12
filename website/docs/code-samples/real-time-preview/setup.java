@@ -10,6 +10,7 @@ protected void onCreate(Bundle savedInstanceState) {
             .withAuthConfig(new AuthConfig(
                 client_id,
                 client_secret,
+                redirect_uri,
                 request_auth_dialog
             ))
             .withOrganizationName(organization_name)   // required for Crowdin Enterprise

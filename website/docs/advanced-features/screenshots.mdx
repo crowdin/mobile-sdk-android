@@ -26,6 +26,11 @@ import sampleScreenshotSetupJava from '!!raw-loader!../code-samples/screenshots/
   <TabItem value="java" label="Java"><CodeBlock language="java">{sampleScreenshotSetupJava}</CodeBlock></TabItem>
 </Tabs>
 
+:::caution
+- Ensure you've properly [wrapped context](/setup#context-wrapping) for all activities where screenshots will be captured.
+- Using the `Crowdin.registerScreenShotContentObserver(this)` (system button handler) to send screenshots to Crowdin requires storage permission for your application.
+:::
+
 ## Authorization
 
 The Screenshots feature requires authorization to transmit screenshots to your Crowdin project. Choose from two authorization methods based on your needs:
@@ -50,7 +55,6 @@ import samplePreviewAuthJava from '!!raw-loader!../code-samples/real-time-previe
 </Tabs>
 
 :::info
-- When using OAuth, verify that your OAuth App redirect URL matches your **App scheme**. For example, if your scheme is `<data android:scheme="crowdintest" />`, the redirect URL in Crowdin should be `crowdintest://`.
 - To easily control the Screenshots feature you could also use the [SDK Controls](/advanced-features/sdk-controls) UI widget.
 :::
 
@@ -84,23 +88,30 @@ import sampleScreenshotHandlerJava from '!!raw-loader!../code-samples/screenshot
 
 ## Config Options
 
-| Config option                | Description                                                             | Example                                                                     |
-|------------------------------|-------------------------------------------------------------------------|-----------------------------------------------------------------------------|
-| `withDistributionHash`       | Distribution Hash                                                       | `withDistributionHash("7a0c1...7uo3b")`                                     |
-| `withScreenshotEnabled`      | Enable Screenshots feature                                              | `withScreenshotEnabled()`                                                   |
-| `withSourceLanguage`         | Source language code in your Crowdin project                            | `withSourceLanguage("en")`                                                  |
-| `withAuthConfig`             | Crowdin authorization config                                            | `withAuthConfig(AuthConfig(client_id, client_secret, request_auth_dialog))` |
-| `client_id`, `client_secret` | Crowdin OAuth Client ID and Client Secret                               | `"gpY2yC...cx3TYB"`, `"Xz95tfedd0A...TabEDx9T"`                             |
-| `request_auth_dialog`        | Request authorization dialog                                            | `true` (default) or `false`                                                 |
-| `withApiAuthConfig`          | Crowdin authorization API config                                        | `withApiAuthConfig(ApiAuthConfig(api_token))`                               |
-| `api_token`                  | Crowdin authorization token                                             | `"gpY2yC...cx3TYB"`                                                         |
-| `withOrganizationName`       | An Organization domain name<br/>(for **Crowdin Enterprise users only**) | `"mycompany"` for Crowdin Enterprise or `null` for crowdin.com              |
+| Config option                | Description                                                             | Example                                                                                   |
+|------------------------------|-------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
+| `withDistributionHash`       | Distribution Hash                                                       | `withDistributionHash("7a0c1...7uo3b")`                                                   |
+| `withScreenshotEnabled`      | Enable Screenshots feature                                              | `withScreenshotEnabled()`                                                                 |
+| `withSourceLanguage`         | Source language code in your Crowdin project                            | `withSourceLanguage("en")`                                                                |
+| `withAuthConfig`             | Crowdin authorization config                                            | `withAuthConfig(AuthConfig(client_id, client_secret, redirect_uri, request_auth_dialog))` |
+| `client_id`, `client_secret` | Crowdin OAuth Client ID and Client Secret                               | `"gpY2yC...cx3TYB"`, `"Xz95tfedd0A...TabEDx9T"`                                           |
+| `redirect_uri`               | OAuth redirect URI (optional, defaults to `"crowdintest://"`)           | `"your-custom://redirect"` or `"crowdintest://"`                                          |
+| `request_auth_dialog`        | Request authorization dialog                                            | `true` (default) or `false`                                                               |
+| `withApiAuthConfig`          | Crowdin authorization API config                                        | `withApiAuthConfig(ApiAuthConfig(api_token))`                                             |
+| `api_token`                  | Crowdin authorization token                                             | `"gpY2yC...cx3TYB"`                                                                       |
+| `withOrganizationName`       | An Organization domain name<br/>(for **Crowdin Enterprise users only**) | `"mycompany"` for Crowdin Enterprise or `null` for crowdin.com                            |
 
 :::tip
 See the [OAuth](https://support.crowdin.com/account-settings/#oauth) and [API](https://support.crowdin.com/account-settings/#api) sections in your Crowdin account settings to obtain the necessary credentials.
 :::
 
-:::caution
-- Ensure you've properly [wrapped context](/setup#context-wrapping) for all activities where screenshots will be captured.
-- Using the `Crowdin.registerScreenShotContentObserver(this)` (system button handler) to send screenshots to Crowdin requires storage permission for your application.
-:::
+### Redirect URI Configuration
+
+You can configure the OAuth redirect URI for authorization in two ways:
+
+- Via `AuthConfig` (Recommended): Specify the redirect URI directly in your `AuthConfig`. This method provides more flexibility and doesn't require manifest configuration.
+- Via App Scheme in Manifest: Configure the redirect URI using app scheme in your `AndroidManifest.xml`. When using this method, the redirect URL in your Crowdin OAuth app should be `crowdintest://`.
+
+The [OAuth App](https://support.crowdin.com/creating-oauth-app/) redirect URL should match your configured redirect URI:
+  - When using **AuthConfig method**: Set the redirect URL to match the `redirect_uri` parameter value (e.g., `"your-custom://redirect"`)
+  - When using **App scheme method**: Set the redirect URL to match your app scheme (e.g., for scheme `<data android:scheme="crowdintest" />` use `crowdintest://`)
