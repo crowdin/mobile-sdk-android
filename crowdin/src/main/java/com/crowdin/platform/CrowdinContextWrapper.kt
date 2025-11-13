@@ -8,14 +8,21 @@ import com.crowdin.platform.transformer.ViewTransformerManager
 /**
  * Main Crowdin context wrapper which wraps the context for providing another layout inflater & resources.
  */
-internal class CrowdinContextWrapper private constructor(
+ internal class CrowdinContextWrapper private constructor(
     base: Context,
     dataManager: DataManager,
     private val viewTransformerManager: ViewTransformerManager,
 ) : ContextWrapper(
         CustomResourcesContextWrapper(
             base,
-            CrowdinResources(base.resources, dataManager),
+            // Use application context resources to ensure we have access to all system resources
+            // This prevents crashes when WebView or other system components try to inflate views
+            // See: https://github.com/crowdin/mobile-sdk-android/issues/220
+            // See: https://github.com/crowdin/mobile-sdk-android/issues/266
+            CrowdinResources(
+                base.applicationContext?.resources ?: base.resources,
+                dataManager
+            ),
         ),
     ) {
     override fun getSystemService(name: String): Any? {
