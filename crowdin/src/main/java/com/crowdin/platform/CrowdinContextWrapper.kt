@@ -21,7 +21,7 @@ internal class CrowdinContextWrapper private constructor(
             // See: https://github.com/crowdin/mobile-sdk-android/issues/266
             CrowdinResources(
                 base.applicationContext?.resources ?: base.resources,
-                dataManager
+                dataManager,
             ),
         ),
     ) {
