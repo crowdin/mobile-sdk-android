@@ -8,7 +8,7 @@ import com.crowdin.platform.transformer.ViewTransformerManager
 /**
  * Main Crowdin context wrapper which wraps the context for providing another layout inflater & resources.
  */
- internal class CrowdinContextWrapper private constructor(
+internal class CrowdinContextWrapper private constructor(
     base: Context,
     dataManager: DataManager,
     private val viewTransformerManager: ViewTransformerManager,
