@@ -139,7 +139,7 @@ object Crowdin {
      * Set a single string for a language.
      *
      * @param language language code. For example en, en-GB, en-US etc.
-     *                  https://support.crowdin.com/api/language-codes/
+     *                  https://support.crowdin.com/developer/language-codes/
      * @param key the string key.
      * @param value the string value.
      */
@@ -156,7 +156,7 @@ object Crowdin {
      * Get a single string for a language.
      *
      * @param language language code. For example en, en-GB, en-US etc.
-     *                  https://support.crowdin.com/api/language-codes/
+     *                  https://support.crowdin.com/developer/language-codes/
      * @param key the string key.
      * @return resource or empty string.
      */

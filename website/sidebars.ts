@@ -26,6 +26,7 @@ const sidebars: SidebarsConfig = {
         'guides/multiple-flavor-app',
         'guides/platforms-support',
         'guides/synchronous-mode',
+        'guides/programmatic-strings',
       ]
     },
     'example',

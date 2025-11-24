@@ -3,6 +3,10 @@
 In some cases, you may need to programmatically get or set translations for specific languages without relying on the standard
 Android resource system. The Crowdin SDK provides methods to directly access and modify translation strings.
 
+:::info Version Requirement
+Available starting from Crowdin SDK version 1.16.0.
+:::
+
 ## Getting a String
 
 You can retrieve a translation for a specific language using the `Crowdin.getString()` method:
@@ -14,7 +18,7 @@ val translation = Crowdin.getString("en-US", "string_key")
 ### Parameters
 
 - `language` - Language code in the format `language` or `language-country` (e.g., `en`, `en-GB`, `en-US`).
-  See [Crowdin Language Codes](https://support.crowdin.com/api/language-codes/) for more details.
+  See [Crowdin Language Codes](https://support.crowdin.com/developer/language-codes/) for more details.
 - `key` - The string resource key as defined in your Crowdin project.
 
 ### Return Value
@@ -72,4 +76,3 @@ These methods are useful for:
 - Strings set using `setString()` are stored in memory and will be available for the current session
 - These strings will be included in the SDK's cache and persist across app restarts
   :::
-
