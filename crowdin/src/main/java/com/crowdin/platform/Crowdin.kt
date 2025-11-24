@@ -139,7 +139,7 @@ object Crowdin {
      * Set a single string for a language.
      *
      * @param language language code. For example en, en-GB, en-US etc.
-     *                  https://support.crowdin.com/api/language-codes/
+     *                  https://support.crowdin.com/developer/language-codes/
      * @param key the string key.
      * @param value the string value.
      */
@@ -151,6 +151,20 @@ object Crowdin {
     ) {
         dataManager?.setString(language, key, value)
     }
+
+    /**
+     * Get a single string for a language.
+     *
+     * @param language language code. For example en, en-GB, en-US etc.
+     *                  https://support.crowdin.com/developer/language-codes/
+     * @param key the string key.
+     * @return resource or empty string.
+     */
+    @JvmStatic
+    fun getString(
+        language: String,
+        key: String,
+    ): String = dataManager?.getString(language, key) ?: ""
 
     /**
      * Tries to update title for all items defined in menu xml file.

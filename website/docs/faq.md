@@ -35,3 +35,9 @@ The SDK uses the cached translations. If there are no cached translations, it wi
 ### If there are multiple branches in the Crowdin project, which translations will be displayed in the app?
 
 The SDK will use the translations from the branch that is specified in the distribution configuration.
+
+### How can I programmatically get or set translations for a specific language?
+
+The SDK provides `Crowdin.getString(language, key)` and `Crowdin.setString(language, key, value)` methods to programmatically
+access and modify translations. This is useful for dynamic content, testing, or implementing custom fallback logic. For more
+details, see the [Programmatic String Access](/guides/programmatic-strings) guide.

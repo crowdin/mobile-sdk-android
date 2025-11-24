@@ -17,6 +17,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.LoadingStateListener
+import com.crowdin.platform.util.getLocale
 import com.crowdin.platform.util.inflateWithCrowdin
 import com.example.example_info.InfoActivity
 import com.google.android.material.navigation.NavigationView
@@ -51,6 +52,10 @@ class MainActivity : BaseActivity(), LoadingStateListener {
 
         // Register data observer. When data loaded you can invalidate your UI to apply new resources.
         Crowdin.registerDataLoadingObserver(this)
+
+        // Test of public API that returns string by key or empty if not found
+        val languageTag = this.resources.configuration.getLocale().toLanguageTag()
+        Crowdin.getString(languageTag, "settings")
     }
 
     override fun onDestroy() {
