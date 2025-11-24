@@ -15,7 +15,7 @@ Add the dependency:
 
 ```groovy
 dependencies {
-   implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.15.0'
+   implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.16.0'
 }
 ```
 
@@ -27,7 +27,7 @@ For Android projects that already have the [transitive dependency](https://docs.
 To fix this, exclude `gson` from Crowdin or from your library, but be sure to keep the newer one for backward compatibility.
 
 ```groovy
-implementation ('com.github.crowdin.mobile-sdk-android:sdk:1.15.0') {
+implementation ('com.github.crowdin.mobile-sdk-android:sdk:1.16.0') {
     exclude group: 'com.google.code.gson', module: 'gson'
 }
 ```
