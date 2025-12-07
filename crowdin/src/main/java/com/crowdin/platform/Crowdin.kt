@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.Menu
 import androidx.annotation.MenuRes
 import com.crowdin.platform.auth.AuthActivity
+import com.crowdin.platform.compose.ComposeStringRepository
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.DistributionInfoCallback
 import com.crowdin.platform.data.LanguageDataCallback
@@ -61,6 +62,7 @@ object Crowdin {
     private var screenshotManager: ScreenshotManager? = null
     private var shakeDetectorManager: ShakeDetectorManager? = null
     private var translationDataRepository: TranslationDataRepository? = null
+    private var composeRepository: ComposeStringRepository? = null
 
     /**
      * Initialize Crowdin with the specified configuration.
@@ -80,6 +82,7 @@ object Crowdin {
         initPreferences(context)
         initStringDataManager(context, config, loadingStateListener)
         initViewTransformer()
+        initComposeSupport(context)
         initFeatureManagers()
         initTranslationDataManager()
         initRealTimeUpdates(context)
@@ -132,6 +135,10 @@ object Crowdin {
     fun onConfigurationChanged() {
         if (FeatureFlags.isRealTimeUpdateEnabled) {
             downloadTranslation()
+        }
+
+        if (FeatureFlags.isRealTimeComposeEnabled) {
+            composeRepository?.forceUpdate()
         }
     }
 
@@ -398,6 +405,16 @@ object Crowdin {
     fun isRealTimeUpdatesEnabled(): Boolean = config.isRealTimeUpdateEnabled
 
     /**
+     * Return 'compose' feature enable state. true - enabled, false - disabled.
+     */
+    fun isRealTimeComposeEnabled(): Boolean = config.isRealTimeComposeEnabled
+
+    /**
+     * Get the current compose repository instance.
+     */
+    internal fun getComposeRepository(): ComposeStringRepository? = composeRepository
+
+    /**
      * Register shake detector. Will trigger force update on shake event.
      */
     @JvmStatic
@@ -464,6 +481,7 @@ object Crowdin {
                     config.sourceLanguage,
                     dataManager,
                     viewTransformerManager,
+                    composeRepository
                 )
         }
 
@@ -503,6 +521,9 @@ object Crowdin {
                     override fun onDataChanged() {
                         ThreadUtils.executeOnMain {
                             viewTransformerManager.invalidate()
+                            if (FeatureFlags.isRealTimeComposeEnabled) {
+                                composeRepository?.forceUpdate()
+                            }
                         }
                     }
                 },
@@ -583,5 +604,13 @@ object Crowdin {
                 }
             },
         )
+    }
+
+    private fun initComposeSupport(context: Context) {
+        if (config.isRealTimeComposeEnabled) {
+            dataManager?.let { dm ->
+                composeRepository = ComposeStringRepository(context, CrowdinResources(context.resources, dm))
+            }
+        }
     }
 }

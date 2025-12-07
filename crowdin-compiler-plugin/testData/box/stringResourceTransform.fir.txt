@@ -1,0 +1,43 @@
+FILE: helpers.kt
+    package androidx.compose.ui.res
+
+    @R|kotlin/Suppress|(names = vararg(String(UNUSED_PARAMETER))) public final fun stringResource(id: R|kotlin/Int|, vararg formatArgs: R|kotlin/Array<out kotlin/Any>|): R|kotlin/String| {
+        ^stringResource String(original)
+    }
+FILE: crowdinHelpers.kt
+    package com.crowdin.platform.compose
+
+    public final object R : R|kotlin/Any| {
+        private constructor(): R|com/crowdin/platform/compose/R| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final object string : R|kotlin/Any| {
+            private constructor(): R|com/crowdin/platform/compose/R.string| {
+                super<R|kotlin/Any|>()
+            }
+
+            public final const val test_string: R|kotlin/Int| = Int(1)
+                public get(): R|kotlin/Int|
+
+        }
+
+    }
+    @R|kotlin/Suppress|(names = vararg(String(UNUSED_PARAMETER))) public final fun crowdinString(resourceId: R|kotlin/Int|, vararg formatArgs: R|kotlin/Array<out kotlin/Any>|): R|kotlin/String| {
+        ^crowdinString String(transformed)
+    }
+FILE: test.kt
+    package test.box
+
+    public final fun box(): R|kotlin/String| {
+        lval result: R|kotlin/String| = R|androidx/compose/ui/res/stringResource|(Q|com/crowdin/platform/compose/R.string|.R|com/crowdin/platform/compose/R.string.test_string|)
+        ^box when () {
+            ==(R|<local>/result|, String(transformed)) ->  {
+                String(OK)
+            }
+            else ->  {
+                <strcat>(String(FAIL: got ), R|<local>/result|)
+            }
+        }
+
+    }

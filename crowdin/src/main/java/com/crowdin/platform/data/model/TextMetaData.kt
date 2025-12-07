@@ -7,6 +7,7 @@ internal class TextMetaData {
     var textOffAttributeKey: String = ""
     var stringsFormatArgs: Array<out Any?> = arrayOf()
     var stringDefault: CharSequence = ""
+    var resourceId: Int = 0
 
     val hasAttributeKey: Boolean
         get() {

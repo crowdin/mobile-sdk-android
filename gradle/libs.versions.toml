@@ -1,0 +1,65 @@
+[versions]
+# https://github.com/JetBrains/kotlin
+kotlin = "2.2.0"
+
+# Android Gradle Plugin
+agp = "8.7.2"
+
+# https://github.com/Kotlin/binary-compatibility-validator
+kotlin-binaryCompatibilityValidator = "0.16.3"
+
+# https://github.com/junit-team/junit4
+junit = "4.13.2"
+
+# https://github.com/gmazzo/gradle-buildconfig-plugin
+buildconfig = "5.6.5"
+
+composeBom = "2025.02.00"
+
+[libraries]
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+kotlin-script-runtime = { group = "org.jetbrains.kotlin", name = "kotlin-script-runtime", version.ref = "kotlin" }
+kotlin-test-junit5 = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit5", version.ref = "kotlin" }
+kotlin-test-framework = { group = "org.jetbrains.kotlin", name = "kotlin-compiler-internal-test-framework", version.ref = "kotlin" }
+kotlin-annotations-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-annotations-jvm", version.ref = "kotlin" }
+kotlin-compiler = { group = "org.jetbrains.kotlin", name = "kotlin-compiler", version.ref = "kotlin" }
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+kotlin-gradle-plugin-api  = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin-api", version.ref = "kotlin" }
+
+junit = { module = "junit:junit", version.ref = "junit" }
+
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlin-binaryCompatibilityValidator"}
+buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig"}
+
+gradle-java-test-fixtures = { id = "java-test-fixtures" }
+gradle-idea = { id = "idea" }
+gradle-plugin = { id = "java-gradle-plugin" }
+
+# Added plugin aliases for Android Gradle Plugin and Kotlin Android
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+# Kotlin Compose plugin
+kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+[bundles]
+androidx-ui = [
+    "androidx-foundation-android",
+    "androidx-ui",
+    "androidx-ui-graphics",
+    "androidx-ui-tooling",
+    "androidx-ui-tooling-preview",
+    "androidx-ui-test-manifest",
+]

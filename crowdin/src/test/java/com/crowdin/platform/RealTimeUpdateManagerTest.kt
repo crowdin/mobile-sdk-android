@@ -25,7 +25,7 @@ class RealTimeUpdateManagerTest {
     @Test
     fun openConnection_whenDataManagerNull_shouldReturn() {
         // Given
-        val realTimeUpdateManager = RealTimeUpdateManager("EN", null, mockViewTransformer)
+        val realTimeUpdateManager = RealTimeUpdateManager("EN", null, mockViewTransformer, null)
 
         // When
         realTimeUpdateManager.openConnection(null)
@@ -38,7 +38,7 @@ class RealTimeUpdateManagerTest {
     fun openConnection_whenDistributionDataNull_shouldReturn() {
         // Given
         val realTimeUpdateManager =
-            RealTimeUpdateManager("EN", mockDataManager, mockViewTransformer)
+            RealTimeUpdateManager("EN", mockDataManager, mockViewTransformer, null)
 
         // When
         realTimeUpdateManager.openConnection(null)
@@ -55,7 +55,7 @@ class RealTimeUpdateManagerTest {
     fun openConnection_whenMappingNotNull_shouldCreateConnection() {
         // Given
         val realTimeUpdateManager =
-            RealTimeUpdateManager("EN", mockDataManager, mockViewTransformer)
+            RealTimeUpdateManager("EN", mockDataManager, mockViewTransformer, null)
         val distributionData = givenDistributionData()
         `when`(
             mockDataManager.getData<DistributionInfoResponse.DistributionData>(
@@ -76,7 +76,7 @@ class RealTimeUpdateManagerTest {
     fun closeConnection_shouldRemoveTransformerListener() {
         // Given
         val realTimeUpdateManager =
-            RealTimeUpdateManager("EN", mockDataManager, mockViewTransformer)
+            RealTimeUpdateManager("EN", mockDataManager, mockViewTransformer, null)
 
         // When
         realTimeUpdateManager.closeConnection()

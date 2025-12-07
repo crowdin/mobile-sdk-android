@@ -33,4 +33,19 @@ class FeatureFlagTest {
         // Then
         assertThat(FeatureFlags.isScreenshotEnabled, `is`(true))
     }
+
+
+    @Test
+    fun whenSetRealTimeComposeEnabled_shouldPersist() {
+        // Given
+        val config = mock(CrowdinConfig::class.java)
+        `when`(config.isRealTimeComposeEnabled).thenReturn(true)
+
+        // When
+        FeatureFlags.registerConfig(config)
+
+        // Then
+        assertThat(FeatureFlags.isRealTimeComposeEnabled, `is`(true))
+    }
 }
+

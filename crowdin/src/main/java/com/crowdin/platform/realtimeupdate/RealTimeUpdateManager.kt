@@ -3,6 +3,7 @@ package com.crowdin.platform.realtimeupdate
 import android.content.res.Configuration
 import android.util.Log
 import com.crowdin.platform.Crowdin
+import com.crowdin.platform.compose.ComposeStringRepository
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.remote.api.DistributionInfoResponse
 import com.crowdin.platform.transformer.ViewTransformerManager
@@ -16,6 +17,7 @@ internal class RealTimeUpdateManager(
     private val sourceLanguage: String,
     private val dataManager: DataManager?,
     private val viewTransformerManager: ViewTransformerManager,
+    private val composeRepository: ComposeStringRepository?
 ) {
     companion object {
         const val NORMAL_CLOSURE_STATUS = 0x3E9
@@ -40,6 +42,7 @@ internal class RealTimeUpdateManager(
     fun closeConnection() {
         socket?.close(NORMAL_CLOSURE_STATUS, null)
         viewTransformerManager.setOnViewsChangeListener(null)
+        composeRepository?.setWebSocketCallbacks(null, null)
         isConnectionCreated = false
 
         Log.v(Crowdin.CROWDIN_TAG, "Realtime connection closed")
@@ -67,6 +70,7 @@ internal class RealTimeUpdateManager(
                         mappingData,
                         distributionData,
                         viewTransformerManager,
+                        composeRepository,
                         languageCode,
                     )
                 socket = client.newWebSocket(request, listener)
