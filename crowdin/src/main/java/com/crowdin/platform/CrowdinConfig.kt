@@ -1,5 +1,6 @@
 package com.crowdin.platform
 
+import android.os.Build
 import android.util.Log
 import com.crowdin.platform.data.model.ApiAuthConfig
 import com.crowdin.platform.data.model.AuthConfig
@@ -20,6 +21,7 @@ class CrowdinConfig private constructor() {
     var apiAuthConfig: ApiAuthConfig? = null
     var isInitSyncEnabled: Boolean = true
     var organizationName: String? = null
+    var isRealTimeComposeEnabled: Boolean = false
 
     class Builder {
         private var isPersist: Boolean = true
@@ -33,6 +35,7 @@ class CrowdinConfig private constructor() {
         private var apiAuthConfig: ApiAuthConfig? = null
         private var isInitSyncEnabled: Boolean = true
         private var organizationName: String? = null
+        private var isRealTimeComposeEnabled: Boolean = false
 
         fun persist(isPersist: Boolean): Builder {
             this.isPersist = isPersist
@@ -93,6 +96,15 @@ class CrowdinConfig private constructor() {
             return this
         }
 
+        /**
+         * Enables real-time update functionality for Jetpack Compose.
+         * It is recommended to tie this to a build-time flag.
+         */
+        fun withRealTimeComposeEnabled(enabled: Boolean): Builder {
+            this.isRealTimeComposeEnabled = enabled
+            return this
+        }
+
         fun build(): CrowdinConfig {
             val config = CrowdinConfig()
             config.isPersist = isPersist
@@ -139,6 +151,26 @@ class CrowdinConfig private constructor() {
             config.authConfig = authConfig
             config.apiAuthConfig = apiAuthConfig
             config.isInitSyncEnabled = isInitSyncEnabled
+            config.isRealTimeComposeEnabled = isRealTimeComposeEnabled
+
+            if (isRealTimeComposeEnabled && !isRealTimeUpdateEnabled) {
+                require(false) {
+                    "Crowdin: `withRealTimeComposeEnabled` requires `withRealTimeUpdates()` to be enabled. " +
+                        "Real-time Compose support needs the WebSocket connection for receiving translation updates. " +
+                        "Please add `.withRealTimeUpdates()` to your CrowdinConfig.Builder."
+                }
+            }
+
+            if (isRealTimeComposeEnabled && Build.VERSION.SDK_INT < BuildConfig.MIN_COMPOSE_API_LEVEL) {
+                Log.w(
+                    Crowdin.CROWDIN_TAG,
+                    "Crowdin: Real-time Compose support is disabled on API level ${Build.VERSION.SDK_INT}. " +
+                        "Minimum required API level is ${BuildConfig.MIN_COMPOSE_API_LEVEL}. " +
+                        "Real-time Compose updates use ConcurrentHashMap.computeIfAbsent and Map.putIfAbsent which are only available on API 24+. " +
+                        "Compose translations will still work, but real-time updates will not be available on this device."
+                )
+                config.isRealTimeComposeEnabled = false
+            }
 
             return config
         }

@@ -19,5 +19,8 @@ dependencyResolutionManagement {
 rootProject.name = "Crowdin SDK"
 
 include ':example-info'
-include ':crowdin-controls', ':crowdin'
-include ':example', ':crowdin'
+include ':crowdin-controls'
+include ':example'
+include ':crowdin-compiler-plugin'
+include ':crowdin-gradle-plugin'
+include ':crowdin'

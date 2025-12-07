@@ -14,6 +14,7 @@ const sidebars: SidebarsConfig = {
         'advanced-features/real-time-preview',
         'advanced-features/screenshots',
         'advanced-features/sdk-controls',
+        'advanced-features/jetpack-compose',
       ]
     },
     {
