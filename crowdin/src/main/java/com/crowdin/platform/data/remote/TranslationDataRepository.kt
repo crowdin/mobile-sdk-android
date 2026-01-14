@@ -63,7 +63,12 @@ internal class TranslationDataRepository(
 
         val languagesInfo = dataManager.getSupportedLanguages()
         crowdinLanguages = languagesInfo
-        val languageInfo = getLanguageInfo(preferredLanguageCode!!) ?: return
+        val languageInfo = getLanguageInfo(preferredLanguageCode!!)
+
+        if (languageInfo == null) {
+            languageDataCallback?.onFailure(Throwable("Language info not found for $preferredLanguageCode"))
+            return
+        }
 
         dataManager
             .getData<DistributionInfoResponse.DistributionData>(
