@@ -17,8 +17,8 @@ import com.crowdin.platform.data.model.ApiAuthConfig
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.model.AuthInfo
 import com.crowdin.platform.data.model.LanguageData
-import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.ManifestData
+import com.crowdin.platform.data.model.SupportedLanguages
 import com.crowdin.platform.data.parser.StringResourceParser
 import com.crowdin.platform.data.parser.XmlReader
 import com.crowdin.platform.data.remote.Connectivity
@@ -565,7 +565,12 @@ object Crowdin {
 
     fun getManifest(): ManifestData? = dataManager?.getManifest()
 
-    fun getSupportedLanguages(): LanguagesInfo? = dataManager?.getSupportedLanguages()
+    /**
+     * Get all supported languages from the distribution.
+     * @return Map where key is language code and value contains language details (name, locale).
+     * Example: `{"de": LanguageDetails("German", "de-DE"), "it": LanguageDetails("Italian", "it-IT")}`
+     */
+    fun getSupportedLanguages(): SupportedLanguages? = dataManager?.getSupportedLanguages()
 
     private fun initDistributionInfo() {
         if (config.apiAuthConfig?.apiToken == null) {

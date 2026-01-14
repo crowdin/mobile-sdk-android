@@ -1,6 +1,7 @@
 package com.crowdin.platform.data.remote.api
 
 import com.crowdin.platform.data.model.ManifestData
+import com.crowdin.platform.data.model.SupportedLanguages
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.GET
@@ -28,4 +29,9 @@ internal interface CrowdinDistributionApi {
         @Path("distributionHash") distributionHash: String,
         @Path("filePath", encoded = true) filePath: String,
     ): Call<ResponseBody>
+
+    @GET("/{distributionHash}/languages.json")
+    fun getLanguages(
+        @Path("distributionHash") distributionHash: String,
+    ): Call<SupportedLanguages>
 }

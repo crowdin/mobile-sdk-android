@@ -9,7 +9,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import androidx.annotation.MenuRes
 import com.crowdin.platform.Crowdin
-import com.crowdin.platform.data.model.CustomLanguage
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -59,18 +58,9 @@ fun Locale.toLanguageTagCompat(): String =
 fun getMatchedCode(
     configuration: Configuration?,
     list: List<String>?,
-    customLanguages: Map<String, CustomLanguage>?,
 ): String? {
     val languageCode = configuration.getLocale().language.withCrowdinSupportedCheck()
     val code = "$languageCode-${Locale.getDefault().country}"
-
-    if (customLanguages != null) {
-        for (languageData in customLanguages) {
-            if (languageData.value.locale == code) {
-                return languageData.key
-            }
-        }
-    }
 
     if (list?.contains(code) == false) {
         return languageCode.takeIf { list.contains(languageCode) }

@@ -7,9 +7,8 @@ import com.crowdin.platform.data.model.File
 import com.crowdin.platform.data.model.FileData
 import com.crowdin.platform.data.model.FileResponse
 import com.crowdin.platform.data.model.LanguageData
-import com.crowdin.platform.data.model.LanguageInfo
-import com.crowdin.platform.data.model.LanguageInfoData
-import com.crowdin.platform.data.model.LanguagesInfo
+import com.crowdin.platform.data.model.LanguageDetails
+import com.crowdin.platform.data.model.SupportedLanguages
 import com.crowdin.platform.data.model.Translation
 import com.crowdin.platform.data.model.TranslationResponse
 import com.crowdin.platform.data.parser.Reader
@@ -135,12 +134,7 @@ class TranslationDataRepositoryTest {
         verify(mockReader).parseInput(any())
     }
 
-    private fun givenSupportedLanguages(): LanguagesInfo {
-        val languageInfo = LanguageInfo("en", "name", "qq", "www", "en-US", "en-rUS")
-        return LanguagesInfo(
-            mutableListOf(LanguageInfoData(languageInfo)),
-        )
-    }
+    private fun givenSupportedLanguages(): SupportedLanguages = mapOf("en" to LanguageDetails("English", "en-US"))
 
     private fun givenMockDistributionData() {
         val projectData =

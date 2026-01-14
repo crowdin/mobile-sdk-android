@@ -10,11 +10,13 @@ import com.crowdin.platform.Preferences
 import com.crowdin.platform.data.local.LocalRepository
 import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.AuthInfo
+import com.crowdin.platform.data.model.CachedLanguages
 import com.crowdin.platform.data.model.LanguageData
-import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
+import com.crowdin.platform.data.model.SupportedLanguages
+import com.crowdin.platform.data.model.SyncData
 import com.crowdin.platform.data.model.TextMetaData
 import com.crowdin.platform.data.remote.Connectivity
 import com.crowdin.platform.data.remote.NetworkType
@@ -32,20 +34,6 @@ internal class DataManager(
     private val crowdinPreferences: Preferences,
     private val dataChangeObserver: LocalDataChangeObserver,
 ) : TextMetaDataProvider {
-    companion object {
-        private const val STATUS_OK = "ok"
-        const val SUF_COPY = "-copy"
-        const val DISTRIBUTION_DATA = "distribution_data"
-        const val AUTH_INFO = "auth_info"
-        const val DISTRIBUTION_HASH = "distribution_hash"
-        const val MAPPING_SUF = "-mapping"
-        const val SUPPORTED_LANGUAGES = "supported_languages"
-        const val MANIFEST_DATA = "manifest_data"
-        const val SYNC_DATA = "sync_data"
-        const val EVENT_TICKETS = "event_tickets"
-        const val EVENT_TICKETS_EXPIRATION = 1000 * 60 * 4
-    }
-
     private var loadingStateListeners: ArrayList<LoadingStateListener>? = null
 
     override fun provideTextMetaData(
@@ -216,7 +204,7 @@ internal class DataManager(
     }
 
     fun saveMapping(languageData: LanguageData) {
-        languageData.language = languageData.language + MAPPING_SUF
+        languageData.language += MAPPING_SUF
         localRepository.saveLanguageData(languageData)
     }
 
@@ -266,18 +254,24 @@ internal class DataManager(
     }
 
     @WorkerThread
-    fun getSupportedLanguages(): LanguagesInfo? {
+    fun getSupportedLanguages(): SupportedLanguages? {
         Log.v(CROWDIN_TAG, "Getting supported languages started")
+        val syncData = crowdinPreferences.getData<SyncData>(SYNC_DATA, SyncData::class.java)
+        val cachedLanguages = getData<CachedLanguages>(CACHED_LANGUAGES, CachedLanguages::class.java)
+        val currentTimestamp = syncData?.timestamp ?: 0L
 
-        var info: LanguagesInfo? = getData(SUPPORTED_LANGUAGES, LanguagesInfo::class.java)
-        if (info == null) {
-            info = remoteRepository.getSupportedLanguages()
-            saveData(SUPPORTED_LANGUAGES, info)
+        return if (cachedLanguages != null && cachedLanguages.manifestTimestamp == currentTimestamp) {
+            cachedLanguages.languages
+        } else {
+            val fetchedLanguages = remoteRepository.getSupportedLanguages()
+            if (fetchedLanguages != null) {
+                saveData(CACHED_LANGUAGES, CachedLanguages(fetchedLanguages, currentTimestamp))
+            } else {
+                Log.v(CROWDIN_TAG, "Failed to fetch languages from distribution")
+            }
+            Log.v(CROWDIN_TAG, "Supported languages: $fetchedLanguages")
+            fetchedLanguages
         }
-
-        Log.v(CROWDIN_TAG, "Supported languages: $info")
-
-        return info
     }
 
     @WorkerThread
@@ -319,5 +313,19 @@ internal class DataManager(
         val expirationTime: Long,
     ) {
         fun isExpired(): Boolean = System.currentTimeMillis() > expirationTime
+    }
+
+    companion object {
+        private const val STATUS_OK = "ok"
+        const val SUF_COPY = "-copy"
+        const val DISTRIBUTION_DATA = "distribution_data"
+        const val AUTH_INFO = "auth_info"
+        const val DISTRIBUTION_HASH = "distribution_hash"
+        const val MAPPING_SUF = "-mapping"
+        const val CACHED_LANGUAGES = "cached_languages"
+        const val MANIFEST_DATA = "manifest_data"
+        const val SYNC_DATA = "sync_data"
+        const val EVENT_TICKETS = "event_tickets"
+        const val EVENT_TICKETS_EXPIRATION = 1000 * 60 * 4
     }
 }

@@ -4,10 +4,13 @@ import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.local.LocalRepository
 import com.crowdin.platform.data.model.ArrayData
 import com.crowdin.platform.data.model.AuthInfo
+import com.crowdin.platform.data.model.CachedLanguages
 import com.crowdin.platform.data.model.LanguageData
+import com.crowdin.platform.data.model.LanguageDetails
 import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.model.PluralData
 import com.crowdin.platform.data.model.StringData
+import com.crowdin.platform.data.model.SyncData
 import com.crowdin.platform.data.remote.RemoteRepository
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.getFormattedCode
@@ -468,6 +471,108 @@ class DataManagerTest {
 
         // Then
         verify(mockRemoteRepository).getManifest(any(), any())
+    }
+
+    @Test
+    fun whenGetSupportedLanguagesWithValidCache_shouldReturnCachedData() {
+        // Given
+        val dataManager = givenDataManager()
+        val currentTimestamp = 1234567890L
+        val syncData = SyncData(currentTimestamp, "en")
+        val cachedLanguages =
+            CachedLanguages(
+                mapOf("en" to LanguageDetails("English", "en-US")),
+                currentTimestamp,
+            )
+
+        `when`(
+            mockPreferences.getData<SyncData>(
+                eq("sync_data"),
+                eq(SyncData::class.java),
+            ),
+        ).thenReturn(syncData)
+        `when`(
+            mockLocalRepository.getData<CachedLanguages>(
+                eq("cached_languages"),
+                eq(CachedLanguages::class.java),
+            ),
+        ).thenReturn(cachedLanguages)
+
+        // When
+        val result = dataManager.getSupportedLanguages()
+
+        // Then
+        assertThat(result?.size, `is`(1))
+        assertThat(result?.get("en")?.name, `is`("English"))
+        verifyNoInteractions(mockRemoteRepository)
+    }
+
+    @Test
+    fun whenGetSupportedLanguagesWithExpiredCache_shouldFetchFromApi() {
+        // Given
+        val dataManager = givenDataManager()
+        val oldTimestamp = 1000L
+        val newTimestamp = 2000L
+        val syncData = SyncData(newTimestamp, "de")
+        val cachedLanguages =
+            CachedLanguages(
+                mapOf("en" to LanguageDetails("English", "en-US")),
+                oldTimestamp,
+            )
+        val freshLanguages = mapOf("de" to LanguageDetails("German", "de-DE"))
+
+        `when`(
+            mockPreferences.getData<SyncData>(
+                eq("sync_data"),
+                eq(SyncData::class.java),
+            ),
+        ).thenReturn(syncData)
+        `when`(
+            mockLocalRepository.getData<CachedLanguages>(
+                eq("cached_languages"),
+                eq(CachedLanguages::class.java),
+            ),
+        ).thenReturn(cachedLanguages)
+        `when`(mockRemoteRepository.getSupportedLanguages()).thenReturn(freshLanguages)
+
+        // When
+        val result = dataManager.getSupportedLanguages()
+
+        // Then
+        verify(mockRemoteRepository).getSupportedLanguages()
+        verify(mockLocalRepository).saveData(eq("cached_languages"), any())
+        assertThat(result?.get("de")?.name, `is`("German"))
+    }
+
+    @Test
+    fun whenGetSupportedLanguagesWithNoCache_shouldFetchFromApi() {
+        // Given
+        val dataManager = givenDataManager()
+        val timestamp = 1234567890L
+        val syncData = SyncData(timestamp, "it")
+        val freshLanguages = mapOf("it" to LanguageDetails("Italian", "it-IT"))
+
+        `when`(
+            mockPreferences.getData<SyncData>(
+                eq("sync_data"),
+                eq(SyncData::class.java),
+            ),
+        ).thenReturn(syncData)
+        `when`(
+            mockLocalRepository.getData<CachedLanguages>(
+                eq("cached_languages"),
+                eq(CachedLanguages::class.java),
+            ),
+        ).thenReturn(null)
+        `when`(mockRemoteRepository.getSupportedLanguages()).thenReturn(freshLanguages)
+
+        // When
+        val result = dataManager.getSupportedLanguages()
+
+        // Then
+        verify(mockRemoteRepository).getSupportedLanguages()
+        verify(mockLocalRepository).saveData(eq("cached_languages"), any())
+        assertThat(result?.get("it")?.name, `is`("Italian"))
     }
 
     private fun givenDataManager(): DataManager =

@@ -3,9 +3,8 @@ package com.crowdin.platform
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
-import com.crowdin.platform.data.model.LanguageInfo
-import com.crowdin.platform.data.model.LanguageInfoData
-import com.crowdin.platform.data.model.LanguagesInfo
+import com.crowdin.platform.data.model.LanguageDetails
+import com.crowdin.platform.data.model.SupportedLanguages
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.MappingRepository
 import com.crowdin.platform.data.remote.api.CrowdinApi
@@ -140,14 +139,14 @@ class MappingRepositoryTest {
     fun getLanguageInfoTest() {
         // Given
         val mappingRepository = givenMappingRepository()
-        val languageInfo = LanguageInfo("en", "name", "qq", "www", "en-US", "en-rUS")
+        val expectedLanguageDetails = LanguageDetails("English", "en-US")
         mappingRepository.crowdinLanguages = givenSupportedLanguages()
 
         // When
-        val actualLanguageInfo = mappingRepository.getLanguageInfo("en")
+        val actualLanguageDetails = mappingRepository.getLanguageInfo("en")
 
         // Then
-        assertThat(actualLanguageInfo, equalTo(languageInfo))
+        assertThat(actualLanguageDetails, equalTo(expectedLanguageDetails))
     }
 
     @Test
@@ -157,10 +156,10 @@ class MappingRepositoryTest {
         mappingRepository.crowdinLanguages = givenSupportedLanguages()
 
         // When
-        val actualLanguageInfo = mappingRepository.getLanguageInfo("fr")
+        val actualLanguageDetails = mappingRepository.getLanguageInfo("fr")
 
         // Then
-        assertThat(actualLanguageInfo, equalTo(null))
+        assertThat(actualLanguageDetails, equalTo(null))
     }
 
     private fun givenMappingRepository(): MappingRepository {
@@ -194,22 +193,11 @@ class MappingRepositoryTest {
     }
 
     private fun givenMockLanguageResponse() {
-        @Suppress("UNCHECKED_CAST")
-        val mockedCall = mock(Call::class.java) as Call<LanguageInfoData>
-        val response =
-            Response.success(
-                200,
-                LanguageInfoData(givenLanguageInfo()),
-            )
-        `when`(mockedCall.execute()).thenReturn(response)
+        // Language response not needed anymore with Map-based API
     }
 
-    private fun givenSupportedLanguages(): LanguagesInfo {
-        val languageInfo = LanguageInfo("en", "name", "qq", "www", "en-US", "en-rUS")
-        return LanguagesInfo(
-            mutableListOf(LanguageInfoData(languageInfo)),
+    private fun givenSupportedLanguages(): SupportedLanguages =
+        mapOf(
+            "en" to LanguageDetails("English", "en-US"),
         )
-    }
-
-    private fun givenLanguageInfo(): LanguageInfo = LanguageInfo("en", "English", "en", "eng", "en-US", "en-rUS")
 }
