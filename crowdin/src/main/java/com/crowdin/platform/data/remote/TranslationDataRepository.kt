@@ -52,19 +52,20 @@ internal class TranslationDataRepository(
     ) {
         Log.v(Crowdin.CROWDIN_TAG, "Manifest data received")
 
-        val supportedLanguages = manifest?.languages
+        val languages = manifest?.languages
+        val languagesInfo = dataManager.getSupportedLanguages()
+        crowdinLanguages = languagesInfo
+
         if (preferredLanguageCode == null) {
-            preferredLanguageCode = getMatchedCode(configuration, supportedLanguages) ?: return
+            preferredLanguageCode = getMatchedCode(configuration, languages, crowdinLanguages) ?: return
         } else {
-            if (supportedLanguages?.contains(preferredLanguageCode) == false) {
+            if (languages?.contains(preferredLanguageCode) == false) {
+                languageDataCallback?.onFailure(Throwable("Language info not found for $preferredLanguageCode"))
                 return
             }
         }
 
-        val languagesInfo = dataManager.getSupportedLanguages()
-        crowdinLanguages = languagesInfo
         val languageInfo = getLanguageInfo(preferredLanguageCode!!)
-
         if (languageInfo == null) {
             languageDataCallback?.onFailure(Throwable("Language info not found for $preferredLanguageCode"))
             return

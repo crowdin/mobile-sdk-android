@@ -60,7 +60,6 @@ internal fun givenMockManifestResponse(
                     123124154L,
                     listOf(),
                     hashMapOf(),
-                    hashMapOf(),
                     hashMapOf(
                         "en" to listOf("/content/en/string.xml"),
                         "de" to listOf("/content/de/string.xml"),

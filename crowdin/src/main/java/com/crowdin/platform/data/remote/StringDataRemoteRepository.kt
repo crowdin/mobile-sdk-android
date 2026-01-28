@@ -104,7 +104,7 @@ internal class StringDataRemoteRepository(
         supportedLanguages: List<String>?,
     ): String? =
         if (preferredLanguageCode == null) {
-            getMatchedCode(configuration, supportedLanguages)
+            getMatchedCode(configuration, supportedLanguages, crowdinLanguages)
         } else {
             if (supportedLanguages?.contains(preferredLanguageCode) == false) {
                 null
