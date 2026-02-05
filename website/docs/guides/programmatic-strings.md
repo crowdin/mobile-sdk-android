@@ -4,7 +4,7 @@ In some cases, you may need to programmatically get or set translations for spec
 Android resource system. The Crowdin SDK provides methods to directly access and modify translation strings.
 
 :::info Version Requirement
-Available starting from Crowdin SDK version 1.16.0.
+Available starting from Crowdin SDK version 1.17.0.
 :::
 
 ## Getting a String
