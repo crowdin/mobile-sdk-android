@@ -2,7 +2,6 @@ package com.crowdin.platform.data.remote.api
 
 import com.crowdin.platform.data.model.BuildTranslationRequest
 import com.crowdin.platform.data.model.FileResponse
-import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.ListScreenshotsResponse
 import com.crowdin.platform.data.model.TicketRequestBody
 import com.crowdin.platform.data.model.TicketResponseBody
@@ -17,8 +16,6 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
-
-private const val LANGUAGE_COUNT = 500
 
 internal interface CrowdinApi {
     @GET("/api/v2/projects/{projectId}/screenshots")
@@ -77,11 +74,6 @@ internal interface CrowdinApi {
     fun getFiles(
         @Path("projectId") projectId: String,
     ): Call<FileResponse>
-
-    @GET("/api/v2/languages")
-    fun getLanguagesInfo(
-        @Query("limit") limit: Int = LANGUAGE_COUNT,
-    ): Call<LanguagesInfo>
 
     @POST("/api/v2/user/websocket-ticket")
     fun getTicket(

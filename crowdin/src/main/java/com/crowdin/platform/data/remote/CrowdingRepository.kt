@@ -5,9 +5,9 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.data.LanguageDataCallback
-import com.crowdin.platform.data.model.LanguageInfo
-import com.crowdin.platform.data.model.LanguagesInfo
+import com.crowdin.platform.data.model.LanguageDetails
 import com.crowdin.platform.data.model.ManifestData
+import com.crowdin.platform.data.model.SupportedLanguages
 import com.crowdin.platform.data.model.TicketRequestBody
 import com.crowdin.platform.data.model.TicketResponseBody
 import com.crowdin.platform.data.remote.api.CrowdinApi
@@ -24,7 +24,7 @@ internal abstract class CrowdingRepository(
     private val distributionHash: String,
 ) : BaseRepository() {
     var crowdinApi: CrowdinApi? = null
-    var crowdinLanguages: LanguagesInfo? = null
+    var crowdinLanguages: SupportedLanguages? = null
 
     override fun getManifest(
         languageDataCallback: LanguageDataCallback?,
@@ -87,15 +87,18 @@ internal abstract class CrowdingRepository(
         languageDataCallback: LanguageDataCallback?,
     )
 
-    override fun getSupportedLanguages(): LanguagesInfo? {
+    override fun getSupportedLanguages(): SupportedLanguages? {
         Log.v(Crowdin.CROWDIN_TAG, "Getting supported languages from Api started")
+        var languages: SupportedLanguages? = null
+        executeIO {
+            val response = crowdinDistributionApi.getLanguages(distributionHash)?.execute()?.body()
+            if (response != null) {
+                languages = response
+            }
+        }
+        Log.v(Crowdin.CROWDIN_TAG, "Supported languages from Api: $languages")
 
-        var info: LanguagesInfo? = null
-        executeIO { info = crowdinApi?.getLanguagesInfo()?.execute()?.body() }
-
-        Log.v(Crowdin.CROWDIN_TAG, "Supported languages from Api: $info")
-
-        return info
+        return languages
     }
 
     @WorkerThread
@@ -105,14 +108,5 @@ internal abstract class CrowdingRepository(
         return result
     }
 
-    fun getLanguageInfo(sourceLanguage: String): LanguageInfo? {
-        crowdinLanguages?.data?.forEach {
-            val languageInfo = it.data
-            if (languageInfo.id == sourceLanguage) {
-                return languageInfo
-            }
-        }
-
-        return null
-    }
+    fun getLanguageInfo(sourceLanguage: String): LanguageDetails? = crowdinLanguages?.get(sourceLanguage)
 }

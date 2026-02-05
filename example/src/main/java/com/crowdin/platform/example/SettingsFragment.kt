@@ -53,9 +53,11 @@ class SettingsFragment : Fragment(), OnItemSelectedListener.SpinnerItemListener 
         }
 
         // Add supported languages from Crowdin
-        Crowdin.getManifest()?.languages?.forEach { languageIndex ->
-            Crowdin.getSupportedLanguages()?.data?.find { it.data.id == languageIndex }
-                ?.let { languageSet.add(it.data.locale) }
+        val supportedLanguages = Crowdin.getSupportedLanguages()
+        Crowdin.getManifest()?.languages?.forEach { languageCode ->
+            supportedLanguages?.get(languageCode)?.let { languageDetails ->
+                languageSet.add(languageDetails.locale)
+            }
         }
 
         // Add current language preference as fallback
@@ -88,7 +90,7 @@ class SettingsFragment : Fragment(), OnItemSelectedListener.SpinnerItemListener 
     }
 
     private fun updateLanguageDescription(item: String) {
-        Crowdin.getSupportedLanguages()?.data?.find { it.data.locale == item }
-            ?.data?.let { languageDescription.text = it.name }
+        Crowdin.getSupportedLanguages()?.values?.find { it.locale == item }
+            ?.let { languageDescription.text = it.name }
     }
 }

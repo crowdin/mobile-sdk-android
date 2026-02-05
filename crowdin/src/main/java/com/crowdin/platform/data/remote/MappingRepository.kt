@@ -8,8 +8,8 @@ import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.DataManager.Companion.MANIFEST_DATA
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageData
-import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.ManifestData
+import com.crowdin.platform.data.model.SupportedLanguages
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.util.executeIO
@@ -23,14 +23,11 @@ internal class MappingRepository(
     private val dataManager: DataManager,
     private val distributionHash: String,
     private val sourceLanguage: String,
-) : CrowdingRepository(
-        crowdinDistributionApi,
-        distributionHash,
-    ) {
+) : CrowdingRepository(crowdinDistributionApi, distributionHash) {
     override fun fetchData(
         configuration: Configuration?,
         languageCode: String?,
-        supportedLanguages: LanguagesInfo?,
+        supportedLanguages: SupportedLanguages?,
         languageDataCallback: LanguageDataCallback?,
     ) {
         Log.v(Crowdin.CROWDIN_TAG, "MappingRepository. Fetch data from Api started")

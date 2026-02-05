@@ -1,9 +1,8 @@
 package com.crowdin.platform
 
 import com.crowdin.platform.data.LanguageDataCallback
-import com.crowdin.platform.data.model.LanguageInfo
-import com.crowdin.platform.data.model.LanguageInfoData
-import com.crowdin.platform.data.model.LanguagesInfo
+import com.crowdin.platform.data.model.LanguageDetails
+import com.crowdin.platform.data.model.SupportedLanguages
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.StringDataRemoteRepository
 import com.crowdin.platform.data.remote.api.CrowdinApi
@@ -90,12 +89,7 @@ class StringDataRemoteRepositoryTest {
         verify(mockCallback).onFailure(any())
     }
 
-    private fun givenSupportedLanguages(): LanguagesInfo {
-        val languageInfo = LanguageInfo("en", "name", "qq", "www", "en-US", "en-rUS")
-        return LanguagesInfo(
-            mutableListOf(LanguageInfoData(languageInfo)),
-        )
-    }
+    private fun givenSupportedLanguages(): SupportedLanguages = mapOf("en" to LanguageDetails("English", "en-US"))
 
     private fun givenStringDataRemoteRepository(): StringDataRemoteRepository {
         val preferences = mock(Preferences::class.java)

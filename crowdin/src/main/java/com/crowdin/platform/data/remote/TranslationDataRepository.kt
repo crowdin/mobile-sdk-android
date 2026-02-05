@@ -9,10 +9,9 @@ import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.BuildTranslationRequest
 import com.crowdin.platform.data.model.FileResponse
 import com.crowdin.platform.data.model.LanguageData
-import com.crowdin.platform.data.model.LanguagesInfo
 import com.crowdin.platform.data.model.ManifestData
+import com.crowdin.platform.data.model.SupportedLanguages
 import com.crowdin.platform.data.model.Translation
-import com.crowdin.platform.data.model.toLanguageInfo
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.crowdin.platform.data.remote.api.CrowdinTranslationApi
@@ -28,16 +27,13 @@ internal class TranslationDataRepository(
     private val reader: Reader,
     private val dataManager: DataManager,
     distributionHash: String,
-) : CrowdingRepository(
-        crowdinDistributionApi,
-        distributionHash,
-    ) {
+) : CrowdingRepository(crowdinDistributionApi, distributionHash) {
     private var preferredLanguageCode: String? = null
 
     override fun fetchData(
         configuration: Configuration?,
         languageCode: String?,
-        supportedLanguages: LanguagesInfo?,
+        supportedLanguages: SupportedLanguages?,
         languageDataCallback: LanguageDataCallback?,
     ) {
         Log.v(Crowdin.CROWDIN_TAG, "TranslationRepository. Fetch data from Api started")
@@ -56,43 +52,41 @@ internal class TranslationDataRepository(
     ) {
         Log.v(Crowdin.CROWDIN_TAG, "Manifest data received")
 
-        val supportedLanguages = manifest?.languages
-        val customLanguages = manifest?.customLanguages
+        val languages = manifest?.languages
+        val languagesInfo = dataManager.getSupportedLanguages()
+        crowdinLanguages = languagesInfo
+
         if (preferredLanguageCode == null) {
-            preferredLanguageCode = getMatchedCode(configuration, supportedLanguages, customLanguages) ?: return
+            preferredLanguageCode = getMatchedCode(configuration, languages, crowdinLanguages) ?: return
         } else {
-            if (supportedLanguages?.contains(preferredLanguageCode) == false) {
+            if (languages?.contains(preferredLanguageCode) == false) {
+                languageDataCallback?.onFailure(Throwable("Language info not found for $preferredLanguageCode"))
                 return
             }
         }
 
-        val languagesInfo = dataManager.getSupportedLanguages()
-        crowdinLanguages = languagesInfo
-        val languageInfo =
-            if (customLanguages?.contains(preferredLanguageCode) == true) {
-                customLanguages[preferredLanguageCode]?.toLanguageInfo()
-            } else {
-                getLanguageInfo(preferredLanguageCode!!)
-            }
-
-        languageInfo?.let { info ->
-            dataManager
-                .getData<DistributionInfoResponse.DistributionData>(
-                    DataManager.DISTRIBUTION_DATA,
-                    DistributionInfoResponse.DistributionData::class.java,
-                )?.project
-                ?.id
-                ?.let {
-                    manifest?.files?.let { files ->
-                        getFiles(
-                            id = it,
-                            files = files,
-                            locale = info.locale,
-                            languageDataCallback = languageDataCallback,
-                        )
-                    }
-                }
+        val languageInfo = getLanguageInfo(preferredLanguageCode!!)
+        if (languageInfo == null) {
+            languageDataCallback?.onFailure(Throwable("Language info not found for $preferredLanguageCode"))
+            return
         }
+
+        dataManager
+            .getData<DistributionInfoResponse.DistributionData>(
+                DataManager.DISTRIBUTION_DATA,
+                DistributionInfoResponse.DistributionData::class.java,
+            )?.project
+            ?.id
+            ?.let {
+                manifest?.files?.let { files ->
+                    getFiles(
+                        id = it,
+                        files = files,
+                        locale = languageInfo.locale,
+                        languageDataCallback = languageDataCallback,
+                    )
+                }
+            }
     }
 
     private fun getFiles(
