@@ -27,7 +27,7 @@ To use the Crowdin SDK for automation testing, configure it as follows:
    Add the necessary dependency to your `build.gradle` file:
 
    ```groovy title="build.gradle"
-   implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.16.0'
+   implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.17.0'
    ```
 
 2. **Initialize the SDK:**
