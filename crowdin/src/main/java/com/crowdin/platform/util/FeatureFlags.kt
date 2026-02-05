@@ -14,4 +14,7 @@ internal object FeatureFlags {
 
     val isScreenshotEnabled: Boolean
         get() = config.isScreenshotEnabled
+
+    val isRealTimeComposeEnabled: Boolean
+        get() = config.isRealTimeComposeEnabled
 }

@@ -1,31 +1,33 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.compose' version "2.2.0"
 }
 
 apply from: '../jacoco.gradle'
 
 ext {
-    libraryVersionCode = 53
-    libraryVersionName = "1.16.0"
+    // Use centralized version from gradle.properties
+    libraryVersionCode = project.property('libraryVersionCode') as Integer
+    libraryVersionName = project.property('crowdinVersion')
 
-    publishedGroupId = 'com.crowdin.platform'
+    publishedGroupId = project.property('publishedGroupId')
     libraryName = 'CrowdinAndroidSdk'
     artifact = 'sdk'
 
     libraryDescription = "Crowdin Android SDK delivers all new translations from Crowdin project to the application immediately. So there is no need to update this application via Google Play Store to get the new version with the localization."
 
-    siteUrl = 'https://crowdin.com/'
-    gitUrl = 'https://github.com/crowdin/mobile-sdk-android'
+    siteUrl = project.property('siteUrl')
+    gitUrl = project.property('gitUrl')
 
     libraryVersion = libraryVersionName
 
-    developerId = 'mykhailo-nester'
-    developerName = 'Mykhailo Nester'
-    developerEmail = 'nsmisha.dev@gmail.com'
+    developerId = project.property('developerId')
+    developerName = project.property('developerName')
+    developerEmail = project.property('developerEmail')
 
-    licenseName = 'The MIT License'
-    licenseUrl = 'https://opensource.org/licenses/MIT'
+    licenseName = project.property('licenseName')
+    licenseUrl = project.property('licenseUrl')
     allLicenses = ["MIT"]
 }
 
@@ -42,6 +44,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "VERSION_NAME", "\"$versionName\""
+        buildConfigField "int", "MIN_COMPOSE_API_LEVEL", "24"
     }
 
     buildTypes {
@@ -68,6 +71,11 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures {
+        buildConfig = true
+        compose = true
+    }
 }
 
 dependencies {
@@ -82,6 +90,13 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation 'com.karumi:dexter:6.2.2'
     implementation "androidx.multidex:multidex:2.0.1"
+
+    // Jetpack Compose dependencies
+    implementation platform(libs.androidx.compose.bom)
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.ui:ui-text'
+    implementation 'androidx.compose.runtime:runtime'
+    implementation 'androidx.compose.foundation:foundation'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:5.14.1'

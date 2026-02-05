@@ -26,6 +26,7 @@ class EchoWebSocketListenerTest {
                 mockMappingData,
                 mockDistributionData,
                 mockViewTransformerManager,
+                null,
                 "en",
             )
 
@@ -49,6 +50,7 @@ class EchoWebSocketListenerTest {
                 mockMappingData,
                 mockDistributionData,
                 mockViewTransformerManager,
+                null,
                 "en",
             )
         val mockSocket = mock(WebSocket::class.java)

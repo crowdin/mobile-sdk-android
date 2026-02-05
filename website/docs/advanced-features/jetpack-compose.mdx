@@ -1,0 +1,103 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+import sampleComposeConfig from '!!raw-loader!../code-samples/jetpack-compose/config.kt';
+import sampleComposeUsage from '!!raw-loader!../code-samples/jetpack-compose/usage.kt';
+
+# Jetpack Compose Realtime Preview
+
+The Crowdin Android SDK provides seamless integration with Jetpack Compose, enabling real-time updates for your application's UI strings without the need to restart the activity or the application.
+
+## Configuration
+
+To enable Jetpack Compose support, you need to configure the `CrowdinConfig` in your `Application` class.
+
+<Tabs groupId="language">
+  <TabItem value="kotlin" label="Kotlin"><CodeBlock language="kotlin">{sampleComposeConfig}</CodeBlock></TabItem>
+</Tabs>
+
+:::info
+The `withRealTimeComposeEnabled(true)` flag is required to activate the Compose-specific repositories and watchers.
+:::
+
+:::warning Required Dependencies
+**Both `withRealTimeUpdates()` and `withRealTimeComposeEnabled(true)` are required** for real-time Compose support to work properly:
+- `withRealTimeUpdates()` - Establishes the WebSocket connection for receiving translation updates from Crowdin
+- `withRealTimeComposeEnabled(true)` - Enables the Compose-specific integration layer to propagate updates to your UI
+
+If you enable `withRealTimeComposeEnabled(true)` without `withRealTimeUpdates()`, the SDK will throw a configuration error at initialization, as the Compose support needs the WebSocket connection to function.
+:::
+
+:::info Android API Level Requirements
+Real-time Compose support requires **Android API level 24 (Android 7.0) or higher**. This is because the implementation uses `ConcurrentHashMap.computeIfAbsent()` and `Map.putIfAbsent()` methods which are only available from API 24+.
+
+**On devices running API 21-23:**
+- The SDK will automatically detect the incompatible API level
+- Real-time Compose updates will be **gracefully disabled**
+- A warning will be logged to help with debugging
+- Your Compose UI will continue to work normally with static translations
+- All other SDK features remain fully functional
+
+**Recommendation:** If you need to support API 21-23 devices, consider implementing a runtime check to conditionally enable real-time Compose support:
+
+```kotlin
+val enableRealtimeCompose = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+
+CrowdinConfig.Builder()
+    .withDistributionHash("your_hash")
+    .withRealTimeUpdates()
+    .withRealTimeComposeEnabled(enableRealtimeCompose)
+    .build()
+```
+:::
+
+## Usage
+
+There are two ways to use Crowdin with Jetpack Compose: manually using the `crowdinString` composable or automatically using the Crowdin Gradle plugin.
+
+### Manual Usage
+
+You can use the `crowdinString` composable to retrieve localized strings that automatically update when the translation changes.
+
+<Tabs groupId="language">
+  <TabItem value="kotlin" label="Kotlin"><CodeBlock language="kotlin">{sampleComposeUsage}</CodeBlock></TabItem>
+</Tabs>
+
+### Automatic Usage (Gradle Plugin)
+
+For a more seamless experience, you can use the Crowdin Gradle plugin. This plugin automatically transforms your `stringResource` calls into `crowdinString` calls at compile time, allowing you to use the standard Compose API while getting the benefits of Crowdin's real-time updates.
+
+#### Setup
+
+Add the Crowdin Gradle plugin to your module-level `build.gradle.kts` file.
+
+:::danger Critical Plugin Ordering
+It is **mandatory** to apply the `com.crowdin.platform.gradle` plugin **before** the Compose (`org.jetbrains.kotlin.plugin.compose`) plugin. This ordering is required because the Crowdin plugin needs to transform the intermediate representation (IR) of your Compose code before the Compose compiler processes it. If the Crowdin plugin is applied after Compose, it will not be able to intercept and modify the IR, and real-time string updates will not work as intended.
+:::
+
+```kotlin title="build.gradle.kts"
+plugins {
+    // 1. Crowdin plugin MUST be applied first
+    id("com.crowdin.platform.gradle")
+
+    // 2. Android and other plugins follow
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
+}
+```
+
+The plugin handles the rest automatically. You can continue writing standard Compose code:
+
+```kotlin
+@Composable
+fun Greeting() {
+    // This will be automatically transformed to use Crowdin's real-time updates
+    Text(text = stringResource(R.string.hello_world))
+}
+```
+
+### See also
+
+- [Real-Time Preview](real-time-preview.mdx)
