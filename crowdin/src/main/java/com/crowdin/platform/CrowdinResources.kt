@@ -222,7 +222,14 @@ internal class CrowdinResources(
     override fun getQuantityString(
         id: Int,
         quantity: Int,
-    ): String = res.getQuantityString(id, quantity)
+    ): String {
+        val plural = getPluralFromRepository(id, quantity)
+        val formattedPlural = plural ?: res.getQuantityString(id, quantity)
+
+        savePluralToCopy(id, quantity, formattedPlural)
+
+        return formattedPlural
+    }
 
     override fun toString(): String = res.toString()
 
