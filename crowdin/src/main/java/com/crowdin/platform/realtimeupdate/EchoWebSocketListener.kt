@@ -347,10 +347,18 @@ internal class EchoWebSocketListener(
             return
         }
 
-        if (eventData.pluralForm == null || eventData.pluralForm == PLURAL_NONE) {
-            // Ensure update is called on main thread since Compose state updates require it
-            ThreadUtils.executeOnMain {
+        // Ensure update is called on main thread since Compose state updates require it
+        ThreadUtils.executeOnMain {
+            val pluralForm = eventData.pluralForm
+
+            if (pluralForm == null || pluralForm == PLURAL_NONE) {
                 composeRepository?.updateStringFromWebSocket(textData.resourceId, eventData.text)
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                composeRepository?.updatePluralFromWebSocket(
+                    textData.resourceId,
+                    pluralForm,
+                    eventData.text,
+                )
             }
         }
     }

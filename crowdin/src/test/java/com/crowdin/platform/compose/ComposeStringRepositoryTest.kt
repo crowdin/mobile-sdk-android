@@ -52,6 +52,21 @@ class ComposeStringRepositoryTest {
     }
 
     @Test
+    fun getPluralState_shouldReturnResourceValue() {
+        // Given
+        val id = 123
+        val quantity = 2
+        val expectedValue = "%d tasks"
+        `when`(crowdinResources.getQuantityString(id, quantity)).thenReturn(expectedValue)
+
+        // When
+        val state = repository.getPluralState(id, quantity)
+
+        // Then
+        assertEquals(expectedValue, state.value)
+    }
+
+    @Test
     fun onDataChanged_shouldUpdateSubscribers() {
         // Given
         val id = 123
@@ -66,6 +81,28 @@ class ComposeStringRepositoryTest {
 
         // When
         `when`(crowdinResources.getString(id)).thenReturn(secondValue)
+        repository.forceUpdate()
+
+        // Then
+        assertEquals(secondValue, state.value)
+    }
+
+    @Test
+    fun pluralDataChanged_shouldUpdateSubscribers() {
+        // Given
+        val id = 123
+        val quantity = 5
+        val firstValue = "%d file"
+        val secondValue = "%d files"
+
+        `when`(crowdinResources.getQuantityString(id, quantity)).thenReturn(firstValue)
+        val state = repository.getPluralState(id, quantity)
+        repository.registerPluralResourceWatcher(id)
+
+        assertEquals(firstValue, state.value)
+
+        // When
+        `when`(crowdinResources.getQuantityString(id, quantity)).thenReturn(secondValue)
         repository.forceUpdate()
 
         // Then
@@ -103,6 +140,131 @@ class ComposeStringRepositoryTest {
         assertEquals(resourceKey, capturedMetaData?.textAttributeKey)
         assertEquals(defaultValue, capturedMetaData?.stringDefault)
         assertEquals(id, capturedMetaData?.resourceId)
+    }
+
+    @Test
+    fun pluralWebSocketCallback_shouldBeInvokedOnWatcherRegistration() {
+        // Given
+        val id = 123
+        val quantity = 3
+        val resourceKey = "tasks_count"
+        val defaultValue = "%d tasks"
+        var callbackInvoked = false
+        var capturedMetaData: TextMetaData? = null
+
+        `when`(crowdinResources.getQuantityString(id, quantity)).thenReturn(defaultValue)
+        `when`(resources.getResourceEntryName(id)).thenReturn(resourceKey)
+        `when`(resources.getQuantityString(id, quantity)).thenReturn(defaultValue)
+
+        repository.setWebSocketCallbacks(
+            onWatcherRegistered = { metaData ->
+                callbackInvoked = true
+                capturedMetaData = metaData
+            },
+            onWatcherDeregistered = null
+        )
+
+        // When
+        repository.getPluralState(id, quantity)
+        repository.registerPluralResourceWatcher(id)
+
+        // Then
+        assertTrue(callbackInvoked)
+        assertNotNull(capturedMetaData)
+        assertEquals(resourceKey, capturedMetaData?.pluralName)
+        assertEquals(1, capturedMetaData?.pluralQuantity)
+        assertEquals(id, capturedMetaData?.resourceId)
+    }
+
+    @Test
+    fun pluralWatchers_samePluralForm_shouldShareLifecycleCounter() {
+        // Given
+        val id = 123
+        val firstQuantity = 2
+        val secondQuantity = 5
+        val sharedPluralForm = "other"
+        val resourceKey = "tasks_count"
+        val defaultValue = "%d tasks"
+        val deregisterCount = AtomicInteger(0)
+
+        `when`(crowdinResources.getQuantityString(id, firstQuantity)).thenReturn(defaultValue)
+        `when`(crowdinResources.getQuantityString(id, secondQuantity)).thenReturn(defaultValue)
+        `when`(resources.getResourceEntryName(id)).thenReturn(resourceKey)
+        `when`(resources.getQuantityString(id, firstQuantity)).thenReturn(defaultValue)
+
+        repository.setWebSocketCallbacks(
+            onWatcherRegistered = { },
+            onWatcherDeregistered = { deregisterCount.incrementAndGet() }
+        )
+
+        // When
+        repository.registerPluralResourceWatcher(id)
+        repository.getPluralState(id, firstQuantity, sharedPluralForm)
+        repository.getPluralState(id, secondQuantity, sharedPluralForm)
+
+        // Then
+        assertEquals(0, deregisterCount.get())
+
+        repository.deRegisterPluralResourceWatcher(id)
+        assertEquals(1, deregisterCount.get())
+    }
+
+    @Test
+    fun pluralResourceWatcher_shouldRemainRegisteredAcrossFormChanges() {
+        // Given
+        val id = 123
+        val oneQuantity = 1
+        val otherQuantity = 2
+        val resourceKey = "tasks_count"
+        val deregisterCount = AtomicInteger(0)
+
+        `when`(crowdinResources.getQuantityString(id, oneQuantity)).thenReturn("%d task")
+        `when`(crowdinResources.getQuantityString(id, otherQuantity)).thenReturn("%d tasks")
+        `when`(resources.getResourceEntryName(id)).thenReturn(resourceKey)
+        `when`(resources.getQuantityString(id, oneQuantity)).thenReturn("%d task")
+
+        repository.setWebSocketCallbacks(
+            onWatcherRegistered = { },
+            onWatcherDeregistered = { deregisterCount.incrementAndGet() }
+        )
+
+        // When
+        repository.registerPluralResourceWatcher(id)
+        repository.getPluralState(id, oneQuantity, "one")
+        repository.getPluralState(id, otherQuantity, "other")
+
+        // Then
+        assertEquals(0, deregisterCount.get())
+
+        repository.deRegisterPluralResourceWatcher(id)
+        assertEquals(1, deregisterCount.get())
+    }
+
+    @Test
+    fun pluralState_shouldBeRetainedWhilePluralResourceWatcherExists() {
+        // Given
+        val id = 123
+        val quantity = 1
+        val pluralForm = "one"
+        `when`(crowdinResources.getQuantityString(id, quantity))
+            .thenReturn("Local value")
+            .thenReturn("Recreated from resources")
+
+        // When
+        repository.registerPluralResourceWatcher(id)
+
+        val initialState = repository.getPluralState(id, quantity, pluralForm)
+        val restoredState = repository.getPluralState(id, quantity, pluralForm)
+
+        // Then
+        assertTrue(initialState === restoredState)
+        assertEquals("Local value", restoredState.value)
+
+        repository.deRegisterPluralResourceWatcher(id)
+
+        val recreatedState = repository.getPluralState(id, quantity, pluralForm)
+        assertTrue(initialState !== recreatedState)
+        assertEquals("Recreated from resources", recreatedState.value)
     }
 
     @Test

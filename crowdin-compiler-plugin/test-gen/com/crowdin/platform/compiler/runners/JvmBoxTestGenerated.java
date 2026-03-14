@@ -22,6 +22,12 @@ public class JvmBoxTestGenerated extends AbstractJvmBoxTest {
   }
 
   @Test
+  @TestMetadata("pluralStringResourceTransform.kt")
+  public void testPluralStringResourceTransform() {
+    runTest("crowdin-compiler-plugin/testData/box/pluralStringResourceTransform.kt");
+  }
+
+  @Test
   @TestMetadata("stringResourceTransform.kt")
   public void testStringResourceTransform() {
     runTest("crowdin-compiler-plugin/testData/box/stringResourceTransform.kt");

@@ -54,11 +54,11 @@ CrowdinConfig.Builder()
 
 ## Usage
 
-There are two ways to use Crowdin with Jetpack Compose: manually using the `crowdinString` composable or automatically using the Crowdin Gradle plugin.
+There are two ways to use Crowdin with Jetpack Compose: manually using the `crowdinString` / `crowdinPluralString` composables or automatically using the Crowdin Gradle plugin.
 
 ### Manual Usage
 
-You can use the `crowdinString` composable to retrieve localized strings that automatically update when the translation changes.
+You can use the `crowdinString` and `crowdinPluralString` composables to retrieve localized strings that automatically update when translations change.
 
 <Tabs groupId="language">
   <TabItem value="kotlin" label="Kotlin"><CodeBlock language="kotlin">{sampleComposeUsage}</CodeBlock></TabItem>
@@ -66,7 +66,7 @@ You can use the `crowdinString` composable to retrieve localized strings that au
 
 ### Automatic Usage (Gradle Plugin)
 
-For a more seamless experience, you can use the Crowdin Gradle plugin. This plugin automatically transforms your `stringResource` calls into `crowdinString` calls at compile time, allowing you to use the standard Compose API while getting the benefits of Crowdin's real-time updates.
+For a more seamless experience, you can use the Crowdin Gradle plugin. This plugin automatically transforms your `stringResource` calls into `crowdinString` calls and your `pluralStringResource` calls into `crowdinPluralString` calls at compile time, allowing you to use the standard Compose API while getting the benefits of Crowdin's real-time updates.
 
 #### Setup
 
@@ -95,6 +95,9 @@ The plugin handles the rest automatically. You can continue writing standard Com
 fun Greeting() {
     // This will be automatically transformed to use Crowdin's real-time updates
     Text(text = stringResource(R.string.hello_world))
+
+    // Plural resources are transformed as well
+    Text(text = pluralStringResource(R.plurals.task_count, 3, 3))
 }
 ```
 

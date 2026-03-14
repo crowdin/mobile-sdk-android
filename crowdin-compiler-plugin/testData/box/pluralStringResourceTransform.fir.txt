@@ -1,0 +1,56 @@
+FILE: helpers.kt
+    package androidx.compose.ui.res
+
+    @R|kotlin/Suppress|(names = vararg(String(UNUSED_PARAMETER))) public final fun pluralStringResource(id: R|kotlin/Int|, count: R|kotlin/Int|): R|kotlin/String| {
+        ^pluralStringResource String(original)
+    }
+    @R|kotlin/Suppress|(names = vararg(String(UNUSED_PARAMETER))) public final fun pluralStringResource(id: R|kotlin/Int|, count: R|kotlin/Int|, vararg formatArgs: R|kotlin/Array<out kotlin/Any>|): R|kotlin/String| {
+        ^pluralStringResource String(original-formatted)
+    }
+FILE: crowdinHelpers.kt
+    package com.crowdin.platform.compose
+
+    public final object R : R|kotlin/Any| {
+        private constructor(): R|com/crowdin/platform/compose/R| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final object plurals : R|kotlin/Any| {
+            private constructor(): R|com/crowdin/platform/compose/R.plurals| {
+                super<R|kotlin/Any|>()
+            }
+
+            public final const val task_count: R|kotlin/Int| = Int(1)
+                public get(): R|kotlin/Int|
+
+        }
+
+    }
+    @R|kotlin/Suppress|(names = vararg(String(UNUSED_PARAMETER))) public final fun crowdinPluralString(resourceId: R|kotlin/Int|, quantity: R|kotlin/Int|): R|kotlin/String| {
+        ^crowdinPluralString String(transformed)
+    }
+    @R|kotlin/Suppress|(names = vararg(String(UNUSED_PARAMETER))) public final fun crowdinPluralString(resourceId: R|kotlin/Int|, quantity: R|kotlin/Int|, vararg formatArgs: R|kotlin/Array<out kotlin/Any>|): R|kotlin/String| {
+        ^crowdinPluralString String(transformed-formatted)
+    }
+FILE: test.kt
+    package test.box
+
+    public final fun box(): R|kotlin/String| {
+        lval plainResult: R|kotlin/String| = R|androidx/compose/ui/res/pluralStringResource|(Q|com/crowdin/platform/compose/R.plurals|.R|com/crowdin/platform/compose/R.plurals.task_count|, Int(2))
+        when () {
+            !=(R|<local>/plainResult|, String(transformed)) ->  {
+                ^box <strcat>(String(FAIL plain: got ), R|<local>/plainResult|)
+            }
+        }
+
+        lval formattedResult: R|kotlin/String| = R|androidx/compose/ui/res/pluralStringResource|(Q|com/crowdin/platform/compose/R.plurals|.R|com/crowdin/platform/compose/R.plurals.task_count|, Int(2), vararg(Int(2)))
+        ^box when () {
+            ==(R|<local>/formattedResult|, String(transformed-formatted)) ->  {
+                String(OK)
+            }
+            else ->  {
+                <strcat>(String(FAIL formatted: got ), R|<local>/formattedResult|)
+            }
+        }
+
+    }

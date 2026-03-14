@@ -13,7 +13,8 @@ import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 
 /**
- * IR transformer that intercepts stringResource() calls and replaces them with crowdinString().
+ * IR transformer that intercepts Compose resource calls and replaces them with Crowdin-aware
+ * composables.
  *
  * This transformer runs during the IR lowering phase and rewrites function calls at the
  * intermediate representation level, making it completely transparent to the user.
@@ -27,9 +28,11 @@ class CrowdinStringResourceTransformer(
     companion object {
         // The FQN of the original stringResource function from Compose
         private val STRING_RESOURCE_FQN = FqName("androidx.compose.ui.res.stringResource")
+        private val PLURAL_STRING_RESOURCE_FQN = FqName("androidx.compose.ui.res.pluralStringResource")
 
-        // The FQN of our crowdinString replacement function
+        // The FQN of our Crowdin replacement functions
         private val CROWDIN_STRING_NAME = Name.identifier("crowdinString")
+        private val CROWDIN_PLURAL_STRING_NAME = Name.identifier("crowdinPluralString")
 
         // Package names for CallableId
         private val CROWDIN_PACKAGE = FqName("com.crowdin.platform.compose")
@@ -45,19 +48,25 @@ class CrowdinStringResourceTransformer(
         val callee = expression.symbol.owner
         val calleeFqName = callee.fqNameWhenAvailable
 
-        // Check if this is a call to stringResource()
-        if (calleeFqName == STRING_RESOURCE_FQN) {
+        val replacementFunctionName =
+            when (calleeFqName) {
+                STRING_RESOURCE_FQN -> CROWDIN_STRING_NAME
+                PLURAL_STRING_RESOURCE_FQN -> CROWDIN_PLURAL_STRING_NAME
+                else -> null
+            }
 
-            val callableId = CallableId(CROWDIN_PACKAGE, CROWDIN_STRING_NAME)
-            val crowdinStringSymbols = pluginContext.referenceFunctions(callableId)
+        if (replacementFunctionName != null) {
 
-            val crowdinStringSymbol = findMatchingOverload(
+            val callableId = CallableId(CROWDIN_PACKAGE, replacementFunctionName)
+            val crowdinSymbols = pluginContext.referenceFunctions(callableId)
+
+            val crowdinSymbol = findMatchingOverload(
                 callee,
-                crowdinStringSymbols.map { it.owner }
+                crowdinSymbols.map { it.owner }
             )?.symbol
 
-            if (crowdinStringSymbol != null) {
-                expression.symbol = crowdinStringSymbol
+            if (crowdinSymbol != null) {
+                expression.symbol = crowdinSymbol
 
                 return expression
             } else {
@@ -69,10 +78,10 @@ class CrowdinStringResourceTransformer(
                     append("): ")
                     append(callee.returnType.classFqName?.asString() ?: callee.returnType.toString())
                 }
-                val candidateCount = crowdinStringSymbols.size
+                val candidateCount = crowdinSymbols.size
                 val packageName = CROWDIN_PACKAGE.asString()
                 error(
-                    "Could not find crowdinString function.\n" +
+                    "Could not find ${replacementFunctionName.asString()} function.\n" +
                     "Searched for: $searchedFqn\n" +
                     "Original signature: $originalSignature\n" +
                     "Package: $packageName\n" +

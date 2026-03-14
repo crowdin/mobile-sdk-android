@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.config.CompilerConfigurationKey
  *
  * This is the entry point for the Kotlin compiler to discover and initialize
  * our plugin. It registers the IR generation extension that performs the
- * stringResource -> crowdinString transformation.
+ * Compose resource -> Crowdin Compose resource transformation.
  */
 class CrowdinComponentRegistrar : CompilerPluginRegistrar() {
 
