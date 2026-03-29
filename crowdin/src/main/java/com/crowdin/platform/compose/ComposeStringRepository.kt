@@ -123,7 +123,7 @@ internal class ComposeStringRepository(
         registerActiveWatcher(resourceId) {
             TextMetaData().apply {
                 pluralName = context.resources.getResourceEntryName(resourceId)
-                pluralQuantity = 0
+                pluralQuantity = 1
                 this.resourceId = resourceId
             }
         }
@@ -263,7 +263,7 @@ internal class ComposeStringRepository(
             val locale = crowdinResources.configuration.getLocale()
             val pluralRules = PluralRules.forLocale(locale)
             pluralRules.select(quantity.toDouble())
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // Fallback keeps behavior stable even if locale resolution is unavailable.
             "quantity_$quantity"
         }
