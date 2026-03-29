@@ -4,7 +4,6 @@ import android.icu.text.PluralRules
 import android.os.Build
 import android.util.Log
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.compose.ComposeStringRepository
 import com.crowdin.platform.data.DataManager
@@ -41,7 +40,6 @@ internal class EchoWebSocketListener(
     private var dataHolderMap = Collections.synchronizedMap(WeakHashMap<TextView, TextMetaData>())
     private val composeDataHolderMap = Collections.synchronizedMap(mutableMapOf<String, TextMetaData>())
 
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun onOpen(
         webSocket: WebSocket,
         response: okhttp3.Response,
@@ -123,10 +121,10 @@ internal class EchoWebSocketListener(
 
     override fun onFailure(
         webSocket: WebSocket,
-        throwable: Throwable,
+        t: Throwable,
         response: okhttp3.Response?,
     ) {
-        output("Error : " + throwable.message)
+        output("Error : " + t.message)
     }
 
     private fun saveMatchedTextViewWithMappingId(mappingData: LanguageData) {
@@ -258,7 +256,6 @@ internal class EchoWebSocketListener(
     /**
      * Subscribe existing Compose watchers when WebSocket connection opens.
      */
-    @RequiresApi(Build.VERSION_CODES.N)
     private fun subscribeExistingComposeWatchers(
         webSocket: WebSocket,
         project: DistributionInfoResponse.DistributionData.ProjectData,
@@ -273,17 +270,19 @@ internal class EchoWebSocketListener(
     /**
      * Add a Compose watcher to the tracking system.
      */
-    @RequiresApi(Build.VERSION_CODES.N)
     fun addComposeWatcher(textMetaData: TextMetaData) {
         getMappingValueForKey(textMetaData, mappingData).value?.let { mappingValue ->
-            composeDataHolderMap.putIfAbsent(mappingValue, textMetaData)
+            synchronized(composeDataHolderMap) {
+                if (!composeDataHolderMap.containsKey(mappingValue)) {
+                    composeDataHolderMap[mappingValue] = textMetaData
+                }
+            }
         }
     }
 
     /**
      * Subscribe a new Compose watcher to WebSocket events.
      */
-    @RequiresApi(Build.VERSION_CODES.N)
     fun subscribeComposeWatcher(
         webSocket: WebSocket,
         watcher: TextMetaData,

@@ -5,7 +5,6 @@ import android.icu.text.PluralRules
 import android.os.Build
 import android.os.Looper
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -54,37 +53,32 @@ internal class ComposeStringRepository(
     /**
      * Get a state for a string resource ID.
      */
-    @RequiresApi(Build.VERSION_CODES.N)
     fun getStringState(resourceId: Int): State<String> {
-        val watchedState =
-            resourceIDStringStateMap.computeIfAbsent(resourceId) {
-                val state = mutableStateOf(crowdinResources.getString(resourceId))
-                WatchedState(state)
-            }
+        val watchedState = resourceIDStringStateMap.getOrPut(resourceId) {
+            val state = mutableStateOf(crowdinResources.getString(resourceId))
+            WatchedState(state)
+        }
         return watchedState.state
     }
 
     /**
      * Get a state for a plural resource ID and quantity.
      */
-    @RequiresApi(Build.VERSION_CODES.N)
     fun getPluralState(
         resourceId: Int,
         quantity: Int,
         pluralForm: String = resolvePluralForm(quantity),
     ): State<String> {
         val key = PluralResourceKey(resourceId, pluralForm)
-        val watchedState =
-            pluralStringStateMap.computeIfAbsent(key) {
-                val state = mutableStateOf(crowdinResources.getQuantityString(resourceId, quantity))
-                PluralWatchedState(state = state, quantityHint = quantity)
-            }
+        val watchedState = pluralStringStateMap.getOrPut(key) {
+            val state = mutableStateOf(crowdinResources.getQuantityString(resourceId, quantity))
+            PluralWatchedState(state = state, quantityHint = quantity)
+        }
 
         watchedState.quantityHint = quantity
         return watchedState.state
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     fun getPluralForm(quantity: Int): String = resolvePluralForm(quantity)
 
     /**
@@ -116,9 +110,8 @@ internal class ComposeStringRepository(
             "Registering plural resource watcher for resource ID: $resourceId"
         )
 
-        pluralResourceWatcherCountMap.compute(resourceId) { _, watcherCount ->
-            (watcherCount ?: AtomicInteger(0)).apply { incrementAndGet() }
-        }
+        val counter = AtomicInteger(0)
+        (pluralResourceWatcherCountMap.putIfAbsent(resourceId, counter) ?: counter).incrementAndGet()
 
         registerActiveWatcher(resourceId) {
             TextMetaData().apply {
@@ -175,7 +168,8 @@ internal class ComposeStringRepository(
             if (watcherCount.decrementAndGet() <= 0) {
                 watcherCount.set(0)
                 pluralResourceWatcherCountMap.remove(resourceId)
-                pluralStringStateMap.keys.removeIf { it.resourceId == resourceId }
+                pluralStringStateMap.keys.filter { it.resourceId == resourceId }
+                    .forEach { pluralStringStateMap.remove(it) }
             }
         }
 
@@ -226,7 +220,6 @@ internal class ComposeStringRepository(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     fun updatePluralFromWebSocket(
         resourceId: Int,
         pluralForm: String,
@@ -257,9 +250,9 @@ internal class ComposeStringRepository(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun resolvePluralForm(quantity: Int): String =
-        try {
+    private fun resolvePluralForm(quantity: Int): String {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return "quantity_$quantity"
+        return try {
             val locale = crowdinResources.configuration.getLocale()
             val pluralRules = PluralRules.forLocale(locale)
             pluralRules.select(quantity.toDouble())
@@ -267,6 +260,7 @@ internal class ComposeStringRepository(
             // Fallback keeps behavior stable even if locale resolution is unavailable.
             "quantity_$quantity"
         }
+    }
 
     /**
      * Get active watchers for WebSocket integration.

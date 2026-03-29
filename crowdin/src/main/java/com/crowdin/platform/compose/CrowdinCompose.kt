@@ -1,8 +1,6 @@
 package com.crowdin.platform.compose
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
@@ -36,7 +34,6 @@ import com.crowdin.platform.Crowdin
  * @return The localized string as a plain String
  *
  */
-@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun crowdinString(
     @StringRes resourceId: Int,
@@ -87,7 +84,6 @@ fun crowdinString(
  * @return The localized string as a plain String
  *
  */
-@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun crowdinString(
     @StringRes resourceId: Int,
@@ -131,7 +127,6 @@ fun crowdinString(
  * @param formatArgs Optional format arguments for String.format() style placeholders
  * @return The localized plural string as a plain String
  */
-@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun crowdinPluralString(
     @PluralsRes resourceId: Int,
@@ -169,7 +164,6 @@ fun crowdinPluralString(
  * @param quantity The quantity used to resolve the plural form
  * @return The localized plural string as a plain String
  */
-@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun crowdinPluralString(
     @PluralsRes resourceId: Int,

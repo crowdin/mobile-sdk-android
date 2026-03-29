@@ -63,7 +63,7 @@ internal class CrowdinResources(
             } else {
                 try {
                     String.format(string, *formatArgs)
-                } catch (ex: Exception) {
+                } catch (_: Exception) {
                     res.getString(id, *formatArgs)
                 }
             }
@@ -378,7 +378,7 @@ internal class CrowdinResources(
         try {
             val entryName = getResourceEntryName(id)
             dataManager.getString(configuration.getLocale().getFormattedCode(), entryName)
-        } catch (ex: NotFoundException) {
+        } catch (_: NotFoundException) {
             null
         }
 
