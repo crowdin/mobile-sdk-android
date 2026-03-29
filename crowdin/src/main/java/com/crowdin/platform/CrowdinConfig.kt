@@ -166,8 +166,9 @@ class CrowdinConfig private constructor() {
                     Crowdin.CROWDIN_TAG,
                     "Crowdin: Real-time Compose support is disabled on API level ${Build.VERSION.SDK_INT}. " +
                         "Minimum required API level is ${BuildConfig.MIN_COMPOSE_API_LEVEL}. " +
-                        "Real-time Compose updates use ConcurrentHashMap.computeIfAbsent and Map.putIfAbsent which are only available on API 24+. " +
-                        "Compose translations will still work, but real-time updates will not be available on this device."
+                        "Real-time Compose updates use ConcurrentHashMap.computeIfAbsent and Map.putIfAbsent which are only " +
+                        "available on API 24+. Compose translations will still work, but real-time updates will not be " +
+                        "available on this device.",
                 )
                 config.isRealTimeComposeEnabled = false
             }

@@ -481,7 +481,7 @@ object Crowdin {
                     config.sourceLanguage,
                     dataManager,
                     viewTransformerManager,
-                    composeRepository
+                    composeRepository,
                 )
         }
 

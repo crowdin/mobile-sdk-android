@@ -188,7 +188,6 @@ fun crowdinPluralString(
         onDispose { repository.deRegisterPluralResourceWatcher(resourceId) }
     }
 
-
     return remember(state.value, quantity) { state.value }
 }
 

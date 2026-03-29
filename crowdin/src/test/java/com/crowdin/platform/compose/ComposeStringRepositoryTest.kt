@@ -1,28 +1,21 @@
 package com.crowdin.platform.compose
 
 import android.content.res.Resources
-import android.os.Looper
 import com.crowdin.platform.CrowdinResources
 import com.crowdin.platform.data.model.TextMetaData
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.verifyNoInteractions
 import org.mockito.Mockito.`when`
-import org.mockito.ArgumentCaptor
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 class ComposeStringRepositoryTest {
-
     private lateinit var crowdinResources: CrowdinResources
     private lateinit var repository: ComposeStringRepository
     private lateinit var context: android.content.Context
@@ -72,7 +65,7 @@ class ComposeStringRepositoryTest {
         val id = 123
         val firstValue = "Hello"
         val secondValue = "Hola"
-        
+
         `when`(crowdinResources.getString(id)).thenReturn(firstValue)
         val state = repository.getStringState(id)
         repository.registerWatcher(id)
@@ -127,7 +120,7 @@ class ComposeStringRepositoryTest {
                 callbackInvoked = true
                 capturedMetaData = metaData
             },
-            onWatcherDeregistered = null
+            onWatcherDeregistered = null,
         )
 
         // When
@@ -161,7 +154,7 @@ class ComposeStringRepositoryTest {
                 callbackInvoked = true
                 capturedMetaData = metaData
             },
-            onWatcherDeregistered = null
+            onWatcherDeregistered = null,
         )
 
         // When
@@ -194,7 +187,7 @@ class ComposeStringRepositoryTest {
 
         repository.setWebSocketCallbacks(
             onWatcherRegistered = { },
-            onWatcherDeregistered = { deregisterCount.incrementAndGet() }
+            onWatcherDeregistered = { deregisterCount.incrementAndGet() },
         )
 
         // When
@@ -225,7 +218,7 @@ class ComposeStringRepositoryTest {
 
         repository.setWebSocketCallbacks(
             onWatcherRegistered = { },
-            onWatcherDeregistered = { deregisterCount.incrementAndGet() }
+            onWatcherDeregistered = { deregisterCount.incrementAndGet() },
         )
 
         // When
@@ -285,7 +278,7 @@ class ComposeStringRepositoryTest {
             onWatcherDeregistered = { metaData ->
                 deregisterCallbackInvoked = true
                 capturedMetaData = metaData
-            }
+            },
         )
 
         // When
@@ -331,7 +324,7 @@ class ComposeStringRepositoryTest {
 
         repository.setWebSocketCallbacks(
             onWatcherRegistered = { registerCount.incrementAndGet() },
-            onWatcherDeregistered = null
+            onWatcherDeregistered = null,
         )
 
         // When
@@ -357,7 +350,7 @@ class ComposeStringRepositoryTest {
 
         repository.setWebSocketCallbacks(
             onWatcherRegistered = { },
-            onWatcherDeregistered = { deregisterCount.incrementAndGet() }
+            onWatcherDeregistered = { deregisterCount.incrementAndGet() },
         )
 
         // When
@@ -596,7 +589,7 @@ class ComposeStringRepositoryTest {
 
         repository.setWebSocketCallbacks(
             onWatcherRegistered = { },
-            onWatcherDeregistered = { deregisterCount.incrementAndGet() }
+            onWatcherDeregistered = { deregisterCount.incrementAndGet() },
         )
 
         // When

@@ -34,7 +34,6 @@ class FeatureFlagTest {
         assertThat(FeatureFlags.isScreenshotEnabled, `is`(true))
     }
 
-
     @Test
     fun whenSetRealTimeComposeEnabled_shouldPersist() {
         // Given
@@ -48,4 +47,3 @@ class FeatureFlagTest {
         assertThat(FeatureFlags.isRealTimeComposeEnabled, `is`(true))
     }
 }
-

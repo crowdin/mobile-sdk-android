@@ -23,7 +23,6 @@ internal class ComposeStringRepository(
     private val context: Context,
     private val crowdinResources: CrowdinResources,
 ) {
-
     private data class WatchedState<T>(
         val state: MutableState<T>,
         var watcherCount: AtomicInteger = AtomicInteger(0),
@@ -54,10 +53,11 @@ internal class ComposeStringRepository(
      * Get a state for a string resource ID.
      */
     fun getStringState(resourceId: Int): State<String> {
-        val watchedState = resourceIDStringStateMap.getOrPut(resourceId) {
-            val state = mutableStateOf(crowdinResources.getString(resourceId))
-            WatchedState(state)
-        }
+        val watchedState =
+            resourceIDStringStateMap.getOrPut(resourceId) {
+                val state = mutableStateOf(crowdinResources.getString(resourceId))
+                WatchedState(state)
+            }
         return watchedState.state
     }
 
@@ -70,10 +70,11 @@ internal class ComposeStringRepository(
         pluralForm: String = resolvePluralForm(quantity),
     ): State<String> {
         val key = PluralResourceKey(resourceId, pluralForm)
-        val watchedState = pluralStringStateMap.getOrPut(key) {
-            val state = mutableStateOf(crowdinResources.getQuantityString(resourceId, quantity))
-            PluralWatchedState(state = state, quantityHint = quantity)
-        }
+        val watchedState =
+            pluralStringStateMap.getOrPut(key) {
+                val state = mutableStateOf(crowdinResources.getQuantityString(resourceId, quantity))
+                PluralWatchedState(state = state, quantityHint = quantity)
+            }
 
         watchedState.quantityHint = quantity
         return watchedState.state
@@ -91,7 +92,7 @@ internal class ComposeStringRepository(
         resourceIDStringStateMap[resourceId]?.watcherCount?.incrementAndGet() ?: run {
             Log.w(
                 Crowdin.CROWDIN_TAG,
-                "registerWatcher called before getStringState for resource ID: $resourceId"
+                "registerWatcher called before getStringState for resource ID: $resourceId",
             )
         }
 
@@ -107,7 +108,7 @@ internal class ComposeStringRepository(
     fun registerPluralResourceWatcher(resourceId: Int) {
         Log.d(
             Crowdin.CROWDIN_TAG,
-            "Registering plural resource watcher for resource ID: $resourceId"
+            "Registering plural resource watcher for resource ID: $resourceId",
         )
 
         val counter = AtomicInteger(0)
@@ -126,7 +127,6 @@ internal class ComposeStringRepository(
         resourceId: Int,
         watcherFactory: () -> TextMetaData,
     ) {
-
         // Register with WebSocket system if this is the first watcher for this resource
         if (!activeWatchers.containsKey(resourceId)) {
             try {
@@ -139,7 +139,7 @@ internal class ComposeStringRepository(
                 Log.w(
                     Crowdin.CROWDIN_TAG,
                     "Failed to register WebSocket watcher for resource $resourceId",
-                    e
+                    e,
                 )
             }
         }
@@ -168,7 +168,8 @@ internal class ComposeStringRepository(
             if (watcherCount.decrementAndGet() <= 0) {
                 watcherCount.set(0)
                 pluralResourceWatcherCountMap.remove(resourceId)
-                pluralStringStateMap.keys.filter { it.resourceId == resourceId }
+                pluralStringStateMap.keys
+                    .filter { it.resourceId == resourceId }
                     .forEach { pluralStringStateMap.remove(it) }
             }
         }
@@ -209,13 +210,13 @@ internal class ComposeStringRepository(
 
             Log.d(
                 Crowdin.CROWDIN_TAG,
-                "Updated WebSocket string (internal) for resource $resourceId"
+                "Updated WebSocket string (internal) for resource $resourceId",
             )
         } catch (e: Exception) {
             Log.e(
                 Crowdin.CROWDIN_TAG,
                 "Failed to update string from WebSocket (internal) for resource $resourceId",
-                e
+                e,
             )
         }
     }
@@ -233,13 +234,13 @@ internal class ComposeStringRepository(
 
             Log.d(
                 Crowdin.CROWDIN_TAG,
-                "Updated WebSocket plural (internal) for resource $resourceId, form: $pluralForm"
+                "Updated WebSocket plural (internal) for resource $resourceId, form: $pluralForm",
             )
         } catch (e: Exception) {
             Log.e(
                 Crowdin.CROWDIN_TAG,
                 "Failed to update plural from WebSocket (internal) for resource $resourceId",
-                e
+                e,
             )
         }
     }

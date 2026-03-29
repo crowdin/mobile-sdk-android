@@ -17,7 +17,7 @@ internal class RealTimeUpdateManager(
     private val sourceLanguage: String,
     private val dataManager: DataManager?,
     private val viewTransformerManager: ViewTransformerManager,
-    private val composeRepository: ComposeStringRepository?
+    private val composeRepository: ComposeStringRepository?,
 ) {
     companion object {
         const val NORMAL_CLOSURE_STATUS = 0x3E9

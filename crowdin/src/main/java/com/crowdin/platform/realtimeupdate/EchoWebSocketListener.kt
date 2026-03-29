@@ -72,7 +72,7 @@ internal class EchoWebSocketListener(
                     webSocket,
                     watcher,
                     distributionData.project,
-                    distributionData.user
+                    distributionData.user,
                 )
             },
             onWatcherDeregistered = { watcher ->
@@ -292,7 +292,7 @@ internal class EchoWebSocketListener(
         val logMessage = "Subscribing new Compose watcher: ${
             getMappingValueForKey(
                 watcher,
-                mappingData
+                mappingData,
             ).value
         }"
         Log.d(Crowdin.CROWDIN_TAG, logMessage)
@@ -311,7 +311,7 @@ internal class EchoWebSocketListener(
                 Log.w(
                     Crowdin.CROWDIN_TAG,
                     "Failed to subscribe new Compose watcher: ${e.message}",
-                    e
+                    e,
                 )
             }
         }, false)
