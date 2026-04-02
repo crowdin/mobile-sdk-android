@@ -5,6 +5,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.TextView
 import com.crowdin.platform.Crowdin
+import com.crowdin.platform.compose.ComposeStringRepository
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.getMappingValueForKey
 import com.crowdin.platform.data.model.LanguageData
@@ -33,20 +34,24 @@ internal class EchoWebSocketListener(
     private var mappingData: LanguageData,
     private var distributionData: DistributionInfoResponse.DistributionData,
     private var viewTransformerManager: ViewTransformerManager,
+    private var composeRepository: ComposeStringRepository?,
     private var languageCode: String,
 ) : WebSocketListener() {
     private var dataHolderMap = Collections.synchronizedMap(WeakHashMap<TextView, TextMetaData>())
+    private val composeDataHolderMap = Collections.synchronizedMap(mutableMapOf<String, TextMetaData>())
 
     override fun onOpen(
         webSocket: WebSocket,
         response: okhttp3.Response,
     ) {
-        output("onOpen")
+        Log.d(Crowdin.CROWDIN_TAG, "WebSocket Opened")
 
         val project = distributionData.project
         val user = distributionData.user
 
         saveMatchedTextViewWithMappingId(mappingData)
+        subscribeExistingComposeWatchers(webSocket, project, user)
+
         ThreadUtils.runInBackgroundPool({
             subscribeViews(webSocket, project, user)
         }, false)
@@ -58,6 +63,20 @@ internal class EchoWebSocketListener(
                         resubscribeView(pair, webSocket, project, user)
                     }, false)
                 }
+            },
+        )
+
+        composeRepository?.setWebSocketCallbacks(
+            onWatcherRegistered = { watcher ->
+                subscribeComposeWatcher(
+                    webSocket,
+                    watcher,
+                    distributionData.project,
+                    distributionData.user,
+                )
+            },
+            onWatcherDeregistered = { watcher ->
+                removeComposeWatcher(watcher)
             },
         )
     }
@@ -89,18 +108,23 @@ internal class EchoWebSocketListener(
         code: Int,
         reason: String,
     ) {
-        dataManager.clearSocketData()
-        dataHolderMap.clear()
-        webSocket.close(NORMAL_CLOSURE_STATUS, reason)
+        try {
+            dataManager.clearSocketData()
+            dataHolderMap.clear()
+            composeDataHolderMap.clear()
+            webSocket.close(NORMAL_CLOSURE_STATUS, reason)
+        } catch (e: Exception) {
+            Log.w(Crowdin.CROWDIN_TAG, "Error during WebSocket cleanup", e)
+        }
         output("Closing : $code / $reason")
     }
 
     override fun onFailure(
         webSocket: WebSocket,
-        throwable: Throwable,
+        t: Throwable,
         response: okhttp3.Response?,
     ) {
-        output("Error : " + throwable.message)
+        output("Error : " + t.message)
     }
 
     private fun saveMatchedTextViewWithMappingId(mappingData: LanguageData) {
@@ -180,6 +204,7 @@ internal class EchoWebSocketListener(
                         updateMatchedView(eventData, mutableEntry, textMetaData)
                     }
                 }
+                updateMatchedComposeComponents(mappingId, eventData)
             }
         }
     }
@@ -226,5 +251,114 @@ internal class EchoWebSocketListener(
 
     private fun output(message: String) {
         Log.d(EchoWebSocketListener::class.java.simpleName, message)
+    }
+
+    /**
+     * Subscribe existing Compose watchers when WebSocket connection opens.
+     */
+    private fun subscribeExistingComposeWatchers(
+        webSocket: WebSocket,
+        project: DistributionInfoResponse.DistributionData.ProjectData,
+        user: DistributionInfoResponse.DistributionData.UserData,
+    ) {
+        Log.d(Crowdin.CROWDIN_TAG, "Subscribing existing Compose watchers")
+        composeRepository?.getActiveWatchers()?.forEach { watcher ->
+            subscribeComposeWatcher(webSocket, watcher, project, user)
+        }
+    }
+
+    /**
+     * Add a Compose watcher to the tracking system.
+     */
+    fun addComposeWatcher(textMetaData: TextMetaData) {
+        getMappingValueForKey(textMetaData, mappingData).value?.let { mappingValue ->
+            synchronized(composeDataHolderMap) {
+                if (!composeDataHolderMap.containsKey(mappingValue)) {
+                    composeDataHolderMap[mappingValue] = textMetaData
+                }
+            }
+        }
+    }
+
+    /**
+     * Subscribe a new Compose watcher to WebSocket events.
+     */
+    fun subscribeComposeWatcher(
+        webSocket: WebSocket,
+        watcher: TextMetaData,
+        project: DistributionInfoResponse.DistributionData.ProjectData,
+        user: DistributionInfoResponse.DistributionData.UserData,
+    ) {
+        val logMessage = "Subscribing new Compose watcher: ${
+            getMappingValueForKey(
+                watcher,
+                mappingData,
+            ).value
+        }"
+        Log.d(Crowdin.CROWDIN_TAG, logMessage)
+        addComposeWatcher(watcher)
+
+        // Get the current WebSocket and subscribe if connection is active
+        ThreadUtils.runInBackgroundPool({
+            try {
+                subscribeView(
+                    webSocket = webSocket,
+                    project = project,
+                    user = user,
+                    mappingValue = getMappingValueForKey(watcher, mappingData).value ?: "",
+                )
+            } catch (e: Exception) {
+                Log.w(
+                    Crowdin.CROWDIN_TAG,
+                    "Failed to subscribe new Compose watcher: ${e.message}",
+                    e,
+                )
+            }
+        }, false)
+    }
+
+    /**
+     * Remove a Compose watcher from the tracking system.
+     */
+    fun removeComposeWatcher(watcher: TextMetaData) {
+        getMappingValueForKey(watcher, mappingData).value?.let { mappingValue ->
+            composeDataHolderMap.remove(mappingValue)
+        }
+    }
+
+    /**
+     * Update matched Compose components when WebSocket message is received.
+     */
+    private fun updateMatchedComposeComponents(
+        mappingId: String,
+        eventData: EventResponse.EventData,
+    ) {
+        Log.d(Crowdin.CROWDIN_TAG, "Updating Compose components for mapping ID: $mappingId")
+
+        val textData = composeDataHolderMap[mappingId]
+        if (textData == null) {
+            Log.d(Crowdin.CROWDIN_TAG, "No Compose watchers found for mapping ID: $mappingId")
+            return
+        }
+
+        if (composeRepository == null) {
+            Log.w(Crowdin.CROWDIN_TAG, "Compose repository not available for update")
+            return
+        }
+
+        // Ensure update is called on main thread since Compose state updates require it
+        ThreadUtils.executeOnMain {
+            val pluralForm = eventData.pluralForm
+
+            if (pluralForm == null || pluralForm == PLURAL_NONE) {
+                composeRepository?.updateStringFromWebSocket(textData.resourceId, eventData.text)
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                composeRepository?.updatePluralFromWebSocket(
+                    textData.resourceId,
+                    pluralForm,
+                    eventData.text,
+                )
+            }
+        }
     }
 }

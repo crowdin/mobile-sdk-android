@@ -63,7 +63,7 @@ internal class CrowdinResources(
             } else {
                 try {
                     String.format(string, *formatArgs)
-                } catch (ex: Exception) {
+                } catch (_: Exception) {
                     res.getString(id, *formatArgs)
                 }
             }
@@ -222,7 +222,14 @@ internal class CrowdinResources(
     override fun getQuantityString(
         id: Int,
         quantity: Int,
-    ): String = res.getQuantityString(id, quantity)
+    ): String {
+        val plural = getPluralFromRepository(id, quantity)
+        val formattedPlural = plural ?: res.getQuantityString(id, quantity)
+
+        savePluralToCopy(id, quantity, formattedPlural)
+
+        return formattedPlural
+    }
 
     override fun toString(): String = res.toString()
 
@@ -371,7 +378,7 @@ internal class CrowdinResources(
         try {
             val entryName = getResourceEntryName(id)
             dataManager.getString(configuration.getLocale().getFormattedCode(), entryName)
-        } catch (ex: NotFoundException) {
+        } catch (_: NotFoundException) {
             null
         }
 
