@@ -14,7 +14,11 @@ const config: Config = {
   projectName: 'mobile-sdk-android',
 
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
+  },
 
   i18n: {
     defaultLocale: 'en',
@@ -27,7 +31,7 @@ const config: Config = {
       ({
         docs: {
           routeBasePath: '/',
-          sidebarPath: require.resolve('./sidebars.js'),
+          sidebarPath: require.resolve('./sidebars.ts'),
           editUrl: 'https://github.com/crowdin/mobile-sdk-android/tree/master/website/',
         },
         theme: {
@@ -63,6 +67,9 @@ const config: Config = {
             position: 'right',
           },
         ],
+      },
+      colorMode: {
+        respectPrefersColorScheme: true,
       },
       footer: {
         style: 'dark',

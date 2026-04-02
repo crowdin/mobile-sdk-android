@@ -4,26 +4,26 @@ import CodeBlock from '@theme/CodeBlock';
 
 # Setup
 
-To configure Android SDK integration you need to:
+To configure Android SDK integration, you need to:
 
 - Upload your localization files to Crowdin. If you have existing translations, you can upload them as well. You can use one of the following options:
     - [Crowdin CLI](https://crowdin.github.io/crowdin-cli/)
     - [Android Studio Plugin](https://store.crowdin.com/android-studio)
     - [Crowdin GitHub Action](https://github.com/marketplace/actions/crowdin-action)
     - [and more](https://support.crowdin.com/uploading-files/)
-- Set up Distribution in Crowdin.
+- Set up a distribution in Crowdin.
 - Set up SDK and enable Over-The-Air Content Delivery feature in your project.
 
-**Distribution** is a CDN vault that mirrors the translated content of your project and is required for integration with Android app.
+**Distribution** is a CDN vault that mirrors your project's translated content and is required for Android app integration.
 
-- [Creating a distribution in crowdin.com](https://support.crowdin.com/content-delivery/)
-- [Creating a distribution in Crowdin Enterprise](https://support.crowdin.com/enterprise/content-delivery/)
+- [Creating a distribution in Crowdin](https://support.crowdin.com/cdn-distributions/)
+- [Creating a distribution in Crowdin Enterprise](https://support.crowdin.com/enterprise/cdn-distributions/)
 
 :::info
-- By default, the translation downloading happens **asynchronously** after launching the app. The downloaded translations will be used after the next launch of the app or Activity re-render. Otherwise, the [previously cached translations](/cache) will be used (or local translations if a cache does not exist).
-- The CDN feature does not update the localization files. if you want to add new translations to the localization files you need to do it yourself.
-- Once SDK receives the translations, it's stored on the device as application files for further sessions to minimize requests the next time the app starts. Storage time can be configured using `withUpdateInterval` option.
-- CDN caches all the translation in release for up to 1 hour and even when new translations are released in Crowdin, CDN may return it with a delay.
+- By default, translation download happens **asynchronously** after app launch. Downloaded translations are applied after the next app launch or activity re-render. Otherwise, [previously cached translations](/cache) are used (or bundled local translations if a cache does not exist).
+- The CDN feature does not update your localization files. If you want to add new translations to localization files, update them separately.
+- Once the SDK receives translations, they are stored on the device as application files for future sessions to minimize requests. Storage time can be configured using the `withUpdateInterval` option.
+- CDN caches released translations for up to 1 hour, so newly released translations in Crowdin may be returned with a delay.
 - To display a string, Crowdin will try to find it in the dynamic strings (from the CDN) and use the bundled version as a fallback. In other words, only the newly provided strings will be overridden and the bundled version will be used for the rest.
 :::
 
@@ -179,4 +179,3 @@ Otherwise, new resources are applied when the activity is restarted.
 - [Real-Time Preview](advanced-features/real-time-preview)
 - [Screenshots](advanced-features/screenshots)
 - [Programmatic String Access](guides/programmatic-strings)
-

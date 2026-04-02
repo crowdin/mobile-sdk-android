@@ -39,4 +39,4 @@ implementation ('com.github.crowdin.mobile-sdk-android:sdk:1.17.0') {
 
 ## See also
 
-- [Setup](setup.mdx)
+- [Setup](setup)
