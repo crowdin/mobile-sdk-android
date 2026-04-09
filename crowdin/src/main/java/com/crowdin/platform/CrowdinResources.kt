@@ -123,11 +123,14 @@ internal class CrowdinResources(
         id: Int,
         quantity: Int,
     ): CharSequence {
-        val plural = getPluralFromRepository(id, quantity)
-        val formattedPlural = plural?.fromHtml() ?: res.getQuantityText(id, quantity)
-        savePluralToCopy(id, quantity, formattedPlural.toString())
-
-        return formattedPlural
+        return try {
+            val plural = getPluralFromRepository(id, quantity)
+            val formattedPlural = plural?.fromHtml() ?: res.getQuantityText(id, quantity)
+            savePluralToCopy(id, quantity, formattedPlural.toString())
+            formattedPlural
+        } catch (_: NotFoundException) {
+            super.getQuantityText(id, quantity)
+        }
     }
 
     @Throws(NotFoundException::class)
@@ -136,21 +139,23 @@ internal class CrowdinResources(
         quantity: Int,
         vararg formatArgs: Any?,
     ): String {
-        val plural = getPluralFromRepository(id, quantity)
-        val formattedPlural =
-            if (plural == null) {
-                res.getQuantityString(id, quantity, *formatArgs)
-            } else {
-                try {
-                    String.format(plural, *formatArgs)
-                } catch (ex: Exception) {
+        return try {
+            val plural = getPluralFromRepository(id, quantity)
+            val formattedPlural =
+                if (plural == null) {
                     res.getQuantityString(id, quantity, *formatArgs)
+                } else {
+                    try {
+                        String.format(plural, *formatArgs)
+                    } catch (_: Exception) {
+                        res.getQuantityString(id, quantity, *formatArgs)
+                    }
                 }
-            }
-
-        savePluralToCopy(id, quantity, formattedPlural, formatArgs)
-
-        return formattedPlural
+            savePluralToCopy(id, quantity, formattedPlural, formatArgs)
+            formattedPlural
+        } catch (_: NotFoundException) {
+            super.getQuantityString(id, quantity, *formatArgs)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -237,12 +242,14 @@ internal class CrowdinResources(
         id: Int,
         quantity: Int,
     ): String {
-        val plural = getPluralFromRepository(id, quantity)
-        val formattedPlural = plural ?: res.getQuantityString(id, quantity)
-
-        savePluralToCopy(id, quantity, formattedPlural)
-
-        return formattedPlural
+        return try {
+            val plural = getPluralFromRepository(id, quantity)
+            val formattedPlural = plural ?: res.getQuantityString(id, quantity)
+            savePluralToCopy(id, quantity, formattedPlural)
+            formattedPlural
+        } catch (_: NotFoundException) {
+            super.getQuantityString(id, quantity)
+        }
     }
 
     override fun toString(): String = res.toString()
