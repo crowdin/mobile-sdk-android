@@ -43,11 +43,14 @@ internal class CrowdinResources(
     ) {
     @Throws(NotFoundException::class)
     override fun getString(id: Int): String {
-        val entryName = getResourceEntryName(id)
-        val string = getStringFromRepository(id)?.replaceNewLine() ?: res.getString(id)
-        saveStringDataToCopy(entryName, string)
-
-        return string
+        return try {
+            val entryName = getResourceEntryName(id)
+            val string = getStringFromRepository(id)?.replaceNewLine() ?: res.getString(id)
+            saveStringDataToCopy(entryName, string)
+            string
+        } catch (_: NotFoundException) {
+            super.getString(id)
+        }
     }
 
     @Throws(NotFoundException::class)
@@ -55,53 +58,64 @@ internal class CrowdinResources(
         id: Int,
         vararg formatArgs: Any,
     ): String {
-        val entryName = getResourceEntryName(id)
-        val string = getStringFromRepository(id)?.replaceNewLine()
-        val formattedString =
-            if (string == null) {
-                res.getString(id, *formatArgs)
-            } else {
-                try {
-                    String.format(string, *formatArgs)
-                } catch (_: Exception) {
+        return try {
+            val entryName = getResourceEntryName(id)
+            val string = getStringFromRepository(id)?.replaceNewLine()
+            val formattedString =
+                if (string == null) {
                     res.getString(id, *formatArgs)
+                } else {
+                    try {
+                        String.format(string, *formatArgs)
+                    } catch (_: Exception) {
+                        res.getString(id, *formatArgs)
+                    }
                 }
-            }
-
-        saveStringDataToCopy(entryName, formattedString, formatArgs)
-
-        return formattedString
+            saveStringDataToCopy(entryName, formattedString, formatArgs)
+            formattedString
+        } catch (_: NotFoundException) {
+            super.getString(id, *formatArgs)
+        }
     }
 
     @Throws(NotFoundException::class)
     override fun getStringArray(id: Int): Array<String> {
-        val entryName = getResourceEntryName(id)
-        val stringArray = getStringArrayFromRepository(id) ?: res.getStringArray(id)
-        saveStringArrayDataToCopy(entryName, stringArray)
-
-        return stringArray
+        return try {
+            val entryName = getResourceEntryName(id)
+            val stringArray = getStringArrayFromRepository(id) ?: res.getStringArray(id)
+            saveStringArrayDataToCopy(entryName, stringArray)
+            stringArray
+        } catch (_: NotFoundException) {
+            super.getStringArray(id)
+        }
     }
 
     @Throws(NotFoundException::class)
     override fun getText(id: Int): CharSequence {
-        val entryName = getResourceEntryName(id)
-        val string = getStringFromRepository(id)
-        val formattedString = string?.fromHtml() ?: res.getText(id)
-        saveStringDataToCopy(entryName, formattedString.toString())
-
-        return formattedString
+        return try {
+            val entryName = getResourceEntryName(id)
+            val string = getStringFromRepository(id)
+            val formattedString = string?.fromHtml() ?: res.getText(id)
+            saveStringDataToCopy(entryName, formattedString.toString())
+            formattedString
+        } catch (_: NotFoundException) {
+            super.getText(id)
+        }
     }
 
     override fun getText(
         id: Int,
         default: CharSequence,
     ): CharSequence {
-        val entryName = getResourceEntryName(id)
-        val string = getStringFromRepository(id)
-        val formattedString = string?.fromHtml() ?: res.getText(id, default)
-        saveStringDataToCopy(entryName, formattedString.toString(), default = default)
-
-        return formattedString
+        return try {
+            val entryName = getResourceEntryName(id)
+            val string = getStringFromRepository(id)
+            val formattedString = string?.fromHtml() ?: res.getText(id, default)
+            saveStringDataToCopy(entryName, formattedString.toString(), default = default)
+            formattedString
+        } catch (_: NotFoundException) {
+            super.getText(id, default)
+        }
     }
 
     @Throws(NotFoundException::class)
@@ -356,7 +370,11 @@ internal class CrowdinResources(
         defaultText: String,
         formatArgs: Array<out Any?> = arrayOf(),
     ) {
-        val entryName = getResourceEntryName(id)
+        val entryName = try {
+            getResourceEntryName(id)
+        } catch (_: NotFoundException) {
+            return
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val rule = PluralRules.forLocale(configuration.getLocale())
             val ruleName = rule.select(quantity.toDouble())
@@ -383,10 +401,13 @@ internal class CrowdinResources(
         }
 
     private fun getStringArrayFromRepository(id: Int): Array<String>? {
-        val entryName = getResourceEntryName(id)
-        val localeCode = configuration.getLocale().getFormattedCode()
-
-        return dataManager.getStringArray(localeCode, entryName)
+        return try {
+            val entryName = getResourceEntryName(id)
+            val localeCode = configuration.getLocale().getFormattedCode()
+            dataManager.getStringArray(localeCode, entryName)
+        } catch (_: NotFoundException) {
+            null
+        }
     }
 
     private fun getPluralFromRepository(
