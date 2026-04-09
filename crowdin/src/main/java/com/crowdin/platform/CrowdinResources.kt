@@ -413,15 +413,17 @@ internal class CrowdinResources(
     private fun getPluralFromRepository(
         id: Int,
         quantity: Int,
-    ): String? =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val locale = configuration.getLocale()
-            val localeCode = locale.getFormattedCode()
-            val entryName = getResourceEntryName(id)
-            val rule = PluralRules.forLocale(locale)
-            val ruleName = rule.select(quantity.toDouble())
-            dataManager.getStringPlural(localeCode, entryName, ruleName)
-        } else {
-            null
+    ): String? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return null
+        val locale = configuration.getLocale()
+        val localeCode = locale.getFormattedCode()
+        val entryName = try {
+            getResourceEntryName(id)
+        } catch (_: NotFoundException) {
+            return null
         }
+        val rule = PluralRules.forLocale(locale)
+        val ruleName = rule.select(quantity.toDouble())
+        return dataManager.getStringPlural(localeCode, entryName, ruleName)
+    }
 }
