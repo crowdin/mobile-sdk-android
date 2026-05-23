@@ -17,10 +17,64 @@ class CrowdinConfigTest {
                 .withDistributionHash(distributionHash)
                 .build()
             Assert.fail("SDK initialization with empty `distribution hash` not valid.")
-        } catch (exception: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             // Then
             // exception expected
         }
+    }
+
+    @Test
+    fun whenDistributionHashIsNull_shouldThrowException() {
+        listOf("null", "NULL", "Null").forEach { hash ->
+            try {
+                CrowdinConfig.Builder().withDistributionHash(hash).build()
+                Assert.fail("SDK initialization with `distributionHash` = \"$hash\" should not be valid.")
+            } catch (_: IllegalArgumentException) {
+                // expected
+            }
+        }
+    }
+
+    @Test
+    fun whenDistributionHashIsFalse_shouldThrowException() {
+        listOf("false", "FALSE", "False").forEach { hash ->
+            try {
+                CrowdinConfig.Builder().withDistributionHash(hash).build()
+                Assert.fail("SDK initialization with `distributionHash` = \"$hash\" should not be valid.")
+            } catch (_: IllegalArgumentException) {
+                // expected
+            }
+        }
+    }
+
+    @Test
+    fun whenDistributionHashIsUndefined_shouldThrowException() {
+        listOf("undefined", "UNDEFINED").forEach { hash ->
+            try {
+                CrowdinConfig.Builder().withDistributionHash(hash).build()
+                Assert.fail("SDK initialization with `distributionHash` = \"$hash\" should not be valid.")
+            } catch (_: IllegalArgumentException) {
+                // expected
+            }
+        }
+    }
+
+    @Test
+    fun whenDistributionHashContainsSlash_shouldThrowException() {
+        listOf("/hash", "hash/", "/").forEach { hash ->
+            try {
+                CrowdinConfig.Builder().withDistributionHash(hash).build()
+                Assert.fail("SDK initialization with `distributionHash` = \"$hash\" should not be valid.")
+            } catch (_: IllegalArgumentException) {
+                // expected
+            }
+        }
+    }
+
+    @Test
+    fun whenDistributionHashIsValid_shouldBuildSuccessfully() {
+        val config = CrowdinConfig.Builder().withDistributionHash("abc123-valid-hash").build()
+        Assert.assertEquals("abc123-valid-hash", config.distributionHash)
     }
 
     @Test
@@ -37,7 +91,7 @@ class CrowdinConfigTest {
                 .withSourceLanguage(sourceLanguage)
                 .build()
             Assert.fail("SDK initialization with empty `sourceLanguage` when realTime updates enabled - not valid.")
-        } catch (exception: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             // Then
             // exception expected
         }
@@ -57,7 +111,7 @@ class CrowdinConfigTest {
                 .withSourceLanguage(sourceLanguage)
                 .build()
             Assert.fail("SDK initialization with empty `sourceLanguage` when screenshots enabled - not valid.")
-        } catch (exception: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             // Then
             // exception expected
         }
@@ -76,7 +130,7 @@ class CrowdinConfigTest {
                 .withAuthConfig(authConfig)
                 .build()
             Assert.fail("SDK initialization with empty `AuthConfig` values - not valid.")
-        } catch (exception: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             // Then
             // exception expected
         }

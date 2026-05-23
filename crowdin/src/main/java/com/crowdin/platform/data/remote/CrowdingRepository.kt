@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.crowdin.platform.Crowdin
+import com.crowdin.platform.CrowdinConfig
 import com.crowdin.platform.data.LanguageDataCallback
 import com.crowdin.platform.data.model.LanguageDetails
 import com.crowdin.platform.data.model.ManifestData
@@ -30,6 +31,15 @@ internal abstract class CrowdingRepository(
         languageDataCallback: LanguageDataCallback?,
         function: (ManifestData) -> Unit,
     ) {
+        if (!CrowdinConfig.isValidDistributionHash(distributionHash)) {
+            val msg =
+                "Crowdin: distribution hash is invalid (\"$distributionHash\"). " +
+                    "Manifest request skipped. Check your CrowdinConfig."
+            Log.e(Crowdin.CROWDIN_TAG, msg)
+            languageDataCallback?.onFailure(Throwable(msg))
+            return
+        }
+
         Log.v(
             Crowdin.CROWDIN_TAG,
             "${javaClass.simpleName}. Loading resource manifest from Api started. Hash: $distributionHash",
