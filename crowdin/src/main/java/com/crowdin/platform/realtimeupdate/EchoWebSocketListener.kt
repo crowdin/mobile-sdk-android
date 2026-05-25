@@ -162,7 +162,7 @@ internal class EchoWebSocketListener(
         mappingValue: String,
     ) {
         try {
-            val updateEvent = "$UPDATE_DRAFT:${project.wsHash}:${project.id}:${user.id}:$languageCode:$mappingValue"
+            val updateEvent = "$UPDATE_DRAFT:${project.wsHash}:pr{${project.id}}:us{${user.id}}:$languageCode:tr{$mappingValue}"
             dataManager.getTicket(updateEvent)?.let {
                 webSocket.send(getSubscribeEventJson(updateEvent, it))
             }
@@ -171,7 +171,7 @@ internal class EchoWebSocketListener(
         }
 
         try {
-            val suggestionEvent = "$TOP_SUGGESTION:${project.wsHash}:${project.id}:$languageCode:$mappingValue"
+            val suggestionEvent = "$TOP_SUGGESTION:${project.wsHash}:pr{${project.id}}:$languageCode:tr{$mappingValue}"
             dataManager.getTicket(suggestionEvent)?.let {
                 webSocket.send(getSubscribeEventJson(suggestionEvent, it))
             }
@@ -197,7 +197,7 @@ internal class EchoWebSocketListener(
             val eventData = eventResponse.data
 
             if (event.contains(UPDATE_DRAFT) || event.contains(TOP_SUGGESTION)) {
-                val mappingId = event.split(":").last()
+                val mappingId = extractMappingId(event)
                 for (mutableEntry in dataHolderMap) {
                     val textMetaData = mutableEntry.value
                     if (textMetaData.mappingValue == mappingId) {
@@ -248,6 +248,15 @@ internal class EchoWebSocketListener(
     }
 
     private fun parseResponse(response: String): EventResponse = Gson().fromJson(response, EventResponse::class.java)
+
+    private fun extractMappingId(event: String): String {
+        val lastSegment = event.split(":").last()
+        return if (lastSegment.startsWith("tr{") && lastSegment.endsWith("}")) {
+            lastSegment.removePrefix("tr{").removeSuffix("}")
+        } else {
+            lastSegment
+        }
+    }
 
     private fun output(message: String) {
         Log.d(EchoWebSocketListener::class.java.simpleName, message)
