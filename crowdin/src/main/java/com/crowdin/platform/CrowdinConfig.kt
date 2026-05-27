@@ -2,10 +2,10 @@ package com.crowdin.platform
 
 import android.os.Build
 import android.util.Log
-import java.util.Locale
 import com.crowdin.platform.data.model.ApiAuthConfig
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.remote.NetworkType
+import java.util.Locale
 
 /**
  * Contains configuration properties for initializing Crowdin.
