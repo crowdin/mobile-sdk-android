@@ -2,6 +2,7 @@ package com.crowdin.platform
 
 import android.os.Build
 import android.util.Log
+import java.util.Locale
 import com.crowdin.platform.data.model.ApiAuthConfig
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.remote.NetworkType
@@ -187,7 +188,7 @@ class CrowdinConfig private constructor() {
 
     companion object {
         internal fun isValidDistributionHash(hash: String): Boolean {
-            val lower = hash.trim().lowercase()
+            val lower = hash.trim().lowercase(Locale.ROOT)
             return lower.isNotEmpty() && lower != "null" && lower != "undefined" && lower != "false" && !lower.contains("/")
         }
     }
