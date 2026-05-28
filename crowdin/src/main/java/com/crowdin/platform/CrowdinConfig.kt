@@ -5,6 +5,7 @@ import android.util.Log
 import com.crowdin.platform.data.model.ApiAuthConfig
 import com.crowdin.platform.data.model.AuthConfig
 import com.crowdin.platform.data.remote.NetworkType
+import java.util.Locale
 
 /**
  * Contains configuration properties for initializing Crowdin.
@@ -108,7 +109,10 @@ class CrowdinConfig private constructor() {
         fun build(): CrowdinConfig {
             val config = CrowdinConfig()
             config.isPersist = isPersist
-            require(distributionHash.isNotEmpty()) { "Crowdin: `distributionHash` cannot be empty" }
+            require(isValidDistributionHash(distributionHash)) {
+                "Crowdin: `distributionHash` is misconfigured (got \"$distributionHash\"). " +
+                    "Ensure you pass a valid distribution hash from your Crowdin project settings."
+            }
 
             config.distributionHash = distributionHash
 
@@ -179,6 +183,13 @@ class CrowdinConfig private constructor() {
         companion object {
             private const val ORGANIZATION_PREFIX = "e-"
             private const val MIN_PERIODIC_INTERVAL_MILLIS = 15 * 60 * 1000L // 15 minutes.
+        }
+    }
+
+    companion object {
+        internal fun isValidDistributionHash(hash: String): Boolean {
+            val lower = hash.trim().lowercase(Locale.ROOT)
+            return lower.isNotEmpty() && lower != "null" && lower != "undefined" && lower != "false" && !lower.contains("/")
         }
     }
 }
