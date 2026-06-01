@@ -121,15 +121,18 @@ internal abstract class BaseTransformer : Transformer {
 
             if (id != UNKNOWN_ID) {
                 when {
-                    pluralFormatArgs.isNotEmpty() ->
+                    pluralFormatArgs.isNotEmpty() -> {
                         view.text =
                             view.context.resources.getQuantityString(
                                 id,
                                 pluralQuantity,
                                 *pluralFormatArgs,
                             )
+                    }
 
-                    else -> view.text = view.context.resources.getQuantityText(id, pluralQuantity)
+                    else -> {
+                        view.text = view.context.resources.getQuantityText(id, pluralQuantity)
+                    }
                 }
             }
         }
@@ -149,13 +152,17 @@ internal abstract class BaseTransformer : Transformer {
 
             if (id != UNKNOWN_ID) {
                 when {
-                    textMetaData.stringDefault.isNotEmpty() ->
+                    textMetaData.stringDefault.isNotEmpty() -> {
                         view.text = view.context.resources.getText(id, textMetaData.stringDefault)
+                    }
 
-                    textMetaData.stringsFormatArgs.isNotEmpty() ->
+                    textMetaData.stringsFormatArgs.isNotEmpty() -> {
                         view.text = view.context.resources.getString(id, *textMetaData.stringsFormatArgs)
+                    }
 
-                    else -> view.text = view.context.resources.getText(id)
+                    else -> {
+                        view.text = view.context.resources.getText(id)
+                    }
                 }
             }
         }

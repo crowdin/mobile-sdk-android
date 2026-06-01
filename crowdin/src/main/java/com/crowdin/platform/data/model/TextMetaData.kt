@@ -46,10 +46,12 @@ internal class TextMetaData {
                 stringsFormatArgs = textMetaData.stringsFormatArgs
                 stringDefault = textMetaData.stringDefault
             }
+
             textMetaData.isArrayItem -> {
                 arrayName = textMetaData.arrayName
                 arrayIndex = textMetaData.arrayIndex
             }
+
             textMetaData.isPluralData -> {
                 pluralName = textMetaData.pluralName
                 pluralQuantity = textMetaData.pluralQuantity

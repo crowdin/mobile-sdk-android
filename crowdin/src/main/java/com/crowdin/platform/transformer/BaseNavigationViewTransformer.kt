@@ -21,8 +21,7 @@ internal abstract class BaseNavigationViewTransformer : BaseTransformer() {
 
         for (index in 0 until attrs.attributeCount) {
             when (attrs.getAttributeName(index)) {
-                Attributes.ATTRIBUTE_APP_MENU, Attributes.ATTRIBUTE_MENU ->
-                    updateText(view, attrs, index)
+                Attributes.ATTRIBUTE_APP_MENU, Attributes.ATTRIBUTE_MENU -> updateText(view, attrs, index)
             }
         }
 

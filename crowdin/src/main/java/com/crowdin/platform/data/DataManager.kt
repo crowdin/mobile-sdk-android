@@ -126,9 +126,13 @@ internal class DataManager(
     ): String {
         var status: String = STATUS_OK
         when {
-            !Connectivity.isOnline(context) -> status = "No internet connection"
-            !Connectivity.isNetworkAllowed(context, networkType) ->
+            !Connectivity.isOnline(context) -> {
+                status = "No internet connection"
+            }
+
+            !Connectivity.isNetworkAllowed(context, networkType) -> {
                 status = "Not allowed to load with current network type: ${networkType.name}"
+            }
         }
 
         return status

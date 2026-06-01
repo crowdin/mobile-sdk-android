@@ -3,8 +3,6 @@ plugins {
     id("java")
     id("maven-publish")
     alias(libs.plugins.buildconfig)
-    alias(libs.plugins.gradle.java.test.fixtures)
-    alias(libs.plugins.gradle.idea)
 }
 
 apply(from = rootProject.file("gradle/publishing.gradle.kts"))
@@ -14,73 +12,11 @@ sourceSets {
         java.setSrcDirs(listOf("src"))
         resources.setSrcDirs(listOf("resources"))
     }
-    testFixtures {
-        java.setSrcDirs(listOf("test-fixtures"))
-    }
-    test {
-        java.setSrcDirs(listOf("test", "test-gen"))
-        resources.setSrcDirs(listOf("testData"))
-    }
-}
-
-idea {
-    module.generatedSourceDirs.add(projectDir.resolve("test-gen"))
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
-}
-
-kotlin {
-    jvmToolchain(17)
-}
-
-val annotationsRuntimeClasspath: Configuration by configurations.creating { isTransitive = false }
-
-dependencies {
-    compileOnly(libs.kotlin.compiler)
-
-
-    testFixturesApi(libs.kotlin.test.junit5)
-    testFixturesApi(libs.kotlin.test.framework)
-    testFixturesApi(libs.kotlin.compiler)
-
-    // Dependencies required to run the internal test framework.
-    testRuntimeOnly(libs.junit)
-    testRuntimeOnly(libs.kotlin.reflect)
-    testRuntimeOnly(libs.kotlin.test)
-    testRuntimeOnly(libs.kotlin.script.runtime)
-    testRuntimeOnly(libs.kotlin.annotations.jvm)
-}
-
-buildConfig {
-    useKotlinOutput {
-        internalVisibility = true
-    }
-
-    packageName(group.toString())
-    buildConfigField("String", "KOTLIN_PLUGIN_ID", "\"${rootProject.group}\"")
-}
-
-tasks.test {
-    dependsOn(annotationsRuntimeClasspath)
-
-    useJUnitPlatform()
-    workingDir = rootDir
-
-    systemProperty("annotationsRuntime.classpath", annotationsRuntimeClasspath.asPath)
-
-    // Properties required to run the internal test framework.
-    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-stdlib", "kotlin-stdlib")
-    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-stdlib-jdk8", "kotlin-stdlib-jdk8")
-    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-reflect", "kotlin-reflect")
-    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-test", "kotlin-test")
-    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-script-runtime", "kotlin-script-runtime")
-    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-annotations-jvm", "kotlin-annotations-jvm")
-
-    systemProperty("idea.ignore.disabled.plugins", "true")
-    systemProperty("idea.home.path", rootDir)
 }
 
 kotlin {
@@ -92,30 +28,17 @@ kotlin {
     }
 }
 
-val generateTests by tasks.registering(JavaExec::class) {
-    inputs.dir(layout.projectDirectory.dir("testData"))
-        .withPropertyName("testData")
-        .withPathSensitivity(PathSensitivity.RELATIVE)
-    outputs.dir(layout.projectDirectory.dir("test-gen"))
-        .withPropertyName("generatedTests")
-
-    classpath = sourceSets.testFixtures.get().runtimeClasspath
-    mainClass.set("com.crowdin.platform.compiler.GenerateTestsKt")
-    workingDir = rootDir
+dependencies {
+    compileOnly(libs.kotlin.compiler)
 }
 
-tasks.compileTestKotlin {
-    dependsOn(generateTests)
-}
+buildConfig {
+    useKotlinOutput {
+        internalVisibility = true
+    }
 
-fun Test.setLibraryProperty(propName: String, jarName: String) {
-    val path = project.configurations
-        .testRuntimeClasspath.get()
-        .files
-        .find { """$jarName-\d.*jar""".toRegex().matches(it.name) }
-        ?.absolutePath
-        ?: return
-    systemProperty(propName, path)
+    packageName(group.toString())
+    buildConfigField("String", "KOTLIN_PLUGIN_ID", "\"${rootProject.group}\"")
 }
 
 // Create sources JAR

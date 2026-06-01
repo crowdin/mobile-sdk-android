@@ -46,18 +46,21 @@ internal class StringResourceParser : Parser {
                 val attrCount = parser.attributeCount
                 (attrCount > 0).let { if (it) stringKey = parser.getAttributeValue(0) }
             }
+
             TAG_STRING_ARRAY -> {
                 isArrayStarted = true
                 arrayData = ArrayData()
                 val attrCount = parser.attributeCount
                 (attrCount > 0).let { if (it) arrayKey = parser.getAttributeValue(0) }
             }
+
             TAG_PLURALS -> {
                 isPluralStarted = true
                 pluralData = PluralData()
                 val attrCount = parser.attributeCount
                 (attrCount > 0).let { if (it) quantityKey = parser.getAttributeValue(0) }
             }
+
             ITEM -> {
                 isItemStarted = true
                 if (isPluralStarted) {
@@ -65,6 +68,7 @@ internal class StringResourceParser : Parser {
                     (attrCount > 0).let { if (it) quantityItemKey = parser.getAttributeValue(0) }
                 }
             }
+
             else -> {
                 if ((isArrayStarted && isItemStarted) ||
                     (isPluralStarted && isItemStarted) ||
@@ -114,17 +118,20 @@ internal class StringResourceParser : Parser {
                     stringKey = null
                     content = ""
                 }
+
                 TAG_STRING_ARRAY -> {
                     arrayData?.name = arrayKey!!
                     arrayData?.let { arrays.add(it) }
                     arrayKey = ""
                     isArrayStarted = false
                 }
+
                 TAG_PLURALS -> {
                     pluralData?.name = quantityKey
                     pluralData?.let { plurals.add(it) }
                     isPluralStarted = false
                 }
+
                 ITEM -> {
                     if (isArrayStarted) {
                         val array = arrayData?.values
@@ -137,6 +144,7 @@ internal class StringResourceParser : Parser {
                     content = ""
                     isItemStarted = false
                 }
+
                 else -> {
                     content += "</${parser.name}>"
                     isInnerTagOpened = false
