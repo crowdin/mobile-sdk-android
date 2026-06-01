@@ -21,7 +21,8 @@ class CrowdinComponentRegistrar : CompilerPluginRegistrar() {
         const val PLUGIN_ID = "com.crowdin.platform.compiler"
     }
 
-    override val supportsK2: Boolean = true  // Now using K2-compatible APIs
+    override val pluginId: String = PLUGIN_ID
+    override val supportsK2: Boolean = true
 
     override fun ExtensionStorage.registerExtensions(configuration: CompilerConfiguration) {
         val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
