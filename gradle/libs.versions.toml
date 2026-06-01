@@ -1,20 +1,28 @@
 [versions]
-# https://github.com/JetBrains/kotlin
-kotlin = "2.2.21"
-
-# Android Gradle Plugin
-agp = "8.7.2"
-
-# https://github.com/Kotlin/binary-compatibility-validator
-kotlin-binaryCompatibilityValidator = "0.16.3"
-
-# https://github.com/junit-team/junit4
+kotlin = "2.3.21"
+agp = "9.2.1"
 junit = "4.13.2"
+buildconfig = "6.0.9"
+composeBom = "2026.05.01"
+appcompat = "1.7.1"
+coreKtx = "1.18.0"
+work = "2.11.2"
+material = "1.14.0"
+constraintlayout = "2.2.1"
+multidex = "2.0.1"
+navigation = "2.9.8"
+activityCompose = "1.13.0"
+retrofit = "3.0.0"
+gson = "2.14.0"
+okhttp = "5.3.2"
+mockito = "5.23.0"
+crowdinSdk = "1.17.0"
+ktlint = "1.8.0"
 
-# https://github.com/gmazzo/gradle-buildconfig-plugin
-buildconfig = "5.6.5"
-
-composeBom = "2025.02.00"
+# Test
+espresso = "3.7.0"
+junitExt = "1.3.0"
+tracing = "1.3.0"
 
 [libraries]
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
@@ -24,42 +32,54 @@ kotlin-test-framework = { group = "org.jetbrains.kotlin", name = "kotlin-compile
 kotlin-annotations-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-annotations-jvm", version.ref = "kotlin" }
 kotlin-compiler = { group = "org.jetbrains.kotlin", name = "kotlin-compiler", version.ref = "kotlin" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
-kotlin-gradle-plugin-api  = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin-api", version.ref = "kotlin" }
+kotlin-gradle-plugin-api = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin-api", version.ref = "kotlin" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
 
+# AndroidX
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
+androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
+androidx-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
+androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-tracing = { group = "androidx.tracing", name = "tracing", version.ref = "tracing" }
+
+# Compose (version managed by BOM)
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-ui-text = { group = "androidx.compose.ui", name = "ui-text" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+
+# Crowdin SDK (standalone JitPack reference)
+crowdin-sdk = { group = "com.github.crowdin.mobile-sdk-android", name = "sdk", version.ref = "crowdinSdk" }
+
+# Network
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+
+# Test
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+ktlint-cli = { group = "com.pinterest.ktlint", name = "ktlint-cli", version.ref = "ktlint" }
+androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitExt" }
+androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+androidx-test-espresso-contrib = { group = "androidx.test.espresso", name = "espresso-contrib", version.ref = "espresso" }
 
 [plugins]
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-kotlin-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlin-binaryCompatibilityValidator"}
-buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig"}
+buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
 
 gradle-java-test-fixtures = { id = "java-test-fixtures" }
 gradle-idea = { id = "idea" }
-gradle-plugin = { id = "java-gradle-plugin" }
 
-# Added plugin aliases for Android Gradle Plugin and Kotlin Android
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
-# Kotlin Compose plugin
 kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
-[bundles]
-androidx-ui = [
-    "androidx-foundation-android",
-    "androidx-ui",
-    "androidx-ui-graphics",
-    "androidx-ui-tooling",
-    "androidx-ui-tooling-preview",
-    "androidx-ui-test-manifest",
-]

@@ -1,7 +1,8 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
-    id 'org.jetbrains.kotlin.plugin.compose' version "2.2.21"
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kotlinCompose)
 }
 
 apply from: '../jacoco.gradle'
@@ -33,7 +34,7 @@ ext {
 
 android {
     namespace 'com.crowdin.platform'
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdk rootProject.ext.compileSdkVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -68,10 +69,6 @@ android {
         unitTests.returnDefaultValues = true
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-
     buildFeatures {
         buildConfig = true
         compose = true
@@ -79,27 +76,25 @@ android {
 }
 
 dependencies {
-    implementation "androidx.appcompat:appcompat:1.6.1"
-    implementation "androidx.work:work-runtime-ktx:2.8.1"
-    implementation "com.google.android.material:material:1.9.0"
-    implementation "com.squareup.retrofit2:retrofit:2.11.0"
-    implementation 'com.squareup.retrofit2:converter-gson:2.11.0'
-    implementation "com.google.code.gson:gson:2.10.1"
-    implementation "com.squareup.okhttp3:logging-interceptor:4.12.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.24"
-    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
-    implementation 'com.karumi:dexter:6.2.2'
-    implementation "androidx.multidex:multidex:2.0.1"
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.work.runtime.ktx
+    implementation libs.androidx.material
+    implementation libs.retrofit
+    implementation libs.retrofit.converter.gson
+    implementation libs.gson
+    implementation libs.okhttp.logging.interceptor
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.multidex
 
     // Jetpack Compose dependencies
     implementation platform(libs.androidx.compose.bom)
-    implementation 'androidx.compose.ui:ui'
-    implementation 'androidx.compose.ui:ui-text'
-    implementation 'androidx.compose.runtime:runtime'
-    implementation 'androidx.compose.foundation:foundation'
+    implementation libs.androidx.ui
+    implementation libs.androidx.ui.text
+    implementation libs.androidx.compose.runtime
+    implementation libs.androidx.compose.foundation
 
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-core:5.14.1'
+    testImplementation libs.junit
+    testImplementation libs.mockito.core
 }
 
 // KtLint configuration
@@ -108,7 +103,7 @@ configurations {
 }
 
 dependencies {
-    ktlint("com.pinterest.ktlint:ktlint-cli:1.4.0")
+    ktlint(libs.ktlint.cli)
 }
 
 tasks.register("ktlint", JavaExec) {
@@ -127,6 +122,12 @@ tasks.register("ktlintFormat", JavaExec) {
     classpath = configurations.ktlint
     mainClass.set("com.pinterest.ktlint.Main") // use `mainClass.set()` instead of `main`
     args = ["-F", "src/**/*.kt"] // `-F` enables formatting
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_1_8
+    }
 }
 
 apply from: 'maven.gradle'
