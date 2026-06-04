@@ -44,12 +44,6 @@ android {
     packagingOptions {
         exclude 'META-INF/crowdin_release.kotlin_module'
     }
-
-    configurations.configureEach {
-        resolutionStrategy {
-            force "androidx.tracing:tracing:1.2.0"
-        }
-    }
 }
 
 kotlin {
@@ -81,6 +75,5 @@ dependencies {
 
     androidTestImplementation libs.androidx.test.junit
     androidTestImplementation libs.androidx.test.espresso.core
-    androidTestImplementation libs.androidx.tracing
     androidTestImplementation libs.androidx.test.espresso.contrib
 }
