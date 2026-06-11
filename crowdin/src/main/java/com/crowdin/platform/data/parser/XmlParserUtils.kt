@@ -65,7 +65,10 @@ internal object XmlParserUtils {
                         }
                     }
                 }
-                XmlPullParser.END_DOCUMENT -> reachedEndOfMenu = true
+
+                XmlPullParser.END_DOCUMENT -> {
+                    reachedEndOfMenu = true
+                }
             }
 
             eventType = xmlPullParser.next()
@@ -82,6 +85,7 @@ internal object XmlParserUtils {
                 Attributes.ATTRIBUTE_ANDROID_ID, Attributes.ATTRIBUTE_ID -> {
                     menuId = attributeSet.getAttributeResourceValue(index, 0)
                 }
+
                 Attributes.ATTRIBUTE_ANDROID_TITLE, Attributes.ATTRIBUTE_TITLE -> {
                     val value = attributeSet.getAttributeValue(index)
                     if (value == null || !value.startsWith("@")) break@loop
@@ -90,6 +94,7 @@ internal object XmlParserUtils {
                     }
                     menuItemStrings.title = attributeSet.getAttributeResourceValue(index, 0)
                 }
+
                 Attributes.ATTRIBUTE_ANDROID_TITLE_CONDENSED, Attributes.ATTRIBUTE_TITLE_CONDENSED -> {
                     val value = attributeSet.getAttributeValue(index)
                     if (value == null || !value.startsWith("@")) break@loop

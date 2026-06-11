@@ -36,9 +36,11 @@ internal class XmlReader(
                 XmlPullParser.START_TAG -> {
                     parser.onStartTag(xmlPullParser)
                 }
+
                 XmlPullParser.TEXT -> {
                     parser.onText(xmlPullParser)
                 }
+
                 XmlPullParser.END_TAG -> {
                     parser.onEndTag(xmlPullParser)
                 }

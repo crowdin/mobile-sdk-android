@@ -6,6 +6,7 @@ import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -50,6 +51,15 @@ class MainActivity : BaseActivity(), LoadingStateListener {
         header.findViewById<TextView>(R.id.textView).movementMethod =
             LinkMovementMethod.getInstance()
 
+        onBackPressedDispatcher.addCallback(this) {
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START)
+            } else {
+                isEnabled = false
+                onBackPressedDispatcher.onBackPressed()
+            }
+        }
+
         // Register data observer. When data loaded you can invalidate your UI to apply new resources.
         Crowdin.registerDataLoadingObserver(this)
 
@@ -61,15 +71,6 @@ class MainActivity : BaseActivity(), LoadingStateListener {
     override fun onDestroy() {
         super.onDestroy()
         Crowdin.unregisterDataLoadingObserver(this)
-    }
-
-    override fun onBackPressed() {
-        val drawer = findViewById<DrawerLayout>(R.id.drawerLayout)
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

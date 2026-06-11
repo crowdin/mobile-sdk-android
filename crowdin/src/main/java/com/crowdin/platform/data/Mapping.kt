@@ -21,6 +21,7 @@ internal fun getMappingValueForKey(
                 }
             }
         }
+
         textMetaData.isArrayItem -> {
             for (array in arrays) {
                 if (array.name == textMetaData.arrayName && textMetaData.isArrayItem) {
@@ -28,6 +29,7 @@ internal fun getMappingValueForKey(
                 }
             }
         }
+
         textMetaData.isPluralData -> {
             for (plural in plurals) {
                 if (plural.name == textMetaData.pluralName) {

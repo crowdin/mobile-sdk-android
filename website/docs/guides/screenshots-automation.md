@@ -11,10 +11,9 @@ Before you start, ensure the following:
 
    ```groovy title="build.gradle"
    dependencies {
-       androidTestImplementation "androidx.test.ext:junit:1.2.1"
-       androidTestImplementation "androidx.test.espresso:espresso-core:3.6.1"
-       androidTestImplementation "androidx.tracing:tracing:1.2.0"
-       androidTestImplementation "androidx.test.espresso:espresso-contrib:3.6.1"
+       androidTestImplementation "androidx.test.ext:junit:1.3.0"
+       androidTestImplementation "androidx.test.espresso:espresso-core:3.7.0"
+       androidTestImplementation "androidx.test.espresso:espresso-contrib:3.7.0"
    }
    ```
 

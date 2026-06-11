@@ -3,6 +3,7 @@ package com.crowdin.platform.screenshot
 import android.Manifest
 import android.content.ContentUris
 import android.content.Context
+import android.content.pm.PackageManager
 import android.database.ContentObserver
 import android.database.Cursor
 import android.graphics.Bitmap
@@ -13,14 +14,9 @@ import android.os.Handler
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
+import androidx.core.content.ContextCompat
 import com.crowdin.platform.Crowdin
 import com.crowdin.platform.R
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.single.PermissionListener
 
 /**
  * Creates a content observer.
@@ -48,27 +44,12 @@ internal class ScreenshotService(
                 Manifest.permission.READ_EXTERNAL_STORAGE
             }
 
-        Dexter
-            .withContext(context)
-            .withPermission(permission)
-            .withListener(
-                object : PermissionListener {
-                    override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                        searchAndUploadScreenshot()
-                    }
-
-                    override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
-                        onErrorListener?.invoke(context.getString(R.string.required_permission_read_storage, permission))
-                    }
-
-                    override fun onPermissionRationaleShouldBeShown(
-                        p0: PermissionRequest?,
-                        p1: PermissionToken?,
-                    ) {
-                        p1?.continuePermissionRequest()
-                    }
-                },
-            ).check()
+        val hasPermission = ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+        if (hasPermission) {
+            searchAndUploadScreenshot()
+        } else {
+            onErrorListener?.invoke(context.getString(R.string.required_permission_read_storage, permission))
+        }
     }
 
     private fun searchAndUploadScreenshot() {

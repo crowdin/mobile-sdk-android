@@ -20,6 +20,7 @@ internal object Connectivity {
                 (currentNetworkType == NetworkType.WIFI || currentNetworkType == NetworkType.CELLULAR) -> return true
 
             networkType == NetworkType.WIFI && currentNetworkType == NetworkType.WIFI -> return true
+
             networkType == NetworkType.CELLULAR && currentNetworkType == NetworkType.CELLULAR -> return true
         }
 
