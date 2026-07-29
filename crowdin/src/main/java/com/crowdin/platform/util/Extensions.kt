@@ -20,6 +20,34 @@ const val NEW_LINE = "<br>"
 private const val DEFAULT_DATE_TIME_FORMAT = "yyyy_MM_dd-HH_mm_ss"
 private val crowdinCodeMapping = mapOf("iw" to "he", "in" to "id")
 
+// Regions whose Spanish locales fall back to the es-419 group per CLDR parent-locale
+// data, mirroring Android resource resolution (es-MX -> es-419 -> es).
+private val es419Regions =
+    setOf(
+        "AR",
+        "BO",
+        "BR",
+        "BZ",
+        "CL",
+        "CO",
+        "CR",
+        "CU",
+        "DO",
+        "EC",
+        "GT",
+        "HN",
+        "MX",
+        "NI",
+        "PA",
+        "PE",
+        "PR",
+        "PY",
+        "SV",
+        "US",
+        "UY",
+        "VE",
+    )
+
 fun MenuInflater.inflateWithCrowdin(
     @MenuRes menuRes: Int,
     menu: Menu,
@@ -73,9 +101,18 @@ fun getMatchedCode(
     }
 
     if (list?.contains(code) == false) {
+        val parentCode = code.getParentLocaleCode()
+        if (parentCode != null && list.contains(parentCode)) {
+            return parentCode
+        }
         return languageCode.takeIf { list.contains(languageCode) }
     }
     return code
+}
+
+internal fun String.getParentLocaleCode(): String? {
+    val parts = split("-")
+    return if (parts.size == 2 && parts[0] == "es" && parts[1] in es419Regions) "es-419" else null
 }
 
 fun String.withCrowdinSupportedCheck(): String = crowdinCodeMapping[this] ?: this
