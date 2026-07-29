@@ -1,3 +1,7 @@
+---
+description: Preview translations made in the Crowdin Editor directly in your app in real time. Learn how to set up and authorize the Real-Time Preview feature.
+---
+
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CodeBlock from '@theme/CodeBlock';
@@ -6,7 +10,7 @@ import CodeBlock from '@theme/CodeBlock';
 
 All translations done in the Crowdin Editor can be displayed in your version of the application in real-time. See the translations that have already been done and the ones you're typing.
 
-### Setup
+## Setup
 
 Add the following code to the *Application* class:
 
@@ -18,9 +22,9 @@ import samplePreviewSetupJava from '!!raw-loader!../code-samples/real-time-previ
   <TabItem value="java" label="Java"><CodeBlock language="java">{samplePreviewSetupJava}</CodeBlock></TabItem>
 </Tabs>
 
-### Authorization
+## Authorization
 
-Crowdin Authorization is required for Real-Time Preview feature. Create connection using *Activity/Fragment* method *inMainActivity* class:
+Crowdin authorization is required for the Real-Time Preview feature. Create the connection in your *Activity* or *Fragment* class (e.g., in the *MainActivity* `onCreate` method):
 
 import samplePreviewAuthKotlin from '!!raw-loader!../code-samples/real-time-preview/auth.kt';
 import samplePreviewAuthJava from '!!raw-loader!../code-samples/real-time-preview/auth.java';
@@ -43,10 +47,10 @@ import samplePreviewDisconnectJava from '!!raw-loader!../code-samples/real-time-
 :::tip Tips
 - To use the Real-Time Preview feature you still need to [wrap context](/setup#context-wrapping) for your activities.
 - To easily control the Real-Time Preview feature you could also use the [SDK Controls](/advanced-features/sdk-controls) UI widget.
-- For Jetpack Compose applications, see [Jetpack Compose Realtime Support](jetpack-compose).
+- For Jetpack Compose applications, see [Jetpack Compose Real-Time Preview](jetpack-compose).
 :::
 
-### Config options
+## Config options
 
 | Config option                | Description                                                             | Example                                                                    |
 |------------------------------|-------------------------------------------------------------------------|----------------------------------------------------------------------------|
@@ -59,13 +63,13 @@ import samplePreviewDisconnectJava from '!!raw-loader!../code-samples/real-time-
 | `request_auth_dialog`        | Request authorization dialog                                            | `true` by default or `false`                                               |
 | `withOrganizationName`       | An Organization domain name<br/>(for **Crowdin Enterprise users only**) | `"mycompany"` for Crowdin Enterprise or `null` for crowdin.com             |
 
-### Redirect URI Configuration
+## Redirect URI Configuration
 
 You can configure the OAuth redirect URI for authorization in two ways:
 
 - Via `AuthConfig` (Recommended): Specify the redirect URI directly in your `AuthConfig`. This method provides more flexibility and doesn't require manifest configuration.
 - Via App Scheme in Manifest: Configure the redirect URI using app scheme in your `AndroidManifest.xml`. When using this method, the redirect URL in your Crowdin OAuth app should be `crowdintest://`.
 
-The [OAuth App](https://support.crowdin.com/creating-oauth-app/) redirect URL should match your configured redirect URI:
+The [OAuth App](https://support.crowdin.com/account-settings/#oauth) redirect URL should match your configured redirect URI:
   - When using **AuthConfig method**: Set the redirect URL to match the `redirect_uri` parameter value (e.g., `"your-custom://redirect"`)
   - When using **App scheme method**: Set the redirect URL to match your app scheme (e.g., for scheme `<data android:scheme="crowdintest" />` use `crowdintest://`)

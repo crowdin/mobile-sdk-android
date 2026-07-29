@@ -1,3 +1,7 @@
+---
+description: Integrate the Crowdin SDK with Jetpack Compose for real-time translation updates. Learn about configuration, composables, and the Crowdin Gradle plugin.
+---
+
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CodeBlock from '@theme/CodeBlock';
@@ -5,7 +9,7 @@ import CodeBlock from '@theme/CodeBlock';
 import sampleComposeConfig from '!!raw-loader!../code-samples/jetpack-compose/config.kt';
 import sampleComposeUsage from '!!raw-loader!../code-samples/jetpack-compose/usage.kt';
 
-# Jetpack Compose Realtime Preview
+# Jetpack Compose Real-Time Preview
 
 The Crowdin Android SDK provides seamless integration with Jetpack Compose, enabling real-time updates for your application's UI strings without the need to restart the activity or the application.
 
@@ -21,7 +25,7 @@ To enable Jetpack Compose support, you need to configure the `CrowdinConfig` in 
 The `withRealTimeComposeEnabled(true)` flag is required to activate the Compose-specific repositories and watchers.
 :::
 
-:::warning Required Dependencies
+:::warning Required Configuration
 **Both `withRealTimeUpdates()` and `withRealTimeComposeEnabled(true)` are required** for real-time Compose support to work properly:
 - `withRealTimeUpdates()` - Establishes the WebSocket connection for receiving translation updates from Crowdin
 - `withRealTimeComposeEnabled(true)` - Enables the Compose-specific integration layer to propagate updates to your UI
@@ -101,6 +105,6 @@ fun Greeting() {
 }
 ```
 
-### See also
+## See also
 
 - [Real-Time Preview](real-time-preview)

@@ -1,10 +1,14 @@
+---
+description: Learn how the Crowdin Android SDK works on Android TV and Fire OS devices, including supported features and known limitations.
+---
+
 # Platforms Support
 
 ## Android TV
 
 Android TV is an Android-based smart TV operating system developed by Google for televisions, digital media players, set-top boxes, and sound bars.
 
-Crowdin SDK is compatible with Android TV. You can use Over-The-Air, Screenshots, Real-Time Preview features for your Android TV application in the same way as for regular Android apps.
+Crowdin SDK is compatible with Android TV. You can use the Over-The-Air Content Delivery, Screenshots, and Real-Time Preview features for your Android TV application in the same way as for regular Android apps.
 
 ## Fire OS
 
@@ -18,9 +22,9 @@ Fire OS is a mobile operating system based on the Android Open Source Project an
 
 Because both Amazon Fire TV and Android TV use Android, you can publish the same Android app to both the Amazon Appstore and the Google Play Store.
 
-When you test your Amazon Fire TV app code, you use a real Fire TV device (either the set-top box or stick) instead of a virtual emulator. See Connecting to Fire TV via ADB for more details.
+When you test your Amazon Fire TV app code, you use a real Fire TV device (either the set-top box or stick) instead of a virtual emulator. See [Connecting to Fire TV via ADB](https://developer.amazon.com/docs/fire-tv/connecting-adb-to-device.html) for more details.
 
-The **Crowdin SDK is compatible with Fire OS**. You can use Over-The-Air, Screenshots, and Real-Time Preview features.
+The **Crowdin SDK is compatible with Fire OS**. You can use the Over-The-Air Content Delivery, Screenshots, and Real-Time Preview features.
 
 :::caution
 Some issues are observed with the `initCrowdinControl` and overlay permission. In case you have such issues, please disable SDK Controls.

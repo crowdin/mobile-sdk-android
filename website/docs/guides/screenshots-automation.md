@@ -1,3 +1,7 @@
+---
+description: Automate taking and uploading screenshots to Crowdin using the Crowdin SDK and Espresso tests to provide visual context for translators.
+---
+
 # Screenshots Automation
 
 This guide shows how to automate the process of taking screenshots and uploading them to Crowdin to provide context for translators or AI. It covers the necessary setup, how to use the Crowdin SDK, and a sample automation test.
