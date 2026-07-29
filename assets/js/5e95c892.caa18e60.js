@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunk_crowdin_mobile_sdk_android_website||=[]).push([[647],{7121(e,r,s){s.r(r),s.d(r,{default:()=>t});s(6540);var a=s(4164),d=s(7559),i=s(5500),c=s(2831),n=s(4060),o=s(4848);function t(e){return(0,o.jsx)(i.e3,{className:(0,a.A)(d.G.wrapper.docsPages),children:(0,o.jsx)(n.A,{children:(0,c.v)(e.route.routes)})})}}}]);

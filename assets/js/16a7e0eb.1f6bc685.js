@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunk_crowdin_mobile_sdk_android_website||=[]).push([[48],{6813(o){o.exports=JSON.parse('{"metadata":{"permalink":"/mobile-sdk-android/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":0,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);
