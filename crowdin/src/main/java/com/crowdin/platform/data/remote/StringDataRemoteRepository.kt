@@ -74,14 +74,11 @@ internal class StringDataRemoteRepository(
 
         // Combine all data before save to storage
         val languageData = LanguageData()
-        val languageInfo = getLanguageInfo(preferredLanguageCode)
 
-        if (languageInfo == null) {
-            languageDataCallback?.onFailure(Throwable("Language info not found for $preferredLanguageCode"))
-            return
-        }
+        // The cached language list is fetched separately from the manifest and can lag behind a
+        // language the manifest already ships. The Crowdin code works as a storage key on its own.
+        languageData.language = getLanguageInfo(preferredLanguageCode)?.locale ?: preferredLanguageCode
 
-        languageData.language = languageInfo.locale
         manifest?.content?.get(preferredLanguageCode)?.forEach { filePath ->
             val eTag = eTagMap[filePath]
             val result =

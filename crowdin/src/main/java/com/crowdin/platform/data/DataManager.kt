@@ -1,6 +1,7 @@
 package com.crowdin.platform.data
 
 import android.content.Context
+import android.content.res.Configuration
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.crowdin.platform.Crowdin.CROWDIN_TAG
@@ -24,6 +25,8 @@ import com.crowdin.platform.data.remote.RemoteRepository
 import com.crowdin.platform.util.FeatureFlags
 import com.crowdin.platform.util.ThreadUtils
 import com.crowdin.platform.util.getFormattedCode
+import com.crowdin.platform.util.getLocale
+import com.crowdin.platform.util.withCrowdinSupportedCheck
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 import java.util.Locale
@@ -113,11 +116,42 @@ internal class DataManager(
 
     fun refreshData(languageData: LanguageData) {
         localRepository.saveLanguageData(languageData)
+        if (languageData.language.isNotEmpty()) {
+            crowdinPreferences.setString(TRANSLATION_LOCALE_KEY, languageData.language)
+        }
+
         if (FeatureFlags.isRealTimeUpdateEnabled || FeatureFlags.isScreenshotEnabled) {
             dataChangeObserver.onDataChanged()
         }
 
         sendOnDataChanged()
+    }
+
+    /**
+     * Locale keys to look translations up under, most specific first.
+     *
+     * Translations are stored under the Crowdin locale of the matched language (`es-419`), while a
+     * device reports its own locale (`es-MX`). Without the second key the lookup asks for `es-MX`,
+     * finds nothing and silently falls back to the bundled strings.
+     */
+    fun getLocaleKeys(configuration: Configuration?): List<String> {
+        val locale = configuration.getLocale()
+        val formattedCode = locale.getFormattedCode()
+        // Preferences return an empty string, not null, for a missing key.
+        val storedKey = crowdinPreferences.getString(TRANSLATION_LOCALE_KEY)
+        if (storedKey.isNullOrEmpty() || storedKey == formattedCode) {
+            return listOf(formattedCode)
+        }
+
+        // Fall back to the stored key only while it belongs to the language currently being
+        // displayed, otherwise a locale switch would serve the previously downloaded language.
+        val language = locale.language.withCrowdinSupportedCheck()
+
+        return if (storedKey.substringBefore('-') == language) {
+            listOf(formattedCode, storedKey)
+        } else {
+            listOf(formattedCode)
+        }
     }
 
     private fun validateData(
@@ -329,6 +363,7 @@ internal class DataManager(
         const val CACHED_LANGUAGES = "cached_languages"
         const val MANIFEST_DATA = "manifest_data"
         const val SYNC_DATA = "sync_data"
+        const val TRANSLATION_LOCALE_KEY = "translation_locale_key"
         const val EVENT_TICKETS = "event_tickets"
         const val EVENT_TICKETS_EXPIRATION = 1000 * 60 * 4
     }
