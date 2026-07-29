@@ -10,7 +10,13 @@ Yes, the SDK caches translations locally. The cache TTL can be configured by the
 
 ## What translations will be displayed if the current locale is not present in the Crowdin project?
 
-The app will use the bundled translations or the default language as a fallback. It will not fall back to any other Crowdin locale.
+The SDK resolves the device locale against the project languages in the following order:
+
+1. Exact locale match (e.g. `es-MX`).
+2. Region group match for Latin American Spanish locales (e.g. `es-MX` → `es-419`).
+3. Two-letter language code match (e.g. `es-MX` → `es`).
+
+If none of these match a project language, the app will use the bundled translations or the default language as a fallback.
 
 ## Will the SDK download all translations from Crowdin every time the app launches?
 
