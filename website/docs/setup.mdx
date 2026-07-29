@@ -1,3 +1,7 @@
+---
+description: Configure the Crowdin Android SDK in your app - wrap the context, enable Over-The-Air Content Delivery, and explore config options and tips.
+---
+
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CodeBlock from '@theme/CodeBlock';
@@ -29,9 +33,9 @@ To configure Android SDK integration, you need to:
 
 To integrate the SDK with your application, follow the step-by-step instructions:
 
-### Context wrapping
+## Context wrapping
 
-Inject Crowdin translations by adding the *override* method to the *BaseActivity* class to inject Crowdin translations into the Context. If you have already migrated to [AppCompat](https://developer.android.com/jetpack/androidx/releases/appcompat) **1.2.0+** version, use this method:
+Inject Crowdin translations into the Context by adding the *override* method to your *BaseActivity* class. If you have already migrated to [AppCompat](https://developer.android.com/jetpack/androidx/releases/appcompat) **1.2.0+** version, use this method:
 
 import sampleContextAppcompat2Kotlin from '!!raw-loader!./code-samples/setup/context-appcompat-1.2.kt';
 import sampleContextAppcompat2Java from '!!raw-loader!./code-samples/setup/context-appcompat-1.2.java';
@@ -55,7 +59,7 @@ import sampleContextAppcompat1Java from '!!raw-loader!./code-samples/setup/conte
 If you don't have the *BaseActivity* class, add the above code to all of your activities.
 :::
 
-### Configuring Crowdin SDK
+## Configuring Crowdin SDK
 
 Enable *Over-The-Air Content Delivery* in your project so that the application can pull translations from the CDN vault. Add the following code to the *App*/*Application* class:
 
@@ -67,9 +71,9 @@ import sampleConfiguringJava from '!!raw-loader!./code-samples/setup/configuring
   <TabItem value="java" label="Java"><CodeBlock language="java">{sampleConfiguringJava}</CodeBlock></TabItem>
 </Tabs>
 
-### Change locale programmatically
+## Change locale programmatically
 
-Crowdin works with the current locale, if you want to change the locale programmatically use the *language* plus *country* format: `Locale("en", "US")`.
+Crowdin works with the current locale. If you want to change the locale programmatically, use the *language* plus *country* format: `Locale("en", "US")`.
 
 Example of language change in **App.kt/Application.java**:
 
@@ -85,15 +89,15 @@ import sampleLocaleChangeJava from '!!raw-loader!./code-samples/setup/locale.jav
 Make sure you've added this code to the **App.kt/Application.java** class.
 :::
 
-### Config options
+## Config options
 
 | Config option          | Description                                                                                                                               | Example                                                                                                         |
 |------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
 | `withDistributionHash` | Distribution Hash                                                                                                                         | `withDistributionHash("7a0c1...7uo3b")`                                                                         |
 | `withNetworkType`      | Network type to be used for translations download                                                                                         | Acceptable values are:<br/>- `NetworkType.ALL` (default)<br/> - `NetworkType.CELLULAR`<br/>- `NetworkType.WIFI` |
-| `withUpdateInterval`   | Translations update interval in seconds. The minimum and the default value is 15 minutes. Visit the [Cache](/cache) page for more details | `withUpdateInterval(900)`                                                                                       |
+| `withUpdateInterval`   | Translations update interval in seconds. The minimum and default value is 15 minutes (900 seconds). Visit the [Cache](/cache) page for more details | `withUpdateInterval(900)`                                                                                       |
 
-### Tips and tricks
+## Tips and tricks
 
 **1.** To translate menu items you need to update your `onCreateOptionsMenu` method:
 
@@ -105,11 +109,11 @@ import sampleMenuItemsJava from '!!raw-loader!./code-samples/setup/menu-items.ja
   <TabItem value="java" label="Java"><CodeBlock language="java">{sampleMenuItemsJava}</CodeBlock></TabItem>
 </Tabs>
 
-**2.** In case you have custom views that uses `TypedArray` and `stylable` attributes, you will need to use the following approach:
+**2.** In case you have custom views that use `TypedArray` and `styleable` attributes, you will need to use the following approach:
 
 ```kotlin
 val textId = typedArray.getResourceId(R.styleable.sample_item, 0)
- textView.setText(textId)
+textView.setText(textId)
 ```
 
 instead of `typedArray.getString(R.styleable.sample_item)`.
@@ -154,7 +158,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 }
 ```
 
-It has callback method `onDataChanged()` that can be used to invalidate your UI (TextView/Menu etc.). It will use downloaded resources automatically.
+It has a callback method `onDataChanged()` that can be used to invalidate your UI (TextView, Menu, etc.). It will use downloaded resources automatically.
 
 ```kotlin
 override fun onDataChanged() {
@@ -166,15 +170,15 @@ override fun onDataChanged() {
 
 Otherwise, new resources are applied when the activity is restarted.
 
-**6.** In case you have a custom `TextView` with string specified in xml, make sure you follow this naming convention `PlaceholderTextView` otherwise SDK will skip this view during inflating process and it won't be translated.
+**6.** In case you have a custom `TextView` subclass with a string specified in XML, make sure its class name contains `TextView` (e.g., `PlaceholderTextView`). Otherwise, the SDK will skip this view during the inflating process and it won't be translated.
 
-### Limitations
+## Limitations
 
 1. Plurals are supported from Android SDK version 24.
-2. `TabItem` text added via xml won't be updated. There is workaround: you can store tabItem titles in your string-array and add tabs dynamically.
-3. `PreferenceScreen` defined via XML are not supported.
+2. `TabItem` text added via XML won't be updated. There is a workaround: you can store `TabItem` titles in a string array and add tabs dynamically.
+3. `PreferenceScreen` defined via XML is not supported.
 
-### See also
+## See also
 
 - [Real-Time Preview](advanced-features/real-time-preview)
 - [Screenshots](advanced-features/screenshots)

@@ -1,3 +1,7 @@
+---
+description: Explore the Crowdin Android SDK example project - a todo app demonstrating SDK integration, real-time updates, screenshots, and Jetpack Compose support.
+---
+
 # Example Project
 
 The Crowdin [Android SDK Example](https://github.com/crowdin/mobile-sdk-android/tree/master/example) is a simple todo app designed to demonstrate how to integrate and use Crowdin SDK features in a real Android application. This example project serves as a practical reference for developers looking to implement dynamic localization in their own apps.

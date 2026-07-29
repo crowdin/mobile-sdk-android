@@ -1,10 +1,14 @@
+---
+description: Localize each flavor of a multi-flavor Android application with the Crowdin SDK using separate distributions and build config fields.
+---
+
 # Multiple Flavor Apps
 
 If your application has multiple flavors, you can also localize each flavor using Crowdin Android SDK.
 
-To use the Crowdin Android SDK in a multi-flavor application do the following things:
+To use the Crowdin Android SDK in a multi-flavor application, do the following:
 
-- Upload your localization files for each flavor to Crowdin. It could be separated using folders or branches (recommended).
+- Upload your localization files for each flavor to Crowdin. They can be separated using folders or branches (recommended).
 - Create a different distribution for each flavor by selecting only the files related to that flavor.
 - Create `buildConfigFields` in the `build.gradle`:
 
@@ -25,7 +29,7 @@ To use the Crowdin Android SDK in a multi-flavor application do the following th
   Crowdin.init(
       applicationContext,
       CrowdinConfig.Builder()
-          .withDistributionHash(BuildConfig.DISTRIBUTION)        
+          .withDistributionHash(BuildConfig.DISTRIBUTION)
           .build()
   )
   ```

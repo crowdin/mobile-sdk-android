@@ -5,7 +5,7 @@ import { PluginOptions } from "@easyops-cn/docusaurus-search-local";
 
 const config: Config = {
   title: 'Crowdin Android SDK',
-  tagline: 'Crowdin Android SDK delivers all new translations from Crowdin project to the application immediately',
+  tagline: 'Crowdin Android SDK delivers all new translations from your Crowdin project to the application immediately',
   favicon: 'img/favicon.ico',
 
   url: 'https://crowdin.github.io/',

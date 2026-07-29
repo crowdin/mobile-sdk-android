@@ -1,6 +1,10 @@
+---
+description: Add the Crowdin Android SDK to your project using Gradle. Learn about the JitPack repository setup, dependency configuration, and requirements.
+---
+
 # Installation
 
-Add this to your root `build.gradle` at the end of repositories:
+Add the JitPack repository to your root `build.gradle` at the end of repositories:
 
 ```groovy
 allprojects {

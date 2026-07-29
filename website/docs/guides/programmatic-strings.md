@@ -1,3 +1,7 @@
+---
+description: Programmatically get and set translations for specific languages with the Crowdin SDK using the Crowdin.getString and Crowdin.setString methods.
+---
+
 # Programmatic String Access
 
 In some cases, you may need to programmatically get or set translations for specific languages without relying on the standard
@@ -48,6 +52,8 @@ When retrieving translations for the current language, always use `resources.con
 distribution.
 
 ```kotlin
+import com.crowdin.platform.util.getLocale
+
 // Recommended: Use configuration locale
 val languageTag = resources.configuration.getLocale().toLanguageTag()
 val translation = Crowdin.getString(languageTag, "string_key")
@@ -57,10 +63,15 @@ val languageTag = Locale.getDefault().toLanguageTag()
 val translation = Crowdin.getString(languageTag, "string_key")
 ```
 
-**This is especially important when implementing in-app language switching or when using Android's per-app language settings (
-Android 13+).** If your app allows users to change the language within the app, or if users set a different language for your app
-in system settings, `Locale.getDefault()` will still return the system locale, not the app's current language. Using
-`resources.configuration.getLocale()` ensures you always get the correct locale that matches your app's current language setting.
+:::note
+`getLocale()` is an extension function provided by the SDK in the `com.crowdin.platform.util` package.
+:::
+
+**This is especially important when implementing in-app language switching or when using Android's per-app language
+settings (Android 13+).** If your app allows users to change the language within the app, or if users set a different
+language for your app in system settings, `Locale.getDefault()` will still return the system locale, not the app's
+current language. Using `resources.configuration.getLocale()` ensures you always get the correct locale that matches
+your app's current language setting.
 
 ## Use Cases
 
@@ -73,6 +84,6 @@ These methods are useful for:
 - **Analytics**: Retrieving specific translations for logging or analytics purposes
 
 :::info
-- Strings set using `setString()` are stored in memory and will be available for the current session
-- These strings will be included in the SDK's cache and persist across app restarts
-  :::
+- Strings set using `setString()` are applied immediately and available for the current session
+- These strings are also included in the SDK's cache and persist across app restarts
+:::
