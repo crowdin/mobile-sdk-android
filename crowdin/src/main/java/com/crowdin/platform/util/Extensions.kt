@@ -101,16 +101,16 @@ fun getMatchedCode(
     }
 
     if (list?.contains(code) == false) {
-        val parentCode = code.getParentLocaleCode()
-        if (parentCode != null && list.contains(parentCode)) {
-            return parentCode
+        val es419Code = code.getEs419FallbackCode()
+        if (es419Code != null && list.contains(es419Code)) {
+            return es419Code
         }
         return languageCode.takeIf { list.contains(languageCode) }
     }
     return code
 }
 
-internal fun String.getParentLocaleCode(): String? {
+private fun String.getEs419FallbackCode(): String? {
     val parts = split("-")
     return if (parts.size == 2 && parts[0] == "es" && parts[1] in es419Regions) "es-419" else null
 }
