@@ -4,6 +4,10 @@ agp = "9.2.1"
 junit = "4.13.2"
 buildconfig = "6.0.9"
 composeBom = "2026.05.01"
+# Explicit version for Compose artifacts used by the published :crowdin module. Must match the
+# composeBom mapping. BOM-managed (version-less) dependencies end up without a version in the
+# published POM, breaking resolution for non-Compose consumers.
+compose = "1.11.2"
 appcompat = "1.7.1"
 coreKtx = "1.18.0"
 work = "2.11.2"
@@ -45,13 +49,15 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-tracing = { group = "androidx.tracing", name = "tracing", version.ref = "tracing" }
 
-# Compose (version managed by BOM)
+# Compose
+# Artifacts used by the published :crowdin module carry an explicit version (see `compose` above);
+# the rest are BOM-managed (example app only).
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
-androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "compose" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
-androidx-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-ui-text = { group = "androidx.compose.ui", name = "ui-text" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
+androidx-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.ref = "compose" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 

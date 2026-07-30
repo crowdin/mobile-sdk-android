@@ -86,8 +86,8 @@ dependencies {
     implementation libs.androidx.constraintlayout
     implementation libs.androidx.multidex
 
-    // Jetpack Compose dependencies
-    implementation platform(libs.androidx.compose.bom)
+    // Jetpack Compose dependencies — explicit versions, not the BOM: this module is published
+    // with a hand-generated POM (see maven.gradle) and BOM-managed versions don't reach it
     implementation libs.androidx.ui
     implementation libs.androidx.ui.text
     implementation libs.androidx.compose.runtime

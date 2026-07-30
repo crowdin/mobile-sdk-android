@@ -65,6 +65,14 @@ publishing {
                 configurations.implementation.allDependencies.each {
                     // Ensure dependencies such as fileTree are not included.
                     if (it.name != 'unspecified') {
+                        // BOM/platform-managed versions are not visible here and would be
+                        // written as an empty <version/>, producing a POM consumers can't resolve
+                        if (!it.version) {
+                            throw new GradleException(
+                                "Dependency ${it.group}:${it.name} has no explicit version; " +
+                                "it would be published with an empty <version/> in the POM. " +
+                                "Declare an explicit version instead of relying on a BOM/platform.")
+                        }
                         def dependencyNode = dependenciesNode.appendNode('dependency')
                         dependencyNode.appendNode('groupId', it.group)
                         dependencyNode.appendNode('artifactId', it.name)
