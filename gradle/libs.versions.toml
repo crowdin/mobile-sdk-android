@@ -16,6 +16,9 @@ retrofit = "3.0.0"
 gson = "2.14.0"
 okhttp = "5.3.2"
 mockito = "5.23.0"
+# Published SDK artifact used by crowdin-controls; must be an already-released JitPack version.
+# Keep at 1.17.0 for now: the 1.18.0/1.18.1 POMs declare Compose deps without versions and fail
+# to resolve for non-Compose consumers. Bump once a release with a fixed POM is published.
 crowdinSdk = "1.17.0"
 ktlint = "1.8.0"
 
