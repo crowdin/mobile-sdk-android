@@ -10,7 +10,15 @@ Yes, the SDK caches translations locally. The cache TTL can be configured by the
 
 ## What translations will be displayed if the current locale is not present in the Crowdin project?
 
-The app will use the bundled translations or the default language as a fallback. It will not fall back to any other Crowdin locale.
+The SDK resolves the device locale against the project target languages in the following order:
+
+1. Exact locale match — `es-MX` picks the `es-MX` target language.
+2. Parent-locale match, mirroring how Android resolves bundled resources — `es-MX` picks `es-419`, `pt-MZ` picks `pt-PT`, `zh-HK` picks `zh-TW`, `zh-SG` picks `zh-CN`, and a Latin-script Serbian locale picks `sr-CS`.
+3. Language subtag match — `es-MX` picks `es`.
+
+If none of these match a project target language, the app will use the bundled translations or the default language as a fallback. It will not fall back to any other Crowdin locale.
+
+Parent-locale matching follows the [CLDR parent locale](https://github.com/unicode-org/cldr/blob/main/common/supplemental/supplementalData.xml) data, so a device gets the same language it would get from bundled resources. Script-based matching (Traditional vs. Simplified Chinese, Cyrillic vs. Latin Serbian) requires Android 5.0 or higher, because older versions cannot represent a script subtag in a locale.
 
 ## Will the SDK download all translations from Crowdin every time the app launches?
 

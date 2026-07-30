@@ -1,6 +1,7 @@
 package com.crowdin.platform
 
 import com.crowdin.platform.data.LanguageDataCallback
+import com.crowdin.platform.data.model.LanguageData
 import com.crowdin.platform.data.model.LanguageDetails
 import com.crowdin.platform.data.model.SupportedLanguages
 import com.crowdin.platform.data.parser.Reader
@@ -8,6 +9,9 @@ import com.crowdin.platform.data.remote.StringDataRemoteRepository
 import com.crowdin.platform.data.remote.api.CrowdinApi
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import okhttp3.ResponseBody
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.MatcherAssert.assertThat
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers
@@ -16,19 +20,27 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import retrofit2.Call
 import retrofit2.Response
+import java.util.Locale
 
 class StringDataRemoteRepositoryTest {
     private lateinit var mockDistributionApi: CrowdinDistributionApi
     private lateinit var mockCrowdinApi: CrowdinApi
     private lateinit var mockReader: Reader
     private lateinit var mockCallback: LanguageDataCallback
+    private lateinit var defaultLocale: Locale
 
     @Before
     fun setUp() {
+        defaultLocale = Locale.getDefault()
         mockDistributionApi = mock(CrowdinDistributionApi::class.java)
         mockCrowdinApi = mock(CrowdinApi::class.java)
         mockReader = mock(Reader::class.java)
         mockCallback = mock(LanguageDataCallback::class.java)
+    }
+
+    @After
+    fun tearDown() {
+        Locale.setDefault(defaultLocale)
     }
 
     @Test
@@ -87,6 +99,43 @@ class StringDataRemoteRepositoryTest {
 
         // Then
         verify(mockCallback).onFailure(any())
+    }
+
+    @Test
+    fun whenLanguageIsInCachedList_shouldStoreUnderItsCrowdinLocale() {
+        // Given
+        val repository = givenStringDataRemoteRepository()
+        repository.crowdinLanguages = mapOf("de" to LanguageDetails("German", "de-DE"))
+        givenMockResponse()
+        Locale.setDefault(Locale("de", "DE"))
+
+        // When
+        repository.onManifestDataReceived(null, givenManifestData(), mockCallback)
+
+        // Then
+        assertThat(capturedLanguageData().language, `is`("de-DE"))
+    }
+
+    @Test
+    fun whenLanguageIsMissingFromCachedList_shouldStoreUnderTheCrowdinCode() {
+        // Given the cached language list lags behind the manifest, which already ships es-ES
+        val repository = givenStringDataRemoteRepository()
+        repository.crowdinLanguages = mapOf("en" to LanguageDetails("English", "en-US"))
+        givenMockResponse()
+        Locale.setDefault(Locale("es", "ES"))
+
+        // When
+        repository.onManifestDataReceived(null, givenManifestData(), mockCallback)
+
+        // Then
+        assertThat(capturedLanguageData().language, `is`("es-ES"))
+    }
+
+    private fun capturedLanguageData(): LanguageData {
+        val captor = argumentCaptor<LanguageData>()
+        verify(mockCallback).onDataLoaded(capture(captor))
+
+        return captor.value
     }
 
     private fun givenSupportedLanguages(): SupportedLanguages = mapOf("en" to LanguageDetails("English", "en-US"))

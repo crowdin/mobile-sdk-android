@@ -18,7 +18,51 @@ import java.util.TimeZone
 
 const val NEW_LINE = "<br>"
 private const val DEFAULT_DATE_TIME_FORMAT = "yyyy_MM_dd-HH_mm_ss"
-private val crowdinCodeMapping = mapOf("iw" to "he", "in" to "id")
+
+// Android reports the obsolete ISO 639 codes for these languages, Crowdin uses the current ones.
+private val crowdinCodeMapping = mapOf("iw" to "he", "in" to "id", "ji" to "yi")
+
+private const val SCRIPT_HANS = "Hans"
+private const val SCRIPT_HANT = "Hant"
+private const val SCRIPT_LATIN = "Latn"
+
+/*
+ * CLDR parent-locale data (`supplementalData.xml` -> `parentLocales`). Android resolves bundled
+ * resources through the same table, so the SDK mirrors it to land on the translation a user would
+ * actually see: es-MX -> es-419 -> es instead of es-MX -> es.
+ */
+private val es419Regions =
+    setOf(
+        "AR",
+        "BO",
+        "BR",
+        "BZ",
+        "CL",
+        "CO",
+        "CR",
+        "CU",
+        "DO",
+        "EC",
+        "GT",
+        "HN",
+        "MX",
+        "NI",
+        "PA",
+        "PE",
+        "PR",
+        "PY",
+        "SV",
+        "US",
+        "UY",
+        "VE",
+    )
+
+// CLDR treats `pt-BR`, not `pt-PT`, as the root Portuguese.
+private val ptPtRegions = setOf("AO", "CH", "CV", "FR", "GQ", "GW", "LU", "MO", "MZ", "ST", "TL")
+
+// Used to infer the script when the locale carries no script subtag.
+private val chineseTraditionalRegions = setOf("HK", "MO", "TW")
+private val chineseSimplifiedRegions = setOf("CN", "SG")
 
 fun MenuInflater.inflateWithCrowdin(
     @MenuRes menuRes: Int,
@@ -61,22 +105,68 @@ fun getMatchedCode(
     list: List<String>?,
     supportedLanguages: SupportedLanguages?,
 ): String? {
-    val languageCode = configuration.getLocale().language.withCrowdinSupportedCheck()
-    val code = "$languageCode-${Locale.getDefault().country}"
+    val locale = configuration.getLocale()
+    val languageCode = locale.language.withCrowdinSupportedCheck()
+    val code = "$languageCode-${locale.country}"
 
+    // `languages.json` and `manifest.json` are cached independently and can disagree, so a
+    // language is only usable when the manifest actually ships content for it.
     if (supportedLanguages != null) {
-        for (languageData in supportedLanguages) {
-            if (languageData.value.locale == code) {
-                return languageData.key
+        for ((crowdinCode, details) in supportedLanguages) {
+            if (details.locale == code && list?.contains(crowdinCode) != false) {
+                return crowdinCode
             }
         }
     }
 
-    if (list?.contains(code) == false) {
-        return languageCode.takeIf { list.contains(languageCode) }
+    if (list == null || list.contains(code)) {
+        return code
     }
-    return code
+
+    locale.parentLocaleCodes(languageCode).firstOrNull { list.contains(it) }?.let { return it }
+
+    return languageCode.takeIf { list.contains(languageCode) }
 }
+
+/**
+ * Crowdin language codes to try between an exact `language-REGION` match and the bare language
+ * subtag, closest CLDR parent first. Empty when the language has no parent-locale group.
+ */
+internal fun Locale.parentLocaleCodes(languageCode: String): List<String> =
+    parentLocaleCodes(languageCode, country.uppercase(Locale.ROOT), scriptCompat())
+
+/** Serbian Latin is `sr-CS` in Crowdin, not the BCP 47 `sr-Latn`. */
+internal fun parentLocaleCodes(
+    languageCode: String,
+    region: String,
+    script: String,
+): List<String> =
+    when (languageCode) {
+        "es" -> if (region in es419Regions) listOf("es-419") else emptyList()
+        "pt" -> if (region in ptPtRegions) listOf("pt-PT") else emptyList()
+        "zh" -> chineseParentCodes(region, script)
+        "sr" -> if (script == SCRIPT_LATIN) listOf("sr-CS") else emptyList()
+        else -> emptyList()
+    }
+
+/** CLDR chains zh-Hant-MO through zh-Hant-HK before reaching zh-Hant. */
+private fun chineseParentCodes(
+    region: String,
+    script: String,
+): List<String> {
+    val traditional = script == SCRIPT_HANT || (script.isEmpty() && region in chineseTraditionalRegions)
+    val simplified = script == SCRIPT_HANS || (script.isEmpty() && region in chineseSimplifiedRegions)
+
+    return when {
+        traditional && region == "MO" -> listOf("zh-HK", "zh-TW")
+        traditional -> listOf("zh-TW")
+        simplified -> listOf("zh-CN")
+        else -> emptyList()
+    }
+}
+
+// Locales cannot carry a script below API 21.
+private fun Locale.scriptCompat(): String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) script else ""
 
 fun String.withCrowdinSupportedCheck(): String = crowdinCodeMapping[this] ?: this
 
