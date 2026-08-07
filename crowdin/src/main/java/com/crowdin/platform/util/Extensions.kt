@@ -168,6 +168,12 @@ private fun chineseParentCodes(
 // Locales cannot carry a script below API 21.
 private fun Locale.scriptCompat(): String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) script else ""
 
+/**
+ * Manifest paths reach the distribution unencoded, and the CDN answers 403 for a literal `+`.
+ * Android BCP 47 resource folders are the case that matters: `values-b+es+419`.
+ */
+fun String.encodeDistributionPath(): String = replace("+", "%2B")
+
 fun String.withCrowdinSupportedCheck(): String = crowdinCodeMapping[this] ?: this
 
 fun String.unEscapeQuotes(): String =
