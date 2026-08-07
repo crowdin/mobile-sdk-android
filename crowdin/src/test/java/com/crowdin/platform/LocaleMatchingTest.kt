@@ -3,6 +3,7 @@ package com.crowdin.platform
 import android.content.res.Configuration
 import com.crowdin.platform.data.model.LanguageDetails
 import com.crowdin.platform.data.model.SupportedLanguages
+import com.crowdin.platform.util.encodeDistributionPath
 import com.crowdin.platform.util.getMatchedCode
 import com.crowdin.platform.util.parentLocaleCodes
 import com.crowdin.platform.util.withCrowdinSupportedCheck
@@ -251,6 +252,30 @@ class LocaleMatchingTest {
             val expected = if (region in cldrEs419) listOf("es-419") else emptyList()
 
             assertEquals("region $region", expected, parentLocaleCodes("es", region, ""))
+        }
+    }
+
+    @Test
+    fun encodeDistributionPath_shouldEncodeBcp47ResourceFolders() {
+        // A literal `+` on the wire comes back as 403 from the distribution.
+        assertEquals(
+            "/content/app/src/main/res/values-b%2Bes%2B419/strings.xml",
+            "/content/app/src/main/res/values-b+es+419/strings.xml".encodeDistributionPath(),
+        )
+        assertEquals(
+            "/content/values-b%2Bsr%2BLatn/strings.xml",
+            "/content/values-b+sr+Latn/strings.xml".encodeDistributionPath(),
+        )
+    }
+
+    @Test
+    fun encodeDistributionPath_shouldLeavePlainPathsUntouched() {
+        listOf(
+            "/content/app/src/main/res/values-es-rES/strings.xml",
+            "/content/es-419/strings.xml",
+            "/mapping/app/src/main/res/values-en-rUS/strings.xml",
+        ).forEach { path ->
+            assertEquals(path, path.encodeDistributionPath())
         }
     }
 

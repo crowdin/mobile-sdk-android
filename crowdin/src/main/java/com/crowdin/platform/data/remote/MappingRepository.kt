@@ -12,6 +12,7 @@ import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.model.SupportedLanguages
 import com.crowdin.platform.data.parser.Reader
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
+import com.crowdin.platform.util.encodeDistributionPath
 import com.crowdin.platform.util.executeIO
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -76,7 +77,7 @@ internal class MappingRepository(
                     .getMappingFile(
                         eTag = eTag ?: HEADER_ETAG_EMPTY,
                         distributionHash = distributionHash,
-                        filePath = filePath,
+                        filePath = filePath.encodeDistributionPath(),
                     ).execute()
         }
 

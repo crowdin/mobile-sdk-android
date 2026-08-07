@@ -12,6 +12,7 @@ import com.crowdin.platform.data.model.SupportedLanguages
 import com.crowdin.platform.data.model.SyncData
 import com.crowdin.platform.data.parser.ReaderFactory
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
+import com.crowdin.platform.util.encodeDistributionPath
 import com.crowdin.platform.util.executeIO
 import com.crowdin.platform.util.getLocale
 import com.crowdin.platform.util.getMatchedCode
@@ -86,6 +87,7 @@ internal class StringDataRemoteRepository(
                     eTag = eTag,
                     distributionHash = distributionHash,
                     filePath = filePath,
+                    languageCode = preferredLanguageCode,
                     timestamp = manifest.timestamp,
                     languageDataCallback = languageDataCallback,
                 )
@@ -114,6 +116,7 @@ internal class StringDataRemoteRepository(
         eTag: String?,
         distributionHash: String,
         filePath: String,
+        languageCode: String,
         timestamp: Long,
         languageDataCallback: LanguageDataCallback?,
     ): LanguageData {
@@ -131,7 +134,7 @@ internal class StringDataRemoteRepository(
                     .getResourceFile(
                         eTag = eTag ?: HEADER_ETAG_EMPTY,
                         distributionHash = distributionHash,
-                        filePath = filePath,
+                        filePath = filePath.encodeDistributionPath(),
                         timeStamp = timestamp,
                     ).execute()
         }
@@ -151,7 +154,7 @@ internal class StringDataRemoteRepository(
 
             code == HttpURLConnection.HTTP_FORBIDDEN -> {
                 val errorMessage =
-                    "Translation file $filePath for locale $preferredLanguageCode not found in the distribution"
+                    "Translation file $filePath for locale $languageCode not found in the distribution"
                 Log.e(Crowdin.CROWDIN_TAG, errorMessage)
                 languageDataCallback?.onFailure(Throwable(errorMessage))
             }
