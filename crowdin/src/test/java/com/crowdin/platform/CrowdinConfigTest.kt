@@ -243,7 +243,7 @@ class CrowdinConfigTest {
     }
 
     @Test
-    fun whenRealTimeComposeEnabled_shouldBeEnabledOnSupportedApiLevel() {
+    fun whenRealTimeComposeEnabled_shouldBeEnabled() {
         // When
         val config =
             CrowdinConfig
@@ -254,12 +254,8 @@ class CrowdinConfigTest {
                 .withRealTimeComposeEnabled(true)
                 .build()
 
-        // Then - should be enabled on API 24+ or disabled on API < 24
-        if (android.os.Build.VERSION.SDK_INT >= 24) {
-            Assert.assertTrue(config.isRealTimeComposeEnabled)
-        } else {
-            Assert.assertFalse(config.isRealTimeComposeEnabled)
-        }
+        // Then
+        Assert.assertTrue(config.isRealTimeComposeEnabled)
     }
 
     @Test(expected = IllegalArgumentException::class)
@@ -272,24 +268,5 @@ class CrowdinConfigTest {
             .build()
 
         // Then - expect IllegalArgumentException
-    }
-
-    @Test
-    fun whenRealTimeComposeEnabledOnUnsupportedApiLevel_shouldBeAutomaticallyDisabled() {
-        // On API < 24, real-time Compose should be automatically disabled
-        if (android.os.Build.VERSION.SDK_INT < 24) {
-            // When
-            val config =
-                CrowdinConfig
-                    .Builder()
-                    .withDistributionHash("distributionHash")
-                    .withSourceLanguage("en")
-                    .withRealTimeUpdates()
-                    .withRealTimeComposeEnabled(true)
-                    .build()
-
-            // Then - should be disabled on API < 24
-            Assert.assertFalse(config.isRealTimeComposeEnabled)
-        }
     }
 }

@@ -2,7 +2,6 @@ package com.crowdin.platform.util
 
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.os.Build
 import android.text.Html
 import android.util.Log
 import android.view.Menu
@@ -92,14 +91,6 @@ fun executeIO(function: () -> Unit) {
     }
 }
 
-fun Locale.toLanguageTagCompat(): String =
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        toLanguageTag()
-    } else {
-        val language = language.withCrowdinSupportedCheck()
-        if (country.isNotEmpty()) "$language-$country" else language
-    }
-
 fun getMatchedCode(
     configuration: Configuration?,
     list: List<String>?,
@@ -133,7 +124,7 @@ fun getMatchedCode(
  * subtag, closest CLDR parent first. Empty when the language has no parent-locale group.
  */
 internal fun Locale.parentLocaleCodes(languageCode: String): List<String> =
-    parentLocaleCodes(languageCode, country.uppercase(Locale.ROOT), scriptCompat())
+    parentLocaleCodes(languageCode, country.uppercase(Locale.ROOT), script)
 
 /** Serbian Latin is `sr-CS` in Crowdin, not the BCP 47 `sr-Latn`. */
 internal fun parentLocaleCodes(
@@ -165,9 +156,6 @@ private fun chineseParentCodes(
     }
 }
 
-// Locales cannot carry a script below API 21.
-private fun Locale.scriptCompat(): String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) script else ""
-
 /**
  * Manifest paths reach the distribution unencoded, and the CDN answers 403 for a literal `+`.
  * Android BCP 47 resource folders are the case that matters: `values-b+es+419`.
@@ -184,11 +172,7 @@ fun String.unEscapeQuotes(): String =
 
 fun String.fromHtml(): CharSequence? =
     try {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            Html.fromHtml(this)
-        } else {
-            Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT)
-        }
+        Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT)
     } catch (ex: Exception) {
         null
     }
@@ -198,14 +182,9 @@ fun String.replaceNewLine(): String = replace(NEW_LINE, NEW_LINE.fromHtml()?.toS
 fun Configuration?.getLocale(): Locale {
     this ?: return Locale.getDefault()
 
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        if (locales.isEmpty) {
-            Locale.getDefault()
-        } else {
-            locales.get(0)
-        }
+    return if (locales.isEmpty) {
+        Locale.getDefault()
     } else {
-        @Suppress("DEPRECATION")
-        locale ?: Locale.getDefault()
+        locales.get(0)
     }
 }

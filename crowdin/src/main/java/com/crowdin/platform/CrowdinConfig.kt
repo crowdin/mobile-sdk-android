@@ -1,6 +1,5 @@
 package com.crowdin.platform
 
-import android.os.Build
 import android.util.Log
 import com.crowdin.platform.data.model.ApiAuthConfig
 import com.crowdin.platform.data.model.AuthConfig
@@ -163,18 +162,6 @@ class CrowdinConfig private constructor() {
                         "Real-time Compose support needs the WebSocket connection for receiving translation updates. " +
                         "Please add `.withRealTimeUpdates()` to your CrowdinConfig.Builder."
                 }
-            }
-
-            if (isRealTimeComposeEnabled && Build.VERSION.SDK_INT < BuildConfig.MIN_COMPOSE_API_LEVEL) {
-                Log.w(
-                    Crowdin.CROWDIN_TAG,
-                    "Crowdin: Real-time Compose support is disabled on API level ${Build.VERSION.SDK_INT}. " +
-                        "Minimum required API level is ${BuildConfig.MIN_COMPOSE_API_LEVEL}. " +
-                        "Real-time Compose updates use ConcurrentHashMap.computeIfAbsent and Map.putIfAbsent which are only " +
-                        "available on API 24+. Compose translations will still work, but real-time updates will not be " +
-                        "available on this device.",
-                )
-                config.isRealTimeComposeEnabled = false
             }
 
             return config

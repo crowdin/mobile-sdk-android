@@ -37,7 +37,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode libraryVersionCode
         versionName libraryVersionName
-        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -70,7 +69,6 @@ dependencies {
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.androidx.constraintlayout
-    implementation libs.androidx.multidex
 }
 
 apply from: 'maven.gradle'

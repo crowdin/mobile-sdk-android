@@ -39,7 +39,7 @@ implementation ('com.github.crowdin.mobile-sdk-android:sdk:1.18.3') {
 
 ## Requirements
 
-* Android SDK version 16+
+* Android SDK version 24+
 
 ## See also
 

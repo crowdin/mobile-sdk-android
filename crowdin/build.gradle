@@ -41,11 +41,9 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode libraryVersionCode
         versionName libraryVersionName
-        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "VERSION_NAME", "\"$versionName\""
-        buildConfigField "int", "MIN_COMPOSE_API_LEVEL", "24"
     }
 
     buildTypes {
@@ -84,7 +82,6 @@ dependencies {
     implementation libs.gson
     implementation libs.okhttp.logging.interceptor
     implementation libs.androidx.constraintlayout
-    implementation libs.androidx.multidex
 
     // Jetpack Compose dependencies
     implementation platform(libs.androidx.compose.bom)

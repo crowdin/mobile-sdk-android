@@ -18,7 +18,7 @@ The SDK resolves the device locale against the project target languages in the f
 
 If none of these match a project target language, the app will use the bundled translations or the default language as a fallback. It will not fall back to any other Crowdin locale.
 
-Parent-locale matching follows the [CLDR parent locale](https://github.com/unicode-org/cldr/blob/main/common/supplemental/supplementalData.xml) data, so a device gets the same language it would get from bundled resources. Script-based matching (Traditional vs. Simplified Chinese, Cyrillic vs. Latin Serbian) requires Android 5.0 or higher, because older versions cannot represent a script subtag in a locale.
+Parent-locale matching follows the [CLDR parent locale](https://github.com/unicode-org/cldr/blob/main/common/supplemental/supplementalData.xml) data, so a device gets the same language it would get from bundled resources.
 
 ## Will the SDK download all translations from Crowdin every time the app launches?
 

@@ -9,7 +9,6 @@ coreKtx = "1.18.0"
 work = "2.11.2"
 material = "1.14.0"
 constraintlayout = "2.2.1"
-multidex = "2.0.1"
 navigation = "2.9.8"
 activityCompose = "1.13.0"
 retrofit = "3.0.0"
@@ -37,7 +36,6 @@ junit = { module = "junit:junit", version.ref = "junit" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-androidx-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
 androidx-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }

@@ -1,7 +1,6 @@
 package com.crowdin.platform.realtimeupdate
 
 import android.icu.text.PluralRules
-import android.os.Build
 import android.util.Log
 import android.widget.TextView
 import com.crowdin.platform.Crowdin
@@ -220,14 +219,12 @@ internal class EchoWebSocketListener(
         if (eventData.pluralForm == null || eventData.pluralForm == PLURAL_NONE) {
             updateViewText(view, text, textMetaData.isHint)
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                val locale = view.resources.configuration.getLocale()
-                val quantity = textMetaData.pluralQuantity
-                val rule = PluralRules.forLocale(locale)
-                val ruleName = rule.select(quantity.toDouble())
-                if (eventData.pluralForm == ruleName) {
-                    updateViewText(view, text, textMetaData.isHint)
-                }
+            val locale = view.resources.configuration.getLocale()
+            val quantity = textMetaData.pluralQuantity
+            val rule = PluralRules.forLocale(locale)
+            val ruleName = rule.select(quantity.toDouble())
+            if (eventData.pluralForm == ruleName) {
+                updateViewText(view, text, textMetaData.isHint)
             }
         }
     }
@@ -361,7 +358,7 @@ internal class EchoWebSocketListener(
 
             if (pluralForm == null || pluralForm == PLURAL_NONE) {
                 composeRepository?.updateStringFromWebSocket(textData.resourceId, eventData.text)
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            } else {
                 composeRepository?.updatePluralFromWebSocket(
                     textData.resourceId,
                     pluralForm,
