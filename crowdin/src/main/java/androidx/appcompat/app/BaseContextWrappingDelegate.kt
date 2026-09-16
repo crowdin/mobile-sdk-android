@@ -93,9 +93,7 @@ class BaseContextWrappingDelegate(
     override fun applyDayNight() = superDelegate.applyDayNight()
 
     override fun setLocalNightMode(mode: Int) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            superDelegate.localNightMode = mode
-        }
+        superDelegate.localNightMode = mode
     }
 
     override fun getLocalNightMode() = superDelegate.localNightMode

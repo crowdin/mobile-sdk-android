@@ -1,6 +1,7 @@
 package com.crowdin.platform
 
 import android.content.res.Configuration
+import android.os.LocaleList
 import com.crowdin.platform.data.DataManager
 import com.crowdin.platform.data.local.LocalRepository
 import com.crowdin.platform.data.model.LanguageData
@@ -51,10 +52,12 @@ class LocaleKeysTest {
     }
 
     private fun configurationOf(locale: Locale): Configuration {
-        val configuration = Configuration()
+        val localeList = mock(LocaleList::class.java)
+        `when`(localeList.isEmpty).thenReturn(false)
+        `when`(localeList[0]).thenReturn(locale)
 
-        @Suppress("DEPRECATION")
-        configuration.locale = locale
+        val configuration = mock(Configuration::class.java)
+        `when`(configuration.locales).thenReturn(localeList)
 
         return configuration
     }

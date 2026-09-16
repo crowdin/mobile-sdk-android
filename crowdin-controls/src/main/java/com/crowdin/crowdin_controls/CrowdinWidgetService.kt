@@ -221,15 +221,8 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
             val locale = AppCompatDelegate.getApplicationLocales().takeIf { !it.isEmpty }?.get(0)
             if (locale != null) {
                 val config = resources.configuration
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    config.setLocale(locale)
-                    createConfigurationContext(config)
-                } else {
-                    // For API 16, use deprecated method
-                    @Suppress("DEPRECATION")
-                    config.locale = locale
-                    this
-                }
+                config.setLocale(locale)
+                createConfigurationContext(config)
             } else {
                 this
             }

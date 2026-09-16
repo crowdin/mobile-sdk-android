@@ -2,7 +2,6 @@ package com.crowdin.platform.compose
 
 import android.content.Context
 import android.icu.text.PluralRules
-import android.os.Build
 import android.os.Looper
 import android.util.Log
 import androidx.compose.runtime.MutableState
@@ -251,9 +250,8 @@ internal class ComposeStringRepository(
         }
     }
 
-    private fun resolvePluralForm(quantity: Int): String {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return "quantity_$quantity"
-        return try {
+    private fun resolvePluralForm(quantity: Int): String =
+        try {
             val locale = crowdinResources.configuration.getLocale()
             val pluralRules = PluralRules.forLocale(locale)
             pluralRules.select(quantity.toDouble())
@@ -261,7 +259,6 @@ internal class ComposeStringRepository(
             // Fallback keeps behavior stable even if locale resolution is unavailable.
             "quantity_$quantity"
         }
-    }
 
     /**
      * Get active watchers for WebSocket integration.

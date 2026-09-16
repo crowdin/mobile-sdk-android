@@ -33,29 +33,6 @@ The `withRealTimeComposeEnabled(true)` flag is required to activate the Compose-
 If you enable `withRealTimeComposeEnabled(true)` without `withRealTimeUpdates()`, the SDK will throw a configuration error at initialization, as the Compose support needs the WebSocket connection to function.
 :::
 
-:::info Android API Level Requirements
-Real-time Compose support requires **Android API level 24 (Android 7.0) or higher**. This is because the implementation uses `ConcurrentHashMap.computeIfAbsent()` and `Map.putIfAbsent()` methods which are only available from API 24+.
-
-**On devices running API 21-23:**
-- The SDK will automatically detect the incompatible API level
-- Real-time Compose updates will be **gracefully disabled**
-- A warning will be logged to help with debugging
-- Your Compose UI will continue to work normally with static translations
-- All other SDK features remain fully functional
-
-**Recommendation:** If you need to support API 21-23 devices, consider implementing a runtime check to conditionally enable real-time Compose support:
-
-```kotlin
-val enableRealtimeCompose = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-
-CrowdinConfig.Builder()
-    .withDistributionHash("your_hash")
-    .withRealTimeUpdates()
-    .withRealTimeComposeEnabled(enableRealtimeCompose)
-    .build()
-```
-:::
-
 ## Usage
 
 There are two ways to use Crowdin with Jetpack Compose: manually using the `crowdinString` / `crowdinPluralString` composables or automatically using the Crowdin Gradle plugin.

@@ -151,13 +151,11 @@ internal class CrowdinResources(
 
     override fun getDisplayMetrics(): DisplayMetrics = res.displayMetrics
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun getColor(
         id: Int,
         theme: Theme?,
     ): Int = res.getColor(id, theme)
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun getColorStateList(
         id: Int,
         theme: Theme?,
@@ -170,13 +168,11 @@ internal class CrowdinResources(
     override fun getDimensionPixelSize(id: Int): Int = res.getDimensionPixelSize(id)
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun getDrawable(
         id: Int,
         theme: Theme?,
     ): Drawable = res.getDrawable(id, theme)
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun getDrawableForDensity(
         id: Int,
         density: Int,
@@ -356,21 +352,19 @@ internal class CrowdinResources(
         formatArgs: Array<out Any?> = arrayOf(),
     ) {
         val entryName = getResourceEntryName(id)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val rule = PluralRules.forLocale(configuration.getLocale())
-            val ruleName = rule.select(quantity.toDouble())
-            val quantityMap = mutableMapOf<String, String>()
-            quantityMap[ruleName] = defaultText
-            val pluralData =
-                PluralData(
-                    entryName,
-                    quantityMap,
-                    quantity,
-                    formatArgs,
-                )
+        val rule = PluralRules.forLocale(configuration.getLocale())
+        val ruleName = rule.select(quantity.toDouble())
+        val quantityMap = mutableMapOf<String, String>()
+        quantityMap[ruleName] = defaultText
+        val pluralData =
+            PluralData(
+                entryName,
+                quantityMap,
+                quantity,
+                formatArgs,
+            )
 
-            dataManager.saveReserveResources(locale = configuration.getLocale(), pluralData = pluralData)
-        }
+        dataManager.saveReserveResources(locale = configuration.getLocale(), pluralData = pluralData)
     }
 
     private fun getStringFromRepository(id: Int): String? =
@@ -394,16 +388,14 @@ internal class CrowdinResources(
     private fun getPluralFromRepository(
         id: Int,
         quantity: Int,
-    ): String? =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val locale = configuration.getLocale()
-            val entryName = getResourceEntryName(id)
-            val rule = PluralRules.forLocale(locale)
-            val ruleName = rule.select(quantity.toDouble())
-            dataManager.getLocaleKeys(configuration).firstNotNullOfOrNull {
-                dataManager.getStringPlural(it, entryName, ruleName)
-            }
-        } else {
-            null
+    ): String? {
+        val locale = configuration.getLocale()
+        val entryName = getResourceEntryName(id)
+        val rule = PluralRules.forLocale(locale)
+        val ruleName = rule.select(quantity.toDouble())
+
+        return dataManager.getLocaleKeys(configuration).firstNotNullOfOrNull {
+            dataManager.getStringPlural(it, entryName, ruleName)
         }
+    }
 }
