@@ -27,7 +27,8 @@ internal class TranslationDataRepository(
     private val reader: Reader,
     private val dataManager: DataManager,
     distributionHash: String,
-) : CrowdingRepository(crowdinDistributionApi, distributionHash) {
+    failureTracker: DistributionFailureTracker,
+) : CrowdingRepository(crowdinDistributionApi, distributionHash, failureTracker) {
     private var preferredLanguageCode: String? = null
 
     override fun fetchData(

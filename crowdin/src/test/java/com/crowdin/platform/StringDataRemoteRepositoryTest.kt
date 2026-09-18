@@ -142,7 +142,7 @@ class StringDataRemoteRepositoryTest {
 
     private fun givenStringDataRemoteRepository(): StringDataRemoteRepository {
         val preferences = mock(Preferences::class.java)
-        val repository = StringDataRemoteRepository(preferences, mockDistributionApi, "hash")
+        val repository = StringDataRemoteRepository(preferences, mockDistributionApi, "hash", givenFailureTracker())
         repository.crowdinApi = mockCrowdinApi
         return repository
     }
