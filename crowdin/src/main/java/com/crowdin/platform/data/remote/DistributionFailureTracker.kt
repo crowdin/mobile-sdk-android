@@ -16,7 +16,9 @@ import java.net.HttpURLConnection
  * in use for months. Every one of those requests is billed, so after enough failures the SDK
  * backs off:
  *
- * 1. [FAILURES_BEFORE_FIRST_PAUSE] failed attempts pause all requests for a day.
+ * 1. [FAILURES_BEFORE_FIRST_PAUSE] failed responses pause all requests for a day. Every
+ *    failed response counts, including the several a single launch makes: each one is billed,
+ *    so each one is spent from the same allowance.
  * 2. A single failure after a pause arms the next one - the distribution already proved
  *    itself missing, there is no reason to spend another ten requests on it.
  * 3. After [MAX_PAUSES] pauses the SDK stops requesting the distribution for good.
@@ -107,37 +109,29 @@ internal class DistributionFailureTracker(
         val state = readState()
         val now = currentTimeMillis()
 
-        // The strings, mapping and translation repositories all request the manifest on the
-        // same launch. Without this they would spend the whole allowance in a single session.
-        if (state.lastFailureAt != 0L && now - state.lastFailureAt in 0 until FAILURE_WINDOW_MILLIS) {
-            return
-        }
-
         val updated =
             when {
                 state.pauseCount == 0 -> {
                     val failureCount = state.failureCount + 1
                     if (failureCount < FAILURES_BEFORE_FIRST_PAUSE) {
-                        state.copy(failureCount = failureCount, lastFailureAt = now)
+                        state.copy(failureCount = failureCount)
                     } else {
                         state.copy(
                             failureCount = 0,
                             pauseCount = 1,
                             pausedUntil = now + PAUSE_DURATION_MILLIS,
-                            lastFailureAt = now,
                         )
                     }
                 }
 
                 state.pauseCount >= MAX_PAUSES -> {
-                    state.copy(disabled = true, lastFailureAt = now)
+                    state.copy(disabled = true)
                 }
 
                 else -> {
                     state.copy(
                         pauseCount = state.pauseCount + 1,
                         pausedUntil = now + PAUSE_DURATION_MILLIS,
-                        lastFailureAt = now,
                     )
                 }
             }
@@ -220,9 +214,6 @@ internal class DistributionFailureTracker(
         const val MAX_PAUSES = 3
 
         const val PAUSE_DURATION_MILLIS = 24 * 60 * 60 * 1000L
-
-        /** Failures closer together than this count as one attempt. */
-        const val FAILURE_WINDOW_MILLIS = 60 * 1000L
 
         private const val MILLIS_IN_MINUTE = 60 * 1000L
         private const val CLOUDFRONT_REQUEST_ID_HEADER = "x-amz-cf-id"

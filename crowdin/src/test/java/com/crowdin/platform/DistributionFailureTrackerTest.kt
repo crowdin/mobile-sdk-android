@@ -2,7 +2,6 @@ package com.crowdin.platform
 
 import com.crowdin.platform.data.remote.DistributionFailureTracker
 import com.crowdin.platform.data.remote.DistributionFailureTracker.Companion.FAILURES_BEFORE_FIRST_PAUSE
-import com.crowdin.platform.data.remote.DistributionFailureTracker.Companion.FAILURE_WINDOW_MILLIS
 import com.crowdin.platform.data.remote.DistributionFailureTracker.Companion.MAX_PAUSES
 import com.crowdin.platform.data.remote.DistributionFailureTracker.Companion.PAUSE_DURATION_MILLIS
 import okhttp3.Headers
@@ -112,7 +111,6 @@ class DistributionFailureTrackerTest {
         // A captive portal or a corporate proxy answering 403 for everything.
         repeat(FAILURES_BEFORE_FIRST_PAUSE * 2) {
             tracker.onResponse(403, PROXY_HEADERS)
-            now += FAILURE_WINDOW_MILLIS
         }
 
         assertThat(tracker.isRequestAllowed(), equalTo(true))
@@ -122,7 +120,6 @@ class DistributionFailureTrackerTest {
     fun whenServerError_shouldBeIgnored() {
         repeat(FAILURES_BEFORE_FIRST_PAUSE * 2) {
             tracker.onResponse(503, CLOUDFRONT_HEADERS)
-            now += FAILURE_WINDOW_MILLIS
         }
 
         assertThat(tracker.isRequestAllowed(), equalTo(true))
@@ -132,20 +129,20 @@ class DistributionFailureTrackerTest {
     fun whenThrottled_shouldBeIgnored() {
         repeat(FAILURES_BEFORE_FIRST_PAUSE * 2) {
             tracker.onResponse(429, CLOUDFRONT_HEADERS)
-            now += FAILURE_WINDOW_MILLIS
         }
 
         assertThat(tracker.isRequestAllowed(), equalTo(true))
     }
 
     @Test
-    fun whenFailuresLandInSameWindow_shouldCountAsOneAttempt() {
-        // Strings, mapping and translation repositories all ask for the manifest on one launch.
-        repeat(FAILURES_BEFORE_FIRST_PAUSE * 3) {
+    fun whenSeveralRequestsFailOnOneLaunch_shouldSpendAnAttemptEach() {
+        // languages.json and the manifest are billed separately, so both are spent from the
+        // allowance even though they fail milliseconds apart.
+        repeat(FAILURES_BEFORE_FIRST_PAUSE) {
             tracker.onResponse(403, CLOUDFRONT_HEADERS)
         }
 
-        assertThat(tracker.isRequestAllowed(), equalTo(true))
+        assertThat(tracker.isRequestAllowed(), equalTo(false))
     }
 
     @Test
@@ -184,17 +181,19 @@ class DistributionFailureTrackerTest {
         assertThat(tracker.isRequestAllowed(), equalTo(true))
     }
 
+    /** Failures spread over separate launches, leaving the clock on the last one. */
     private fun givenMissingDistribution(times: Int) {
-        // Leaves the clock on the last failure, so a following pause starts from there.
         repeat(times) { index ->
             if (index > 0) {
-                now += FAILURE_WINDOW_MILLIS
+                now += LAUNCH_INTERVAL_MILLIS
             }
             tracker.onResponse(403, CLOUDFRONT_HEADERS)
         }
     }
 
     private companion object {
+        const val LAUNCH_INTERVAL_MILLIS = 60 * 1000L
+
         val CLOUDFRONT_HEADERS: Headers =
             Headers.headersOf(
                 "server",

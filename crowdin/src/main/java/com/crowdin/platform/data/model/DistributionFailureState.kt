@@ -12,6 +12,5 @@ internal data class DistributionFailureState(
     val failureCount: Int = 0,
     val pauseCount: Int = 0,
     val pausedUntil: Long = 0L,
-    val lastFailureAt: Long = 0L,
     val disabled: Boolean = false,
 )
