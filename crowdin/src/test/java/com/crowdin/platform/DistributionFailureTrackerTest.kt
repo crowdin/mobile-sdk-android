@@ -87,6 +87,29 @@ class DistributionFailureTrackerTest {
     }
 
     @Test
+    fun whenResponsesLandAfterPauseArmed_shouldNotSpendTheRemainingPauses() {
+        // The strings, mapping and translation repositories enqueue their manifest requests
+        // together, so responses keep arriving once one of them has already armed the pause.
+        givenMissingDistribution(FAILURES_BEFORE_FIRST_PAUSE - 1)
+        repeat(4) {
+            tracker.onResponse(403, CLOUDFRONT_HEADERS)
+        }
+
+        // Each of the remaining pauses still has to be served a day apart.
+        repeat(MAX_PAUSES - 1) {
+            now += PAUSE_DURATION_MILLIS
+            assertThat(tracker.isRequestAllowed(), equalTo(true))
+            givenMissingDistribution(1)
+        }
+        now += PAUSE_DURATION_MILLIS
+        assertThat(tracker.isRequestAllowed(), equalTo(true))
+        givenMissingDistribution(1)
+
+        now += PAUSE_DURATION_MILLIS * 365
+        assertThat(tracker.isRequestAllowed(), equalTo(false))
+    }
+
+    @Test
     fun whenDistributionAvailableAgain_shouldForgetFailures() {
         givenMissingDistribution(FAILURES_BEFORE_FIRST_PAUSE - 1)
 

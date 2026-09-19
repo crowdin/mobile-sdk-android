@@ -19,8 +19,8 @@ import java.net.HttpURLConnection
  * 1. [FAILURES_BEFORE_FIRST_PAUSE] failed responses pause all requests for a day. Every
  *    failed response counts, including the several a single launch makes: each one is billed,
  *    so each one is spent from the same allowance.
- * 2. A single failure after a pause arms the next one - the distribution already proved
- *    itself missing, there is no reason to spend another ten requests on it.
+ * 2. A single failure after a pause has expired arms the next one - the distribution already
+ *    proved itself missing, there is no reason to spend another ten requests on it.
  * 3. After [MAX_PAUSES] pauses the SDK stops requesting the distribution for good.
  *
  * Any successful response clears the state, as does a new distribution hash or a new build of
@@ -108,6 +108,9 @@ internal class DistributionFailureTracker(
     private fun onDistributionMissing() {
         val state = readState()
         val now = currentTimeMillis()
+        if (state.disabled || state.pausedUntil > now) {
+            return
+        }
 
         val updated =
             when {
