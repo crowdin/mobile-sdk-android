@@ -1,22 +1,12 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
+    <!--
+      The UI is built with Jetpack Compose, so the platform theme only needs to keep the
+      AppCompat/Material plumbing (locale handling, BaseContextWrappingDelegate) and stay out
+      of the way. All colors come from the Compose color scheme.
+    -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Color -->
-        <item name="colorPrimary">@color/green</item>
-        <item name="colorPrimaryVariant">@color/white</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <item name="colorSecondary">@color/white</item>
-        <item name="colorSecondaryVariant">@color/white_2</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <item name="colorOnSurface">@color/black</item>
-        <item name="colorAccent">@color/green</item>
-        <item name="android:colorAccent">@color/green</item>
-        <item name="colorControlHighlight">@color/grey_1_light</item>
-
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
-        <item name="android:windowLightStatusBar">true</item>
-
-        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:windowBackground">@color/window_background</item>
     </style>
 
 </resources>

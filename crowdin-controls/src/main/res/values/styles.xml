@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingDefaultResource">
+
+    <!-- Rows inside the expanded widget: icon, label, 48 dp target, no all-caps. -->
+    <style name="CrowdinWidget.Action" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/crowdin_widget_action_height</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:background">@drawable/bg_crowdin_widget_action</item>
+        <item name="android:drawablePadding">12dp</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/crowdin_widget_action_text</item>
+        <item name="android:textSize">@dimen/text_size</item>
+    </style>
+
+</resources>

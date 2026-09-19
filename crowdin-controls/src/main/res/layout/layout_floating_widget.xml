@@ -1,117 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.crowdin.crowdin_controls.WidgetRootLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_container"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:padding="10dp">
 
     <!--View while view is collapsed-->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:id="@+id/collapse_view"
-        android:layout_width="75dp"
-        android:layout_height="60dp"
-        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:visibility="visible">
 
         <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="8dp"
-            android:scaleType="centerInside"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:layout_margin="6dp"
+            android:background="@drawable/bg_crowdin_widget_collapsed"
+            android:elevation="6dp"
+            android:padding="12dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_crowdin_logo"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription" />
+            android:tint="@color/crowdin_widget_on_surface"
+            tools:ignore="ContentDescription,UseAppTint" />
 
         <ImageView
             android:id="@+id/collapsedCloseBtn"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription" />
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="top|end"
+            android:background="@drawable/bg_crowdin_widget_badge"
+            android:contentDescription="@string/crowdin_widget_hide"
+            android:elevation="8dp"
+            android:padding="4dp"
+            android:src="@drawable/ic_crowdin_widget_close"
+            android:tint="@color/crowdin_widget_on_surface_variant"
+            tools:ignore="UseAppTint" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 
     <!--View while view is expanded-->
     <LinearLayout
         android:id="@+id/expandedContainer"
-        android:layout_width="200dp"
+        android:layout_width="@dimen/crowdin_widget_width"
         android:layout_height="wrap_content"
-        android:background="#232631"
+        android:background="@drawable/bg_crowdin_widget_panel"
+        android:elevation="12dp"
         android:orientation="vertical"
-        android:padding="8dp"
+        android:paddingStart="12dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="12dp"
         android:visibility="gone">
 
-        <ImageView
-            android:id="@+id/expandedCloseBtn"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="end"
-            android:src="@android:drawable/ic_menu_close_clear_cancel" />
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="8dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_crowdin_logo"
+                android:tint="@color/crowdin_widget_on_surface"
+                tools:ignore="ContentDescription,UseAppTint" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="@string/crowdin_widget_title"
+                android:textColor="@color/crowdin_widget_on_surface"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/expandedCloseBtn"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:contentDescription="@string/crowdin_widget_close"
+                android:padding="6dp"
+                android:src="@drawable/ic_crowdin_widget_close"
+                android:tint="@color/crowdin_widget_on_surface_variant"
+                tools:ignore="UseAppTint" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/crowdin_widget_outline" />
 
         <ToggleButton
             android:id="@+id/realTimeBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/CrowdinWidget.Action"
+            android:background="@drawable/bg_crowdin_widget_toggle"
             android:checked="false"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:padding="15dp"
-            android:textAllCaps="false"
+            android:drawableStart="@drawable/ic_crowdin_widget_preview"
+            android:drawableTint="@color/crowdin_widget_action_text"
             android:textOff="@string/realtimepreview_off"
-            android:textOn="@string/realtimepreview_on"
-            android:textSize="@dimen/text_size" />
+            android:textOn="@string/realtimepreview_on" />
 
         <EditText
             android:id="@+id/screenshotEt"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_crowdin_widget_field"
             android:clickable="true"
             android:focusable="true"
-            android:hint="Screenshot name"
+            android:hint="@string/crowdin_widget_screenshot_name"
             android:imeOptions="actionDone"
+            android:importantForAutofill="no"
             android:inputType="text"
             android:maxLines="1"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#FFFFFF"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:textColor="@color/crowdin_widget_on_surface"
+            android:textColorHint="@color/crowdin_widget_on_surface_variant"
             android:textSize="@dimen/text_size" />
 
         <Button
             android:id="@+id/screenshotBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minWidth="0dp"
-            android:minHeight="48dp"
-            android:text="@string/capture_screenshot"
-            android:textAllCaps="false"
-            android:textSize="@dimen/text_size" />
+            style="@style/CrowdinWidget.Action"
+            android:drawableStart="@drawable/ic_crowdin_widget_screenshot"
+            android:drawableTint="@color/crowdin_widget_action_text"
+            android:text="@string/capture_screenshot" />
 
         <Button
             android:id="@+id/forceReloadBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minWidth="0dp"
-            android:minHeight="48dp"
-            android:text="@string/reload_translations"
-            android:textAllCaps="false"
-            android:textSize="@dimen/text_size" />
+            style="@style/CrowdinWidget.Action"
+            android:drawableStart="@drawable/ic_crowdin_widget_reload"
+            android:drawableTint="@color/crowdin_widget_action_text"
+            android:text="@string/reload_translations" />
 
         <ToggleButton
             android:id="@+id/authBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/CrowdinWidget.Action"
+            android:background="@drawable/bg_crowdin_widget_toggle"
             android:checked="false"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:padding="15dp"
-            android:textAllCaps="false"
+            android:drawableStart="@drawable/ic_crowdin_widget_account"
+            android:drawableTint="@color/crowdin_widget_action_text"
             android:textOff="@string/log_in"
-            android:textOn="@string/log_out"
-            android:textSize="@dimen/text_size" />
+            android:textOn="@string/log_out" />
 
     </LinearLayout>
-</FrameLayout>
+</com.crowdin.crowdin_controls.WidgetRootLayout>

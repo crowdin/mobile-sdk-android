@@ -39,6 +39,7 @@ import java.lang.ref.WeakReference
 class CrowdinWidgetService : Service(), LoadingStateListener {
 
     private lateinit var windowManager: WindowManager
+    private lateinit var params: WindowManager.LayoutParams
     private lateinit var floatingView: View
     private lateinit var collapsedView: View
     private lateinit var expandedView: View
@@ -62,11 +63,15 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
         }
 
         // Add the view to the window.
-        val params = WindowManager.LayoutParams(
+        // The collapsed widget must not take input focus: a focusable overlay receives the Back
+        // key and the host app never sees it. Focus is granted only while the panel is expanded,
+        // where the screenshot name field needs keyboard input.
+        params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             layoutFlag,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL, // Allow focusable with input
+            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
             PixelFormat.TRANSLUCENT
         )
 
@@ -87,6 +92,15 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
         // Set the close button
         floatingView.findViewById<ImageView>(R.id.expandedCloseBtn).setOnClickListener {
             collapseView()
+        }
+
+        (floatingView as? WidgetRootLayout)?.onBackPressed = {
+            if (isViewCollapsed) {
+                false
+            } else {
+                collapseView()
+                true
+            }
         }
 
         authBtn = floatingView.findViewById(R.id.authBtn)
@@ -276,6 +290,7 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
         updateState()
         collapsedView.visibility = View.GONE
         expandedView.visibility = View.VISIBLE
+        setWindowFocusable(true)
     }
 
     private fun updateState() {
@@ -292,6 +307,21 @@ class CrowdinWidgetService : Service(), LoadingStateListener {
     private fun collapseView() {
         collapsedView.visibility = View.VISIBLE
         expandedView.visibility = View.GONE
+        setWindowFocusable(false)
+    }
+
+    /**
+     * Grants or drops input focus for the overlay window. Without focus the host app keeps
+     * receiving key events - most importantly Back and the back gesture.
+     */
+    private fun setWindowFocusable(focusable: Boolean) {
+        params.flags =
+            if (focusable) {
+                params.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
+            } else {
+                params.flags or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+            }
+        windowManager.updateViewLayout(floatingView, params)
     }
 
     /**

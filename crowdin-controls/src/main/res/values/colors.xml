@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingDefaultResource">
+
+    <!--
+      The widget floats on top of the host app, so it brings its own dark palette instead of
+      inheriting the host theme. Tones follow Material 3 surface/accent roles.
+    -->
+    <color name="crowdin_widget_surface">#1A1D1B</color>
+    <color name="crowdin_widget_surface_container">#262B27</color>
+    <color name="crowdin_widget_surface_container_high">#313631</color>
+    <color name="crowdin_widget_outline">#3C423D</color>
+    <color name="crowdin_widget_on_surface">#E4E8E2</color>
+    <color name="crowdin_widget_on_surface_variant">#BFC7BE</color>
+    <color name="crowdin_widget_accent_container">#0C522F</color>
+    <color name="crowdin_widget_on_accent_container">#ADF2BF</color>
+    <color name="crowdin_widget_pressed">#3A403B</color>
+
+</resources>

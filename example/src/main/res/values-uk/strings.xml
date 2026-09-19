@@ -29,6 +29,10 @@
     <string name="no_category_to_display">Немає категорії для відображення</string>
     <string name="no_task_to_show">Немає завдань для відображення</string>
     <string name="no_history_to_show">Немає історії для показу</string>
+    <string name="empty_tasks_description">Додайте перше завдання, і воно з’явиться тут.</string>
+    <string name="empty_categories_description">Категорії допомагають групувати завдання. Додайте першу.</string>
+    <string name="empty_history_description">Виконані завдання з’являться тут.</string>
+    <string name="restore">Відновити</string>
     <string name="do_you_want_to_save_this_task">Зберегти це завдання?</string>
     <string name="save_task">Зберегти завдання!</string>
     <string name="save">ЗБЕРЕГТИ</string>
@@ -45,6 +49,4 @@
     <string name="dialog_delete_category_desc">Видалити цю категорію?</string>
     <string name="settings">Налаштування</string>
     <string name="app_language">Поточна мова</string>
-    <string name="menu_info">Інформація</string>
-    <string name="menu_compose">Compose</string>
 </resources>

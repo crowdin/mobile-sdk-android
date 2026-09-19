@@ -73,7 +73,9 @@ dependencies {
     implementation libs.androidx.activity.compose
     debugImplementation libs.androidx.ui.tooling
 
+    androidTestImplementation platform(libs.androidx.compose.bom)
     androidTestImplementation libs.androidx.test.junit
     androidTestImplementation libs.androidx.test.espresso.core
-    androidTestImplementation libs.androidx.test.espresso.contrib
+    androidTestImplementation libs.androidx.ui.test.junit4
+    debugImplementation libs.androidx.ui.test.manifest
 }
