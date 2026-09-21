@@ -1,6 +1,7 @@
 package com.crowdin.platform
 
 import com.crowdin.platform.data.model.ManifestData
+import com.crowdin.platform.data.remote.DistributionFailureTracker
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import com.google.gson.Gson
 import okhttp3.ResponseBody
@@ -10,6 +11,7 @@ import org.mockito.Mockito.`when`
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.reflect.Type
 
 internal fun givenManifestData(): ManifestData =
     Gson().fromJson(
@@ -76,4 +78,49 @@ internal fun givenMockManifestResponse(
         val callback = it.getArgument(0, Callback::class.java) as Callback<ManifestData>
         callback.onResponse(mockedCall, response)
     }.`when`(mockedCall).enqueue(any())
+}
+
+/**
+ * A tracker backed by in-memory storage, so repository tests exercise the real gate instead of
+ * a mock that always says yes.
+ */
+internal fun givenFailureTracker(
+    distributionHash: String = "hash",
+    preferences: Preferences = InMemoryPreferences(),
+    currentTimeMillis: () -> Long = { System.currentTimeMillis() },
+): DistributionFailureTracker = DistributionFailureTracker(preferences, distributionHash, APP_VERSION_CODE, currentTimeMillis)
+
+internal const val APP_VERSION_CODE = 1L
+
+internal class InMemoryPreferences : Preferences {
+    private val storage = mutableMapOf<String, Any?>()
+    private var lastUpdate = 0L
+
+    override fun setString(
+        key: String,
+        value: String,
+    ) {
+        storage[key] = value
+    }
+
+    override fun getString(key: String): String? = storage[key] as? String
+
+    override fun setLastUpdate(lastUpdate: Long) {
+        this.lastUpdate = lastUpdate
+    }
+
+    override fun getLastUpdate(): Long = lastUpdate
+
+    override fun saveData(
+        type: String,
+        data: Any?,
+    ) {
+        storage[type] = data
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T> getData(
+        type: String,
+        classType: Type,
+    ): T? = storage[type] as T?
 }

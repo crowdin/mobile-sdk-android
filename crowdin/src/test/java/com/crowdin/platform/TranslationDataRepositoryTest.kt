@@ -165,6 +165,7 @@ class TranslationDataRepositoryTest {
                 mockReader,
                 mockDataManager,
                 "hash",
+                givenFailureTracker(),
             )
         repository.crowdinApi = mockCrowdinApi
         return repository

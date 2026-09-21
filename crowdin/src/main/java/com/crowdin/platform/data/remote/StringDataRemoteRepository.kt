@@ -26,7 +26,8 @@ internal class StringDataRemoteRepository(
     private val crowdinPreferences: Preferences,
     private val crowdinDistributionApi: CrowdinDistributionApi,
     private val distributionHash: String,
-) : CrowdingRepository(crowdinDistributionApi, distributionHash) {
+    failureTracker: DistributionFailureTracker,
+) : CrowdingRepository(crowdinDistributionApi, distributionHash, failureTracker) {
     private var preferredLanguageCode: String? = null
 
     override fun fetchData(

@@ -24,7 +24,8 @@ internal class MappingRepository(
     private val dataManager: DataManager,
     private val distributionHash: String,
     private val sourceLanguage: String,
-) : CrowdingRepository(crowdinDistributionApi, distributionHash) {
+    failureTracker: DistributionFailureTracker,
+) : CrowdingRepository(crowdinDistributionApi, distributionHash, failureTracker) {
     override fun fetchData(
         configuration: Configuration?,
         languageCode: String?,

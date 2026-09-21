@@ -170,6 +170,7 @@ class MappingRepositoryTest {
                 mockDataManager,
                 "hash",
                 "en",
+                givenFailureTracker(),
             )
         repository.crowdinApi = mockCrowdinApi
         return repository

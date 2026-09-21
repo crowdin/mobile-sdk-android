@@ -5,6 +5,7 @@ import com.crowdin.platform.data.model.LanguageDetails
 import com.crowdin.platform.data.model.ManifestData
 import com.crowdin.platform.data.model.SupportedLanguages
 import com.crowdin.platform.data.remote.CrowdingRepository
+import com.crowdin.platform.data.remote.DistributionFailureTracker
 import com.crowdin.platform.data.remote.api.CrowdinDistributionApi
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
@@ -23,7 +24,7 @@ class CrowdingRepositoryTest {
     @Before
     fun setUp() {
         mockDistributionApi = mock(CrowdinDistributionApi::class.java)
-        testRepository = TestCrowdingRepository(mockDistributionApi, "testHash")
+        testRepository = TestCrowdingRepository(mockDistributionApi, "testHash", givenFailureTracker("testHash"))
     }
 
     @Test
@@ -94,7 +95,8 @@ class CrowdingRepositoryTest {
     private class TestCrowdingRepository(
         crowdinDistributionApi: CrowdinDistributionApi,
         distributionHash: String,
-    ) : CrowdingRepository(crowdinDistributionApi, distributionHash) {
+        failureTracker: DistributionFailureTracker,
+    ) : CrowdingRepository(crowdinDistributionApi, distributionHash, failureTracker) {
         override fun fetchData(
             configuration: android.content.res.Configuration?,
             languageCode: String?,

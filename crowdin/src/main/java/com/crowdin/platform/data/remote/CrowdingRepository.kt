@@ -23,6 +23,7 @@ import java.net.HttpURLConnection
 internal abstract class CrowdingRepository(
     private val crowdinDistributionApi: CrowdinDistributionApi,
     private val distributionHash: String,
+    private val failureTracker: DistributionFailureTracker,
 ) : BaseRepository() {
     var crowdinApi: CrowdinApi? = null
     var crowdinLanguages: SupportedLanguages? = null
@@ -40,6 +41,13 @@ internal abstract class CrowdingRepository(
             return
         }
 
+        if (!failureTracker.isRequestAllowed()) {
+            languageDataCallback?.onFailure(
+                Throwable("Requests to the distribution are suspended: it keeps responding as missing"),
+            )
+            return
+        }
+
         Log.v(
             Crowdin.CROWDIN_TAG,
             "${javaClass.simpleName}. Loading resource manifest from Api started. Hash: $distributionHash",
@@ -54,6 +62,7 @@ internal abstract class CrowdingRepository(
                         response: Response<ManifestData>,
                     ) {
                         Log.v(Crowdin.CROWDIN_TAG, "${javaClass.simpleName}. Manifest received. Body: ${response.body()}")
+                        failureTracker.onResponse(response.code(), response.headers())
 
                         val body = response.body()
                         when {
@@ -100,12 +109,17 @@ internal abstract class CrowdingRepository(
     )
 
     override fun getSupportedLanguages(): SupportedLanguages? {
+        if (!failureTracker.isRequestAllowed()) {
+            return null
+        }
+
         Log.v(Crowdin.CROWDIN_TAG, "Getting supported languages from Api started")
         var languages: SupportedLanguages? = null
         executeIO {
-            val response = crowdinDistributionApi.getLanguages(distributionHash)?.execute()?.body()
+            val response = crowdinDistributionApi.getLanguages(distributionHash).execute()
             if (response != null) {
-                languages = response
+                failureTracker.onResponse(response.code(), response.headers())
+                languages = response.body()
             }
         }
         Log.v(Crowdin.CROWDIN_TAG, "Supported languages from Api: $languages")

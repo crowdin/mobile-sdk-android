@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import android.view.Menu
 import androidx.annotation.MenuRes
+import androidx.core.content.pm.PackageInfoCompat
 import com.crowdin.platform.auth.AuthActivity
 import com.crowdin.platform.compose.ComposeStringRepository
 import com.crowdin.platform.data.DataManager
@@ -24,6 +25,7 @@ import com.crowdin.platform.data.parser.StringResourceParser
 import com.crowdin.platform.data.parser.XmlReader
 import com.crowdin.platform.data.remote.Connectivity
 import com.crowdin.platform.data.remote.CrowdinRetrofitService
+import com.crowdin.platform.data.remote.DistributionFailureTracker
 import com.crowdin.platform.data.remote.DistributionInfoManager
 import com.crowdin.platform.data.remote.MappingRepository
 import com.crowdin.platform.data.remote.StringDataRemoteRepository
@@ -57,6 +59,7 @@ object Crowdin {
     private lateinit var config: CrowdinConfig
     private lateinit var crowdinPreferences: Preferences
     private var dataManager: DataManager? = null
+    private var distributionFailureTracker: DistributionFailureTracker? = null
     private var realTimeUpdateManager: RealTimeUpdateManager? = null
     private var distributionInfoManager: DistributionInfoManager? = null
     private var screenshotManager: ScreenshotManager? = null
@@ -80,6 +83,7 @@ object Crowdin {
         this.config = config
         FeatureFlags.registerConfig(config)
         initPreferences(context)
+        initDistributionFailureTracker(context, config)
         initStringDataManager(context, config, loadingStateListener)
         initViewTransformer()
         initComposeSupport(context)
@@ -499,6 +503,29 @@ object Crowdin {
         crowdinPreferences = CrowdinPreferences(context)
     }
 
+    private fun initDistributionFailureTracker(
+        context: Context,
+        config: CrowdinConfig,
+    ) {
+        distributionFailureTracker =
+            DistributionFailureTracker(
+                crowdinPreferences,
+                config.distributionHash,
+                getAppVersionCode(context),
+            )
+    }
+
+    private fun getAppVersionCode(context: Context): Long =
+        try {
+            PackageInfoCompat.getLongVersionCode(
+                context.packageManager.getPackageInfo(context.packageName, 0),
+            )
+        } catch (ex: Exception) {
+            // Without a version code the tracker simply never resets on an app update.
+            Log.d(CROWDIN_TAG, "Couldn't read the application version code", ex)
+            0L
+        }
+
     private fun initStringDataManager(
         context: Context,
         config: CrowdinConfig,
@@ -509,6 +536,7 @@ object Crowdin {
                 crowdinPreferences,
                 CrowdinRetrofitService.getCrowdinDistributionApi(),
                 config.distributionHash,
+                distributionFailureTracker!!,
             )
         val localRepository = LocalStringRepositoryFactory.createLocalRepository(context, config)
 
@@ -551,6 +579,7 @@ object Crowdin {
                     dataManager!!,
                     config.distributionHash,
                     config.sourceLanguage,
+                    distributionFailureTracker!!,
                 )
             mappingRepository.crowdinApi = getCrowdinApi()
             mappingRepository.fetchData()
@@ -572,6 +601,7 @@ object Crowdin {
                     XmlReader(StringResourceParser()),
                     dataManager!!,
                     config.distributionHash,
+                    distributionFailureTracker!!,
                 )
             translationDataRepository?.crowdinApi = getCrowdinApi()
             downloadTranslation()
@@ -592,6 +622,19 @@ object Crowdin {
      * Example: `{"de": LanguageDetails("German", "de-DE"), "it": LanguageDetails("Italian", "it-IT")}`
      */
     fun getSupportedLanguages(): SupportedLanguages? = dataManager?.getSupportedLanguages()
+
+    /**
+     * Resume requests to the distribution after the SDK has suspended them.
+     *
+     * A distribution that keeps answering as missing - typically because it was deleted in
+     * Crowdin - makes the SDK pause its requests for a day, and stop them altogether after
+     * three such days. Call this once the distribution is available again to clear that state.
+     * It is not needed after an app update: a new build starts with a clean slate.
+     */
+    @JvmStatic
+    fun resetDistributionFailureState() {
+        distributionFailureTracker?.reset()
+    }
 
     private fun initDistributionInfo() {
         if (config.apiAuthConfig?.apiToken == null) {
