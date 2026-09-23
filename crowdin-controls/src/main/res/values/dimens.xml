@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingDefaultResource">
 
-    <dimen name="text_size">8sp</dimen>
+    <dimen name="text_size">13sp</dimen>
+    <dimen name="crowdin_widget_width">268dp</dimen>
+    <dimen name="crowdin_widget_action_height">48dp</dimen>
+    <dimen name="crowdin_widget_icon">20dp</dimen>
+
 </resources>

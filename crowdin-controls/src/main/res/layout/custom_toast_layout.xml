@@ -4,24 +4,30 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/custom_toast_bg"
+    android:elevation="6dp"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:paddingStart="14dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="18dp"
+    android:paddingBottom="12dp">
 
     <ImageView
         android:id="@+id/toast_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="8dp"
-        android:src="@drawable/ic_crowdin_logo" />
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="12dp"
+        android:src="@drawable/ic_crowdin_logo"
+        android:tint="@color/crowdin_widget_on_surface"
+        tools:ignore="ContentDescription,UseAppTint" />
 
     <TextView
         android:id="@+id/toast_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
+        android:maxWidth="280dp"
+        android:textColor="@color/crowdin_widget_on_surface"
+        android:textSize="14sp"
         tools:text="Custom Toast Message" />
 
 </LinearLayout>

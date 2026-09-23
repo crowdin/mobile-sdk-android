@@ -7,4 +7,10 @@
     <string name="realtimepreview_on">Real-Time Preview: disable</string>
     <string name="capture_screenshot">Capture screenshot</string>
     <string name="reload_translations">Reload Translations</string>
+
+    <!-- Widget chrome -->
+    <string name="crowdin_widget_title">Crowdin SDK</string>
+    <string name="crowdin_widget_close">Close</string>
+    <string name="crowdin_widget_hide">Hide the Crowdin widget</string>
+    <string name="crowdin_widget_screenshot_name">Screenshot name</string>
 </resources>
